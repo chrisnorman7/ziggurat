@@ -1,0 +1,18 @@
+publish_to: none
+name: ziggurat
+description: A starting point for Dart libraries or applications.
+version: 1.0.0
+# homepage: https://www.example.com
+
+environment:
+  sdk: '>=2.12.0 <3.0.0'
+
+# dependencies:
+#   path: ^1.8.0
+
+dev_dependencies:
+  lints: ^1.0.0
+  test: ^1.16.0
+dependencies:
+  dart_synthizer:
+    git: https://github.com/chrisnorman7/dart_synthizer
