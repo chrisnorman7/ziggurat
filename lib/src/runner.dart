@@ -1,10 +1,11 @@
 /// Provides the [Runner] class.
 import 'dart:math';
 
-// import 'package:dart_synthizer/dart_synthizer.dart';
+import 'package:dart_synthizer/dart_synthizer.dart';
 
 import 'math.dart';
 import 'tile.dart';
+import 'tile_types/wall.dart';
 import 'ziggurat.dart';
 
 /// An extension for returning a `Point<int>` from a `Point<double>`.
@@ -16,7 +17,7 @@ extension RunnerMethods on Point<double> {
 /// A class for running maps.
 class Runner {
   /// Create the runner.
-  Runner(this.ziggurat) {
+  Runner(this.ziggurat, this.context) {
     heading = ziggurat.initialHeading;
     coordinates = ziggurat.initialCoordinates;
   }
@@ -25,7 +26,7 @@ class Runner {
   final Ziggurat ziggurat;
 
   /// The synthizer context to use.
-  // final Context context;
+  final Context context;
 
   /// The bearing of the listener.
   double _heading = 0;
@@ -36,17 +37,15 @@ class Runner {
   /// Set the current heading.
   set heading(double value) {
     _heading = value;
-    // ignore: avoid_print
-    print(value);
-    // final rad = angleToRad(value);
-    // context.orientation = Double6(
-    // sin(rad),
-    // cos(rad),
-    // 0,
-    // 0,
-    // 0,
-    // 1,
-    // );
+    final rad = angleToRad(value);
+    context.orientation = Double6(
+      sin(rad),
+      cos(rad),
+      0,
+      0,
+      0,
+      1,
+    );
   }
 
   /// The coordinates of the player.
@@ -58,9 +57,7 @@ class Runner {
   /// Set the player's coordinates.
   set coordinates(Point<double> value) {
     _coordinates = value;
-    // ignore: avoid_print
-    print(value);
-    // context.position = Double3(value.x, value.y, 0);
+    context.position = Double3(value.x, value.y, 0);
   }
 
   /// Return the tile at the given [coordinates], if any.
@@ -80,20 +77,22 @@ class Runner {
   /// If [bearing] is `null`, then [heading] will be used.
   void move({double distance = 1.0, double? bearing}) {
     bearing ??= heading;
+    final oldTileName = currentTile?.name;
     final c = coordinatesInDirection(coordinates, bearing, distance);
     final cf = c.floor();
-    for (final w in ziggurat.walls) {
-      if (w.containsPoint(cf)) {
-        // ignore: avoid_print
-        print(w);
-        return;
-      }
-    }
     final t = getTile(cf);
     if (t != null) {
-      coordinates = c;
-      // ignore: avoid_print
-      print(t.name);
+      if (t.type is Wall) {
+        // ignore: avoid_print
+        print('You walk into ${t.name}.');
+      } else {
+        coordinates = c;
+        final newTileName = t.name;
+        if (newTileName != oldTileName) {
+          // ignore: avoid_print
+          print(t.name);
+        }
+      }
     }
   }
 

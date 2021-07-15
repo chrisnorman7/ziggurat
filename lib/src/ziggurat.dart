@@ -4,7 +4,6 @@ import 'dart:math';
 import 'ambiance.dart';
 import 'random_sound.dart';
 import 'tile.dart';
-import 'wall.dart';
 
 /// A map.
 ///
@@ -16,8 +15,7 @@ class Ziggurat {
       : initialCoordinates = coordinates ?? Point<double>(0, 0),
         ambiances = <Ambiance>[],
         randomSounds = <RandomSound>[],
-        tiles = <Tile>[],
-        walls = <Wall>[];
+        tiles = <Tile>[];
 
   /// The name of this map.
   final String name;
@@ -42,7 +40,4 @@ class Ziggurat {
 
   /// All the tiles on this map.
   final List<Tile> tiles;
-
-  /// All the walls on this map.
-  final List<Wall> walls;
 }

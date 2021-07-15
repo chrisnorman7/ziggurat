@@ -5,7 +5,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
-// import 'package:dart_synthizer/dart_synthizer.dart';
+import 'package:dart_synthizer/dart_synthizer.dart';
 import 'package:ziggurat/ziggurat.dart';
 
 /// A custom map.
@@ -13,36 +13,57 @@ import 'package:ziggurat/ziggurat.dart';
 /// All setup is done in the constructor.
 class Temple extends Ziggurat {
   Temple() : super('Temple') {
-    final mainFloor = Tile('Main floor', Point<int>(0, 0), Point<int>(10, 20));
-    final westWall = Wall(mainFloor.start - Point<int>(1, 0),
-        mainFloor.cornerNw - Point<int>(1, 3));
-    final storageRoom = Tile('Storage room', westWall.start - Point<int>(1, 0),
-        mainFloor.cornerNw - Point<int>(westWall.width + 2, 0));
-    final doorway = Tile('Doorway', westWall.cornerNw + Point<int>(0, 1),
-        mainFloor.cornerNw - Point<int>(1, 0));
-    final northWall = Wall(storageRoom.cornerNw + Point<int>(-1, 1),
-        mainFloor.end + Point<int>(1, 1));
-    final eastWall = Wall(mainFloor.cornerNw + Point<int>(1, 0),
-        mainFloor.end + Point<int>(1, 0));
-    final southWall = Wall(storageRoom.start - Point<int>(1, 1),
-        mainFloor.cornerSe + Point<int>(1, -1));
-    tiles.addAll([mainFloor, storageRoom, doorway]);
-    walls.addAll([
+    final mainFloor = Tile<Surface>(
+        'Main floor', Point<int>(0, 0), Point<int>(10, 20), Surface());
+    final dividingWall = Tile<Wall>(
+        'Dividing Wall',
+        mainFloor.start - Point<int>(1, 0),
+        mainFloor.cornerNw - Point<int>(1, 3),
+        Wall());
+    final storageRoom = Tile<Surface>(
+        'Storage room',
+        dividingWall.start - Point<int>(7, 0),
+        mainFloor.cornerNw - Point<int>(dividingWall.width + 1, 0),
+        Surface());
+    final doorway = Tile<Surface>(
+        'Doorway',
+        dividingWall.cornerNw + Point<int>(0, 1),
+        mainFloor.cornerNw - Point<int>(1, 0),
+        Surface());
+    final northWall = Tile<Wall>(
+        'North Wall',
+        storageRoom.cornerNw + Point<int>(-1, 1),
+        mainFloor.end + Point<int>(1, 1),
+        Wall());
+    final eastWall = Tile<Wall>(
+        'East Wall',
+        mainFloor.cornerSe + Point<int>(1, 0),
+        mainFloor.end + Point<int>(1, 0),
+        Wall());
+    final southWall = Tile<Wall>(
+        'South Wall',
+        storageRoom.start - Point<int>(1, 1),
+        mainFloor.cornerSe + Point<int>(1, -1),
+        Wall());
+    tiles.addAll([
+      mainFloor,
+      storageRoom,
+      doorway,
       northWall,
       eastWall,
       southWall,
-      westWall,
-      Wall(storageRoom.start - Point<int>(1, 0),
-          storageRoom.cornerNw - Point<int>(1, 0))
+      dividingWall,
+      Tile<Wall>('West Wall', storageRoom.start - Point<int>(1, 0),
+          storageRoom.cornerNw - Point<int>(1, 0), Wall())
     ]);
   }
 }
 
 void main() {
-  // final synthizer = Synthizer.windows()..initialize();
-  // final ctx = synthizer.createContext();
+  final synthizer = Synthizer()..initialize();
+  final ctx = synthizer.createContext();
   final t = Temple();
-  final r = Runner(t);
+  final r = Runner(t, ctx);
   stdin
     ..echoMode = false
     ..lineMode = false;
@@ -53,6 +74,7 @@ void main() {
       case 'q':
         print('Goodbye.');
         stdinListener?.cancel();
+        synthizer.shutdown();
         break;
       case 'c':
         final c = r.coordinates.floor();

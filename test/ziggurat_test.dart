@@ -15,7 +15,8 @@ class ActivateException implements Exception {
 /// A custom tile.
 class CustomTile extends Tile {
   /// Create an instance.
-  CustomTile() : super('Custom Tile', Point<int>(0, 0), Point<int>(5, 5));
+  CustomTile()
+      : super('Custom Tile', Point<int>(0, 0), Point<int>(5, 5), Surface());
 
   /// Throw an error when this tile is activated.
   @override
@@ -54,10 +55,12 @@ void main() {
   // Test tiles.
   group('Tiles tests', () {
     test('Initialisation', () {
-      final t = Tile('Test tile', Point<int>(0, 0), Point<int>(5, 5));
+      final t =
+          Tile('Test tile', Point<int>(0, 0), Point<int>(5, 5), Surface());
       expect(t.name, equals('Test tile'));
       expect(t.start, equals(Point<int>(0, 0)));
       expect(t.end, equals(Point<int>(5, 5)));
+      expect(t.type is Surface, isTrue);
     });
 
     test('Custom tile tests', () {
@@ -72,12 +75,13 @@ void main() {
   // Test walls.
   group('Walls tests', () {
     test('Initialisation', () {
-      var w = Wall(Point<int>(0, 0), Point<int>(5, 0));
+      var w = Tile<Wall>('Wall', Point<int>(0, 0), Point<int>(5, 0), Wall());
       expect(w.start, equals(Point<int>(0, 0)));
       expect(w.end, equals(Point<int>(5, 0)));
-      expect(w.surmountable, isFalse);
-      w = Wall(w.start, w.end, surmountable: true);
-      expect(w.surmountable, isTrue);
+      expect(w.type is Wall, isTrue);
+      expect(w.type.surmountable, isFalse);
+      w = Tile<Wall>('Wall 2', w.start, w.end, Wall(surmountable: true));
+      expect(w.type.surmountable, isTrue);
     });
   });
 
@@ -90,7 +94,6 @@ void main() {
       expect(z.initialCoordinates, equals(Point<int>(0, 0)));
       expect(z.randomSounds, isEmpty);
       expect(z.tiles, isEmpty);
-      expect(z.walls, isEmpty);
     });
   });
 }
