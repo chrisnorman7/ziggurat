@@ -16,3 +16,4 @@ dev_dependencies:
 dependencies:
   dart_synthizer:
     git: https://github.com/chrisnorman7/dart_synthizer
+  meta: ^1.7.0
