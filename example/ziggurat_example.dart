@@ -63,7 +63,7 @@ void main() {
   final synthizer = Synthizer()..initialize();
   final ctx = synthizer.createContext();
   final t = Temple();
-  final r = Runner(t, ctx);
+  final r = Runner(ctx)..ziggurat = t;
   stdin
     ..echoMode = false
     ..lineMode = false;

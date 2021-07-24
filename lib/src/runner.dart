@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:dart_synthizer/dart_synthizer.dart';
 
+import 'error.dart';
 import 'math.dart';
 import 'tile.dart';
 import 'tile_types/wall.dart';
@@ -17,16 +18,25 @@ extension RunnerMethods on Point<double> {
 /// A class for running maps.
 class Runner {
   /// Create the runner.
-  Runner(this.ziggurat, this.context) {
-    heading = ziggurat.initialHeading;
-    coordinates = ziggurat.initialCoordinates;
-  }
-
-  /// The ziggurat this runner will work with.
-  final Ziggurat ziggurat;
+  Runner(this.context);
 
   /// The synthizer context to use.
   final Context context;
+
+  /// The ziggurat this runner will work with.
+  Ziggurat? _ziggurat;
+
+  /// Get the current ziggurat.
+  Ziggurat? get ziggurat => _ziggurat;
+
+  /// Set the current ziggurat.
+  set ziggurat(Ziggurat? value) {
+    if (value != null) {
+      heading = value.initialHeading;
+      coordinates = value.initialCoordinates;
+    }
+    _ziggurat = value;
+  }
 
   /// The bearing of the listener.
   double _heading = 0;
@@ -62,7 +72,11 @@ class Runner {
 
   /// Return the tile at the given [coordinates], if any.
   Tile? getTile(Point<int> coordinates) {
-    for (final t in ziggurat.tiles) {
+    final z = ziggurat;
+    if (z == null) {
+      throw NoZigguratError(this);
+    }
+    for (final t in z.tiles) {
       if (t.containsPoint(coordinates)) {
         return t;
       }

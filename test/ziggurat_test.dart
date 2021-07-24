@@ -1,5 +1,7 @@
+/// Ziggurat tests.
 import 'dart:math';
 
+import 'package:dart_synthizer/dart_synthizer.dart';
 import 'package:test/test.dart';
 import 'package:ziggurat/ziggurat.dart';
 
@@ -61,6 +63,10 @@ class CustomTile extends Tile {
 }
 
 void main() {
+  // Initialise synthizer.
+  final synthizer = Synthizer()..initialize();
+
+  final ctx = synthizer.createContext();
   // Test ambiances.
   group('Ambiance tests', () {
     test('Initialisation', () {
@@ -140,6 +146,14 @@ void main() {
     test('getStateString tests', () {
       expect(q.getStateString(QuestStates.notStarted), equals('Not started'));
       expect(q.getStateString(QuestStates.completed), equals('Completed'));
+    });
+  });
+  group('Runner tests', () {
+    final r = Runner(ctx);
+    test('Initialisation', () {
+      expect(r.ziggurat, isNull);
+      expect(r.context, equals(ctx));
+      expect(r.coordinates, equals(Point<double>(0.0, 0.0)));
     });
   });
 }

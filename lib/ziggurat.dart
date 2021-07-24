@@ -2,6 +2,7 @@
 library ziggurat;
 
 export 'src/ambiance.dart';
+export 'src/error.dart';
 export 'src/quest.dart';
 export 'src/random_sound.dart';
 export 'src/runner.dart';
