@@ -14,7 +14,10 @@ import 'package:ziggurat/ziggurat.dart';
 class Temple extends Ziggurat {
   Temple() : super('Temple') {
     final mainFloor = Tile<Surface>(
-        'Main floor', Point<int>(0, 0), Point<int>(10, 20), Surface());
+        'Main floor',
+        Point<int>(0, 0),
+        Point<int>(10, 20),
+        Surface(reverbPreset: ReverbPreset('Main Floor Reverb', t60: 5.0)));
     final dividingWall = Tile<Wall>(
         'Dividing Wall',
         mainFloor.start - Point<int>(1, 0),

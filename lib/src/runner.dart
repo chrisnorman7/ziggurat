@@ -9,6 +9,7 @@ import 'error.dart';
 import 'math.dart';
 import 'random_sound.dart';
 import 'tile.dart';
+import 'tile_types/surface.dart';
 import 'tile_types/wall.dart';
 import 'ziggurat.dart';
 
@@ -186,13 +187,40 @@ class Runner {
     if (f is! File) {
       throw InvalidEntityError(f);
     }
+    final soundPosition = Point<double>(
+        sound.minCoordinates.x + random.nextDouble() * sound.maxCoordinates.x,
+        sound.minCoordinates.y + random.nextDouble() * sound.maxCoordinates.y);
     final s = Source3D(context)
-      ..position = Double3(
-          sound.minCoordinates.x + random.nextDouble() * sound.maxCoordinates.x,
-          sound.minCoordinates.y + random.nextDouble() * sound.maxCoordinates.y,
-          0)
+      ..position = Double3(soundPosition.x, soundPosition.y, 0)
       ..gain = sound.minGain + random.nextDouble() + sound.maxGain
       ..configDeleteBehavior(linger: false);
+    final t = getTile(soundPosition.floor());
+    if (t != null) {
+      final type = t.type;
+      if (type is Surface) {
+        final reverbPreset = type.reverbPreset;
+        if (reverbPreset != null) {
+          final r = GlobalFdnReverb(context)
+            ..configDeleteBehavior(linger: false)
+            ..meanFreePath = reverbPreset.meanFreePath
+            ..t60 = reverbPreset.t60
+            ..lateReflectionsLfRolloff = reverbPreset.lateReflectionsLfRolloff
+            ..lateReflectionsLfReference =
+                reverbPreset.lateReflectionsLfReference
+            ..lateReflectionsHfRolloff = reverbPreset.lateReflectionsHfRolloff
+            ..lateReflectionsHfReference =
+                reverbPreset.lateReflectionsHfReference
+            ..lateReflectionsDiffusion = reverbPreset.lateReflectionsDiffusion
+            ..lateReflectionsModulationDepth =
+                reverbPreset.lateReflectionsModulationDepth
+            ..lateReflectionsModulationFrequency =
+                reverbPreset.lateReflectionsModulationFrequency
+            ..lateReflectionsDelay = reverbPreset.lateReflectionsDelay
+            ..gain = reverbPreset.gain;
+          context.ConfigRoute(s, r);
+        }
+      }
+    }
     final g = BufferGenerator(context)
       ..configDeleteBehavior(linger: false)
       ..setBuffer(Buffer.fromFile(context.synthizer, f));
