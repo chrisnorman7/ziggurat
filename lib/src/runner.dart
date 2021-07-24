@@ -140,15 +140,7 @@ class Runner {
   set coordinates(Point<double> value) {
     _coordinates = value;
     context.position = Double3(value.x, value.y, 0);
-    ambianceSources.forEach((key, value) {
-      final p = key.position;
-      if (p != null) {
-        filterSource(value, p.floor());
-      }
-    });
-    for (final container in randomSoundContainers.values) {
-      filterSource(container.source, container.coordinates.floor());
-    }
+    filterSources();
   }
 
   /// Return the tile at the given [coordinates], if any.
@@ -307,6 +299,19 @@ class Runner {
     }
     source.filter =
         context.synthizer.designLowpass(max(maxWallFilter, filterAmount));
+  }
+
+  /// Filter all sources.
+  void filterSources() {
+    ambianceSources.forEach((key, value) {
+      final p = key.position;
+      if (p != null) {
+        filterSource(value, p.floor());
+      }
+    });
+    for (final container in randomSoundContainers.values) {
+      filterSource(container.source, container.coordinates.floor());
+    }
   }
 
   /// Get the number of walls between two positions.
