@@ -12,7 +12,10 @@ import 'package:ziggurat/ziggurat.dart';
 ///
 /// All setup is done in the constructor.
 class Temple extends Ziggurat {
-  Temple() : super('Temple') {
+  Temple()
+      : super('Temple',
+            coordinates: Point<double>(-2.0, 14.0),
+            initialHeading: Directions.east) {
     final mainFloor = Tile<Surface>(
         'Main floor',
         Point<int>(0, 0),
@@ -67,7 +70,7 @@ class Temple extends Ziggurat {
     ambiances.addAll([
       Ambiance(File('sounds/ambiances/546153__ssssrt__buzzing-lights.wav'),
           doorway.centre,
-          gain: 3.0),
+          gain: 2.0),
       Ambiance(
           File(
               'sounds/ambiances/325647__shadydave__expressions-of-the-mind-piano-loop.mp3'),

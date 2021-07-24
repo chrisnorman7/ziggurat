@@ -50,7 +50,7 @@ extension RunnerMethods on Directory {
 /// A class for running maps.
 class Runner {
   /// Create the runner.
-  Runner(this.context, this.bufferCache)
+  Runner(this.context, this.bufferCache, {this.maxWallFilter = 500.0})
       : random = Random(),
         randomSoundTimers = {},
         ambianceSources = {};
@@ -60,6 +60,12 @@ class Runner {
 
   /// The buffer cache used by this runner.
   final BufferCache bufferCache;
+
+  /// The maximum filtering applied by walls.
+  ///
+  /// When sounds are filtered through walls, this value is the lowest frequency
+  /// cutoff allowed.
+  final double maxWallFilter;
 
   /// The random number generator to use.
   final Random random;
@@ -242,7 +248,8 @@ class Runner {
       ..position = Double3(soundPosition.x, soundPosition.y, 0)
       ..gain = sound.minGain + random.nextDouble() + sound.maxGain
       ..configDeleteBehavior(linger: false);
-    final t = getTile(soundPosition.floor());
+    final position = soundPosition.floor();
+    final t = getTile(position);
     if (t != null) {
       final type = t.type;
       if (type is Surface) {
@@ -254,10 +261,38 @@ class Runner {
         }
       }
     }
+    var filterAmount = 20000.0;
+    final walls = getWallsBetween(position);
+    for (final w in walls) {
+      filterAmount -= w.type.filterFrequency;
+    }
+    s.filter =
+        context.synthizer.designLowpass(max(maxWallFilter, filterAmount));
     final g = BufferGenerator(context)
       ..configDeleteBehavior(linger: false)
       ..setBuffer(Buffer.fromFile(context.synthizer, f));
     s.addGenerator(g);
     scheduleRandomSound(sound);
+  }
+
+  /// Get the number of walls between two positions.
+  Set<Tile<Wall>> getWallsBetween(Point<int> end, [Point<int>? start]) {
+    start ??= coordinates.floor();
+    final s = <Tile<Wall>>{};
+    var x = min(start.x, end.x);
+    var y = min(start.y, end.y);
+    final endX = max(start.x, end.x);
+    final endY = max(start.y, end.y);
+    while (x <= endX && y <= endY) {
+      x++;
+      y++;
+      final t = getTile(Point<int>(x, y));
+      if (t != null) {
+        if (t is Tile<Wall>) {
+          s.add(t);
+        }
+      }
+    }
+    return s;
   }
 }

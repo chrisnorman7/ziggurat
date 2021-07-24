@@ -2,10 +2,13 @@
   "cSpell.words": [
     "Behavior",
     "Fdn",
+    "Highpass",
     "Lf",
+    "Lowpass",
     "Rolloff",
     "analyzer",
     "ctx",
+    "cutoff",
     "formals",
     "hrtf",
     "shadydave",
