@@ -47,6 +47,19 @@ extension RunnerMethods on Directory {
   }
 }
 
+/// Adds a method for always returning a file.
+extension RunnerFileMethods on FileSystemEntity {
+  /// Always return a file.
+  File ensureFile(Random random) {
+    if (this is File) {
+      return this as File;
+    } else if (this is Directory) {
+      return (this as Directory).randomFile(random);
+    }
+    throw InvalidEntityError(this);
+  }
+}
+
 /// A class for containing random sound data.
 class RandomSoundContainer {
   /// Create the data.
@@ -205,29 +218,14 @@ class Runner {
       source = DirectSource(context);
     } else {
       source = Source3D(context)..position = Double3(p.x, p.y, 0.0);
-      filterSource(source, p.floor());
-      final t = getTile(p.floor());
-      if (t != null) {
-        final type = t.type;
-        if (type is Surface) {
-          final reverbPreset = type.reverbPreset;
-          if (reverbPreset != null) {
-            final r = reverbPreset.makeReverb(context)
-              ..configDeleteBehavior(linger: false);
-            context.ConfigRoute(source, r);
-          } else {}
-        }
-      }
+      final position = p.floor();
+      reverberateSource(source, position);
+      filterSource(source, position);
     }
     source.gain = ambiance.gain;
-    var f = ambiance.path;
-    if (f is Directory) {
-      f = f.randomFile(random);
-    } else if (f is! File) {
-      throw InvalidEntityError(f);
-    }
+    final f = ambiance.path.ensureFile(random);
     final g = BufferGenerator(context)
-      ..setBuffer(Buffer.fromFile(context.synthizer, f as File))
+      ..setBuffer(Buffer.fromFile(context.synthizer, f))
       ..looping = true
       ..configDeleteBehavior(linger: false);
     source.addGenerator(g);
@@ -254,13 +252,7 @@ class Runner {
   void playRandomSound(RandomSound sound) {
     randomSoundContainers.remove(sound);
     randomSoundTimers.remove(sound);
-    var f = sound.path;
-    if (f is Directory) {
-      f = f.randomFile(random);
-    }
-    if (f is! File) {
-      throw InvalidEntityError(f);
-    }
+    final f = sound.path.ensureFile(random);
     final soundPosition = Point<double>(
         sound.minCoordinates.x + random.nextDouble() * sound.maxCoordinates.x,
         sound.minCoordinates.y + random.nextDouble() * sound.maxCoordinates.y);
@@ -269,6 +261,20 @@ class Runner {
       ..gain = sound.minGain + random.nextDouble() + sound.maxGain
       ..configDeleteBehavior(linger: false);
     final position = soundPosition.floor();
+    reverberateSource(s, position);
+    filterSource(s, position);
+    final g = BufferGenerator(context)
+      ..configDeleteBehavior(linger: false)
+      ..setBuffer(Buffer.fromFile(context.synthizer, f));
+    s.addGenerator(g);
+    randomSoundContainers[sound] = RandomSoundContainer(soundPosition, s);
+    scheduleRandomSound(sound);
+  }
+
+  /// Add reverb to a source if necessary.
+  ///
+  /// If there is no reverb at the given [position], nothing will happen.
+  void reverberateSource(Source source, Point<int> position) {
     final t = getTile(position);
     if (t != null) {
       final type = t.type;
@@ -277,17 +283,10 @@ class Runner {
         if (reverbPreset != null) {
           final r = reverbPreset.makeReverb(context)
             ..configDeleteBehavior(linger: false);
-          context.ConfigRoute(s, r);
+          context.ConfigRoute(source, r);
         }
       }
     }
-    filterSource(s, position);
-    final g = BufferGenerator(context)
-      ..configDeleteBehavior(linger: false)
-      ..setBuffer(Buffer.fromFile(context.synthizer, f));
-    s.addGenerator(g);
-    randomSoundContainers[sound] = RandomSoundContainer(soundPosition, s);
-    scheduleRandomSound(sound);
   }
 
   /// Filter a source depending on position.
