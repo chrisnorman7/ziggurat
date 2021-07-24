@@ -16,5 +16,5 @@ class Quest<T> {
   final T defaultState;
 
   /// Return the given [state] as a string.
-  String getStateString(T state) => 'Unknown state';
+  String getStateString(T state) => state.toString();
 }
