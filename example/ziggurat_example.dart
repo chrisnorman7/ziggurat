@@ -56,14 +56,21 @@ class Temple extends Ziggurat {
       Tile<Wall>('West Wall', storageRoom.start - Point<int>(1, 0),
           storageRoom.cornerNw - Point<int>(1, 0), Wall())
     ]);
+    randomSounds.addAll([
+      RandomSound(Directory('sounds/random'), mainFloor.start.toDouble(),
+          mainFloor.end.toDouble(), 5000, 15000)
+    ]);
   }
 }
 
+/// Run the example.
 void main() {
   final synthizer = Synthizer()..initialize();
-  final ctx = synthizer.createContext();
+  final bufferCache = BufferCache(synthizer, pow(1024, 3).floor());
+  final ctx = synthizer.createContext()
+    ..defaultPannerStrategy = PannerStrategies.hrtf;
   final t = Temple();
-  final r = Runner(ctx)..ziggurat = t;
+  final r = Runner(ctx, bufferCache)..ziggurat = t;
   stdin
     ..echoMode = false
     ..lineMode = false;
@@ -73,7 +80,9 @@ void main() {
     switch (key) {
       case 'q':
         print('Goodbye.');
+        r.stop();
         stdinListener?.cancel();
+        ctx.destroy();
         synthizer.shutdown();
         break;
       case 'c':

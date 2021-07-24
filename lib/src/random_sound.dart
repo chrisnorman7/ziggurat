@@ -1,34 +1,30 @@
 /// Provides the [RandomSound] class.
+import 'dart:io';
+import 'dart:math';
 
 /// A random sound.
 ///
 /// This sound will be played at a random point on a map, at a random interval.
 class RandomSound {
   /// Create an instance.
-  RandomSound(this.path, this.minX, this.minY, this.maxX, this.maxY,
+  RandomSound(this.path, this.minCoordinates, this.maxCoordinates,
       this.minInterval, this.maxInterval,
       {this.minGain = 0.75, this.maxGain = 0.75});
 
   /// The sound to play.
-  final String path;
+  final FileSystemEntity path;
 
-  /// The minimum x coordinate.
-  final double minX;
+  /// The minimum coordinates.
+  final Point<double> minCoordinates;
 
-  /// The minimum y coordinate.
-  final double minY;
+  /// The maximum coordinates.
+  final Point<double> maxCoordinates;
 
-  /// The maximum x coordinate.
-  final double maxX;
+  /// The minimum number of milliseconds between this sound playing.
+  final int minInterval;
 
-  /// The maximum y coordinate.
-  final double maxY;
-
-  /// The minimum number of seconds between this sound playing.
-  final double minInterval;
-
-  /// The maximum time between this sound playing.
-  final double maxInterval;
+  /// The maximum number of milliseconds between this sound playing.
+  final int maxInterval;
 
   /// The minimum gain.
   final double minGain;

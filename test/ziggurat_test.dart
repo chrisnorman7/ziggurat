@@ -1,4 +1,5 @@
 /// Ziggurat tests.
+import 'dart:io';
 import 'dart:math';
 
 import 'package:dart_synthizer/dart_synthizer.dart';
@@ -65,7 +66,7 @@ class CustomTile extends Tile {
 void main() {
   // Initialise synthizer.
   final synthizer = Synthizer()..initialize();
-
+  final bufferCache = BufferCache(synthizer, pow(1024, 3).floor());
   final ctx = synthizer.createContext();
   // Test ambiances.
   group('Ambiance tests', () {
@@ -79,13 +80,13 @@ void main() {
   // Test random sounds.
   group('Random sounds tests', () {
     test('Initialisation', () {
-      final r = RandomSound('sound.wav', 0, 1, 5, 6, 15, 30,
+      final r = RandomSound(File('sound.wav'), Point(0, 1), Point(5, 6), 15, 30,
           minGain: 0.1, maxGain: 1.0);
       expect(r.path, equals('sound.wav'));
-      expect(r.minX, equals(0));
-      expect(r.maxX, equals(5));
-      expect(r.minY, equals(1));
-      expect(r.maxY, equals(6));
+      expect(r.minCoordinates.x, equals(0));
+      expect(r.maxCoordinates.x, equals(5));
+      expect(r.minCoordinates.y, equals(1));
+      expect(r.maxCoordinates.y, equals(6));
       expect(r.minInterval, equals(15));
       expect(r.maxInterval, equals(30));
       expect(r.minGain, equals(0.1));
@@ -149,7 +150,7 @@ void main() {
     });
   });
   group('Runner tests', () {
-    final r = Runner(ctx);
+    final r = Runner(ctx, bufferCache);
     test('Initialisation', () {
       expect(r.ziggurat, isNull);
       expect(r.context, equals(ctx));
