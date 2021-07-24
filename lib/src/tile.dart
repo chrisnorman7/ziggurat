@@ -19,7 +19,7 @@ class Tile<T extends TileType> {
   final Point<int> end;
 
   /// The type of this tile.
-  T type;
+  final T type;
 
   /// The sound of this surface.
   ///
@@ -27,7 +27,7 @@ class Tile<T extends TileType> {
   /// into it.
   ///
   /// If this surface is a [Tile], this sound will be heard when walking on it.
-  late final String? sound;
+  final String? sound;
 
   /// Get the width of this tile.
   int get width => (end.x - start.x) + 1;
@@ -42,6 +42,10 @@ class Tile<T extends TileType> {
 
   /// The coordinates of the southeast corner of this tile.
   Point<int> get cornerSe => Point<int>(end.y, start.y);
+
+  /// The centre coordinates of this tile.
+  Point<double> get centre =>
+      Point<double>(start.x + (width / 2), start.y + (depth / 2));
 
   /// Returns `true` if this tile contains the point [p].
   bool containsPoint(Point<int> p) =>
