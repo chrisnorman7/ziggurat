@@ -1,4 +1,5 @@
 /// Provides the [Ambiance] class.
+import 'dart:io';
 import 'dart:math';
 
 /// A constantly playing sound on a map.
@@ -7,7 +8,7 @@ class Ambiance {
   Ambiance(this.path, this.position, {this.gain = 0.75});
 
   /// The path where the sound file is stored.
-  final String path;
+  final FileSystemEntity path;
 
   /// The position of the sound.
   ///
@@ -15,7 +16,7 @@ class Ambiance {
   ///
   /// Changing this value at runtime does not yet change the position of the
   /// sound.
-  final Point<int>? position;
+  final Point<double>? position;
 
   /// The gain of the sound.
   ///

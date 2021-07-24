@@ -71,9 +71,9 @@ void main() {
   // Test ambiances.
   group('Ambiance tests', () {
     test('Initialisation', () {
-      final a = Ambiance('sound.wav', Point<int>(5, 4));
-      expect(a.path, equals('sound.wav'));
-      expect(a.position, equals(Point<int>(5, 4)));
+      final a = Ambiance(File('sound.wav'), Point<double>(5.0, 4.0));
+      expect(a.path.path, equals('sound.wav'));
+      expect(a.position, equals(Point<double>(5.0, 4.0)));
     });
   });
 
@@ -82,7 +82,7 @@ void main() {
     test('Initialisation', () {
       final r = RandomSound(File('sound.wav'), Point(0, 1), Point(5, 6), 15, 30,
           minGain: 0.1, maxGain: 1.0);
-      expect(r.path, equals('sound.wav'));
+      expect(r.path.path, equals('sound.wav'));
       expect(r.minCoordinates.x, equals(0));
       expect(r.maxCoordinates.x, equals(5));
       expect(r.minCoordinates.y, equals(1));

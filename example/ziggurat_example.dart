@@ -63,6 +63,11 @@ class Temple extends Ziggurat {
       RandomSound(Directory('sounds/random'), mainFloor.start.toDouble(),
           mainFloor.end.toDouble(), 5000, 15000)
     ]);
+    ambiances.addAll([
+      Ambiance(File('sounds/ambiances/546153__ssssrt__buzzing-lights.wav'),
+          doorway.centre,
+          gain: 3.0)
+    ]);
   }
 }
 

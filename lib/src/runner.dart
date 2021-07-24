@@ -5,6 +5,7 @@ import 'dart:math';
 
 import 'package:dart_synthizer/dart_synthizer.dart';
 
+import 'ambiance.dart';
 import 'error.dart';
 import 'math.dart';
 import 'random_sound.dart';
@@ -51,10 +52,14 @@ class Runner {
   /// Create the runner.
   Runner(this.context, this.bufferCache)
       : random = Random(),
-        randomSoundTimers = {};
+        randomSoundTimers = {},
+        ambianceSources = {};
 
   /// The synthizer context to use.
   final Context context;
+
+  /// The buffer cache used by this runner.
+  final BufferCache bufferCache;
 
   /// The random number generator to use.
   final Random random;
@@ -62,8 +67,8 @@ class Runner {
   /// A dictionary to old random sound timers.
   final Map<RandomSound, Timer> randomSoundTimers;
 
-  /// The buffer cache used by this runner.
-  final BufferCache bufferCache;
+  /// A dictionary to hold ambiance sources.
+  final Map<Ambiance, Source> ambianceSources;
 
   /// The ziggurat this runner will work with.
   Ziggurat? _ziggurat;
@@ -73,12 +78,14 @@ class Runner {
 
   /// Set the current ziggurat.
   set ziggurat(Ziggurat? value) {
+    _ziggurat = value;
+    stop();
     if (value != null) {
       heading = value.initialHeading;
       coordinates = value.initialCoordinates;
       value.randomSounds.forEach(scheduleRandomSound);
+      value.ambiances.forEach(startAmbiance);
     }
-    _ziggurat = value;
   }
 
   /// The bearing of the listener.
@@ -167,14 +174,55 @@ class Runner {
     randomSoundTimers[sound] = t;
   }
 
+  /// Start an ambiance playing.
+  void startAmbiance(Ambiance ambiance) {
+    final p = ambiance.position;
+    final Source source;
+    if (p == null) {
+      source = DirectSource(context);
+    } else {
+      source = Source3D(context)..position = Double3(p.x, p.y, 0.0);
+      final t = getTile(p.floor());
+      if (t != null) {
+        final type = t.type;
+        if (type is Surface) {
+          final reverbPreset = type.reverbPreset;
+          if (reverbPreset != null) {
+            final r = reverbPreset.makeReverb(context)
+              ..configDeleteBehavior(linger: false);
+            context.ConfigRoute(source, r);
+          } else {}
+        }
+      }
+    }
+    source.gain = ambiance.gain;
+    var f = ambiance.path;
+    if (f is Directory) {
+      f = f.randomFile(random);
+    } else if (f is! File) {
+      throw InvalidEntityError(f);
+    }
+    final g = BufferGenerator(context)
+      ..setBuffer(Buffer.fromFile(context.synthizer, f as File))
+      ..looping = true
+      ..configDeleteBehavior(linger: false);
+    source.addGenerator(g);
+    ambianceSources[ambiance] = source;
+  }
+
   /// Stop this runner from working.
   ///
   /// This method cancels all random sound timers, and prepares this object for
   /// garbage collection.
   void stop() {
-    for (final element in randomSoundTimers.values) {
-      element.cancel();
+    for (final timer in randomSoundTimers.values) {
+      timer.cancel();
     }
+    randomSoundTimers.clear();
+    for (final source in ambianceSources.values) {
+      source.destroy();
+    }
+    ambianceSources.clear();
   }
 
   /// Play a random sound.
@@ -200,23 +248,8 @@ class Runner {
       if (type is Surface) {
         final reverbPreset = type.reverbPreset;
         if (reverbPreset != null) {
-          final r = GlobalFdnReverb(context)
-            ..configDeleteBehavior(linger: false)
-            ..meanFreePath = reverbPreset.meanFreePath
-            ..t60 = reverbPreset.t60
-            ..lateReflectionsLfRolloff = reverbPreset.lateReflectionsLfRolloff
-            ..lateReflectionsLfReference =
-                reverbPreset.lateReflectionsLfReference
-            ..lateReflectionsHfRolloff = reverbPreset.lateReflectionsHfRolloff
-            ..lateReflectionsHfReference =
-                reverbPreset.lateReflectionsHfReference
-            ..lateReflectionsDiffusion = reverbPreset.lateReflectionsDiffusion
-            ..lateReflectionsModulationDepth =
-                reverbPreset.lateReflectionsModulationDepth
-            ..lateReflectionsModulationFrequency =
-                reverbPreset.lateReflectionsModulationFrequency
-            ..lateReflectionsDelay = reverbPreset.lateReflectionsDelay
-            ..gain = reverbPreset.gain;
+          final r = reverbPreset.makeReverb(context)
+            ..configDeleteBehavior(linger: false);
           context.ConfigRoute(s, r);
         }
       }

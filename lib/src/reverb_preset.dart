@@ -1,4 +1,6 @@
 /// Provides the [ReverbPreset] class.
+import 'package:dart_synthizer/dart_synthizer.dart';
+
 import 'tile_types/surface.dart';
 
 /// The bounds of a reverb property.
@@ -82,4 +84,21 @@ class ReverbPreset {
   /// The gain of the reverb.
   @ReverbPropertyBounds(1.0, 0.01, 1.0)
   final double gain;
+
+  /// Make a reverb object from this preset.
+  GlobalFdnReverb makeReverb(Context context) {
+    final r = GlobalFdnReverb(context)
+      ..meanFreePath = meanFreePath
+      ..t60 = t60
+      ..lateReflectionsLfRolloff = lateReflectionsLfRolloff
+      ..lateReflectionsLfReference = lateReflectionsLfReference
+      ..lateReflectionsHfRolloff = lateReflectionsHfRolloff
+      ..lateReflectionsHfReference = lateReflectionsHfReference
+      ..lateReflectionsDiffusion = lateReflectionsDiffusion
+      ..lateReflectionsModulationDepth = lateReflectionsModulationDepth
+      ..lateReflectionsModulationFrequency = lateReflectionsModulationFrequency
+      ..lateReflectionsDelay = lateReflectionsDelay
+      ..gain = gain;
+    return r;
+  }
 }
