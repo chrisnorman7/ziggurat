@@ -47,11 +47,24 @@ extension RunnerMethods on Directory {
   }
 }
 
+/// A class for containing random sound data.
+class RandomSoundContainer {
+  /// Create the data.
+  RandomSoundContainer(this.coordinates, this.source);
+
+  /// The coordinates of the sound.
+  final Point<double> coordinates;
+
+  /// The source which is playing the sound.
+  final Source3D source;
+}
+
 /// A class for running maps.
 class Runner {
   /// Create the runner.
   Runner(this.context, this.bufferCache, {this.maxWallFilter = 500.0})
       : random = Random(),
+        randomSoundContainers = {},
         randomSoundTimers = {},
         ambianceSources = {};
 
@@ -71,6 +84,9 @@ class Runner {
   final Random random;
 
   /// A dictionary to old random sound timers.
+  final Map<RandomSound, RandomSoundContainer> randomSoundContainers;
+
+  /// A dictionary for holding random sound timers.
   final Map<RandomSound, Timer> randomSoundTimers;
 
   /// A dictionary to hold ambiance sources.
@@ -124,6 +140,15 @@ class Runner {
   set coordinates(Point<double> value) {
     _coordinates = value;
     context.position = Double3(value.x, value.y, 0);
+    ambianceSources.forEach((key, value) {
+      final p = key.position;
+      if (p != null) {
+        filterSource(value, p.floor());
+      }
+    });
+    for (final container in randomSoundContainers.values) {
+      filterSource(container.source, container.coordinates.floor());
+    }
   }
 
   /// Return the tile at the given [coordinates], if any.
@@ -188,6 +213,7 @@ class Runner {
       source = DirectSource(context);
     } else {
       source = Source3D(context)..position = Double3(p.x, p.y, 0.0);
+      filterSource(source, p.floor());
       final t = getTile(p.floor());
       if (t != null) {
         final type = t.type;
@@ -225,6 +251,7 @@ class Runner {
       timer.cancel();
     }
     randomSoundTimers.clear();
+    randomSoundContainers.clear();
     for (final source in ambianceSources.values) {
       source.destroy();
     }
@@ -233,6 +260,7 @@ class Runner {
 
   /// Play a random sound.
   void playRandomSound(RandomSound sound) {
+    randomSoundContainers.remove(sound);
     randomSoundTimers.remove(sound);
     var f = sound.path;
     if (f is Directory) {
@@ -261,18 +289,24 @@ class Runner {
         }
       }
     }
+    filterSource(s, position);
+    final g = BufferGenerator(context)
+      ..configDeleteBehavior(linger: false)
+      ..setBuffer(Buffer.fromFile(context.synthizer, f));
+    s.addGenerator(g);
+    randomSoundContainers[sound] = RandomSoundContainer(soundPosition, s);
+    scheduleRandomSound(sound);
+  }
+
+  /// Filter a source depending on position.
+  void filterSource(Source source, Point<int> position) {
     var filterAmount = 20000.0;
     final walls = getWallsBetween(position);
     for (final w in walls) {
       filterAmount -= w.type.filterFrequency;
     }
-    s.filter =
+    source.filter =
         context.synthizer.designLowpass(max(maxWallFilter, filterAmount));
-    final g = BufferGenerator(context)
-      ..configDeleteBehavior(linger: false)
-      ..setBuffer(Buffer.fromFile(context.synthizer, f));
-    s.addGenerator(g);
-    scheduleRandomSound(sound);
   }
 
   /// Get the number of walls between two positions.
