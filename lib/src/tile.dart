@@ -44,7 +44,7 @@ class Tile<T extends TileType> {
   Point<int> get cornerNw => Point<int>(start.x, end.y);
 
   /// The coordinates of the southeast corner of this tile.
-  Point<int> get cornerSe => Point<int>(end.y, start.y);
+  Point<int> get cornerSe => Point<int>(end.x, start.y);
 
   /// The centre coordinates of this tile.
   Point<double> get centre =>
