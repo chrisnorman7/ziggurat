@@ -111,6 +111,10 @@ class Runner<T> {
       coordinates = value.initialCoordinates;
       value.randomSounds.forEach(scheduleRandomSound);
       value.ambiances.forEach(startAmbiance);
+      final ct = currentTile;
+      if (ct != null) {
+        onTileChange(ct);
+      }
     }
   }
 
