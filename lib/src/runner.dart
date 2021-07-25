@@ -81,6 +81,9 @@ class Runner<T> {
   /// Frequencies above this value will be removed from the signal.
   final double wallEchoFilterFrequency;
 
+  /// The send that is used by wall echoes.
+  GlobalEcho? wallEcho;
+
   /// The random number generator to use.
   final Random random;
 
@@ -423,9 +426,12 @@ class Runner<T> {
           wallEchoMinDelay + (d * wallEchoDistanceOffset), 0.0, g));
     }
     if (taps.isNotEmpty) {
-      final echo = context.createGlobalEcho()
-        ..setTaps(taps)
-        ..configDeleteBehavior(linger: false);
+      var echo = wallEcho;
+      if (echo == null) {
+        echo = context.createGlobalEcho()..configDeleteBehavior(linger: true);
+        wallEcho = echo;
+      }
+      echo.setTaps(taps);
       context.ConfigRoute(source, echo,
           filter: context.synthizer.designLowpass(wallEchoFilterFrequency));
     }
