@@ -30,7 +30,8 @@ class Runner<T> {
       this.wallEchoGain = 0.5,
       this.wallEchoGainRolloff = 0.2,
       this.wallEchoFilterFrequency = 12000})
-      : random = Random(),
+      : reverbs = {},
+        random = Random(),
         randomSoundContainers = {},
         randomSoundTimers = {},
         ambianceSources = {};
@@ -83,6 +84,9 @@ class Runner<T> {
 
   /// The send that is used by wall echoes.
   GlobalEcho? wallEcho;
+
+  /// Reverb instances for the various tiles.
+  final Map<Tile<Surface>, GlobalFdnReverb> reverbs;
 
   /// The random number generator to use.
   final Random random;
@@ -264,6 +268,10 @@ class Runner<T> {
     ambianceSources.clear();
     wallEcho?.destroy();
     wallEcho = null;
+    for (final r in reverbs.values) {
+      r.destroy();
+    }
+    reverbs.clear();
   }
 
   /// Play a random sound.
@@ -294,13 +302,17 @@ class Runner<T> {
   /// If there is no reverb at the given [position], nothing will happen.
   void reverberateSource(Source source, Point<int> position) {
     final t = getTile(position);
-    if (t != null) {
+    if (t != null && t is Tile<Surface>) {
       final type = t.type;
       if (type is Surface) {
         final reverbPreset = type.reverbPreset;
         if (reverbPreset != null) {
-          final r = reverbPreset.makeReverb(context)
-            ..configDeleteBehavior(linger: false);
+          GlobalFdnReverb? r = reverbs[t];
+          if (r == null) {
+            r = reverbPreset.makeReverb(context)
+              ..configDeleteBehavior(linger: true);
+            reverbs[t] = r;
+          }
           context.ConfigRoute(source, r);
         }
       }
