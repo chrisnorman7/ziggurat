@@ -63,6 +63,9 @@ class CustomTile extends Tile {
   }
 }
 
+/// Imaginary game state.
+class GameState {}
+
 void main() {
   // Initialise synthizer.
   final synthizer = Synthizer()..initialize();
@@ -150,11 +153,17 @@ void main() {
     });
   });
   group('Runner tests', () {
-    final r = Runner(ctx, bufferCache);
+    final r = Runner<GameState>(ctx, bufferCache, GameState());
     test('Initialisation', () {
       expect(r.ziggurat, isNull);
       expect(r.context, equals(ctx));
       expect(r.coordinates, equals(Point<double>(0.0, 0.0)));
+    });
+  });
+  group('Game State Tests', () {
+    final r = Runner(ctx, bufferCache, GameState());
+    test('Check game state', () {
+      expect(r.gameState, isA<GameState>());
     });
   });
 }
