@@ -1,7 +1,9 @@
 /// Provides the [Tile] class.
+import 'dart:io';
 import 'dart:math';
 
 import 'tile_types/base.dart';
+import 'tile_types/surface.dart';
 import 'tile_types/wall.dart';
 
 /// A tile on a map.
@@ -26,8 +28,9 @@ class Tile<T extends TileType> {
   /// If this surface is a [Wall], this sound will be heard when a player walks
   /// into it.
   ///
-  /// If this surface is a [Tile], this sound will be heard when walking on it.
-  final String? sound;
+  /// If this surface is a [Surface], this sound will be heard when walking on
+  /// it.
+  final FileSystemEntity? sound;
 
   /// Get the width of this tile.
   int get width => (end.x - start.x) + 1;
