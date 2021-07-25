@@ -12,9 +12,11 @@
     "formals",
     "hrtf",
     "lm",
+    "perc",
     "shadydave",
     "ssssrt",
     "synthizer",
-    "vincentm"
+    "vincentm",
+    "waveplay"
   ]
 }

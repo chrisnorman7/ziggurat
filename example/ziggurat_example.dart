@@ -167,6 +167,12 @@ void main() {
       case 's':
         r.turn(180);
         break;
+      case 'z':
+        final source = r.playSound(
+            File('sounds/399934__old-waveplay__perc-short-click-snap-perc.wav'),
+            reverb: false);
+        r.playWallEchoes(source);
+        break;
       default:
         break;
     }
