@@ -31,7 +31,8 @@ class Temple extends Ziggurat {
         'Storage room',
         dividingWall.start - Point<int>(7, 0),
         mainFloor.cornerNw - Point<int>(dividingWall.width + 1, 0),
-        Surface());
+        Surface(reverbPreset: ReverbPreset('Default')),
+        sound: Directory('sounds/footsteps/wood'));
     final doorway = Tile<Surface>(
         'Doorway',
         dividingWall.cornerNw + Point<int>(0, 1),
