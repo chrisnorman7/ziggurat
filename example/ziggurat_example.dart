@@ -16,6 +16,7 @@ class Temple extends Ziggurat {
       : super('Temple',
             coordinates: Point<double>(-2.0, 14.0),
             initialHeading: Directions.east) {
+    final defaultReverb = ReverbPreset('Default');
     final mainFloor = Tile<Surface>(
         'Main floor',
         Point<int>(0, 0),
@@ -31,13 +32,14 @@ class Temple extends Ziggurat {
         'Storage room',
         dividingWall.start - Point<int>(7, 0),
         mainFloor.cornerNw - Point<int>(dividingWall.width + 1, 0),
-        Surface(reverbPreset: ReverbPreset('Default')),
+        Surface(reverbPreset: defaultReverb),
         sound: Directory('sounds/footsteps/wood'));
     final doorway = Tile<Surface>(
         'Doorway',
         dividingWall.cornerNw + Point<int>(0, 1),
         mainFloor.cornerNw - Point<int>(1, 0),
-        Surface());
+        Surface(reverbPreset: defaultReverb),
+        sound: Directory('sounds/footsteps/metal'));
     final northWall = Tile<Wall>(
         'North Wall',
         storageRoom.cornerNw + Point<int>(-1, 1),
@@ -71,7 +73,10 @@ class Temple extends Ziggurat {
     ]);
     ambiances.addAll([
       Ambiance(File('sounds/ambiances/546153__ssssrt__buzzing-lights.wav'),
-          doorway.centre,
+          Point<double>(storageRoom.end.x.toDouble(), doorway.centre.y),
+          gain: 2.0),
+      Ambiance(File('sounds/ambiances/546153__ssssrt__buzzing-lights.wav'),
+          Point<double>(mainFloor.cornerNw.x.toDouble(), doorway.centre.y),
           gain: 2.0),
       Ambiance(
           File(
