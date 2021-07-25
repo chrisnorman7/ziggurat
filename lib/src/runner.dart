@@ -27,7 +27,8 @@ class Runner<T> {
       this.wallEchoMinDelay = 0.05,
       this.wallEchoDistanceOffset = 0.01,
       this.wallEchoGain = 0.5,
-      this.wallEchoGainRolloff = 0.2})
+      this.wallEchoGainRolloff = 0.2,
+      this.wallEchoFilterFrequency = 12000})
       : random = Random(),
         randomSoundContainers = {},
         randomSoundTimers = {},
@@ -70,6 +71,11 @@ class Runner<T> {
   /// The formula to decide the eventual echo gain will be
   /// `wallEchoGain - (distance * wallEchoGainRolloff)`.
   final double wallEchoGainRolloff;
+
+  /// How much wall echoes are filtered by.
+  ///
+  /// Frequencies above this value will be removed from the signal.
+  final double wallEchoFilterFrequency;
 
   /// The random number generator to use.
   final Random random;
@@ -219,7 +225,8 @@ class Runner<T> {
               ..setTaps(taps)
               ..configDeleteBehavior(linger: false);
             context.ConfigRoute(source, echo,
-                filter: context.synthizer.designLowpass(12000));
+                filter:
+                    context.synthizer.designLowpass(wallEchoFilterFrequency));
           }
         }
         final newTileName = t.name;
