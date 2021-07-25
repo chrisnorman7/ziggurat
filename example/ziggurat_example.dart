@@ -17,6 +17,7 @@ class Temple extends Ziggurat {
             coordinates: Point<double>(-2.0, 14.0),
             initialHeading: Directions.east) {
     final defaultReverb = ReverbPreset('Default');
+    final wallSound = File('sounds/249618__vincentm400__invalid.mp3');
     final mainFloor = Tile<Surface>(
         'Main floor',
         Point<int>(0, 0),
@@ -27,7 +28,8 @@ class Temple extends Ziggurat {
         'Dividing Wall',
         mainFloor.start - Point<int>(1, 0),
         mainFloor.cornerNw - Point<int>(1, 3),
-        Wall());
+        Wall(),
+        sound: wallSound);
     final storageRoom = Tile<Surface>(
         'Storage room',
         dividingWall.start - Point<int>(7, 0),
@@ -44,17 +46,20 @@ class Temple extends Ziggurat {
         'North Wall',
         storageRoom.cornerNw + Point<int>(-1, 1),
         mainFloor.end + Point<int>(1, 1),
-        Wall());
+        Wall(),
+        sound: wallSound);
     final eastWall = Tile<Wall>(
         'East Wall',
         mainFloor.cornerSe + Point<int>(1, 0),
         mainFloor.end + Point<int>(1, 0),
-        Wall());
+        Wall(),
+        sound: wallSound);
     final southWall = Tile<Wall>(
         'South Wall',
         storageRoom.start - Point<int>(1, 1),
         mainFloor.cornerSe + Point<int>(1, -1),
-        Wall());
+        Wall(),
+        sound: wallSound);
     tiles.addAll([
       mainFloor,
       storageRoom,
@@ -64,7 +69,8 @@ class Temple extends Ziggurat {
       southWall,
       dividingWall,
       Tile<Wall>('West Wall', storageRoom.start - Point<int>(1, 0),
-          storageRoom.cornerNw - Point<int>(1, 0), Wall())
+          storageRoom.cornerNw - Point<int>(1, 0), Wall(),
+          sound: wallSound)
     ]);
     randomSounds.addAll([
       RandomSound(Directory('sounds/random'), mainFloor.start.toDouble(),

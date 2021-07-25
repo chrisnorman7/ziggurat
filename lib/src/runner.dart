@@ -146,9 +146,11 @@ class Runner<T> {
     final cf = c.floor();
     final t = getTile(cf);
     if (t != null) {
-      if (t.type is Wall) {
-        // ignore: avoid_print
-        print('You walk into ${t.name}.');
+      if (t is Tile<Wall>) {
+        final wallSound = t.sound;
+        if (wallSound != null) {
+          playSound(wallSound);
+        }
       } else {
         coordinates = c;
         final movementSound = t.sound;
