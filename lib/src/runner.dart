@@ -6,6 +6,7 @@ import 'dart:math';
 import 'package:dart_synthizer/dart_synthizer.dart';
 
 import 'ambiance.dart';
+import 'directions.dart';
 import 'error.dart';
 import 'extensions.dart';
 import 'math.dart';
@@ -14,13 +15,19 @@ import 'random_sound_container.dart';
 import 'tile.dart';
 import 'tile_types/surface.dart';
 import 'tile_types/wall.dart';
+import 'wall_location.dart';
 import 'ziggurat.dart';
 
 /// A class for running maps.
 class Runner<T> {
   /// Create the runner.
   Runner(this.context, this.bufferCache, this.gameState,
-      {this.maxWallFilter = 500.0})
+      {this.maxWallFilter = 500.0,
+      this.maxWallEchoDistance = 5,
+      this.wallEchoMinDelay = 0.05,
+      this.wallEchoDistanceOffset = 0.01,
+      this.wallEchoGain = 0.5,
+      this.wallEchoGainRolloff = 0.2})
       : random = Random(),
         randomSoundContainers = {},
         randomSoundTimers = {},
@@ -43,6 +50,26 @@ class Runner<T> {
   /// When sounds are filtered through walls, this value is the lowest frequency
   /// cutoff allowed.
   final double maxWallFilter;
+
+  /// The maximum distance to play wall echoes.
+  final int maxWallEchoDistance;
+
+  /// The minimum number of seconds before a wall echo will play.
+  final double wallEchoMinDelay;
+
+  /// A number that will be multiplied by the distance between the player and
+  /// the nearest wall, and then added to [wallEchoMinDelay] to get the amount
+  /// of time it will take for a wall echo to play.
+  final double wallEchoDistanceOffset;
+
+  /// The starting gain for wall echoes.
+  final double wallEchoGain;
+
+  /// The amount to reduce echo gain by over distance.
+  ///
+  /// The formula to decide the eventual echo gain will be
+  /// `wallEchoGain - (distance * wallEchoGainRolloff)`.
+  final double wallEchoGainRolloff;
 
   /// The random number generator to use.
   final Random random;
@@ -155,7 +182,45 @@ class Runner<T> {
         coordinates = c;
         final movementSound = t.sound;
         if (movementSound != null) {
-          playSound(movementSound);
+          final source = playSound(movementSound);
+          final westWall = getNearestWall(
+              normaliseAngle(heading - Directions.east),
+              maxDistance: maxWallEchoDistance,
+              start: cf);
+          final northWall = getNearestWall(bearing,
+              maxDistance: maxWallEchoDistance, start: cf);
+          final eastWall = getNearestWall(
+              normaliseAngle(heading + Directions.east),
+              maxDistance: maxWallEchoDistance,
+              start: cf);
+          final taps = <EchoTapConfig>[];
+          double d;
+          double g;
+          if (westWall != null) {
+            d = c.distanceTo(westWall.coordinates);
+            g = wallEchoGain - (d * wallEchoGainRolloff);
+            taps.add(EchoTapConfig(
+                wallEchoMinDelay + (d * wallEchoDistanceOffset), g, 0.0));
+          }
+          if (northWall != null) {
+            d = c.distanceTo(northWall.coordinates);
+            g = wallEchoGain - (d * wallEchoGainRolloff);
+            taps.add(EchoTapConfig(
+                wallEchoMinDelay + (d * wallEchoDistanceOffset), g, g));
+          }
+          if (eastWall != null) {
+            d = c.distanceTo(eastWall.coordinates);
+            g = wallEchoGain - (d * wallEchoGainRolloff);
+            taps.add(EchoTapConfig(
+                wallEchoMinDelay + (d * wallEchoDistanceOffset), 0.0, g));
+          }
+          if (taps.isNotEmpty) {
+            final echo = context.createGlobalEcho()
+              ..setTaps(taps)
+              ..configDeleteBehavior(linger: false);
+            context.ConfigRoute(source, echo,
+                filter: context.synthizer.designLowpass(12000));
+          }
         }
         final newTileName = t.name;
         if (newTileName != oldTileName) {
@@ -291,7 +356,7 @@ class Runner<T> {
     var y = min(start.y, end.y);
     final endX = max(start.x, end.x);
     final endY = max(start.y, end.y);
-    while (x < endX && y < endY) {
+    while (x < endX || y < endY) {
       if (x < endX) {
         x++;
       }
@@ -299,20 +364,41 @@ class Runner<T> {
         y++;
       }
       final t = getTile(Point<int>(x, y));
-      if (t != null) {
-        if (t is Tile<Wall>) {
-          s.add(t);
-        }
+      if (t is Tile<Wall>) {
+        s.add(t);
       }
     }
     return s;
+  }
+
+  /// Get the nearest wall in the given [direction].
+  ///
+  /// This method returns `null` if no wall is found.
+  ///
+  /// This method stops hunting for walls at the first available opportunity,
+  /// or when [maxDistance] has been traversed.
+  WallLocation? getNearestWall(double direction,
+      {Point<int>? start, int maxDistance = 10}) {
+    start ??= coordinates.floor();
+    var c = start.toDouble();
+    var distance = 0;
+    while (distance <= maxDistance) {
+      distance++;
+      c = coordinatesInDirection(c, direction, 1);
+      final t = getTile(c.floor());
+      if (t == null) {
+        return null;
+      } else if (t is Tile<Wall>) {
+        return WallLocation(t, c);
+      }
+    }
   }
 
   /// Play a simple sound.
   ///
   /// A sound played via this method is not panned or occluded, but will be
   /// reverberated if [reverb] is `true`.
-  void playSound(FileSystemEntity sound,
+  DirectSource playSound(FileSystemEntity sound,
       {double gain = 0.7, bool reverb = true}) {
     final f = sound.ensureFile(random);
     final s = DirectSource(context)
@@ -325,5 +411,6 @@ class Runner<T> {
       ..configDeleteBehavior(linger: false)
       ..setBuffer(bufferCache.getBuffer(f));
     s.addGenerator(g);
+    return s;
   }
 }

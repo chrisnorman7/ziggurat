@@ -20,4 +20,5 @@ export 'src/runner.dart';
 export 'src/tile.dart';
 export 'src/tile_types/surface.dart';
 export 'src/tile_types/wall.dart';
+export 'src/wall_location.dart';
 export 'src/ziggurat.dart';
