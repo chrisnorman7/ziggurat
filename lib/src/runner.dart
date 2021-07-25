@@ -199,8 +199,7 @@ class Runner<T> {
         }
         final newTileName = t.name;
         if (newTileName != oldTileName) {
-          // ignore: avoid_print
-          print(t.name);
+          onTileChange(t);
         }
       }
     }
@@ -427,4 +426,7 @@ class Runner<T> {
           filter: context.synthizer.designLowpass(wallEchoFilterFrequency));
     }
   }
+
+  /// A function to be called whenever a new tile is encountered.
+  void onTileChange(Tile t) {}
 }

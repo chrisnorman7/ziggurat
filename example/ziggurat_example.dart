@@ -93,6 +93,19 @@ class Temple extends Ziggurat {
 /// Game state to keep track of progress.
 class GameState {}
 
+/// The runner for this example.
+class ExampleRunner extends Runner<GameState> {
+  /// Create an instance.
+  ExampleRunner(Context ctx, BufferCache cache, Ziggurat z)
+      : super(ctx, cache, GameState()) {
+    ziggurat = z;
+  }
+  @override
+  void onTileChange(Tile t) {
+    print(t.name);
+  }
+}
+
 /// Run the example.
 void main() {
   final synthizer = Synthizer()..initialize();
@@ -100,7 +113,7 @@ void main() {
   final ctx = synthizer.createContext()
     ..defaultPannerStrategy = PannerStrategies.hrtf;
   final t = Temple();
-  final r = Runner(ctx, bufferCache, GameState())..ziggurat = t;
+  final r = ExampleRunner(ctx, bufferCache, t);
   stdin
     ..echoMode = false
     ..lineMode = false;
