@@ -262,6 +262,8 @@ class Runner<T> {
       source.destroy();
     }
     ambianceSources.clear();
+    wallEcho?.destroy();
+    wallEcho = null;
   }
 
   /// Play a random sound.
