@@ -23,7 +23,8 @@ class Runner<T> {
   /// Create the runner.
   Runner(this.context, this.bufferCache, this.gameState,
       {this.maxWallFilter = 500.0,
-      this.maxWallEchoDistance = 5,
+      this.wallEchoEnabled = true,
+      this.wallEchoMaxDistance = 5,
       this.wallEchoMinDelay = 0.05,
       this.wallEchoDistanceOffset = 0.01,
       this.wallEchoGain = 0.5,
@@ -52,8 +53,11 @@ class Runner<T> {
   /// cutoff allowed.
   final double maxWallFilter;
 
+  /// Whether or not wall echoes are enabled.
+  final bool wallEchoEnabled;
+
   /// The maximum distance to play wall echoes.
-  final int maxWallEchoDistance;
+  final int wallEchoMaxDistance;
 
   /// The minimum number of seconds before a wall echo will play.
   final double wallEchoMinDelay;
@@ -189,44 +193,8 @@ class Runner<T> {
         final movementSound = t.sound;
         if (movementSound != null) {
           final source = playSound(movementSound);
-          final westWall = getNearestWall(
-              normaliseAngle(heading - Directions.east),
-              maxDistance: maxWallEchoDistance,
-              start: cf);
-          final northWall = getNearestWall(bearing,
-              maxDistance: maxWallEchoDistance, start: cf);
-          final eastWall = getNearestWall(
-              normaliseAngle(heading + Directions.east),
-              maxDistance: maxWallEchoDistance,
-              start: cf);
-          final taps = <EchoTapConfig>[];
-          double d;
-          double g;
-          if (westWall != null) {
-            d = c.distanceTo(westWall.coordinates);
-            g = wallEchoGain - (d * wallEchoGainRolloff);
-            taps.add(EchoTapConfig(
-                wallEchoMinDelay + (d * wallEchoDistanceOffset), g, 0.0));
-          }
-          if (northWall != null) {
-            d = c.distanceTo(northWall.coordinates);
-            g = wallEchoGain - (d * wallEchoGainRolloff);
-            taps.add(EchoTapConfig(
-                wallEchoMinDelay + (d * wallEchoDistanceOffset), g, g));
-          }
-          if (eastWall != null) {
-            d = c.distanceTo(eastWall.coordinates);
-            g = wallEchoGain - (d * wallEchoGainRolloff);
-            taps.add(EchoTapConfig(
-                wallEchoMinDelay + (d * wallEchoDistanceOffset), 0.0, g));
-          }
-          if (taps.isNotEmpty) {
-            final echo = context.createGlobalEcho()
-              ..setTaps(taps)
-              ..configDeleteBehavior(linger: false);
-            context.ConfigRoute(source, echo,
-                filter:
-                    context.synthizer.designLowpass(wallEchoFilterFrequency));
+          if (wallEchoEnabled) {
+            playWallEchoes(source);
           }
         }
         final newTileName = t.name;
@@ -419,5 +387,44 @@ class Runner<T> {
       ..setBuffer(bufferCache.getBuffer(f));
     s.addGenerator(g);
     return s;
+  }
+
+  /// Add wall echoes to a sound.
+  void playWallEchoes(DirectSource source) {
+    final c = coordinates.floor();
+    final westWall = getNearestWall(normaliseAngle(heading - Directions.east),
+        maxDistance: wallEchoMaxDistance, start: c);
+    final northWall =
+        getNearestWall(heading, maxDistance: wallEchoMaxDistance, start: c);
+    final eastWall = getNearestWall(normaliseAngle(heading + Directions.east),
+        maxDistance: wallEchoMaxDistance, start: c);
+    final taps = <EchoTapConfig>[];
+    double d;
+    double g;
+    if (westWall != null) {
+      d = coordinates.distanceTo(westWall.coordinates);
+      g = wallEchoGain - (d * wallEchoGainRolloff);
+      taps.add(EchoTapConfig(
+          wallEchoMinDelay + (d * wallEchoDistanceOffset), g, 0.0));
+    }
+    if (northWall != null) {
+      d = coordinates.distanceTo(northWall.coordinates);
+      g = wallEchoGain - (d * wallEchoGainRolloff);
+      taps.add(
+          EchoTapConfig(wallEchoMinDelay + (d * wallEchoDistanceOffset), g, g));
+    }
+    if (eastWall != null) {
+      d = coordinates.distanceTo(eastWall.coordinates);
+      g = wallEchoGain - (d * wallEchoGainRolloff);
+      taps.add(EchoTapConfig(
+          wallEchoMinDelay + (d * wallEchoDistanceOffset), 0.0, g));
+    }
+    if (taps.isNotEmpty) {
+      final echo = context.createGlobalEcho()
+        ..setTaps(taps)
+        ..configDeleteBehavior(linger: false);
+      context.ConfigRoute(source, echo,
+          filter: context.synthizer.designLowpass(wallEchoFilterFrequency));
+    }
   }
 }
