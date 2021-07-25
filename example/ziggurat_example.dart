@@ -12,10 +12,7 @@ import 'package:ziggurat/ziggurat.dart';
 ///
 /// All setup is done in the constructor.
 class Temple extends Ziggurat {
-  Temple()
-      : super('Temple',
-            coordinates: Point<double>(-2.0, 14.0),
-            initialHeading: Directions.east) {
+  Temple() : super('Temple') {
     final defaultReverb = ReverbPreset('Default');
     final wallSound = File('sounds/249618__vincentm400__invalid.mp3');
     final mainFloor = Tile<Surface>(
