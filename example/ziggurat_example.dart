@@ -80,6 +80,9 @@ class Temple extends Ziggurat {
   }
 }
 
+/// Game state to keep track of progress.
+class GameState {}
+
 /// Run the example.
 void main() {
   final synthizer = Synthizer()..initialize();
@@ -87,7 +90,7 @@ void main() {
   final ctx = synthizer.createContext()
     ..defaultPannerStrategy = PannerStrategies.hrtf;
   final t = Temple();
-  final r = Runner(ctx, bufferCache)..ziggurat = t;
+  final r = Runner(ctx, bufferCache, GameState())..ziggurat = t;
   stdin
     ..echoMode = false
     ..lineMode = false;

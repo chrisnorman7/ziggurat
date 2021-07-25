@@ -16,9 +16,10 @@ import 'tile_types/wall.dart';
 import 'ziggurat.dart';
 
 /// A class for running maps.
-class Runner {
+class Runner<T> {
   /// Create the runner.
-  Runner(this.context, this.bufferCache, {this.maxWallFilter = 500.0})
+  Runner(this.context, this.bufferCache, this.gameState,
+      {this.maxWallFilter = 500.0})
       : random = Random(),
         randomSoundContainers = {},
         randomSoundTimers = {},
@@ -29,6 +30,12 @@ class Runner {
 
   /// The buffer cache used by this runner.
   final BufferCache bufferCache;
+
+  /// The current state of the game.
+  ///
+  /// This object can be anything, and should probably be loaded from JSON or
+  /// similar.
+  final T gameState;
 
   /// The maximum filtering applied by walls.
   ///
