@@ -242,7 +242,9 @@ class Runner<T> {
       reverberateSource(source, position);
       filterSource(source, position);
     }
-    source.gain = ambiance.gain;
+    source
+      ..gain = ambiance.gain
+      ..configDeleteBehavior(linger: false);
     final f = ambiance.path.ensureFile(random);
     final g = BufferGenerator(context)
       ..setBuffer(bufferCache.getBuffer(f))
@@ -285,12 +287,12 @@ class Runner<T> {
     final s = Source3D(context)
       ..position = Double3(soundPosition.x, soundPosition.y, 0)
       ..gain = sound.minGain + random.nextDouble() + sound.maxGain
-      ..configDeleteBehavior(linger: false);
+      ..configDeleteBehavior(linger: true);
     final position = soundPosition.floor();
     reverberateSource(s, position);
     filterSource(s, position);
     final g = BufferGenerator(context)
-      ..configDeleteBehavior(linger: false)
+      ..configDeleteBehavior(linger: true)
       ..setBuffer(bufferCache.getBuffer(f));
     s.addGenerator(g);
     randomSoundContainers[sound] = RandomSoundContainer(soundPosition, s);
@@ -310,7 +312,7 @@ class Runner<T> {
           GlobalFdnReverb? r = reverbs[t];
           if (r == null) {
             r = reverbPreset.makeReverb(context)
-              ..configDeleteBehavior(linger: true);
+              ..configDeleteBehavior(linger: false);
             reverbs[t] = r;
           }
           context.ConfigRoute(source, r);
@@ -398,12 +400,12 @@ class Runner<T> {
     final f = sound.ensureFile(random);
     final s = DirectSource(context)
       ..gain = gain
-      ..configDeleteBehavior(linger: false);
+      ..configDeleteBehavior(linger: true);
     if (reverb) {
       reverberateSource(s, coordinates.floor());
     }
     final g = BufferGenerator(context)
-      ..configDeleteBehavior(linger: false)
+      ..configDeleteBehavior(linger: true)
       ..setBuffer(bufferCache.getBuffer(f));
     s.addGenerator(g);
     return s;
@@ -442,7 +444,7 @@ class Runner<T> {
     if (taps.isNotEmpty) {
       var echo = wallEcho;
       if (echo == null) {
-        echo = context.createGlobalEcho()..configDeleteBehavior(linger: true);
+        echo = context.createGlobalEcho()..configDeleteBehavior(linger: false);
         wallEcho = echo;
       }
       echo.setTaps(taps);
