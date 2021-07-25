@@ -46,6 +46,9 @@ class Runner<T> {
   /// The random number generator to use.
   final Random random;
 
+  /// The last time a move was performed by way of the [move] method.
+  DateTime? lastMove;
+
   /// A dictionary to old random sound timers.
   final Map<RandomSound, RandomSoundContainer> randomSoundContainers;
 
@@ -127,7 +130,17 @@ class Runner<T> {
   /// If [bearing] is `null`, then [heading] will be used.
   void move({double distance = 1.0, double? bearing}) {
     bearing ??= heading;
-    final oldTileName = currentTile?.name;
+    final ct = currentTile;
+    final oldTileName = ct?.name;
+    if (ct != null && ct is Tile<Surface>) {
+      final now = DateTime.now();
+      final lm = lastMove;
+      if (lm != null && now.difference(lm) < ct.type.moveInterval) {
+        return;
+      } else {
+        lastMove = now;
+      }
+    }
     final c = coordinatesInDirection(coordinates, bearing, distance);
     final cf = c.floor();
     final t = getTile(cf);

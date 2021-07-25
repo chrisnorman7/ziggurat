@@ -106,7 +106,7 @@ void main() {
       expect(t.start, equals(Point<int>(0, 0)));
       expect(t.end, equals(Point<int>(5, 5)));
       expect(t.type is Surface, isTrue);
-      expect(t.type.walkInterval, equals(0.5));
+      expect(t.type.moveInterval, equals(0.5));
     });
 
     test('Custom tile tests', () {
