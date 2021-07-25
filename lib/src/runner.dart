@@ -1,5 +1,6 @@
 /// Provides the [Runner] class.
 import 'dart:async';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:dart_synthizer/dart_synthizer.dart';
@@ -150,6 +151,10 @@ class Runner<T> {
         print('You walk into ${t.name}.');
       } else {
         coordinates = c;
+        final movementSound = t.sound;
+        if (movementSound != null) {
+          playSound(movementSound);
+        }
         final newTileName = t.name;
         if (newTileName != oldTileName) {
           // ignore: avoid_print
@@ -188,7 +193,7 @@ class Runner<T> {
     source.gain = ambiance.gain;
     final f = ambiance.path.ensureFile(random);
     final g = BufferGenerator(context)
-      ..setBuffer(Buffer.fromFile(context.synthizer, f))
+      ..setBuffer(bufferCache.getBuffer(f))
       ..looping = true
       ..configDeleteBehavior(linger: false);
     source.addGenerator(g);
@@ -228,7 +233,7 @@ class Runner<T> {
     filterSource(s, position);
     final g = BufferGenerator(context)
       ..configDeleteBehavior(linger: false)
-      ..setBuffer(Buffer.fromFile(context.synthizer, f));
+      ..setBuffer(bufferCache.getBuffer(f));
     s.addGenerator(g);
     randomSoundContainers[sound] = RandomSoundContainer(soundPosition, s);
     scheduleRandomSound(sound);
@@ -295,5 +300,24 @@ class Runner<T> {
       }
     }
     return s;
+  }
+
+  /// Play a simple sound.
+  ///
+  /// A sound played via this method is not panned or occluded, but will be
+  /// reverberated if [reverb] is `true`.
+  void playSound(FileSystemEntity sound,
+      {double gain = 0.7, bool reverb = true}) {
+    final f = sound.ensureFile(random);
+    final s = DirectSource(context)
+      ..gain = gain
+      ..configDeleteBehavior(linger: false);
+    if (reverb) {
+      reverberateSource(s, coordinates.floor());
+    }
+    final g = BufferGenerator(context)
+      ..configDeleteBehavior(linger: false)
+      ..setBuffer(bufferCache.getBuffer(f));
+    s.addGenerator(g);
   }
 }

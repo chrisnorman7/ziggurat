@@ -20,7 +20,8 @@ class Temple extends Ziggurat {
         'Main floor',
         Point<int>(0, 0),
         Point<int>(10, 20),
-        Surface(reverbPreset: ReverbPreset('Main Floor Reverb', t60: 5.0)));
+        Surface(reverbPreset: ReverbPreset('Main Floor Reverb', t60: 5.0)),
+        sound: Directory('sounds/footsteps/concrete'));
     final dividingWall = Tile<Wall>(
         'Dividing Wall',
         mainFloor.start - Point<int>(1, 0),
