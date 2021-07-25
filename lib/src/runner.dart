@@ -289,9 +289,13 @@ class Runner<T> {
     var y = min(start.y, end.y);
     final endX = max(start.x, end.x);
     final endY = max(start.y, end.y);
-    while (x <= endX && y <= endY) {
-      x++;
-      y++;
+    while (x < endX && y < endY) {
+      if (x < endX) {
+        x++;
+      }
+      if (y < endY) {
+        y++;
+      }
       final t = getTile(Point<int>(x, y));
       if (t != null) {
         if (t is Tile<Wall>) {
