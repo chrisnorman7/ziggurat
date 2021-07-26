@@ -31,13 +31,13 @@ class Runner<T> {
       this.wallEchoGain = 0.5,
       this.wallEchoGainRolloff = 0.2,
       this.wallEchoFilterFrequency = 12000})
-      : tiles = [],
-        spatialHash = null,
-        reverbs = {},
+      : _tiles = [],
+        _spatialHash = null,
+        _reverbs = {},
         random = Random(),
-        randomSoundContainers = {},
-        randomSoundTimers = {},
-        ambianceSources = {};
+        _randomSoundContainers = {},
+        _randomSoundTimers = {},
+        _ambianceSources = {};
 
   /// The synthizer context to use.
   final Context context;
@@ -86,10 +86,10 @@ class Runner<T> {
   final double wallEchoFilterFrequency;
 
   /// The send that is used by wall echoes.
-  GlobalEcho? wallEcho;
+  GlobalEcho? _wallEcho;
 
   /// Reverb instances for the various tiles.
-  final Map<Tile<Surface>, GlobalFdnReverb> reverbs;
+  final Map<Tile<Surface>, GlobalFdnReverb> _reverbs;
 
   /// The random number generator to use.
   final Random random;
@@ -98,22 +98,25 @@ class Runner<T> {
   DateTime? lastMove;
 
   /// A dictionary to old random sound timers.
-  final Map<RandomSound, RandomSoundContainer> randomSoundContainers;
+  final Map<RandomSound, RandomSoundContainer> _randomSoundContainers;
 
   /// A dictionary for holding random sound timers.
-  final Map<RandomSound, Timer> randomSoundTimers;
+  final Map<RandomSound, Timer> _randomSoundTimers;
 
   /// A dictionary to hold ambiance sources.
-  final Map<Ambiance, Source> ambianceSources;
+  final Map<Ambiance, Source> _ambianceSources;
+
+  /// All the tiles which are present on [ziggurat].
+  List<List<Tile?>> _tiles;
+
+  /// The spatial hash containing all the tiles.
+  SpatialHash<Tile>? _spatialHash;
+
+  /// Get the current spatial hash.
+  SpatialHash<Tile>? get spatialHash => _spatialHash;
 
   /// The ziggurat this runner will work with.
   Ziggurat? _ziggurat;
-
-  /// All the tiles which are present on [ziggurat].
-  List<List<Tile?>> tiles;
-
-  /// The spatial hash containing all the tiles.
-  final SpatialHash<Tile>? spatialHash;
 
   /// Get the current ziggurat.
   Ziggurat? get ziggurat => _ziggurat;
@@ -127,6 +130,8 @@ class Runner<T> {
     if (value != null) {
       var maxX = 0;
       var maxY = 0;
+      final widths = <int>[];
+      final depths = <int>[];
       for (final tile in value.tiles) {
         if (tile.start.x < 0 ||
             tile.end.x < 0 ||
@@ -134,16 +139,22 @@ class Runner<T> {
             tile.end.y < 0) {
           throw NegativeCoordinatesError(tile);
         }
+        widths.add(tile.width);
+        depths.add(tile.depth);
         maxX = max(maxX, tile.end.x);
         maxY = max(maxY, tile.end.y);
       }
-      tiles = List.generate(
+      _tiles = List.generate(
           maxX + 1, (index) => List.filled(maxY + 1, null, growable: false),
           growable: false);
+      final sh =
+          SpatialHash<Tile>(maxX, maxY, widths.average * 2, depths.average * 2);
+      _spatialHash = sh;
       for (final tile in value.tiles) {
+        sh.add(tile, Rectangle.fromPoints(tile.start, tile.end));
         for (var i = tile.start.x; i <= tile.end.x; i++) {
           for (var j = tile.start.y; j <= tile.end.y; j++) {
-            tiles[i][j] = tile;
+            _tiles[i][j] = tile;
           }
         }
       }
@@ -195,11 +206,11 @@ class Runner<T> {
   Tile? getTile(Point<int> coordinates) {
     if (coordinates.x < 0 ||
         coordinates.y < 0 ||
-        coordinates.x >= tiles.length ||
-        coordinates.y >= tiles[coordinates.x].length) {
+        coordinates.x >= _tiles.length ||
+        coordinates.y >= _tiles[coordinates.x].length) {
       return null;
     }
-    return tiles[coordinates.x][coordinates.y];
+    return _tiles[coordinates.x][coordinates.y];
   }
 
   /// Get the current tile.
@@ -258,7 +269,7 @@ class Runner<T> {
                 sound.minInterval + random.nextInt(sound.maxInterval)), () {
       playRandomSound(sound);
     });
-    randomSoundTimers[sound] = t;
+    _randomSoundTimers[sound] = t;
   }
 
   /// Start an ambiance playing.
@@ -282,7 +293,7 @@ class Runner<T> {
       ..looping = true
       ..configDeleteBehavior(linger: false);
     source.addGenerator(g);
-    ambianceSources[ambiance] = source;
+    _ambianceSources[ambiance] = source;
   }
 
   /// Stop this runner from working.
@@ -290,28 +301,28 @@ class Runner<T> {
   /// This method cancels all random sound timers, and prepares this object for
   /// garbage collection.
   void stop() {
-    for (final timer in randomSoundTimers.values) {
+    for (final timer in _randomSoundTimers.values) {
       timer.cancel();
     }
-    randomSoundTimers.clear();
-    randomSoundContainers.clear();
-    for (final source in ambianceSources.values) {
+    _randomSoundTimers.clear();
+    _randomSoundContainers.clear();
+    for (final source in _ambianceSources.values) {
       source.destroy();
     }
-    ambianceSources.clear();
-    wallEcho?.destroy();
-    wallEcho = null;
-    for (final r in reverbs.values) {
+    _ambianceSources.clear();
+    _wallEcho?.destroy();
+    _wallEcho = null;
+    for (final r in _reverbs.values) {
       r.destroy();
     }
-    reverbs.clear();
-    tiles = List.empty();
+    _reverbs.clear();
+    _tiles = List.empty();
   }
 
   /// Play a random sound.
   void playRandomSound(RandomSound sound) {
-    randomSoundContainers.remove(sound);
-    randomSoundTimers.remove(sound);
+    _randomSoundContainers.remove(sound);
+    _randomSoundTimers.remove(sound);
     final f = sound.path.ensureFile(random);
     final soundPosition = Point<double>(
         sound.minCoordinates.x +
@@ -331,7 +342,7 @@ class Runner<T> {
       ..configDeleteBehavior(linger: true)
       ..setBuffer(bufferCache.getBuffer(f));
     s.addGenerator(g);
-    randomSoundContainers[sound] = RandomSoundContainer(soundPosition, s);
+    _randomSoundContainers[sound] = RandomSoundContainer(soundPosition, s);
     scheduleRandomSound(sound);
   }
 
@@ -345,11 +356,11 @@ class Runner<T> {
       if (type is Surface) {
         final reverbPreset = type.reverbPreset;
         if (reverbPreset != null) {
-          GlobalFdnReverb? r = reverbs[t];
+          GlobalFdnReverb? r = _reverbs[t];
           if (r == null) {
             r = reverbPreset.makeReverb(context)
               ..configDeleteBehavior(linger: false);
-            reverbs[t] = r;
+            _reverbs[t] = r;
           }
           context.ConfigRoute(source, r);
         }
@@ -370,13 +381,13 @@ class Runner<T> {
 
   /// Filter all sources.
   void filterSources() {
-    ambianceSources.forEach((key, value) {
+    _ambianceSources.forEach((key, value) {
       final p = key.position;
       if (p != null) {
         filterSource(value, p.floor());
       }
     });
-    for (final container in randomSoundContainers.values) {
+    for (final container in _randomSoundContainers.values) {
       filterSource(container.source, container.coordinates.floor());
     }
   }
@@ -478,10 +489,10 @@ class Runner<T> {
           wallEchoMinDelay + (d * wallEchoDistanceOffset), 0.0, g));
     }
     if (taps.isNotEmpty) {
-      var echo = wallEcho;
+      var echo = _wallEcho;
       if (echo == null) {
         echo = context.createGlobalEcho()..configDeleteBehavior(linger: false);
-        wallEcho = echo;
+        _wallEcho = echo;
       }
       echo.setTaps(taps);
       context.ConfigRoute(source, echo,

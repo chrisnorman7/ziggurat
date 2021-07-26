@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'error.dart';
+import 'runner.dart';
 
 /// An extension for returning a `Point<int>` from a `Point<double>`.
 extension RunnerDoubleMethods on Point<double> {
@@ -48,4 +49,13 @@ extension RunnerFileMethods on FileSystemEntity {
     }
     throw InvalidEntityError(this);
   }
+}
+
+/// Various extension methods mainly used when setting [Runner.ziggurat].
+extension VariousMethods on List<int> {
+  /// Get the sum of this list.
+  int get sum => reduce((a, b) => a + b);
+
+  /// Get the average number in this list.
+  double get average => sum / length;
 }
