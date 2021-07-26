@@ -1,11 +1,10 @@
 // ignore_for_file: avoid_print
 /// An example map.
-import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
 import 'package:dart_synthizer/dart_synthizer.dart';
+import 'package:ziggurat/basic_interface.dart';
 import 'package:ziggurat/ziggurat.dart';
 
 /// A custom map.
@@ -114,67 +113,7 @@ void main() {
     ..defaultPannerStrategy = PannerStrategies.hrtf;
   final t = Temple();
   final r = ExampleRunner(ctx, bufferCache, t);
-  stdin
-    ..echoMode = false
-    ..lineMode = false;
-  StreamSubscription<List<int>>? stdinListener;
-  stdinListener = stdin.listen((event) {
-    final key = utf8.decode(event);
-    switch (key) {
-      case 'q':
-        print('Goodbye.');
-        r.stop();
-        stdinListener?.cancel();
-        ctx.destroy();
-        synthizer.shutdown();
-        break;
-      case 'c':
-        final c = r.coordinates.floor();
-        print('${c.x}, ${c.y}');
-        break;
-      case 'x':
-        final t = r.currentTile;
-        if (t != null) {
-          print(t.name);
-        }
-        break;
-      case 'f':
-        final directions = <String>[
-          'north',
-          'northeast',
-          'east',
-          'southeast',
-          'south',
-          'southwest',
-          'west',
-          'northwest'
-        ];
-        final index =
-            (((r.heading % 360) < 0 ? r.heading + 360 : r.heading) / 45)
-                    .round() %
-                directions.length;
-        print(directions[index]);
-        break;
-      case 'w':
-        r.move();
-        break;
-      case 'd':
-        r.turn(45);
-        break;
-      case 'a':
-        r.turn(-45);
-        break;
-      case 's':
-        r.turn(180);
-        break;
-      case 'z':
-        final source = r.playSound(
-            File('sounds/399934__old-waveplay__perc-short-click-snap-perc.wav'),
-            reverb: false);
-        r.playWallEchoes(source);
-        break;
-      default:
-        break;
-    }
-  });
+  final interface = BasicInterface(synthizer, r,
+      File('sounds/399934__old-waveplay__perc-short-click-snap-perc.wav'));
+  return interface.run();
 }
