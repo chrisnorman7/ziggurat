@@ -11,11 +11,15 @@ import 'tile.dart';
 class Ziggurat {
   /// Create a map.
   Ziggurat(this.name,
-      {this.initialHeading = 0, this.musicPath, Point<double>? coordinates})
+      {List<Tile>? tilesList,
+      List<Ambiance>? ambiancesList,
+      List<RandomSound>? randomSoundsList,
+      this.initialHeading = 0,
+      Point<double>? coordinates})
       : initialCoordinates = coordinates ?? Point<double>(0, 0),
-        ambiances = <Ambiance>[],
-        randomSounds = <RandomSound>[],
-        tiles = <Tile>[];
+        tiles = tilesList ?? <Tile>[],
+        ambiances = ambiancesList ?? <Ambiance>[],
+        randomSounds = randomSoundsList ?? <RandomSound>[];
 
   /// The name of this map.
   final String name;
@@ -28,9 +32,6 @@ class Ziggurat {
 
   /// The initial direction the player will face when starting on this map.
   final double initialHeading;
-
-  /// Any music that should play on this map.
-  final String? musicPath;
 
   /// All the ambiances of this map.
   final List<Ambiance> ambiances;

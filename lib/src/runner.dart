@@ -4,9 +4,9 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:dart_synthizer/dart_synthizer.dart';
+import 'package:spatialhash/spatialhash.dart';
 
 import 'ambiance.dart';
-import 'collisions/tile_manager.dart';
 import 'directions.dart';
 import 'error.dart';
 import 'extensions.dart';
@@ -23,8 +23,7 @@ import 'ziggurat.dart';
 class Runner<T> {
   /// Create the runner.
   Runner(this.context, this.bufferCache, this.gameState,
-      {TileManager? tileManager,
-      this.maxWallFilter = 500.0,
+      {this.maxWallFilter = 500.0,
       this.wallEchoEnabled = true,
       this.wallEchoMaxDistance = 5,
       this.wallEchoMinDelay = 0.05,
@@ -32,15 +31,13 @@ class Runner<T> {
       this.wallEchoGain = 0.5,
       this.wallEchoGainRolloff = 0.2,
       this.wallEchoFilterFrequency = 12000})
-      : manager = tileManager ?? TileManager(),
+      : tiles = [],
+        spatialHash = null,
         reverbs = {},
         random = Random(),
         randomSoundContainers = {},
         randomSoundTimers = {},
-        ambianceSources = {},
-        tiles = {},
-        surfaces = [],
-        walls = [];
+        ambianceSources = {};
 
   /// The synthizer context to use.
   final Context context;
@@ -53,9 +50,6 @@ class Runner<T> {
   /// This object can be anything, and should probably be loaded from JSON or
   /// similar.
   final T gameState;
-
-  /// The tile manager for this runner.
-  final TileManager manager;
 
   /// The maximum filtering applied by walls.
   ///
@@ -116,34 +110,40 @@ class Runner<T> {
   Ziggurat? _ziggurat;
 
   /// All the tiles which are present on [ziggurat].
-  final Map<Point<int>, Tile> tiles;
+  List<List<Tile?>> tiles;
 
-  /// All the surface tiles that are on the attached [ziggurat].
-  final List<Tile<Surface>> surfaces;
-
-  /// All the walls that are on the attached [ziggurat].
-  final List<Tile<Wall>> walls;
+  /// The spatial hash containing all the tiles.
+  final SpatialHash<Tile>? spatialHash;
 
   /// Get the current ziggurat.
   Ziggurat? get ziggurat => _ziggurat;
 
   /// Set the current ziggurat.
+  ///
+  /// If setting the same ziggurat, the behaviour is undefined.
   set ziggurat(Ziggurat? value) {
     stop();
     _ziggurat = value;
     if (value != null) {
+      var maxX = 0;
+      var maxY = 0;
       for (final tile in value.tiles) {
-        manager.register(tile);
-        if (tile is Tile<Surface>) {
-          surfaces.add(tile);
-        } else if (tile is Tile<Wall>) {
-          walls.add(tile);
-        } else {
-          throw Exception('Unhandled tile $tile.');
+        if (tile.start.x < 0 ||
+            tile.end.x < 0 ||
+            tile.start.y < 0 ||
+            tile.end.y < 0) {
+          throw NegativeCoordinatesError(tile);
         }
-        for (var x = tile.start.x; x <= tile.end.x; x++) {
-          for (var y = tile.start.y; y <= tile.end.y; y++) {
-            tiles[Point<int>(x, y)] = tile;
+        maxX = max(maxX, tile.end.x);
+        maxY = max(maxY, tile.end.y);
+      }
+      tiles = List.generate(
+          maxX + 1, (index) => List.filled(maxY + 1, null, growable: false),
+          growable: false);
+      for (final tile in value.tiles) {
+        for (var i = tile.start.x; i <= tile.end.x; i++) {
+          for (var j = tile.start.y; j <= tile.end.y; j++) {
+            tiles[i][j] = tile;
           }
         }
       }
@@ -155,8 +155,6 @@ class Runner<T> {
       if (ct != null) {
         onTileChange(ct);
       }
-    } else {
-      manager.tiles.forEach(manager.remove);
     }
   }
 
@@ -195,16 +193,13 @@ class Runner<T> {
 
   /// Return the tile at the given [coordinates], if any.
   Tile? getTile(Point<int> coordinates) {
-    return tiles[coordinates];
-    final z = ziggurat;
-    if (z == null) {
-      throw NoZigguratError(this);
+    if (coordinates.x < 0 ||
+        coordinates.y < 0 ||
+        coordinates.x >= tiles.length ||
+        coordinates.y >= tiles[coordinates.x].length) {
+      return null;
     }
-    for (final t in z.tiles) {
-      if (t.containsPoint(coordinates)) {
-        return t;
-      }
-    }
+    return tiles[coordinates.x][coordinates.y];
   }
 
   /// Get the current tile.
@@ -214,7 +209,6 @@ class Runner<T> {
   ///
   /// If [bearing] is `null`, then [heading] will be used.
   void move({double distance = 1.0, double? bearing}) {
-    final started = DateTime.now();
     bearing ??= heading;
     final ct = currentTile;
     final oldTileName = ct?.name;
@@ -251,8 +245,6 @@ class Runner<T> {
         }
       }
     }
-    // ignore: avoid_print
-    print(DateTime.now().difference(started).inMicroseconds);
   }
 
   /// Turn by the specified amount.
@@ -313,7 +305,7 @@ class Runner<T> {
       r.destroy();
     }
     reverbs.clear();
-    tiles.clear();
+    tiles = List.empty();
   }
 
   /// Play a random sound.
@@ -322,8 +314,12 @@ class Runner<T> {
     randomSoundTimers.remove(sound);
     final f = sound.path.ensureFile(random);
     final soundPosition = Point<double>(
-        sound.minCoordinates.x + random.nextDouble() * sound.maxCoordinates.x,
-        sound.minCoordinates.y + random.nextDouble() * sound.maxCoordinates.y);
+        sound.minCoordinates.x +
+            (random.nextDouble() *
+                (sound.maxCoordinates.x - sound.minCoordinates.x)),
+        sound.minCoordinates.y +
+            (random.nextDouble() *
+                (sound.maxCoordinates.y - sound.minCoordinates.y)));
     final s = Source3D(context)
       ..position = Double3(soundPosition.x, soundPosition.y, 0)
       ..gain = sound.minGain + random.nextDouble() + sound.maxGain

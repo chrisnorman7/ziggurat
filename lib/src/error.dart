@@ -2,6 +2,7 @@
 import 'dart:io';
 
 import 'runner.dart';
+import 'tile.dart';
 import 'ziggurat.dart';
 
 /// The base class for all ziggurat errors.
@@ -45,4 +46,18 @@ class InvalidEntityError extends ZigguratError {
   /// Explain the error.
   @override
   String toString() => 'Unknown entity $entity (${entity.runtimeType}).';
+}
+
+/// A tile has invalid coordinates.
+class NegativeCoordinatesError extends ZigguratError {
+  /// Create the error.
+  NegativeCoordinatesError(this.tile);
+
+  /// The tile with the invalid coordinates.
+  final Tile tile;
+
+  /// Return a string.
+  @override
+  String toString() =>
+      'Negative coordinates for tile ${tile.name}: ${tile.start}.';
 }

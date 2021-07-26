@@ -4,7 +4,6 @@ import 'dart:math';
 
 import 'package:meta/meta.dart';
 
-import 'collisions/tile_manager.dart';
 import 'tile_types/base.dart';
 import 'tile_types/surface.dart';
 import 'tile_types/wall.dart';
@@ -12,10 +11,8 @@ import 'tile_types/wall.dart';
 /// A tile on a map.
 class Tile<T extends TileType> {
   /// Create a tile.
-  Tile(this.name, this.start, this.end, this.type,
-      {this.sound, this.stationary = true, this.manager}) {
+  Tile(this.name, this.start, this.end, this.type, {this.sound}) {
     onAfterMove();
-    manager?.register(this);
   }
 
   /// The name of this tile.
@@ -55,9 +52,6 @@ class Tile<T extends TileType> {
   /// Half the depth of this box.
   late double halfDepth;
 
-  /// Whether or not this box will move.
-  final bool stationary;
-
   /// The coordinates at the northwest corner of this tile.
   late Point<int> cornerNw;
 
@@ -66,9 +60,6 @@ class Tile<T extends TileType> {
 
   /// The centre coordinates of this tile.
   late Point<double> centre;
-
-  /// The manager which manages this box.
-  final TileManager? manager;
 
   /// Returns `true` if this tile contains the point [p].
   bool containsPoint(Point<int> p) =>
