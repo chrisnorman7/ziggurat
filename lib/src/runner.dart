@@ -37,7 +37,9 @@ class Runner<T> {
         random = Random(),
         randomSoundContainers = {},
         randomSoundTimers = {},
-        ambianceSources = {};
+        ambianceSources = {},
+        surfaces = [],
+        walls = [];
 
   /// The synthizer context to use.
   final Context context;
@@ -112,6 +114,12 @@ class Runner<T> {
   /// The ziggurat this runner will work with.
   Ziggurat? _ziggurat;
 
+  /// All the surface tiles that are on the attached [ziggurat].
+  final List<Tile<Surface>> surfaces;
+
+  /// All the walls that are on the attached [ziggurat].
+  final List<Tile<Wall>> walls;
+
   /// Get the current ziggurat.
   Ziggurat? get ziggurat => _ziggurat;
 
@@ -128,6 +136,15 @@ class Runner<T> {
       final ct = currentTile;
       if (ct != null) {
         onTileChange(ct);
+      }
+      for (final tile in value.tiles) {
+        if (tile is Tile<Surface>) {
+          surfaces.add(tile);
+        } else if (tile is Tile<Wall>) {
+          walls.add(tile);
+        } else {
+          throw Exception('Unhandled tile $tile.');
+        }
       }
     } else {
       manager.tiles.forEach(manager.remove);
