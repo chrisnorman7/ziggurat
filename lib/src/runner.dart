@@ -38,6 +38,7 @@ class Runner<T> {
         randomSoundContainers = {},
         randomSoundTimers = {},
         ambianceSources = {},
+        tiles = {},
         surfaces = [],
         walls = [];
 
@@ -114,6 +115,9 @@ class Runner<T> {
   /// The ziggurat this runner will work with.
   Ziggurat? _ziggurat;
 
+  /// All the tiles which are present on [ziggurat].
+  final Map<Point<int>, Tile> tiles;
+
   /// All the surface tiles that are on the attached [ziggurat].
   final List<Tile<Surface>> surfaces;
 
@@ -125,19 +129,11 @@ class Runner<T> {
 
   /// Set the current ziggurat.
   set ziggurat(Ziggurat? value) {
-    _ziggurat = value;
     stop();
+    _ziggurat = value;
     if (value != null) {
-      value.tiles.forEach(manager.register);
-      heading = value.initialHeading;
-      coordinates = value.initialCoordinates;
-      value.randomSounds.forEach(scheduleRandomSound);
-      value.ambiances.forEach(startAmbiance);
-      final ct = currentTile;
-      if (ct != null) {
-        onTileChange(ct);
-      }
       for (final tile in value.tiles) {
+        manager.register(tile);
         if (tile is Tile<Surface>) {
           surfaces.add(tile);
         } else if (tile is Tile<Wall>) {
@@ -145,6 +141,19 @@ class Runner<T> {
         } else {
           throw Exception('Unhandled tile $tile.');
         }
+        for (var x = tile.start.x; x <= tile.end.x; x++) {
+          for (var y = tile.start.y; y <= tile.end.y; y++) {
+            tiles[Point<int>(x, y)] = tile;
+          }
+        }
+      }
+      heading = value.initialHeading;
+      coordinates = value.initialCoordinates;
+      value.randomSounds.forEach(scheduleRandomSound);
+      value.ambiances.forEach(startAmbiance);
+      final ct = currentTile;
+      if (ct != null) {
+        onTileChange(ct);
       }
     } else {
       manager.tiles.forEach(manager.remove);
@@ -186,6 +195,7 @@ class Runner<T> {
 
   /// Return the tile at the given [coordinates], if any.
   Tile? getTile(Point<int> coordinates) {
+    return tiles[coordinates];
     final z = ziggurat;
     if (z == null) {
       throw NoZigguratError(this);
@@ -204,6 +214,7 @@ class Runner<T> {
   ///
   /// If [bearing] is `null`, then [heading] will be used.
   void move({double distance = 1.0, double? bearing}) {
+    final started = DateTime.now();
     bearing ??= heading;
     final ct = currentTile;
     final oldTileName = ct?.name;
@@ -240,6 +251,8 @@ class Runner<T> {
         }
       }
     }
+    // ignore: avoid_print
+    print(DateTime.now().difference(started).inMicroseconds);
   }
 
   /// Turn by the specified amount.
@@ -300,6 +313,7 @@ class Runner<T> {
       r.destroy();
     }
     reverbs.clear();
+    tiles.clear();
   }
 
   /// Play a random sound.
