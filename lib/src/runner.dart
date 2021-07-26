@@ -6,6 +6,7 @@ import 'dart:math';
 import 'package:dart_synthizer/dart_synthizer.dart';
 
 import 'ambiance.dart';
+import 'collisions/tile_manager.dart';
 import 'directions.dart';
 import 'error.dart';
 import 'extensions.dart';
@@ -22,7 +23,8 @@ import 'ziggurat.dart';
 class Runner<T> {
   /// Create the runner.
   Runner(this.context, this.bufferCache, this.gameState,
-      {this.maxWallFilter = 500.0,
+      {TileManager? tileManager,
+      this.maxWallFilter = 500.0,
       this.wallEchoEnabled = true,
       this.wallEchoMaxDistance = 5,
       this.wallEchoMinDelay = 0.05,
@@ -30,7 +32,8 @@ class Runner<T> {
       this.wallEchoGain = 0.5,
       this.wallEchoGainRolloff = 0.2,
       this.wallEchoFilterFrequency = 12000})
-      : reverbs = {},
+      : manager = tileManager ?? TileManager(),
+        reverbs = {},
         random = Random(),
         randomSoundContainers = {},
         randomSoundTimers = {},
@@ -47,6 +50,9 @@ class Runner<T> {
   /// This object can be anything, and should probably be loaded from JSON or
   /// similar.
   final T gameState;
+
+  /// The tile manager for this runner.
+  final TileManager manager;
 
   /// The maximum filtering applied by walls.
   ///
@@ -114,6 +120,7 @@ class Runner<T> {
     _ziggurat = value;
     stop();
     if (value != null) {
+      value.tiles.forEach(manager.register);
       heading = value.initialHeading;
       coordinates = value.initialCoordinates;
       value.randomSounds.forEach(scheduleRandomSound);
@@ -122,6 +129,8 @@ class Runner<T> {
       if (ct != null) {
         onTileChange(ct);
       }
+    } else {
+      manager.tiles.forEach(manager.remove);
     }
   }
 

@@ -2,6 +2,9 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'package:meta/meta.dart';
+
+import 'collisions/tile_manager.dart';
 import 'tile_types/base.dart';
 import 'tile_types/surface.dart';
 import 'tile_types/wall.dart';
@@ -9,46 +12,63 @@ import 'tile_types/wall.dart';
 /// A tile on a map.
 class Tile<T extends TileType> {
   /// Create a tile.
-  Tile(this.name, this.start, this.end, this.type, {this.sound});
+  Tile(this.name, this.start, this.end, this.type,
+      {this.sound, this.stationary = true, this.manager}) {
+    onAfterMove();
+    manager?.register(this);
+  }
 
   /// The name of this tile.
   final String name;
 
   /// The start coordinates of this tile.
-  final Point<int> start;
+  Point<int> start;
 
   /// The end coordinates of this tile.
-  final Point<int> end;
+  Point<int> end;
 
   /// The type of this tile.
   final T type;
 
   /// The sound of this surface.
   ///
-  /// If this surface is a [Wall], this sound will be heard when a player walks
+  /// If this tile is a [Wall], this sound will be heard when a player walks
   /// into it.
   ///
-  /// If this surface is a [Surface], this sound will be heard when walking on
+  /// If this tile is a [Surface], this sound will be heard when walking on
   /// it.
   final FileSystemEntity? sound;
 
-  /// Get the width of this tile.
-  int get width => (end.x - start.x) + 1;
+  /// The width of this tile.
+  ///
+  /// This is the distance east to west.
+  late int width;
 
-  /// Get the depth of this room.
+  /// The depth of this room.
   ///
   /// This is the distance north to south.
-  int get depth => (end.y - start.y) + 1;
+  late int depth;
+
+  /// Half the width of this tile.
+  late double halfWidth;
+
+  /// Half the depth of this box.
+  late double halfDepth;
+
+  /// Whether or not this box will move.
+  final bool stationary;
 
   /// The coordinates at the northwest corner of this tile.
-  Point<int> get cornerNw => Point<int>(start.x, end.y);
+  late Point<int> cornerNw;
 
   /// The coordinates of the southeast corner of this tile.
-  Point<int> get cornerSe => Point<int>(end.x, start.y);
+  late Point<int> cornerSe;
 
   /// The centre coordinates of this tile.
-  Point<double> get centre =>
-      Point<double>(start.x + (width / 2), start.y + (depth / 2));
+  late Point<double> centre;
+
+  /// The manager which manages this box.
+  final TileManager? manager;
 
   /// Returns `true` if this tile contains the point [p].
   bool containsPoint(Point<int> p) =>
@@ -59,4 +79,26 @@ class Tile<T extends TileType> {
   /// Exactly when a tile is activated is left up to the programmer, but maybe
   /// when the enter key is pressed.
   void onActivate() {}
+
+  /// Code to run after a tile has moved.
+  @mustCallSuper
+  void onAfterMove() {
+    width = (end.x - start.x) + 1;
+    depth = (end.y - start.y) + 1;
+    halfWidth = width / 2;
+    halfDepth = depth / 2;
+    cornerNw = Point<int>(start.x, end.y);
+    cornerSe = Point<int>(end.x, start.y);
+    centre = Point<double>(start.x + halfWidth, start.y + halfDepth);
+  }
+
+  /// Move this box.
+  ///
+  /// This function changes the bounds of the box.
+  @mustCallSuper
+  void move(Point<int> startCoordinates, Point<int> endCoordinates) {
+    start = startCoordinates;
+    end = endCoordinates;
+    onAfterMove();
+  }
 }

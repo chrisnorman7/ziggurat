@@ -9,6 +9,10 @@ import 'src/runner.dart';
 import 'src/ziggurat.dart';
 
 export 'src/ambiance.dart';
+export 'src/collisions/base_algorithms.dart';
+export 'src/collisions/partitioner.dart';
+export 'src/collisions/tile_manager.dart';
+export 'src/collisions/typedefs.dart';
 export 'src/directions.dart';
 export 'src/error.dart';
 export 'src/extensions.dart';
