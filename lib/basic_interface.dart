@@ -24,21 +24,19 @@ class BasicInterface {
   final File echoSound;
 
   /// Run the interface.
-  void run() {
+  Future<void> run() async {
     stdin
       ..echoMode = false
       ..lineMode = false;
-    StreamSubscription<List<int>>? stdinListener;
-    stdinListener = stdin.listen((event) {
+    await for (final event in stdin) {
       final key = utf8.decode(event);
       switch (key) {
         case 'q':
           print('Goodbye.');
           runner.stop();
-          stdinListener?.cancel();
           runner.context.destroy();
           synthizer.shutdown();
-          break;
+          return;
         case 'c':
           final c = runner.coordinates.floor();
           print('${c.x}, ${c.y}');
@@ -87,6 +85,6 @@ class BasicInterface {
         default:
           break;
       }
-    });
+    }
   }
 }
