@@ -16,6 +16,7 @@ import 'error.dart';
 import 'extensions.dart';
 import 'json/runner_settings.dart';
 import 'math.dart';
+import 'message.dart';
 import 'random_sound.dart';
 import 'random_sound_container.dart';
 import 'wall_location.dart';
@@ -491,6 +492,37 @@ class Runner<T> {
       context.ConfigRoute(source, echo,
           filter: context.synthizer
               .designLowpass(runnerSettings.wallEchoFilterFrequency));
+    }
+  }
+
+  /// Output some text.
+  void outputText(String text) {
+    // ignore: avoid_print
+    print(text);
+  }
+
+  /// Output [message].
+  void outputMessage(Message message,
+      {Point<double>? position, bool reverberate = true, bool filter = true}) {
+    final text = message.text;
+    if (text != null) {
+      outputText(text);
+    }
+    var sound = message.sound;
+    if (sound != null) {
+      sound = sound.ensureFile(random);
+      final Source source;
+      if (position == null) {
+        source = playSound(sound, gain: message.gain, reverb: reverberate);
+      } else {
+        source = Source3D(context)
+          ..gain = message.gain
+          ..position = Double3(position.x, position.y, 0.0)
+          ..configDeleteBehavior(linger: true);
+        if (filter == true) {
+          filterSource(source, position.floor());
+        }
+      }
     }
   }
 
