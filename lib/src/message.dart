@@ -7,7 +7,7 @@ import 'package:meta/meta.dart';
 @immutable
 class Message {
   /// Create a message.
-  const Message(this.text, this.sound, {this.gain = 0.7});
+  const Message({this.text, this.sound, this.gain = 0.7});
 
   /// The text of the message.
   final String? text;

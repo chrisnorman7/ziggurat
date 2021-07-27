@@ -9,6 +9,7 @@ import 'package:spatialhash/spatialhash.dart';
 import 'ambiance.dart';
 import 'box.dart';
 import 'box_types/agents/player.dart';
+import 'box_types/door.dart';
 import 'box_types/surface.dart';
 import 'box_types/wall.dart';
 import 'directions.dart';
@@ -203,7 +204,6 @@ class Runner<T> {
   void move({double distance = 1.0, double? bearing}) {
     bearing ??= heading;
     final cb = currentBox;
-    final oldBoxName = cb?.name;
     if (cb != null && cb is Box<Surface>) {
       final now = DateTime.now();
       final lm = lastMove;
@@ -215,26 +215,37 @@ class Runner<T> {
     }
     final c = coordinatesInDirection(coordinates, bearing, distance);
     final cf = c.floor();
-    final b = getBox(cf);
-    if (b != null) {
-      if (b is Box<Wall>) {
-        final wallSound = b.sound;
+    final nb = getBox(cf);
+    if (nb != null) {
+      if (nb is Box<Wall> && nb is! Box<Door>) {
+        final wallSound = nb.sound;
         if (wallSound != null) {
           playSound(wallSound);
         }
       } else {
+        if (nb is Box<Door>) {
+          if (nb.type.shouldOpen(player) == false) {
+            final collideMessage = nb.type.collideMessage;
+            if (collideMessage != null) {
+              return outputMessage(collideMessage, position: c);
+            }
+          }
+        }
+        final oldCoordinates = coordinates;
         coordinates = c;
+        player.move(cf, cf);
         _spatialHash?.update(player, Rectangle.fromPoints(c, c));
-        final movementSound = b.sound;
+        final movementSound = nb.sound;
         if (movementSound != null) {
           final source = playSound(movementSound);
           if (runnerSettings.wallEchoEnabled) {
             playWallEchoes(source);
           }
         }
-        final newBoxName = b.name;
-        if (newBoxName != oldBoxName) {
-          onBoxChange(b);
+        if (nb != cb) {
+          cb?.onExit(this, player, coordinates);
+          nb.onEnter(this, player, oldCoordinates);
+          onBoxChange(nb);
         }
       }
     }
@@ -332,20 +343,17 @@ class Runner<T> {
   ///
   /// If there is no reverb at the given [position], nothing will happen.
   void reverberateSource(Source source, Point<int> position) {
-    final t = getBox(position);
-    if (t != null && t is Box<Surface>) {
-      final type = t.type;
-      if (type is Surface) {
-        final reverbPreset = type.reverbPreset;
-        if (reverbPreset != null) {
-          GlobalFdnReverb? r = _reverbs[t];
-          if (r == null) {
-            r = reverbPreset.makeReverb(context)
-              ..configDeleteBehavior(linger: false);
-            _reverbs[t] = r;
-          }
-          context.ConfigRoute(source, r);
+    final box = getBox(position);
+    if (box != null && box is Box<Surface>) {
+      final reverbPreset = box.type.reverbPreset;
+      if (reverbPreset != null) {
+        GlobalFdnReverb? r = _reverbs[box];
+        if (r == null) {
+          r = reverbPreset.makeReverb(context)
+            ..configDeleteBehavior(linger: false);
+          _reverbs[box] = r;
         }
+        context.ConfigRoute(source, r);
       }
     }
   }
@@ -391,6 +399,9 @@ class Runner<T> {
       }
       final t = getBox(Point<int>(x, y));
       if (t is Box<Wall>) {
+        if (t is Box<Door> && t.type.open == true) {
+          continue;
+        }
         s.add(t);
       }
     }
@@ -508,16 +519,19 @@ class Runner<T> {
     if (text != null) {
       outputText(text);
     }
-    var sound = message.sound;
+    final sound = message.sound;
     if (sound != null) {
-      sound = sound.ensureFile(random);
       final Source source;
       if (position == null) {
         source = playSound(sound, gain: message.gain, reverb: reverberate);
       } else {
+        final generator = BufferGenerator(context)
+          ..setBuffer(bufferCache.getBuffer(sound.ensureFile(random)))
+          ..configDeleteBehavior(linger: true);
         source = Source3D(context)
           ..gain = message.gain
           ..position = Double3(position.x, position.y, 0.0)
+          ..addGenerator(generator)
           ..configDeleteBehavior(linger: true);
         if (filter == true) {
           filterSource(source, position.floor());
@@ -528,4 +542,26 @@ class Runner<T> {
 
   /// A function to be called whenever a new box is encountered.
   void onBoxChange(Box t) {}
+
+  /// Open a door.
+  void openDoor(Door d, Point<double> position) {
+    d.open = true;
+    final openMessage = d.openMessage;
+    if (openMessage != null) {
+      outputMessage(openMessage, position: position);
+    }
+    filterSources();
+  }
+
+  /// Close a door.
+  void closeDoor(Door d, Point<double> position) {
+    d
+      ..open = false
+      ..closeTimer = null;
+    final closeMessage = d.closeMessage;
+    if (closeMessage != null) {
+      outputMessage(closeMessage, position: position);
+    }
+    filterSources();
+  }
 }

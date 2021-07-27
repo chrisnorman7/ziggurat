@@ -46,11 +46,20 @@ Future<void> main() async {
       storageRoom.end + Point(1, -3),
       Wall(),
       sound: wallSound);
-  final doorway = Box<Surface>(
+  final doorway = Box(
       'Doorway',
       dividingWall.cornerNw + Point(0, 1),
       storageRoom.end + Point(dividingWall.width, 0),
-      Surface(reverbPreset: defaultReverb),
+      Door(
+          reverbPreset: defaultReverb,
+          open: false,
+          openMessage: Message(
+              sound: File(
+                  'sounds/doors/431117__inspectorj__door-front-opening-a.wav')),
+          closeAfter: Duration(seconds: 1),
+          closeMessage: Message(
+              sound: File(
+                  'sounds/doors/431118__inspectorj__door-front-closing-a.wav'))),
       sound: Directory('sounds/footsteps/metal'));
   final mainFloor = Box<Surface>(
       'Main floor',

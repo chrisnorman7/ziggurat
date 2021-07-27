@@ -1,57 +1,80 @@
 /// Provides the [Box] class.
+import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 
+import 'package:meta/meta.dart';
+
+import 'box_types/agents/agent.dart';
 import 'box_types/base.dart';
+import 'box_types/door.dart';
 import 'box_types/surface.dart';
 import 'box_types/wall.dart';
+import 'extensions.dart';
+import 'runner.dart';
 
 /// A box on a map.
 class Box<T extends BoxType> {
   /// Create a box.
-  Box(this.name, this.start, this.end, this.type, {this.sound}) {
-    width = (end.x - start.x) + 1;
-    height = (end.y - start.y) + 1;
-    halfWidth = width / 2;
-    halfHeight = height / 2;
-    cornerNw = Point<int>(start.x, end.y);
-    cornerSe = Point<int>(end.x, start.y);
-    centre = Point<double>(start.x + halfWidth, start.y + halfHeight);
+  Box(this.name, Point<int> startCoordinates, Point<int> endCoordinates,
+      this.type,
+      {this.sound})
+      : _start = startCoordinates,
+        _end = endCoordinates {
+    onAfterMove();
   }
 
   /// The name of this box.
   final String name;
 
+  Point<int> _start;
+
   /// The start coordinates of this box.
-  final Point<int> start;
+  Point<int> get start => _start;
+
+  Point<int> _end;
 
   /// The end coordinates of this box.
-  final Point<int> end;
+  Point<int> get end => _end;
+
+  late int _width;
 
   /// The width of this box.
   ///
   /// This is the distance east to west.
-  late final int width;
+  int get width => _width;
+
+  late int _height;
 
   /// The height of this box.
   ///
   /// This is the distance north to south.
-  late final int height;
+  int get height => _height;
+
+  late double _halfWidth;
 
   /// Half the width of this box.
-  late final double halfWidth;
+  double get halfWidth => _halfWidth;
+
+  late double _halfHeight;
 
   /// Half the height of this box.
-  late final double halfHeight;
+  double get halfHeight => _halfHeight;
+
+  late Point<int> _cornerNw;
 
   /// The coordinates at the northwest corner of this box.
-  late final Point<int> cornerNw;
+  Point<int> get cornerNw => _cornerNw;
+
+  late Point<int> _cornerSe;
 
   /// The coordinates of the southeast corner of this box.
-  late final Point<int> cornerSe;
+  Point<int> get cornerSe => _cornerSe;
+
+  late Point<double> _centre;
 
   /// The centre coordinates of this box.
-  late final Point<double> centre;
+  Point<double> get centre => _centre;
 
   /// The type of this box.
   final T type;
@@ -65,13 +88,68 @@ class Box<T extends BoxType> {
   /// it.
   final FileSystemEntity? sound;
 
+  /// Move this tile to a new set of coordinates.
+  ///
+  /// !! WARNING !!
+  /// This should not be done lightly. This functionality should only be used
+  /// for mobiles, the player, and any other agents that may arise in the
+  /// lifetime of this package.
+  void move(Point<int> newStart, Point<int> newEnd) {
+    _start = newStart;
+    _end = newEnd;
+    onAfterMove();
+  }
+
   /// Returns `true` if this box contains the point [p].
   bool containsPoint(Point<int> p) =>
       p.x >= start.x && p.y >= start.y && p.x <= end.x && p.y <= end.y;
+
+  /// What happens after this tile is moved.
+  void onAfterMove() {
+    _width = (_end.x - _start.x) + 1;
+    _height = (_end.y - _start.y) + 1;
+    _halfWidth = _width / 2;
+    _halfHeight = _height / 2;
+    _cornerNw = Point<int>(_start.x, _end.y);
+    _cornerSe = Point<int>(_end.x, _start.y);
+    _centre = Point<double>(_start.x + _halfWidth, _start.y + _halfHeight);
+  }
 
   /// What happens when this box is "activated".
   ///
   /// Exactly when a box is activated is left up to the programmer, but maybe
   /// when the enter key is pressed.
   void onActivate() {}
+
+  /// What happens when [agent] enters this box.
+  @mustCallSuper
+  void onEnter(Runner runner, Box<Agent> agent, Point<double> oldCoordinates) {
+    final t = type;
+    if (t is Door) {
+      t.closeTimer?.cancel();
+      t.closeTimer = null;
+      if (t.open == false) {
+        runner.openDoor(t, oldCoordinates);
+      }
+    }
+  }
+
+  /// What happens when [agent] leaves this box.
+  void onExit(Runner runner, Box<Agent> agent, Point<double> oldCoordinates) {
+    final t = type;
+    if (t is Door) {
+      final spatialHash = runner.spatialHash;
+      final closeAfter = t.closeAfter;
+      if (spatialHash != null && closeAfter != null) {
+        for (final occupant in spatialHash
+            .itemsInRegion(Rectangle(start.x, start.y, width, height))) {
+          if (occupant != this && containsPoint(occupant.centre.floor())) {
+            return;
+          }
+        }
+        t.closeTimer =
+            Timer(closeAfter, () => runner.closeDoor(t, oldCoordinates));
+      }
+    }
+  }
 }
