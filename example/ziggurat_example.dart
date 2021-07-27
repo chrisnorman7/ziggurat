@@ -14,7 +14,8 @@ class GameState {}
 class ExampleRunner extends Runner<GameState> {
   /// Create an instance.
   ExampleRunner(Context ctx, BufferCache cache, Ziggurat z)
-      : super(ctx, cache, GameState(), RunnerSettings()) {
+      : super(ctx, cache, GameState(),
+            Box('Player', Point(0, 0), Point(0, 0), Player())) {
     ziggurat = z;
   }
   @override

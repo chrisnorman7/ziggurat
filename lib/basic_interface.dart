@@ -42,9 +42,13 @@ class BasicInterface {
           print('${c.x}, ${c.y}');
           break;
         case 'x':
-          final t = runner.currentBox;
-          if (t != null) {
-            print(t.name);
+          final b = runner.currentBox;
+          if (b != null) {
+            final x =
+                (100 / b.width * (runner.coordinates.x - b.start.x)).round();
+            final y =
+                (100 / b.height * (runner.coordinates.y - b.start.y)).round();
+            print('${b.name} ($x%, $y%)');
           }
           break;
         case 'f':

@@ -15,7 +15,8 @@ void main() {
     final bufferCache = BufferCache(synthizer, pow(1024, 3).floor());
     late Runner<GameState> r;
     setUp(() {
-      r = Runner<GameState>(ctx, bufferCache, GameState(), RunnerSettings());
+      r = Runner<GameState>(ctx, bufferCache, GameState(),
+          Box('Player', Point(0, 0), Point(0, 0), Player()));
     });
     tearDown(() => r.stop());
     test('Initialisation', () {

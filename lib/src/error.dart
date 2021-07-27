@@ -2,6 +2,7 @@
 import 'dart:io';
 
 import 'box.dart';
+import 'box_types/actors/player.dart';
 import 'runner.dart';
 import 'ziggurat.dart';
 
@@ -60,4 +61,16 @@ class NegativeCoordinatesError extends ZigguratError {
   @override
   String toString() =>
       'Negative coordinates for box ${box.name}: ${box.start}.';
+}
+
+/// A player has been included in the list of tiles given to [ziggurat].
+class PlayerInBoxesError extends ZigguratError {
+  /// Create the error.
+  PlayerInBoxesError(this.player, this.ziggurat);
+
+  /// The player that was found.
+  final Box<Player> player;
+
+  /// The ziggurat that [player] was included in.
+  final Ziggurat ziggurat;
 }

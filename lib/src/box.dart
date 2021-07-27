@@ -13,10 +13,10 @@ class Box<T extends BoxType> {
     width = (end.x - start.x) + 1;
     height = (end.y - start.y) + 1;
     halfWidth = width / 2;
-    halfDepth = height / 2;
+    halfHeight = height / 2;
     cornerNw = Point<int>(start.x, end.y);
     cornerSe = Point<int>(end.x, start.y);
-    centre = Point<double>(start.x + halfWidth, start.y + halfDepth);
+    centre = Point<double>(start.x + halfWidth, start.y + halfHeight);
   }
 
   /// The name of this box.
@@ -42,7 +42,7 @@ class Box<T extends BoxType> {
   late final double halfWidth;
 
   /// Half the height of this box.
-  late final double halfDepth;
+  late final double halfHeight;
 
   /// The coordinates at the northwest corner of this box.
   late final Point<int> cornerNw;

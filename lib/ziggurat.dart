@@ -10,6 +10,9 @@ import 'src/ziggurat.dart';
 
 export 'src/ambiance.dart';
 export 'src/box.dart';
+export 'src/box_types/actors/actor.dart';
+export 'src/box_types/actors/npc.dart';
+export 'src/box_types/actors/player.dart';
 export 'src/box_types/base.dart';
 export 'src/box_types/surface.dart';
 export 'src/box_types/wall.dart';

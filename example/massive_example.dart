@@ -10,7 +10,8 @@ import 'package:ziggurat/ziggurat.dart';
 class ExampleRunner extends Runner<Object> {
   /// Create an instance.
   ExampleRunner(Context ctx, BufferCache cache, Ziggurat z)
-      : super(ctx, cache, Object(), RunnerSettings()) {
+      : super(ctx, cache, Object(),
+            Box('Player', Point(0, 0), Point(0, 0), Player())) {
     ziggurat = z;
   }
   @override

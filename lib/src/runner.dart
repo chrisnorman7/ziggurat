@@ -8,6 +8,7 @@ import 'package:spatialhash/spatialhash.dart';
 
 import 'ambiance.dart';
 import 'box.dart';
+import 'box_types/actors/player.dart';
 import 'box_types/surface.dart';
 import 'box_types/wall.dart';
 import 'directions.dart';
@@ -23,8 +24,10 @@ import 'ziggurat.dart';
 /// A class for running maps.
 class Runner<T> {
   /// Create the runner.
-  Runner(this.context, this.bufferCache, this.gameState, this.runnerSettings)
+  Runner(this.context, this.bufferCache, this.gameState, this.player,
+      {RunnerSettings? rSettings})
       : _tiles = [],
+        runnerSettings = rSettings ?? RunnerSettings(),
         _spatialHash = null,
         _reverbs = {},
         random = Random(),
@@ -46,6 +49,14 @@ class Runner<T> {
 
   /// The settings for this runner.
   final RunnerSettings runnerSettings;
+
+  /// The box that represents the player.
+  ///
+  /// The coordinates of the player box are ignored in favour of [coordinates].
+  ///
+  /// This is because it would be computationally expensive to move the player
+  /// box all the time, and nothing has happened to change my mind yet.
+  final Box<Player> player;
 
   /// The send that is used by wall echoes.
   GlobalEcho? _wallEcho;
@@ -100,6 +111,8 @@ class Runner<T> {
             box.start.y < 0 ||
             box.end.y < 0) {
           throw NegativeCoordinatesError(box);
+        } else if (box == player) {
+          throw PlayerInBoxesError(player, value);
         }
         widths.add(box.width);
         depths.add(box.height);
@@ -109,11 +122,14 @@ class Runner<T> {
       _tiles = List.generate(
           maxX + 1, (index) => List.filled(maxY + 1, null, growable: false),
           growable: false);
-      final sh =
-          SpatialHash<Box>(maxX, maxY, widths.average * 2, depths.average * 2);
+      final sh = SpatialHash<Box>(maxX, maxY, widths.average, depths.average)
+        ..add(
+            player,
+            Rectangle(value.initialCoordinates.x, value.initialCoordinates.y,
+                player.width, player.height));
       _spatialHash = sh;
       for (final box in value.boxes) {
-        sh.add(box, Rectangle.fromPoints(box.start, box.end));
+        sh.add(box, Rectangle(box.start.x, box.start.y, box.width, box.height));
         for (var i = box.start.x; i <= box.end.x; i++) {
           for (var j = box.start.y; j <= box.end.y; j++) {
             _tiles[i][j] = box;
@@ -207,6 +223,7 @@ class Runner<T> {
         }
       } else {
         coordinates = c;
+        _spatialHash?.update(player, Rectangle.fromPoints(c, c));
         final movementSound = b.sound;
         if (movementSound != null) {
           final source = playSound(movementSound);
