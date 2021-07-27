@@ -2,7 +2,7 @@
 import '../box.dart';
 import '../message.dart';
 import '../runner.dart';
-import 'actors/actor.dart';
+import 'agents/agent.dart';
 import 'base.dart';
 
 /// The door box type.
@@ -47,5 +47,5 @@ class Door extends BoxType {
   /// Returns `true` if this door should open for [actor].
   ///
   /// Be aware that [actor] may not always be the player.
-  bool shouldOpen(Box<Actor> actor) => true;
+  bool shouldOpen(Box<Agent> actor) => true;
 }

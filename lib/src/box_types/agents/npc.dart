@@ -1,5 +1,5 @@
 /// Provides the [NonPlayerCharacter] class.
-import 'actor.dart';
+import 'agent.dart';
 
 /// A non-player character.
-class NonPlayerCharacter extends Actor {}
+class NonPlayerCharacter extends Agent {}

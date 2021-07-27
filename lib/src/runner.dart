@@ -8,7 +8,7 @@ import 'package:spatialhash/spatialhash.dart';
 
 import 'ambiance.dart';
 import 'box.dart';
-import 'box_types/actors/player.dart';
+import 'box_types/agents/player.dart';
 import 'box_types/surface.dart';
 import 'box_types/wall.dart';
 import 'directions.dart';

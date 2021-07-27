@@ -2,7 +2,7 @@
 import 'dart:io';
 
 import 'box.dart';
-import 'box_types/actors/player.dart';
+import 'box_types/agents/player.dart';
 import 'runner.dart';
 import 'ziggurat.dart';
 
