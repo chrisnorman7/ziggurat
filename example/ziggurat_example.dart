@@ -14,7 +14,7 @@ class GameState {}
 class ExampleRunner extends Runner<GameState> {
   /// Create an instance.
   ExampleRunner(Context ctx, BufferCache cache, Ziggurat z)
-      : super(ctx, cache, GameState()) {
+      : super(ctx, cache, GameState(), RunnerSettings()) {
     ziggurat = z;
   }
   @override
@@ -24,7 +24,7 @@ class ExampleRunner extends Runner<GameState> {
 }
 
 /// Run the example.
-void main() {
+Future<void> main() async {
   final synthizer = Synthizer()..initialize();
   final bufferCache = BufferCache(synthizer, pow(1024, 3).floor());
   final ctx = synthizer.createContext()
@@ -99,5 +99,5 @@ void main() {
   final r = ExampleRunner(ctx, bufferCache, t);
   final interface = BasicInterface(synthizer, r,
       File('sounds/399934__old-waveplay__perc-short-click-snap-perc.wav'));
-  return interface.run();
+  await interface.run();
 }

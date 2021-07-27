@@ -11,8 +11,10 @@ import 'box.dart';
 import 'box_types/surface.dart';
 import 'box_types/wall.dart';
 import 'directions.dart';
+import 'enumerations.dart';
 import 'error.dart';
 import 'extensions.dart';
+import 'json/runner_settings.dart';
 import 'math.dart';
 import 'random_sound.dart';
 import 'random_sound_container.dart';
@@ -22,15 +24,7 @@ import 'ziggurat.dart';
 /// A class for running maps.
 class Runner<T> {
   /// Create the runner.
-  Runner(this.context, this.bufferCache, this.gameState,
-      {this.maxWallFilter = 500.0,
-      this.wallEchoEnabled = true,
-      this.wallEchoMaxDistance = 5,
-      this.wallEchoMinDelay = 0.05,
-      this.wallEchoDistanceOffset = 0.01,
-      this.wallEchoGain = 0.5,
-      this.wallEchoGainRolloff = 0.2,
-      this.wallEchoFilterFrequency = 12000})
+  Runner(this.context, this.bufferCache, this.gameState, this.runnerSettings)
       : _tiles = [],
         _spatialHash = null,
         _reverbs = {},
@@ -51,39 +45,8 @@ class Runner<T> {
   /// similar.
   final T gameState;
 
-  /// The maximum filtering applied by walls.
-  ///
-  /// When sounds are filtered through walls, this value is the lowest frequency
-  /// cutoff allowed.
-  final double maxWallFilter;
-
-  /// Whether or not wall echoes are enabled.
-  final bool wallEchoEnabled;
-
-  /// The maximum distance to play wall echoes.
-  final int wallEchoMaxDistance;
-
-  /// The minimum number of seconds before a wall echo will play.
-  final double wallEchoMinDelay;
-
-  /// A number that will be multiplied by the distance between the player and
-  /// the nearest wall, and then added to [wallEchoMinDelay] to get the amount
-  /// of time it will take for a wall echo to play.
-  final double wallEchoDistanceOffset;
-
-  /// The starting gain for wall echoes.
-  final double wallEchoGain;
-
-  /// The amount to reduce echo gain by over distance.
-  ///
-  /// The formula to decide the eventual echo gain will be
-  /// `wallEchoGain - (distance * wallEchoGainRolloff)`.
-  final double wallEchoGainRolloff;
-
-  /// How much wall echoes are filtered by.
-  ///
-  /// Frequencies above this value will be removed from the signal.
-  final double wallEchoFilterFrequency;
+  /// The settings for this runner.
+  final RunnerSettings runnerSettings;
 
   /// The send that is used by wall echoes.
   GlobalEcho? _wallEcho;
@@ -248,7 +211,7 @@ class Runner<T> {
         final movementSound = b.sound;
         if (movementSound != null) {
           final source = playSound(movementSound);
-          if (wallEchoEnabled) {
+          if (runnerSettings.radarType == RadarType.echoWalls) {
             playWallEchoes(source);
           }
         }
@@ -377,8 +340,8 @@ class Runner<T> {
     for (final w in walls) {
       filterAmount -= w.type.filterFrequency;
     }
-    source.filter =
-        context.synthizer.designLowpass(max(maxWallFilter, filterAmount));
+    source.filter = context.synthizer
+        .designLowpass(max(runnerSettings.maxWallFilter, filterAmount));
   }
 
   /// Filter all sources.
@@ -464,31 +427,43 @@ class Runner<T> {
   void playWallEchoes(DirectSource source) {
     final c = coordinates.floor();
     final westWall = getNearestWall(normaliseAngle(heading - Directions.east),
-        maxDistance: wallEchoMaxDistance, start: c);
-    final northWall =
-        getNearestWall(heading, maxDistance: wallEchoMaxDistance, start: c);
+        maxDistance: runnerSettings.wallEchoMaxDistance, start: c);
+    final northWall = getNearestWall(heading,
+        maxDistance: runnerSettings.wallEchoMaxDistance, start: c);
     final eastWall = getNearestWall(normaliseAngle(heading + Directions.east),
-        maxDistance: wallEchoMaxDistance, start: c);
+        maxDistance: runnerSettings.wallEchoMaxDistance, start: c);
     final taps = <EchoTapConfig>[];
     double d;
     double g;
     if (westWall != null) {
       d = coordinates.distanceTo(westWall.coordinates);
-      g = wallEchoGain - (d * wallEchoGainRolloff);
+      g = runnerSettings.wallEchoGain -
+          (d * runnerSettings.wallEchoGainRolloff);
       taps.add(EchoTapConfig(
-          wallEchoMinDelay + (d * wallEchoDistanceOffset), g, 0.0));
+          runnerSettings.wallEchoMinDelay +
+              (d * runnerSettings.wallEchoDistanceOffset),
+          g,
+          0.0));
     }
     if (northWall != null) {
       d = coordinates.distanceTo(northWall.coordinates);
-      g = wallEchoGain - (d * wallEchoGainRolloff);
-      taps.add(
-          EchoTapConfig(wallEchoMinDelay + (d * wallEchoDistanceOffset), g, g));
+      g = runnerSettings.wallEchoGain -
+          (d * runnerSettings.wallEchoGainRolloff);
+      taps.add(EchoTapConfig(
+          runnerSettings.wallEchoMinDelay +
+              (d * runnerSettings.wallEchoDistanceOffset),
+          g,
+          g));
     }
     if (eastWall != null) {
       d = coordinates.distanceTo(eastWall.coordinates);
-      g = wallEchoGain - (d * wallEchoGainRolloff);
+      g = runnerSettings.wallEchoGain -
+          (d * runnerSettings.wallEchoGainRolloff);
       taps.add(EchoTapConfig(
-          wallEchoMinDelay + (d * wallEchoDistanceOffset), 0.0, g));
+          runnerSettings.wallEchoMinDelay +
+              (d * runnerSettings.wallEchoDistanceOffset),
+          0.0,
+          g));
     }
     if (taps.isNotEmpty) {
       var echo = _wallEcho;
@@ -498,7 +473,8 @@ class Runner<T> {
       }
       echo.setTaps(taps);
       context.ConfigRoute(source, echo,
-          filter: context.synthizer.designLowpass(wallEchoFilterFrequency));
+          filter: context.synthizer
+              .designLowpass(runnerSettings.wallEchoFilterFrequency));
     }
   }
 

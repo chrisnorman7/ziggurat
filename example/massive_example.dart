@@ -10,7 +10,7 @@ import 'package:ziggurat/ziggurat.dart';
 class ExampleRunner extends Runner<Object> {
   /// Create an instance.
   ExampleRunner(Context ctx, BufferCache cache, Ziggurat z)
-      : super(ctx, cache, Object()) {
+      : super(ctx, cache, Object(), RunnerSettings()) {
     ziggurat = z;
   }
   @override
@@ -20,7 +20,7 @@ class ExampleRunner extends Runner<Object> {
   }
 }
 
-void main() {
+Future<void> main() async {
   final synthizer = Synthizer()..initialize();
   final ctx = synthizer.createContext();
   final z = Ziggurat('Massive Map');
@@ -37,5 +37,5 @@ void main() {
   final runner = ExampleRunner(ctx, BufferCache(synthizer, 1024 ^ 3), z);
   final interface = BasicInterface(synthizer, runner,
       File('sounds/399934__old-waveplay__perc-short-click-snap-perc.wav'));
-  return interface.run();
+  await interface.run();
 }
