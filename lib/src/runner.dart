@@ -7,15 +7,15 @@ import 'package:dart_synthizer/dart_synthizer.dart';
 import 'package:spatialhash/spatialhash.dart';
 
 import 'ambiance.dart';
+import 'box.dart';
+import 'box_types/surface.dart';
+import 'box_types/wall.dart';
 import 'directions.dart';
 import 'error.dart';
 import 'extensions.dart';
 import 'math.dart';
 import 'random_sound.dart';
 import 'random_sound_container.dart';
-import 'tile.dart';
-import 'tile_types/surface.dart';
-import 'tile_types/wall.dart';
 import 'wall_location.dart';
 import 'ziggurat.dart';
 
@@ -88,8 +88,8 @@ class Runner<T> {
   /// The send that is used by wall echoes.
   GlobalEcho? _wallEcho;
 
-  /// Reverb instances for the various tiles.
-  final Map<Tile<Surface>, GlobalFdnReverb> _reverbs;
+  /// Reverb instances for the various boxes.
+  final Map<Box<Surface>, GlobalFdnReverb> _reverbs;
 
   /// The random number generator to use.
   final Random random;
@@ -107,13 +107,13 @@ class Runner<T> {
   final Map<Ambiance, Source> _ambianceSources;
 
   /// All the tiles which are present on [ziggurat].
-  List<List<Tile?>> _tiles;
+  List<List<Box?>> _tiles;
 
-  /// The spatial hash containing all the tiles.
-  SpatialHash<Tile>? _spatialHash;
+  /// The spatial hash containing all the boxes.
+  SpatialHash<Box>? _spatialHash;
 
   /// Get the current spatial hash.
-  SpatialHash<Tile>? get spatialHash => _spatialHash;
+  SpatialHash<Box>? get spatialHash => _spatialHash;
 
   /// The ziggurat this runner will work with.
   Ziggurat? _ziggurat;
@@ -132,29 +132,29 @@ class Runner<T> {
       var maxY = 0;
       final widths = <int>[];
       final depths = <int>[];
-      for (final tile in value.tiles) {
-        if (tile.start.x < 0 ||
-            tile.end.x < 0 ||
-            tile.start.y < 0 ||
-            tile.end.y < 0) {
-          throw NegativeCoordinatesError(tile);
+      for (final box in value.boxes) {
+        if (box.start.x < 0 ||
+            box.end.x < 0 ||
+            box.start.y < 0 ||
+            box.end.y < 0) {
+          throw NegativeCoordinatesError(box);
         }
-        widths.add(tile.width);
-        depths.add(tile.depth);
-        maxX = max(maxX, tile.end.x);
-        maxY = max(maxY, tile.end.y);
+        widths.add(box.width);
+        depths.add(box.height);
+        maxX = max(maxX, box.end.x);
+        maxY = max(maxY, box.end.y);
       }
       _tiles = List.generate(
           maxX + 1, (index) => List.filled(maxY + 1, null, growable: false),
           growable: false);
       final sh =
-          SpatialHash<Tile>(maxX, maxY, widths.average * 2, depths.average * 2);
+          SpatialHash<Box>(maxX, maxY, widths.average * 2, depths.average * 2);
       _spatialHash = sh;
-      for (final tile in value.tiles) {
-        sh.add(tile, Rectangle.fromPoints(tile.start, tile.end));
-        for (var i = tile.start.x; i <= tile.end.x; i++) {
-          for (var j = tile.start.y; j <= tile.end.y; j++) {
-            _tiles[i][j] = tile;
+      for (final box in value.boxes) {
+        sh.add(box, Rectangle.fromPoints(box.start, box.end));
+        for (var i = box.start.x; i <= box.end.x; i++) {
+          for (var j = box.start.y; j <= box.end.y; j++) {
+            _tiles[i][j] = box;
           }
         }
       }
@@ -162,9 +162,9 @@ class Runner<T> {
       coordinates = value.initialCoordinates;
       value.randomSounds.forEach(scheduleRandomSound);
       value.ambiances.forEach(startAmbiance);
-      final ct = currentTile;
-      if (ct != null) {
-        onTileChange(ct);
+      final cb = currentBox;
+      if (cb != null) {
+        onBoxChange(cb);
       }
     }
   }
@@ -202,8 +202,10 @@ class Runner<T> {
     filterSources();
   }
 
-  /// Return the tile at the given [coordinates], if any.
-  Tile? getTile(Point<int> coordinates) {
+  /// Return the box at the given [coordinates], if any.
+  ///
+  /// If no box is found, then `null` will be returned.
+  Box? getBox(Point<int> coordinates) {
     if (coordinates.x < 0 ||
         coordinates.y < 0 ||
         coordinates.x >= _tiles.length ||
@@ -213,20 +215,20 @@ class Runner<T> {
     return _tiles[coordinates.x][coordinates.y];
   }
 
-  /// Get the current tile.
-  Tile? get currentTile => getTile(coordinates.floor());
+  /// Get the current box.
+  Box? get currentBox => getBox(coordinates.floor());
 
   /// Move the player the given [distance].
   ///
   /// If [bearing] is `null`, then [heading] will be used.
   void move({double distance = 1.0, double? bearing}) {
     bearing ??= heading;
-    final ct = currentTile;
-    final oldTileName = ct?.name;
-    if (ct != null && ct is Tile<Surface>) {
+    final cb = currentBox;
+    final oldBoxName = cb?.name;
+    if (cb != null && cb is Box<Surface>) {
       final now = DateTime.now();
       final lm = lastMove;
-      if (lm != null && now.difference(lm) < ct.type.moveInterval) {
+      if (lm != null && now.difference(lm) < cb.type.moveInterval) {
         return;
       } else {
         lastMove = now;
@@ -234,25 +236,25 @@ class Runner<T> {
     }
     final c = coordinatesInDirection(coordinates, bearing, distance);
     final cf = c.floor();
-    final t = getTile(cf);
-    if (t != null) {
-      if (t is Tile<Wall>) {
-        final wallSound = t.sound;
+    final b = getBox(cf);
+    if (b != null) {
+      if (b is Box<Wall>) {
+        final wallSound = b.sound;
         if (wallSound != null) {
           playSound(wallSound);
         }
       } else {
         coordinates = c;
-        final movementSound = t.sound;
+        final movementSound = b.sound;
         if (movementSound != null) {
           final source = playSound(movementSound);
           if (wallEchoEnabled) {
             playWallEchoes(source);
           }
         }
-        final newTileName = t.name;
-        if (newTileName != oldTileName) {
-          onTileChange(t);
+        final newBoxName = b.name;
+        if (newBoxName != oldBoxName) {
+          onBoxChange(b);
         }
       }
     }
@@ -350,8 +352,8 @@ class Runner<T> {
   ///
   /// If there is no reverb at the given [position], nothing will happen.
   void reverberateSource(Source source, Point<int> position) {
-    final t = getTile(position);
-    if (t != null && t is Tile<Surface>) {
+    final t = getBox(position);
+    if (t != null && t is Box<Surface>) {
       final type = t.type;
       if (type is Surface) {
         final reverbPreset = type.reverbPreset;
@@ -393,9 +395,9 @@ class Runner<T> {
   }
 
   /// Get the number of walls between two positions.
-  Set<Tile<Wall>> getWallsBetween(Point<int> end, [Point<int>? start]) {
+  Set<Box<Wall>> getWallsBetween(Point<int> end, [Point<int>? start]) {
     start ??= coordinates.floor();
-    final s = <Tile<Wall>>{};
+    final s = <Box<Wall>>{};
     var x = min(start.x, end.x);
     var y = min(start.y, end.y);
     final endX = max(start.x, end.x);
@@ -407,8 +409,8 @@ class Runner<T> {
       if (y < endY) {
         y++;
       }
-      final t = getTile(Point<int>(x, y));
-      if (t is Tile<Wall>) {
+      final t = getBox(Point<int>(x, y));
+      if (t is Box<Wall>) {
         s.add(t);
       }
     }
@@ -429,10 +431,10 @@ class Runner<T> {
     while (distance <= maxDistance) {
       distance++;
       c = coordinatesInDirection(c, direction, 1);
-      final t = getTile(c.floor());
+      final t = getBox(c.floor());
       if (t == null) {
         return null;
-      } else if (t is Tile<Wall>) {
+      } else if (t is Box<Wall>) {
         return WallLocation(t, c);
       }
     }
@@ -500,6 +502,6 @@ class Runner<T> {
     }
   }
 
-  /// A function to be called whenever a new tile is encountered.
-  void onTileChange(Tile t) {}
+  /// A function to be called whenever a new box is encountered.
+  void onBoxChange(Box t) {}
 }

@@ -18,7 +18,7 @@ class ExampleRunner extends Runner<GameState> {
     ziggurat = z;
   }
   @override
-  void onTileChange(Tile t) {
+  void onBoxChange(Box t) {
     print(t.name);
   }
 }
@@ -31,50 +31,47 @@ void main() {
     ..defaultPannerStrategy = PannerStrategies.hrtf;
   final defaultReverb = ReverbPreset('Default');
   final wallSound = File('sounds/249618__vincentm400__invalid.mp3');
-  final westWall = Tile<Wall>(
+  final westWall = Box<Wall>(
       'West Wall', Point<int>(0, 1), Point<int>(0, 21), Wall(),
       sound: wallSound);
-  final storageRoom = Tile<Surface>(
+  final storageRoom = Box<Surface>(
       'Storage room',
       westWall.cornerSe + Point<int>(1, 0),
       westWall.end + Point<int>(20, 0),
       Surface(reverbPreset: defaultReverb),
       sound: Directory('sounds/footsteps/wood'));
-  final dividingWall = Tile<Wall>(
+  final dividingWall = Box<Wall>(
       'Dividing Wall',
       storageRoom.cornerSe + Point<int>(1, 0),
       storageRoom.end + Point<int>(1, -3),
       Wall(),
       sound: wallSound);
-  final doorway = Tile<Surface>(
+  final doorway = Box<Surface>(
       'Doorway',
       dividingWall.cornerNw + Point<int>(0, 1),
       storageRoom.end + Point<int>(dividingWall.width, 0),
       Surface(reverbPreset: defaultReverb),
       sound: Directory('sounds/footsteps/metal'));
-  final mainFloor = Tile<Surface>(
+  final mainFloor = Box<Surface>(
       'Main floor',
       dividingWall.cornerSe + Point<int>(1, 0),
       doorway.end + Point<int>(20, 0),
       Surface(reverbPreset: ReverbPreset('Main Floor Reverb', t60: 5.0)),
       sound: Directory('sounds/footsteps/concrete'));
-  final eastWall = Tile<Wall>(
-      'East Wall',
-      mainFloor.cornerSe + Point<int>(1, 0),
-      mainFloor.end + Point<int>(1, 0),
-      Wall(),
+  final eastWall = Box<Wall>('East Wall', mainFloor.cornerSe + Point<int>(1, 0),
+      mainFloor.end + Point<int>(1, 0), Wall(),
       sound: wallSound);
-  final northWall = Tile<Wall>(
+  final northWall = Box<Wall>(
       'North Wall',
       westWall.cornerNw + Point<int>(0, 1),
       eastWall.end + Point<int>(0, 1),
       Wall(),
       sound: wallSound);
-  final southWall = Tile<Wall>('South Wall', westWall.start - Point<int>(0, 1),
+  final southWall = Box<Wall>('South Wall', westWall.start - Point<int>(0, 1),
       eastWall.cornerSe - Point<int>(0, 1), Wall(),
       sound: wallSound);
   final t = Ziggurat('Temple',
-      tilesList: [
+      boxesList: [
         westWall,
         storageRoom,
         dividingWall,

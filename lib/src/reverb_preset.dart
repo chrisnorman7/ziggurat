@@ -1,7 +1,7 @@
 /// Provides the [ReverbPreset] class.
 import 'package:dart_synthizer/dart_synthizer.dart';
 
-import 'tile_types/surface.dart';
+import 'box_types/surface.dart';
 
 /// The bounds of a reverb property.
 class ReverbPropertyBounds {

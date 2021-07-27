@@ -1,8 +1,8 @@
 /// Provides various error types.
 import 'dart:io';
 
+import 'box.dart';
 import 'runner.dart';
-import 'tile.dart';
 import 'ziggurat.dart';
 
 /// The base class for all ziggurat errors.
@@ -48,16 +48,16 @@ class InvalidEntityError extends ZigguratError {
   String toString() => 'Unknown entity $entity (${entity.runtimeType}).';
 }
 
-/// A tile has invalid coordinates.
+/// The start coordinates of [box] contains a negative number.
 class NegativeCoordinatesError extends ZigguratError {
   /// Create the error.
-  NegativeCoordinatesError(this.tile);
+  NegativeCoordinatesError(this.box);
 
-  /// The tile with the invalid coordinates.
-  final Tile tile;
+  /// The box with the invalid coordinates.
+  final Box box;
 
   /// Return a string.
   @override
   String toString() =>
-      'Negative coordinates for tile ${tile.name}: ${tile.start}.';
+      'Negative coordinates for box ${box.name}: ${box.start}.';
 }

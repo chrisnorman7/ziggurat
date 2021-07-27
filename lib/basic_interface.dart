@@ -44,7 +44,7 @@ class BasicInterface {
           print('${c.x}, ${c.y}');
           break;
         case 'x':
-          final t = runner.currentTile;
+          final t = runner.currentBox;
           if (t != null) {
             print(t.name);
           }

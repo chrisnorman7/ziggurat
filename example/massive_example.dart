@@ -14,7 +14,7 @@ class ExampleRunner extends Runner<Object> {
     ziggurat = z;
   }
   @override
-  void onTileChange(Tile t) {
+  void onBoxChange(Box t) {
     // ignore: avoid_print
     print(t.name);
   }
@@ -29,9 +29,9 @@ void main() {
       File('sounds/399934__old-waveplay__perc-short-click-snap-perc.wav');
   for (var i = 0; i < size; i++) {
     for (var j = 0; j < size; j++) {
-      final t = Tile('Tile', Point<int>(i, j), Point<int>(i, j), Surface(),
+      final t = Box('Box', Point<int>(i, j), Point<int>(i, j), Surface(),
           sound: tileSound);
-      z.tiles.add(t);
+      z.boxes.add(t);
     }
   }
   final runner = ExampleRunner(ctx, BufferCache(synthizer, 1024 ^ 3), z);

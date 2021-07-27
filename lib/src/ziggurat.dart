@@ -2,8 +2,8 @@
 import 'dart:math';
 
 import 'ambiance.dart';
+import 'box.dart';
 import 'random_sound.dart';
-import 'tile.dart';
 
 /// A map.
 ///
@@ -11,13 +11,13 @@ import 'tile.dart';
 class Ziggurat {
   /// Create a map.
   Ziggurat(this.name,
-      {List<Tile>? tilesList,
+      {List<Box>? boxesList,
       List<Ambiance>? ambiancesList,
       List<RandomSound>? randomSoundsList,
       this.initialHeading = 0,
       Point<double>? coordinates})
       : initialCoordinates = coordinates ?? Point<double>(0, 0),
-        tiles = tilesList ?? <Tile>[],
+        boxes = boxesList ?? <Box>[],
         ambiances = ambiancesList ?? <Ambiance>[],
         randomSounds = randomSoundsList ?? <RandomSound>[];
 
@@ -39,6 +39,6 @@ class Ziggurat {
   /// All the random sounds on this map.
   final List<RandomSound> randomSounds;
 
-  /// All the tiles on this map.
-  final List<Tile> tiles;
+  /// All the boxes on this map.
+  final List<Box> boxes;
 }

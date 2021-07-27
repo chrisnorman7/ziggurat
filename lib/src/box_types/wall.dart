@@ -2,7 +2,7 @@
 import 'base.dart';
 
 /// A wall on a map.
-class Wall extends TileType {
+class Wall extends BoxType {
   /// Create a wall.
   Wall({this.filterFrequency = 20000.0, this.surmountable = false});
 
