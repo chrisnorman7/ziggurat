@@ -29,8 +29,8 @@ void main() {
       File('sounds/399934__old-waveplay__perc-short-click-snap-perc.wav');
   for (var i = 0; i < size; i++) {
     for (var j = 0; j < size; j++) {
-      final t = Box('Box', Point<int>(i, j), Point<int>(i, j), Surface(),
-          sound: tileSound);
+      final t =
+          Box('Box', Point(i, j), Point(i, j), Surface(), sound: tileSound);
       z.boxes.add(t);
     }
   }

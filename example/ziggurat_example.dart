@@ -31,44 +31,40 @@ void main() {
     ..defaultPannerStrategy = PannerStrategies.hrtf;
   final defaultReverb = ReverbPreset('Default');
   final wallSound = File('sounds/249618__vincentm400__invalid.mp3');
-  final westWall = Box<Wall>(
-      'West Wall', Point<int>(0, 1), Point<int>(0, 21), Wall(),
+  final westWall = Box<Wall>('West Wall', Point(0, 1), Point(1, 21), Wall(),
       sound: wallSound);
   final storageRoom = Box<Surface>(
       'Storage room',
-      westWall.cornerSe + Point<int>(1, 0),
-      westWall.end + Point<int>(20, 0),
+      westWall.cornerSe + Point(1, 0),
+      westWall.end + Point(20, 0),
       Surface(reverbPreset: defaultReverb),
       sound: Directory('sounds/footsteps/wood'));
   final dividingWall = Box<Wall>(
       'Dividing Wall',
-      storageRoom.cornerSe + Point<int>(1, 0),
-      storageRoom.end + Point<int>(1, -3),
+      storageRoom.cornerSe + Point(1, 0),
+      storageRoom.end + Point(1, -3),
       Wall(),
       sound: wallSound);
   final doorway = Box<Surface>(
       'Doorway',
-      dividingWall.cornerNw + Point<int>(0, 1),
-      storageRoom.end + Point<int>(dividingWall.width, 0),
+      dividingWall.cornerNw + Point(0, 1),
+      storageRoom.end + Point(dividingWall.width, 0),
       Surface(reverbPreset: defaultReverb),
       sound: Directory('sounds/footsteps/metal'));
   final mainFloor = Box<Surface>(
       'Main floor',
-      dividingWall.cornerSe + Point<int>(1, 0),
-      doorway.end + Point<int>(20, 0),
+      dividingWall.cornerSe + Point(1, 0),
+      doorway.end + Point(20, 0),
       Surface(reverbPreset: ReverbPreset('Main Floor Reverb', t60: 5.0)),
       sound: Directory('sounds/footsteps/concrete'));
-  final eastWall = Box<Wall>('East Wall', mainFloor.cornerSe + Point<int>(1, 0),
-      mainFloor.end + Point<int>(1, 0), Wall(),
+  final eastWall = Box<Wall>('East Wall', mainFloor.cornerSe + Point(1, 0),
+      mainFloor.end + Point(1, 0), Wall(),
       sound: wallSound);
-  final northWall = Box<Wall>(
-      'North Wall',
-      westWall.cornerNw + Point<int>(0, 1),
-      eastWall.end + Point<int>(0, 1),
-      Wall(),
+  final northWall = Box<Wall>('North Wall', westWall.cornerNw + Point(0, 1),
+      eastWall.end + Point(0, 1), Wall(),
       sound: wallSound);
-  final southWall = Box<Wall>('South Wall', westWall.start - Point<int>(0, 1),
-      eastWall.cornerSe - Point<int>(0, 1), Wall(),
+  final southWall = Box<Wall>('South Wall', westWall.start - Point(0, 1),
+      eastWall.cornerSe - Point(0, 1), Wall(),
       sound: wallSound);
   final t = Ziggurat('Temple',
       boxesList: [

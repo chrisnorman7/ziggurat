@@ -2,8 +2,6 @@
 import 'dart:io';
 import 'dart:math';
 
-import 'package:meta/meta.dart';
-
 import 'box_types/base.dart';
 import 'box_types/surface.dart';
 import 'box_types/wall.dart';
@@ -12,17 +10,48 @@ import 'box_types/wall.dart';
 class Box<T extends BoxType> {
   /// Create a box.
   Box(this.name, this.start, this.end, this.type, {this.sound}) {
-    onAfterMove();
+    width = (end.x - start.x) + 1;
+    height = (end.y - start.y) + 1;
+    halfWidth = width / 2;
+    halfDepth = height / 2;
+    cornerNw = Point<int>(start.x, end.y);
+    cornerSe = Point<int>(end.x, start.y);
+    centre = Point<double>(start.x + halfWidth, start.y + halfDepth);
   }
 
   /// The name of this box.
   final String name;
 
   /// The start coordinates of this box.
-  Point<int> start;
+  final Point<int> start;
 
   /// The end coordinates of this box.
-  Point<int> end;
+  final Point<int> end;
+
+  /// The width of this box.
+  ///
+  /// This is the distance east to west.
+  late final int width;
+
+  /// The height of this box.
+  ///
+  /// This is the distance north to south.
+  late final int height;
+
+  /// Half the width of this box.
+  late final double halfWidth;
+
+  /// Half the height of this box.
+  late final double halfDepth;
+
+  /// The coordinates at the northwest corner of this box.
+  late final Point<int> cornerNw;
+
+  /// The coordinates of the southeast corner of this box.
+  late final Point<int> cornerSe;
+
+  /// The centre coordinates of this box.
+  late final Point<double> centre;
 
   /// The type of this box.
   final T type;
@@ -36,31 +65,6 @@ class Box<T extends BoxType> {
   /// it.
   final FileSystemEntity? sound;
 
-  /// The width of this box.
-  ///
-  /// This is the distance east to west.
-  late int width;
-
-  /// The height of this box.
-  ///
-  /// This is the distance north to south.
-  late int height;
-
-  /// Half the width of this box.
-  late double halfWidth;
-
-  /// Half the height of this box.
-  late double halfDepth;
-
-  /// The coordinates at the northwest corner of this box.
-  late Point<int> cornerNw;
-
-  /// The coordinates of the southeast corner of this box.
-  late Point<int> cornerSe;
-
-  /// The centre coordinates of this box.
-  late Point<double> centre;
-
   /// Returns `true` if this box contains the point [p].
   bool containsPoint(Point<int> p) =>
       p.x >= start.x && p.y >= start.y && p.x <= end.x && p.y <= end.y;
@@ -70,26 +74,4 @@ class Box<T extends BoxType> {
   /// Exactly when a box is activated is left up to the programmer, but maybe
   /// when the enter key is pressed.
   void onActivate() {}
-
-  /// Code to run after a box has moved.
-  @mustCallSuper
-  void onAfterMove() {
-    width = (end.x - start.x) + 1;
-    height = (end.y - start.y) + 1;
-    halfWidth = width / 2;
-    halfDepth = height / 2;
-    cornerNw = Point<int>(start.x, end.y);
-    cornerSe = Point<int>(end.x, start.y);
-    centre = Point<double>(start.x + halfWidth, start.y + halfDepth);
-  }
-
-  /// Move this box.
-  ///
-  /// This function changes the bounds of the box.
-  @mustCallSuper
-  void move(Point<int> startCoordinates, Point<int> endCoordinates) {
-    start = startCoordinates;
-    end = endCoordinates;
-    onAfterMove();
-  }
 }
