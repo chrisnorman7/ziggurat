@@ -11,7 +11,6 @@ import 'box.dart';
 import 'box_types/surface.dart';
 import 'box_types/wall.dart';
 import 'directions.dart';
-import 'enumerations.dart';
 import 'error.dart';
 import 'extensions.dart';
 import 'json/runner_settings.dart';
@@ -211,7 +210,7 @@ class Runner<T> {
         final movementSound = b.sound;
         if (movementSound != null) {
           final source = playSound(movementSound);
-          if (runnerSettings.radarType == RadarType.echoWalls) {
+          if (runnerSettings.wallEchoEnabled) {
             playWallEchoes(source);
           }
         }

@@ -14,7 +14,6 @@ export 'src/box_types/base.dart';
 export 'src/box_types/surface.dart';
 export 'src/box_types/wall.dart';
 export 'src/directions.dart';
-export 'src/enumerations.dart';
 export 'src/error.dart';
 export 'src/extensions.dart';
 export 'src/json/runner_settings.dart';

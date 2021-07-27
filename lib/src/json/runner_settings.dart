@@ -1,9 +1,29 @@
 /// Provides the [RunnerSettings] class.
+import 'dart:io';
+
 import 'package:json_annotation/json_annotation.dart';
 
-import '../enumerations.dart';
-
 part 'runner_settings.g.dart';
+
+/// A function to load a file or directory from a JSON value.
+FileSystemEntity? pathFromValue(dynamic value) {
+  if (value == null) {
+    return null;
+  }
+  if (value is String) {
+    final d = Directory(value);
+    if (d.existsSync()) {
+      return d;
+    } else {
+      return File(value);
+    }
+  } else {
+    throw Exception('Invalid value $value.');
+  }
+}
+
+/// Convert a path to a string.
+String? pathToValue(FileSystemEntity? value) => value?.path;
 
 /// Runner settings.
 ///
@@ -13,7 +33,7 @@ part 'runner_settings.g.dart';
 class RunnerSettings {
   /// Create an instance.
   RunnerSettings(
-      {this.radarType = RadarType.echoWalls,
+      {this.wallEchoEnabled = true,
       this.maxWallFilter = 500.0,
       this.wallEchoMaxDistance = 5,
       this.wallEchoMinDelay = 0.05,
@@ -26,8 +46,8 @@ class RunnerSettings {
   factory RunnerSettings.fromJson(Map<String, dynamic> json) =>
       _$RunnerSettingsFromJson(json);
 
-  /// What sort of radar should be used.
-  final RadarType radarType;
+  /// Whether or not an echo will be heard when walking near a wall.
+  final bool wallEchoEnabled;
 
   /// The maximum filtering applied by walls.
   ///

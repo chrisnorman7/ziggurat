@@ -8,8 +8,7 @@ part of 'runner_settings.dart';
 
 RunnerSettings _$RunnerSettingsFromJson(Map<String, dynamic> json) =>
     RunnerSettings(
-      radarType: _$enumDecodeNullable(_$RadarTypeEnumMap, json['radarType']) ??
-          RadarType.echoWalls,
+      wallEchoEnabled: json['wallEchoEnabled'] as bool? ?? true,
       maxWallFilter: (json['maxWallFilter'] as num?)?.toDouble() ?? 500.0,
       wallEchoMaxDistance: json['wallEchoMaxDistance'] as int? ?? 5,
       wallEchoMinDelay: (json['wallEchoMinDelay'] as num?)?.toDouble() ?? 0.05,
@@ -24,7 +23,7 @@ RunnerSettings _$RunnerSettingsFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$RunnerSettingsToJson(RunnerSettings instance) =>
     <String, dynamic>{
-      'radarType': _$RadarTypeEnumMap[instance.radarType],
+      'wallEchoEnabled': instance.wallEchoEnabled,
       'maxWallFilter': instance.maxWallFilter,
       'wallEchoMaxDistance': instance.wallEchoMaxDistance,
       'wallEchoMinDelay': instance.wallEchoMinDelay,
@@ -33,46 +32,3 @@ Map<String, dynamic> _$RunnerSettingsToJson(RunnerSettings instance) =>
       'wallEchoGainRolloff': instance.wallEchoGainRolloff,
       'wallEchoFilterFrequency': instance.wallEchoFilterFrequency,
     };
-
-K _$enumDecode<K, V>(
-  Map<K, V> enumValues,
-  Object? source, {
-  K? unknownValue,
-}) {
-  if (source == null) {
-    throw ArgumentError(
-      'A value must be provided. Supported values: '
-      '${enumValues.values.join(', ')}',
-    );
-  }
-
-  return enumValues.entries.singleWhere(
-    (e) => e.value == source,
-    orElse: () {
-      if (unknownValue == null) {
-        throw ArgumentError(
-          '`$source` is not one of the supported values: '
-          '${enumValues.values.join(', ')}',
-        );
-      }
-      return MapEntry(unknownValue, enumValues.values.first);
-    },
-  ).key;
-}
-
-K? _$enumDecodeNullable<K, V>(
-  Map<K, V> enumValues,
-  dynamic source, {
-  K? unknownValue,
-}) {
-  if (source == null) {
-    return null;
-  }
-  return _$enumDecode<K, V>(enumValues, source, unknownValue: unknownValue);
-}
-
-const _$RadarTypeEnumMap = {
-  RadarType.disabled: 'disabled',
-  RadarType.echoWalls: 'echoWalls',
-  RadarType.echoOpenSpaces: 'echoOpenSpaces',
-};
