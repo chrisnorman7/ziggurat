@@ -17,6 +17,7 @@ void main() {
     setUp(() {
       r = Runner<GameState>(ctx, bufferCache, GameState());
     });
+    tearDown(() => r.stop());
     test('Initialisation', () {
       expect(r.ziggurat, isNull);
       expect(r.context, equals(ctx));
