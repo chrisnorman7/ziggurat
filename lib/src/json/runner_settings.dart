@@ -40,45 +40,72 @@ class RunnerSettings {
       this.wallEchoDistanceOffset = 0.01,
       this.wallEchoGain = 0.5,
       this.wallEchoGainRolloff = 0.2,
-      this.wallEchoFilterFrequency = 12000});
+      this.wallEchoFilterFrequency = 12000,
+      this.leftRightRadarEnabled = true,
+      this.leftRightRadarGain = 0.7,
+      this.leftRightRadarDistance = 10,
+      this.leftRightRadarEmptySpaceSound,
+      this.leftRightRadarDoorSound,
+      this.leftRightRadarWallSound});
 
   /// Create an instance from a JSON object.
   factory RunnerSettings.fromJson(Map<String, dynamic> json) =>
       _$RunnerSettingsFromJson(json);
 
   /// Whether or not an echo will be heard when walking near a wall.
-  final bool wallEchoEnabled;
+  bool wallEchoEnabled;
 
   /// The maximum filtering applied by walls.
   ///
   /// When sounds are filtered through walls, this value is the lowest frequency
   /// cutoff allowed.
-  final double maxWallFilter;
+  double maxWallFilter;
 
   /// The maximum distance to play wall echoes.
-  final int wallEchoMaxDistance;
+  int wallEchoMaxDistance;
 
   /// The minimum number of seconds before a wall echo will play.
-  final double wallEchoMinDelay;
+  double wallEchoMinDelay;
 
   /// A number that will be multiplied by the distance between the player and
   /// the nearest wall, and then added to [wallEchoMinDelay] to get the amount
   /// of time it will take for a wall echo to play.
-  final double wallEchoDistanceOffset;
+  double wallEchoDistanceOffset;
 
   /// The starting gain for wall echoes.
-  final double wallEchoGain;
+  double wallEchoGain;
 
   /// The amount to reduce echo gain by over distance.
   ///
   /// The formula to decide the eventual echo gain will be
   /// `wallEchoGain - (distance * wallEchoGainRolloff)`.
-  final double wallEchoGainRolloff;
+  double wallEchoGainRolloff;
 
   /// How much wall echoes are filtered by.
   ///
   /// Frequencies above this value will be removed from the signal.
-  final double wallEchoFilterFrequency;
+  double wallEchoFilterFrequency;
+
+  /// Whether or not the left/right radar will be enabled.
+  bool leftRightRadarEnabled;
+
+  /// The gain of left right sounds.
+  double leftRightRadarGain;
+
+  /// The distance over which the left/right radar will work.
+  double leftRightRadarDistance;
+
+  /// The empty space sound to use when [leftRightRadarEnabled] is `true`.
+  @JsonKey(fromJson: pathFromValue, toJson: pathToValue)
+  FileSystemEntity? leftRightRadarEmptySpaceSound;
+
+  /// The door sound to use when [leftRightRadarEnabled] is enabled.
+  @JsonKey(fromJson: pathFromValue, toJson: pathToValue)
+  FileSystemEntity? leftRightRadarDoorSound;
+
+  /// The wall sound to use when [leftRightRadarEnabled] is `true`.
+  @JsonKey(fromJson: pathFromValue, toJson: pathToValue)
+  FileSystemEntity? leftRightRadarWallSound;
 
   /// Convert an instance to JSON.
   Map<String, dynamic> toJson() => _$RunnerSettingsToJson(this);

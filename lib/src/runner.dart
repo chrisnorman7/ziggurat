@@ -16,6 +16,7 @@ import 'directions.dart';
 import 'error.dart';
 import 'extensions.dart';
 import 'json/runner_settings.dart';
+import 'left_right_radar.dart';
 import 'math.dart';
 import 'message.dart';
 import 'random_sound.dart';
@@ -30,6 +31,7 @@ class Runner<T> {
       {RunnerSettings? rSettings})
       : _tiles = [],
         runnerSettings = rSettings ?? RunnerSettings(),
+        leftRightRadarState = LeftRightRadarState(),
         _spatialHash = null,
         _reverbs = {},
         random = Random(),
@@ -52,12 +54,10 @@ class Runner<T> {
   /// The settings for this runner.
   final RunnerSettings runnerSettings;
 
+  /// The state of the left/right radar.
+  final LeftRightRadarState leftRightRadarState;
+
   /// The box that represents the player.
-  ///
-  /// The coordinates of the player box are ignored in favour of [coordinates].
-  ///
-  /// This is because it would be computationally expensive to move the player
-  /// box all the time, and nothing has happened to change my mind yet.
   final Box<Player> player;
 
   /// The send that is used by wall echoes.
@@ -241,6 +241,9 @@ class Runner<T> {
           if (runnerSettings.wallEchoEnabled) {
             playWallEchoes(source);
           }
+          if (runnerSettings.leftRightRadarEnabled) {
+            playLeftRightRadar();
+          }
         }
         if (nb != cb) {
           cb?.onExit(this, player, coordinates);
@@ -294,6 +297,9 @@ class Runner<T> {
   /// This method cancels all random sound timers, and prepares this object for
   /// garbage collection.
   void stop() {
+    leftRightRadarState
+      ..westBox = null
+      ..eastBox = null;
     for (final timer in _randomSoundTimers.values) {
       timer.cancel();
     }
@@ -451,6 +457,24 @@ class Runner<T> {
     return s;
   }
 
+  /// Play a sound in 3d.
+  Source3D playSound3D(FileSystemEntity sound, Point<double> position,
+      {double gain = 0.7, bool reverb = true}) {
+    final f = sound.ensureFile(random);
+    final s = Source3D(context)
+      ..position = Double3(position.x, position.y, 0.0)
+      ..gain = gain
+      ..configDeleteBehavior(linger: true);
+    if (reverb) {
+      reverberateSource(s, position.floor());
+    }
+    final g = BufferGenerator(context)
+      ..configDeleteBehavior(linger: true)
+      ..setBuffer(bufferCache.getBuffer(f));
+    s.addGenerator(g);
+    return s;
+  }
+
   /// Add wall echoes to a sound.
   void playWallEchoes(DirectSource source) {
     final c = coordinates.floor();
@@ -504,6 +528,71 @@ class Runner<T> {
           filter: context.synthizer
               .designLowpass(runnerSettings.wallEchoFilterFrequency));
     }
+  }
+
+  /// Play the radar sound in the given direction.
+  Box<Wall>? playLeftRightRadarDirection(
+      Point<double> from, double direction, Box<Wall>? currentObject) {
+    final doorSound = runnerSettings.leftRightRadarDoorSound;
+    final wallSound = runnerSettings.leftRightRadarWallSound;
+    Point<double> boxCoordinates = from;
+    for (var distance = 0.0;
+        distance <= runnerSettings.leftRightRadarDistance;
+        distance++) {
+      boxCoordinates = coordinatesInDirection(from, direction, distance);
+      final box = getBox(boxCoordinates.floor());
+      if (box is Box<Wall>) {
+        if (box == currentBox) {
+          continue;
+        }
+        final FileSystemEntity sound;
+        if (box is Box<Door>) {
+          if (doorSound == null) {
+            continue;
+          }
+          sound = doorSound;
+        } else {
+          if (wallSound == null) {
+            continue;
+          }
+          sound = wallSound;
+        }
+        if (currentObject == null || box != currentObject) {
+          playSound3D(
+            sound,
+            boxCoordinates,
+            gain: runnerSettings.leftRightRadarGain,
+            reverb: false,
+          );
+          return box;
+        } else {
+          return currentObject;
+        }
+      }
+    }
+    // We have not returned yet, so there is empty space in the given direction.
+    if (currentObject == null) {
+      // The player already knows that.
+      return null;
+    }
+    final emptySpaceSound = runnerSettings.leftRightRadarEmptySpaceSound;
+    if (emptySpaceSound != null) {
+      playSound3D(emptySpaceSound, boxCoordinates, reverb: false);
+    }
+  }
+
+  /// Play the left/right radar sounds.
+  void playLeftRightRadar({Point<double>? from}) {
+    from ??= coordinates;
+    leftRightRadarState
+      ..eastBox = playLeftRightRadarDirection(
+          from,
+          normaliseAngle(heading + Directions.east),
+          leftRightRadarState.eastBox)
+      ..westBox = playLeftRightRadarDirection(
+          from,
+          normaliseAngle(heading + Directions.west),
+          leftRightRadarState.westBox);
   }
 
   /// Output some text.

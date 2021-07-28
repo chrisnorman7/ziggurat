@@ -19,6 +19,15 @@ RunnerSettings _$RunnerSettingsFromJson(Map<String, dynamic> json) =>
           (json['wallEchoGainRolloff'] as num?)?.toDouble() ?? 0.2,
       wallEchoFilterFrequency:
           (json['wallEchoFilterFrequency'] as num?)?.toDouble() ?? 12000,
+      leftRightRadarEnabled: json['leftRightRadarEnabled'] as bool? ?? true,
+      leftRightRadarGain:
+          (json['leftRightRadarGain'] as num?)?.toDouble() ?? 0.7,
+      leftRightRadarDistance:
+          (json['leftRightRadarDistance'] as num?)?.toDouble() ?? 10,
+      leftRightRadarEmptySpaceSound:
+          pathFromValue(json['leftRightRadarEmptySpaceSound']),
+      leftRightRadarDoorSound: pathFromValue(json['leftRightRadarDoorSound']),
+      leftRightRadarWallSound: pathFromValue(json['leftRightRadarWallSound']),
     );
 
 Map<String, dynamic> _$RunnerSettingsToJson(RunnerSettings instance) =>
@@ -31,4 +40,11 @@ Map<String, dynamic> _$RunnerSettingsToJson(RunnerSettings instance) =>
       'wallEchoGain': instance.wallEchoGain,
       'wallEchoGainRolloff': instance.wallEchoGainRolloff,
       'wallEchoFilterFrequency': instance.wallEchoFilterFrequency,
+      'leftRightRadarEnabled': instance.leftRightRadarEnabled,
+      'leftRightRadarGain': instance.leftRightRadarGain,
+      'leftRightRadarDistance': instance.leftRightRadarDistance,
+      'leftRightRadarEmptySpaceSound':
+          pathToValue(instance.leftRightRadarEmptySpaceSound),
+      'leftRightRadarDoorSound': pathToValue(instance.leftRightRadarDoorSound),
+      'leftRightRadarWallSound': pathToValue(instance.leftRightRadarWallSound),
     };

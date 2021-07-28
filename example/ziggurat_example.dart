@@ -15,7 +15,14 @@ class ExampleRunner extends Runner<GameState> {
   /// Create an instance.
   ExampleRunner(Context ctx, BufferCache cache, Ziggurat z)
       : super(ctx, cache, GameState(),
-            Box('Player', Point(0, 0), Point(0, 0), Player())) {
+            Box('Player', Point(0, 0), Point(0, 0), Player()),
+            rSettings: RunnerSettings(
+                leftRightRadarEmptySpaceSound:
+                    File('sounds/radar/141121__eternitys__interface1.wav'),
+                leftRightRadarWallSound:
+                    File('sounds/radar/411639__inspectorj__pop-low-a-h1.wav'),
+                leftRightRadarDoorSound:
+                    File('sounds/radar/260614__kwahmah-02__pop.wav'))) {
     ziggurat = z;
   }
   @override
