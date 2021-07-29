@@ -22,6 +22,7 @@ export 'src/error.dart';
 export 'src/extensions.dart';
 export 'src/json/runner_settings.dart';
 export 'src/left_right_radar.dart';
+export 'src/math.dart';
 export 'src/message.dart';
 export 'src/quest.dart';
 export 'src/random_sound.dart';
