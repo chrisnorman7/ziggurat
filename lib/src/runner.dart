@@ -574,8 +574,11 @@ class Runner<T> {
     }
     // We have not returned yet, so there is empty space in the given direction.
     if (currentObject == null) {
-      // The player already knows that.
-      return null;
+      // The radar has already noticed.
+      if (runnerSettings.directionalRadarAlertOnChange == true) {
+        /// The player doesn't want to be alerted again.
+        return null;
+      }
     }
     final emptySpaceSound = runnerSettings.directionalRadarEmptySpaceSound;
     if (emptySpaceSound != null) {
@@ -588,8 +591,15 @@ class Runner<T> {
     from ??= coordinates;
     for (final i in runnerSettings.directionalRadarDirections) {
       final direction = normaliseAngle(heading + i);
-      directionalRadarState[i] = playDirectionalRadarDirection(
-          from, direction, directionalRadarState[i]);
+      final b = playDirectionalRadarDirection(
+          from,
+          direction,
+          runnerSettings.directionalRadarAlertOnChange == true
+              ? directionalRadarState[i]
+              : null);
+      if (runnerSettings.directionalRadarAlertOnChange == true) {
+        directionalRadarState[i] = b;
+      }
     }
   }
 

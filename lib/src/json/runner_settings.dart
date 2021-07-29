@@ -48,7 +48,8 @@ class RunnerSettings {
       this.directionalRadarDoorSound,
       this.directionalRadarWallSound,
       this.directionalRadarDirections = const [0, 90, 270],
-      this.directionalRadarResetOnTurn = true});
+      this.directionalRadarResetOnTurn = true,
+      this.directionalRadarAlertOnChange = false});
 
   /// Create an instance from a JSON object.
   factory RunnerSettings.fromJson(Map<String, dynamic> json) =>
@@ -113,7 +114,10 @@ class RunnerSettings {
   final List<int> directionalRadarDirections;
 
   /// Whether or not to reset the directional radar when turning.
-  final bool directionalRadarResetOnTurn;
+  bool directionalRadarResetOnTurn;
+
+  /// Whether the directional radar should only ping when things change.
+  bool directionalRadarAlertOnChange;
 
   /// Convert an instance to JSON.
   Map<String, dynamic> toJson() => _$RunnerSettingsToJson(this);
