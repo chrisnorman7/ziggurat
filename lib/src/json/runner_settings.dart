@@ -49,7 +49,7 @@ class RunnerSettings {
       this.directionalRadarWallSound,
       this.directionalRadarDirections = const [0, 90, 270],
       this.directionalRadarResetOnTurn = true,
-      this.directionalRadarAlertOnChange = false});
+      this.directionalRadarAlertOnChange = true});
 
   /// Create an instance from a JSON object.
   factory RunnerSettings.fromJson(Map<String, dynamic> json) =>
