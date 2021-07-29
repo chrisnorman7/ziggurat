@@ -6,7 +6,9 @@ import 'dart:io';
 
 import 'package:dart_synthizer/dart_synthizer.dart';
 
+import 'src/directions.dart';
 import 'src/extensions.dart';
+import 'src/math.dart';
 import 'src/runner.dart';
 
 /// A basic command line interface for working with a single runner.
@@ -80,7 +82,9 @@ class BasicInterface {
           runner.turn(-45);
           break;
         case 's':
-          runner.turn(180);
+          runner.move(
+              bearing: normaliseAngle(runner.heading + Directions.south),
+              distance: 0.5);
           break;
         case 'z':
           final source = runner.playSound(echoSound, reverb: false);
