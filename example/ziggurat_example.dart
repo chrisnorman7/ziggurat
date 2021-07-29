@@ -17,11 +17,11 @@ class ExampleRunner extends Runner<GameState> {
       : super(ctx, cache, GameState(),
             Box('Player', Point(0, 0), Point(0, 0), Player()),
             rSettings: RunnerSettings(
-                leftRightRadarEmptySpaceSound:
+                directionalRadarEmptySpaceSound:
                     File('sounds/radar/141121__eternitys__interface1.wav'),
-                leftRightRadarWallSound:
+                directionalRadarWallSound:
                     File('sounds/radar/411639__inspectorj__pop-low-a-h1.wav'),
-                leftRightRadarDoorSound:
+                directionalRadarDoorSound:
                     File('sounds/radar/260614__kwahmah-02__pop.wav'))) {
     ziggurat = z;
   }

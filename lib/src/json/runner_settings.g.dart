@@ -19,15 +19,22 @@ RunnerSettings _$RunnerSettingsFromJson(Map<String, dynamic> json) =>
           (json['wallEchoGainRolloff'] as num?)?.toDouble() ?? 0.2,
       wallEchoFilterFrequency:
           (json['wallEchoFilterFrequency'] as num?)?.toDouble() ?? 12000,
-      leftRightRadarEnabled: json['leftRightRadarEnabled'] as bool? ?? true,
-      leftRightRadarGain:
-          (json['leftRightRadarGain'] as num?)?.toDouble() ?? 0.7,
-      leftRightRadarDistance:
-          (json['leftRightRadarDistance'] as num?)?.toDouble() ?? 10,
-      leftRightRadarEmptySpaceSound:
-          pathFromValue(json['leftRightRadarEmptySpaceSound']),
-      leftRightRadarDoorSound: pathFromValue(json['leftRightRadarDoorSound']),
-      leftRightRadarWallSound: pathFromValue(json['leftRightRadarWallSound']),
+      directionalRadarEnabled: json['directionalRadarEnabled'] as bool? ?? true,
+      directionalRadarGain:
+          (json['directionalRadarGain'] as num?)?.toDouble() ?? 0.7,
+      directionalRadarDistance:
+          (json['directionalRadarDistance'] as num?)?.toDouble() ?? 10,
+      directionalRadarEmptySpaceSound:
+          pathFromValue(json['directionalRadarEmptySpaceSound']),
+      directionalRadarDoorSound:
+          pathFromValue(json['directionalRadarDoorSound']),
+      directionalRadarWallSound:
+          pathFromValue(json['directionalRadarWallSound']),
+      directionalRadarDirections:
+          (json['directionalRadarDirections'] as List<dynamic>?)
+                  ?.map((dynamic e) => e as int)
+                  .toList() ??
+              const [0, 90, 270],
     );
 
 Map<String, dynamic> _$RunnerSettingsToJson(RunnerSettings instance) =>
@@ -40,11 +47,14 @@ Map<String, dynamic> _$RunnerSettingsToJson(RunnerSettings instance) =>
       'wallEchoGain': instance.wallEchoGain,
       'wallEchoGainRolloff': instance.wallEchoGainRolloff,
       'wallEchoFilterFrequency': instance.wallEchoFilterFrequency,
-      'leftRightRadarEnabled': instance.leftRightRadarEnabled,
-      'leftRightRadarGain': instance.leftRightRadarGain,
-      'leftRightRadarDistance': instance.leftRightRadarDistance,
-      'leftRightRadarEmptySpaceSound':
-          pathToValue(instance.leftRightRadarEmptySpaceSound),
-      'leftRightRadarDoorSound': pathToValue(instance.leftRightRadarDoorSound),
-      'leftRightRadarWallSound': pathToValue(instance.leftRightRadarWallSound),
+      'directionalRadarEnabled': instance.directionalRadarEnabled,
+      'directionalRadarGain': instance.directionalRadarGain,
+      'directionalRadarDistance': instance.directionalRadarDistance,
+      'directionalRadarEmptySpaceSound':
+          pathToValue(instance.directionalRadarEmptySpaceSound),
+      'directionalRadarDoorSound':
+          pathToValue(instance.directionalRadarDoorSound),
+      'directionalRadarWallSound':
+          pathToValue(instance.directionalRadarWallSound),
+      'directionalRadarDirections': instance.directionalRadarDirections,
     };

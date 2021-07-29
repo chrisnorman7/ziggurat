@@ -41,12 +41,13 @@ class RunnerSettings {
       this.wallEchoGain = 0.5,
       this.wallEchoGainRolloff = 0.2,
       this.wallEchoFilterFrequency = 12000,
-      this.leftRightRadarEnabled = true,
-      this.leftRightRadarGain = 0.7,
-      this.leftRightRadarDistance = 10,
-      this.leftRightRadarEmptySpaceSound,
-      this.leftRightRadarDoorSound,
-      this.leftRightRadarWallSound});
+      this.directionalRadarEnabled = true,
+      this.directionalRadarGain = 0.7,
+      this.directionalRadarDistance = 10,
+      this.directionalRadarEmptySpaceSound,
+      this.directionalRadarDoorSound,
+      this.directionalRadarWallSound,
+      this.directionalRadarDirections = const [0, 90, 270]});
 
   /// Create an instance from a JSON object.
   factory RunnerSettings.fromJson(Map<String, dynamic> json) =>
@@ -87,25 +88,28 @@ class RunnerSettings {
   double wallEchoFilterFrequency;
 
   /// Whether or not the left/right radar will be enabled.
-  bool leftRightRadarEnabled;
+  bool directionalRadarEnabled;
 
   /// The gain of left right sounds.
-  double leftRightRadarGain;
+  double directionalRadarGain;
 
   /// The distance over which the left/right radar will work.
-  double leftRightRadarDistance;
+  double directionalRadarDistance;
 
-  /// The empty space sound to use when [leftRightRadarEnabled] is `true`.
+  /// The empty space sound to use when [directionalRadarEnabled] is `true`.
   @JsonKey(fromJson: pathFromValue, toJson: pathToValue)
-  FileSystemEntity? leftRightRadarEmptySpaceSound;
+  FileSystemEntity? directionalRadarEmptySpaceSound;
 
-  /// The door sound to use when [leftRightRadarEnabled] is enabled.
+  /// The door sound to use when [directionalRadarEnabled] is enabled.
   @JsonKey(fromJson: pathFromValue, toJson: pathToValue)
-  FileSystemEntity? leftRightRadarDoorSound;
+  FileSystemEntity? directionalRadarDoorSound;
 
-  /// The wall sound to use when [leftRightRadarEnabled] is `true`.
+  /// The wall sound to use when [directionalRadarEnabled] is `true`.
   @JsonKey(fromJson: pathFromValue, toJson: pathToValue)
-  FileSystemEntity? leftRightRadarWallSound;
+  FileSystemEntity? directionalRadarWallSound;
+
+  /// The directions to scan when [directionalRadarEnabled] is `true`.
+  final List<int> directionalRadarDirections;
 
   /// Convert an instance to JSON.
   Map<String, dynamic> toJson() => _$RunnerSettingsToJson(this);

@@ -16,7 +16,6 @@ import 'directions.dart';
 import 'error.dart';
 import 'extensions.dart';
 import 'json/runner_settings.dart';
-import 'left_right_radar.dart';
 import 'math.dart';
 import 'message.dart';
 import 'random_sound.dart';
@@ -31,7 +30,7 @@ class Runner<T> {
       {RunnerSettings? rSettings})
       : _tiles = [],
         runnerSettings = rSettings ?? RunnerSettings(),
-        leftRightRadarState = LeftRightRadarState(),
+        directionalRadarState = {},
         _spatialHash = null,
         _reverbs = {},
         random = Random(),
@@ -55,7 +54,7 @@ class Runner<T> {
   final RunnerSettings runnerSettings;
 
   /// The state of the left/right radar.
-  final LeftRightRadarState leftRightRadarState;
+  final Map<int, Box<Wall>?> directionalRadarState;
 
   /// The box that represents the player.
   final Box<Player> player;
@@ -241,8 +240,8 @@ class Runner<T> {
           if (runnerSettings.wallEchoEnabled) {
             playWallEchoes(source);
           }
-          if (runnerSettings.leftRightRadarEnabled) {
-            playLeftRightRadar();
+          if (runnerSettings.directionalRadarEnabled) {
+            playDirectionalRadar();
           }
         }
         if (nb != cb) {
@@ -297,9 +296,7 @@ class Runner<T> {
   /// This method cancels all random sound timers, and prepares this object for
   /// garbage collection.
   void stop() {
-    leftRightRadarState
-      ..westBox = null
-      ..eastBox = null;
+    directionalRadarState.clear();
     for (final timer in _randomSoundTimers.values) {
       timer.cancel();
     }
@@ -531,13 +528,13 @@ class Runner<T> {
   }
 
   /// Play the radar sound in the given direction.
-  Box<Wall>? playLeftRightRadarDirection(
+  Box<Wall>? playDirectionalRadarDirection(
       Point<double> from, double direction, Box<Wall>? currentObject) {
-    final doorSound = runnerSettings.leftRightRadarDoorSound;
-    final wallSound = runnerSettings.leftRightRadarWallSound;
+    final doorSound = runnerSettings.directionalRadarDoorSound;
+    final wallSound = runnerSettings.directionalRadarWallSound;
     Point<double> boxCoordinates = from;
     for (var distance = 0.0;
-        distance <= runnerSettings.leftRightRadarDistance;
+        distance <= runnerSettings.directionalRadarDistance;
         distance++) {
       boxCoordinates = coordinatesInDirection(from, direction, distance);
       final box = getBox(boxCoordinates.floor());
@@ -561,7 +558,7 @@ class Runner<T> {
           playSound3D(
             sound,
             boxCoordinates,
-            gain: runnerSettings.leftRightRadarGain,
+            gain: runnerSettings.directionalRadarGain,
             reverb: false,
           );
           return box;
@@ -575,26 +572,20 @@ class Runner<T> {
       // The player already knows that.
       return null;
     }
-    final emptySpaceSound = runnerSettings.leftRightRadarEmptySpaceSound;
+    final emptySpaceSound = runnerSettings.directionalRadarEmptySpaceSound;
     if (emptySpaceSound != null) {
       playSound3D(emptySpaceSound, boxCoordinates, reverb: false);
     }
   }
 
-  /// Play the left/right radar sounds.
-  void playLeftRightRadar({Point<double>? from}) {
+  /// Play the directional radar sounds.
+  void playDirectionalRadar({Point<double>? from}) {
     from ??= coordinates;
-    leftRightRadarState
-      ..eastBox = playLeftRightRadarDirection(
-          from,
-          normaliseAngle(heading + Directions.east),
-          leftRightRadarState.eastBox)
-      ..westBox = playLeftRightRadarDirection(
-          from,
-          normaliseAngle(heading + Directions.west),
-          leftRightRadarState.westBox)
-      ..northBox = playLeftRightRadarDirection(
-          from, normaliseAngle(heading), leftRightRadarState.northBox);
+    for (final i in runnerSettings.directionalRadarDirections) {
+      final direction = normaliseAngle(heading + i);
+      directionalRadarState[i] = playDirectionalRadarDirection(
+          from, direction, directionalRadarState[i]);
+    }
   }
 
   /// Output some text.
