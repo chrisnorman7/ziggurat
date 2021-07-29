@@ -35,6 +35,8 @@ RunnerSettings _$RunnerSettingsFromJson(Map<String, dynamic> json) =>
                   ?.map((dynamic e) => e as int)
                   .toList() ??
               const [0, 90, 270],
+      directionalRadarResetOnTurn:
+          json['directionalRadarResetOnTurn'] as bool? ?? true,
     );
 
 Map<String, dynamic> _$RunnerSettingsToJson(RunnerSettings instance) =>
@@ -57,4 +59,5 @@ Map<String, dynamic> _$RunnerSettingsToJson(RunnerSettings instance) =>
       'directionalRadarWallSound':
           pathToValue(instance.directionalRadarWallSound),
       'directionalRadarDirections': instance.directionalRadarDirections,
+      'directionalRadarResetOnTurn': instance.directionalRadarResetOnTurn,
     };

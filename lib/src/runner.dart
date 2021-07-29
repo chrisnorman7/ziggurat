@@ -254,7 +254,12 @@ class Runner<T> {
   }
 
   /// Turn by the specified amount.
-  void turn(double amount) => heading = normaliseAngle(heading + amount);
+  void turn(double amount) {
+    heading = normaliseAngle(heading + amount);
+    if (runnerSettings.directionalRadarResetOnTurn == true) {
+      directionalRadarState.clear();
+    }
+  }
 
   /// Schedule the playing of a random sound.
   void scheduleRandomSound(RandomSound sound) {
