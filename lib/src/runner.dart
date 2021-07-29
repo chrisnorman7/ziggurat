@@ -592,7 +592,9 @@ class Runner<T> {
       ..westBox = playLeftRightRadarDirection(
           from,
           normaliseAngle(heading + Directions.west),
-          leftRightRadarState.westBox);
+          leftRightRadarState.westBox)
+      ..northBox = playLeftRightRadarDirection(
+          from, normaliseAngle(heading), leftRightRadarState.northBox);
   }
 
   /// Output some text.

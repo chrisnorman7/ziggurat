@@ -9,4 +9,7 @@ class LeftRightRadarState {
 
   /// The current object to the east.
   Box<Wall>? eastBox;
+
+  /// The current object to the north.
+  Box<Wall>? northBox;
 }
