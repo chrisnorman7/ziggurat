@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'box.dart';
 import 'box_types/agents/player.dart';
+import 'event_loop.dart';
 import 'runner.dart';
 import 'ziggurat.dart';
 
@@ -73,4 +74,13 @@ class PlayerInBoxesError extends ZigguratError {
 
   /// The ziggurat that [player] was included in.
   final Ziggurat ziggurat;
+}
+
+/// An [EventLoop] instance is in an invalid state.
+class InvalidStateError extends ZigguratError {
+  /// Create an error.
+  InvalidStateError(this.eventLoop);
+
+  /// The loop which is already running.
+  final EventLoop eventLoop;
 }

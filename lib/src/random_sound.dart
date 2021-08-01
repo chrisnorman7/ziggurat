@@ -24,6 +24,8 @@ class RandomSound {
   final int minInterval;
 
   /// The maximum number of milliseconds between this sound playing.
+  ///
+  /// This number will be added to [minInterval] to get the final interval.
   final int maxInterval;
 
   /// The minimum gain.
@@ -31,4 +33,7 @@ class RandomSound {
 
   /// The maximum gain.
   final double maxGain;
+
+  /// The time this sound will play next.
+  int? nextPlay;
 }

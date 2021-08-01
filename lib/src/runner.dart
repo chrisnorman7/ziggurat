@@ -1,5 +1,4 @@
 /// Provides the [Runner] class.
-import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 
@@ -35,7 +34,6 @@ class Runner<T> {
         _reverbs = {},
         random = Random(),
         _randomSoundContainers = {},
-        _randomSoundTimers = {},
         _ambianceSources = {};
 
   /// The synthizer context to use.
@@ -73,9 +71,6 @@ class Runner<T> {
 
   /// A dictionary to old random sound timers.
   final Map<RandomSound, RandomSoundContainer> _randomSoundContainers;
-
-  /// A dictionary for holding random sound timers.
-  final Map<RandomSound, Timer> _randomSoundTimers;
 
   /// A dictionary to hold ambiance sources.
   final Map<Ambiance, Source> _ambianceSources;
@@ -139,7 +134,6 @@ class Runner<T> {
       }
       heading = value.initialHeading;
       coordinates = value.initialCoordinates;
-      value.randomSounds.forEach(scheduleRandomSound);
       value.ambiances.forEach(startAmbiance);
       final cb = currentBox;
       if (cb != null) {
@@ -261,17 +255,6 @@ class Runner<T> {
     }
   }
 
-  /// Schedule the playing of a random sound.
-  void scheduleRandomSound(RandomSound sound) {
-    final t = Timer(
-        Duration(
-            milliseconds:
-                sound.minInterval + random.nextInt(sound.maxInterval)), () {
-      playRandomSound(sound);
-    });
-    _randomSoundTimers[sound] = t;
-  }
-
   /// Start an ambiance playing.
   void startAmbiance(Ambiance ambiance) {
     final p = ambiance.position;
@@ -302,10 +285,6 @@ class Runner<T> {
   /// garbage collection.
   void stop() {
     directionalRadarState.clear();
-    for (final timer in _randomSoundTimers.values) {
-      timer.cancel();
-    }
-    _randomSoundTimers.clear();
     _randomSoundContainers.clear();
     for (final source in _ambianceSources.values) {
       source.destroy();
@@ -323,7 +302,6 @@ class Runner<T> {
   /// Play a random sound.
   void playRandomSound(RandomSound sound) {
     _randomSoundContainers.remove(sound);
-    _randomSoundTimers.remove(sound);
     final f = sound.path.ensureFile(random);
     final soundPosition = Point<double>(
         sound.minCoordinates.x +
@@ -344,7 +322,6 @@ class Runner<T> {
       ..setBuffer(bufferCache.getBuffer(f));
     s.addGenerator(g);
     _randomSoundContainers[sound] = RandomSoundContainer(soundPosition, s);
-    scheduleRandomSound(sound);
   }
 
   /// Add reverb to a source if necessary.

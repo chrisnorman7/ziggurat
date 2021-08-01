@@ -36,7 +36,7 @@ Future<void> main() async {
     }
   }
   final runner = ExampleRunner(ctx, BufferCache(synthizer, 1024 ^ 3), z);
-  final interface = BasicInterface(synthizer, runner,
+  final interface = BasicInterface(runner,
       File('sounds/399934__old-waveplay__perc-short-click-snap-perc.wav'));
-  await interface.run();
+  await for (final _ in interface.run()) {}
 }

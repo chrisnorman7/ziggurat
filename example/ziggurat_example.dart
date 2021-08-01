@@ -112,7 +112,7 @@ Future<void> main() async {
       ],
       coordinates: mainFloor.start.toDouble());
   final r = ExampleRunner(ctx, bufferCache, t);
-  final interface = BasicInterface(synthizer, r,
-      File('sounds/399934__old-waveplay__perc-short-click-snap-perc.wav'));
-  await interface.run();
+  final interface = BasicInterface(
+      r, File('sounds/399934__old-waveplay__perc-short-click-snap-perc.wav'));
+  await for (final _ in interface.run()) {}
 }
