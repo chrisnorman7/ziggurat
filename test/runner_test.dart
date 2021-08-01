@@ -9,19 +9,24 @@ import 'package:ziggurat/ziggurat.dart';
 class GameState {}
 
 void main() {
+  final synthizer = Synthizer();
   group('Tests requiring Synthizer', () {
-    final synthizer = Synthizer()..initialize();
-    final ctx = Context(synthizer);
+    setUpAll(synthizer.initialize);
+    tearDownAll(synthizer.shutdown);
     final bufferCache = BufferCache(synthizer, pow(1024, 3).floor());
     late Runner<GameState> r;
     setUp(() {
+      final ctx = synthizer.createContext();
       r = Runner<GameState>(ctx, bufferCache, GameState(),
           Box('Player', Point(0, 0), Point(0, 0), Player()));
     });
-    tearDown(() => r.stop());
+    tearDown(() {
+      r.stop();
+      r.context.destroy();
+    });
     test('Initialisation', () {
       expect(r.ziggurat, isNull);
-      expect(r.context, equals(ctx));
+      expect(r.context, isA<Context>());
       expect(r.coordinates, equals(Point<double>(0.0, 0.0)));
     });
     test('Check game state', () {
