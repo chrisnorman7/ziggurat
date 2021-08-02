@@ -104,5 +104,5 @@ class EventLoop {
   }
 
   /// Tick the loop.
-  void tick() async {}
+  void tick() {}
 }
