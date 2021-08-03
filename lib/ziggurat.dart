@@ -22,6 +22,7 @@ export 'src/error.dart';
 export 'src/event_loop.dart';
 export 'src/extensions.dart';
 export 'src/json/runner_settings.dart';
+export 'src/json/vault_file.dart';
 export 'src/math.dart';
 export 'src/message.dart';
 export 'src/quest.dart';

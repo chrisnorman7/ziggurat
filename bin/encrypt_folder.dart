@@ -1,15 +1,16 @@
 // ignore_for_file: avoid_print
-/// Allows the encryption of a folder of files.
-import 'dart:convert';
+/// Allows the encryption of a folder of files and subdirectories.
 import 'dart:io';
 
 import 'package:args/args.dart';
 import 'package:encrypt/encrypt.dart';
+import 'package:ziggurat/ziggurat.dart';
 
 void main(List<String> args) {
   final parser = ArgParser()
     ..addFlag('help',
-        abbr: 'h', negatable: false, help: 'Show help for this script');
+        abbr: 'h', negatable: false, help: 'Show help for this script')
+    ..addOption('key', abbr: 'k', help: 'The encryption key to use');
   final ArgResults results;
   try {
     results = parser.parse(args);
@@ -26,25 +27,30 @@ void main(List<String> args) {
     return print('Error: That folder does not exist.');
   }
   print('Encrypting folder $folderName.');
-  final files = <String, List<int>>{};
-  for (final file in folder.listSync()) {
-    final f = file.path.replaceAll(Platform.pathSeparator, '/');
-    if (file is Directory) {
-      print('Skipping subdirectory $f.');
-    } else if (file is File) {
+  final vaultFile = VaultFile();
+  for (final item in folder.listSync()) {
+    final f = item.path.replaceAll(Platform.pathSeparator, '/');
+    if (item is Directory) {
+      print('Adding subdirectory $f.');
+      final l = <List<int>>[];
+      for (final file in item.listSync()) {
+        if (file is File) {
+          l.add(file.readAsBytesSync());
+        } else {
+          print('Skipping ${file.path}.');
+        }
+      }
+      vaultFile.folders[f] = l;
+    } else if (item is File) {
       print('Adding file $f.');
-      files[f] = file.readAsBytesSync();
+      vaultFile.files[f] = item.readAsBytesSync();
     } else {
-      print('Skipping $file.');
+      print('Skipping $item.');
     }
   }
-  final json = jsonEncode(files);
-  final key = Key.fromSecureRandom(32);
-  print("final encryptionKey = '${key.base64}';");
-  final iv = IV.fromLength(16);
-  final encrypter = Encrypter(AES(key));
-  final encrypted = encrypter.encrypt(json, iv: iv);
-  final outputFile = File(results.rest.last)
-    ..writeAsStringSync(encrypted.base64);
+  final key = (results['key'] as String?) ?? Key.fromSecureRandom(32).base64;
+  print("final encryptionKey = '$key';");
+  final data = vaultFile.toEncryptedString(encryptionKey: key);
+  final outputFile = File(results.rest.last)..writeAsStringSync(data);
   print("final inputFile = File('${outputFile.path}');");
 }
