@@ -2,9 +2,9 @@
 import 'dart:async';
 
 import '../box.dart';
-import '../message.dart';
-import '../reverb_preset.dart';
+import '../json/message.dart';
 import '../runner.dart';
+import '../sound/reverb_preset.dart';
 import 'agents/agent.dart';
 import 'wall.dart';
 

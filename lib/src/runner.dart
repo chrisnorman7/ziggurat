@@ -1,11 +1,9 @@
 /// Provides the [Runner] class.
-import 'dart:io';
 import 'dart:math';
 
 import 'package:dart_synthizer/dart_synthizer.dart';
 import 'package:spatialhash/spatialhash.dart';
 
-import 'ambiance.dart';
 import 'box.dart';
 import 'box_types/agents/player.dart';
 import 'box_types/door.dart';
@@ -14,18 +12,21 @@ import 'box_types/wall.dart';
 import 'directions.dart';
 import 'error.dart';
 import 'extensions.dart';
+import 'json/message.dart';
 import 'json/runner_settings.dart';
+import 'json/sound_reference.dart';
 import 'math.dart';
-import 'message.dart';
-import 'random_sound.dart';
-import 'random_sound_container.dart';
+import 'sound/ambiance.dart';
+import 'sound/buffer_store.dart';
+import 'sound/random_sound.dart';
+import 'sound/random_sound_container.dart';
 import 'wall_location.dart';
 import 'ziggurat.dart';
 
 /// A class for running maps.
 class Runner<T> {
   /// Create the runner.
-  Runner(this.context, this.bufferCache, this.gameState, this.player,
+  Runner(this.context, this.bufferStore, this.gameState, this.player,
       {RunnerSettings? rSettings})
       : _tiles = [],
         runnerSettings = rSettings ?? RunnerSettings(),
@@ -40,7 +41,7 @@ class Runner<T> {
   final Context context;
 
   /// The buffer cache used by this runner.
-  final BufferCache bufferCache;
+  final BufferStore bufferStore;
 
   /// The current state of the game.
   ///
@@ -270,9 +271,10 @@ class Runner<T> {
     source
       ..gain = ambiance.gain
       ..configDeleteBehavior(linger: false);
-    final f = ambiance.path.ensureFile(random);
+    final buffer =
+        bufferStore.getBuffer(ambiance.sound.name, ambiance.sound.type);
     final g = BufferGenerator(context)
-      ..setBuffer(bufferCache.getBuffer(f))
+      ..setBuffer(buffer)
       ..looping = true
       ..configDeleteBehavior(linger: false);
     source.addGenerator(g);
@@ -302,7 +304,6 @@ class Runner<T> {
   /// Play a random sound.
   void playRandomSound(RandomSound sound) {
     _randomSoundContainers.remove(sound);
-    final f = sound.path.ensureFile(random);
     final soundPosition = Point<double>(
         sound.minCoordinates.x +
             (random.nextDouble() *
@@ -319,7 +320,7 @@ class Runner<T> {
     filterSource(s, position);
     final g = BufferGenerator(context)
       ..configDeleteBehavior(linger: true)
-      ..setBuffer(bufferCache.getBuffer(f));
+      ..setBuffer(bufferStore.getBuffer(sound.sound.name, sound.sound.type));
     s.addGenerator(g);
     _randomSoundContainers[sound] = RandomSoundContainer(soundPosition, s);
   }
@@ -420,9 +421,8 @@ class Runner<T> {
   ///
   /// A sound played via this method is not panned or occluded, but will be
   /// reverberated if [reverb] is `true`.
-  DirectSource playSound(FileSystemEntity sound,
+  DirectSource playSound(SoundReference sound,
       {double gain = 0.7, bool reverb = true}) {
-    final f = sound.ensureFile(random);
     final s = DirectSource(context)
       ..gain = gain
       ..configDeleteBehavior(linger: true);
@@ -431,15 +431,14 @@ class Runner<T> {
     }
     final g = BufferGenerator(context)
       ..configDeleteBehavior(linger: true)
-      ..setBuffer(bufferCache.getBuffer(f));
+      ..setBuffer(bufferStore.getBuffer(sound.name, sound.type));
     s.addGenerator(g);
     return s;
   }
 
   /// Play a sound in 3d.
-  Source3D playSound3D(FileSystemEntity sound, Point<double> position,
+  Source3D playSound3D(SoundReference sound, Point<double> position,
       {double gain = 0.7, bool reverb = true}) {
-    final f = sound.ensureFile(random);
     final s = Source3D(context)
       ..position = Double3(position.x, position.y, 0.0)
       ..gain = gain
@@ -449,7 +448,7 @@ class Runner<T> {
     }
     final g = BufferGenerator(context)
       ..configDeleteBehavior(linger: true)
-      ..setBuffer(bufferCache.getBuffer(f));
+      ..setBuffer(bufferStore.getBuffer(sound.name, sound.type));
     s.addGenerator(g);
     return s;
   }
@@ -524,7 +523,7 @@ class Runner<T> {
         if (box == currentBox) {
           continue;
         }
-        final FileSystemEntity sound;
+        final SoundReference sound;
         if (box is Box<Door>) {
           if (doorSound == null) {
             continue;
@@ -600,7 +599,7 @@ class Runner<T> {
         source = playSound(sound, gain: message.gain, reverb: reverberate);
       } else {
         final generator = BufferGenerator(context)
-          ..setBuffer(bufferCache.getBuffer(sound.ensureFile(random)))
+          ..setBuffer(bufferStore.getBuffer(sound.name, sound.type))
           ..configDeleteBehavior(linger: true);
         source = Source3D(context)
           ..gain = message.gain

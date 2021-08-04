@@ -25,11 +25,18 @@ RunnerSettings _$RunnerSettingsFromJson(Map<String, dynamic> json) =>
       directionalRadarDistance:
           (json['directionalRadarDistance'] as num?)?.toDouble() ?? 10,
       directionalRadarEmptySpaceSound:
-          pathFromValue(json['directionalRadarEmptySpaceSound']),
-      directionalRadarDoorSound:
-          pathFromValue(json['directionalRadarDoorSound']),
-      directionalRadarWallSound:
-          pathFromValue(json['directionalRadarWallSound']),
+          json['directionalRadarEmptySpaceSound'] == null
+              ? null
+              : SoundReference.fromJson(json['directionalRadarEmptySpaceSound']
+                  as Map<String, dynamic>),
+      directionalRadarDoorSound: json['directionalRadarDoorSound'] == null
+          ? null
+          : SoundReference.fromJson(
+              json['directionalRadarDoorSound'] as Map<String, dynamic>),
+      directionalRadarWallSound: json['directionalRadarWallSound'] == null
+          ? null
+          : SoundReference.fromJson(
+              json['directionalRadarWallSound'] as Map<String, dynamic>),
       directionalRadarDirections:
           (json['directionalRadarDirections'] as List<dynamic>?)
                   ?.map((dynamic e) => e as int)
@@ -55,11 +62,9 @@ Map<String, dynamic> _$RunnerSettingsToJson(RunnerSettings instance) =>
       'directionalRadarGain': instance.directionalRadarGain,
       'directionalRadarDistance': instance.directionalRadarDistance,
       'directionalRadarEmptySpaceSound':
-          pathToValue(instance.directionalRadarEmptySpaceSound),
-      'directionalRadarDoorSound':
-          pathToValue(instance.directionalRadarDoorSound),
-      'directionalRadarWallSound':
-          pathToValue(instance.directionalRadarWallSound),
+          instance.directionalRadarEmptySpaceSound,
+      'directionalRadarDoorSound': instance.directionalRadarDoorSound,
+      'directionalRadarWallSound': instance.directionalRadarWallSound,
       'directionalRadarDirections': instance.directionalRadarDirections,
       'directionalRadarResetOnTurn': instance.directionalRadarResetOnTurn,
       'directionalRadarAlertOnChange': instance.directionalRadarAlertOnChange,

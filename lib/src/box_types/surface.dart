@@ -1,5 +1,5 @@
 /// Provides the [Surface] class.
-import '../reverb_preset.dart';
+import '../sound/reverb_preset.dart';
 import 'base.dart';
 
 /// A simple surface that can be walked on.

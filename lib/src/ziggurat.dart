@@ -1,9 +1,9 @@
 /// Provides the [Ziggurat] class.
 import 'dart:math';
 
-import 'ambiance.dart';
 import 'box.dart';
-import 'random_sound.dart';
+import 'sound/ambiance.dart';
+import 'sound/random_sound.dart';
 
 /// A map.
 ///

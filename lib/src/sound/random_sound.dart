@@ -1,18 +1,19 @@
 /// Provides the [RandomSound] class.
-import 'dart:io';
 import 'dart:math';
+
+import '../json/sound_reference.dart';
 
 /// A random sound.
 ///
 /// This sound will be played at a random point on a map, at a random interval.
 class RandomSound {
   /// Create an instance.
-  RandomSound(this.path, this.minCoordinates, this.maxCoordinates,
+  RandomSound(this.sound, this.minCoordinates, this.maxCoordinates,
       this.minInterval, this.maxInterval,
       {this.minGain = 0.75, this.maxGain = 0.75});
 
   /// The sound to play.
-  final FileSystemEntity path;
+  final SoundReference sound;
 
   /// The minimum coordinates.
   final Point<double> minCoordinates;

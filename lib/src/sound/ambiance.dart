@@ -1,14 +1,15 @@
 /// Provides the [Ambiance] class.
-import 'dart:io';
 import 'dart:math';
+
+import '../json/sound_reference.dart';
 
 /// A constantly playing sound on a map.
 class Ambiance {
   /// Create an instance.
-  Ambiance(this.path, this.position, {this.gain = 0.75});
+  Ambiance(this.sound, this.position, {this.gain = 0.75});
 
   /// The path where the sound file is stored.
-  final FileSystemEntity path;
+  final SoundReference sound;
 
   /// The position of the sound.
   ///

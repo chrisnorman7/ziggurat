@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:math';
 
 import 'package:test/test.dart';
@@ -8,9 +7,10 @@ import 'package:ziggurat/ziggurat.dart';
 void main() {
   group('Random sounds tests', () {
     test('Initialisation', () {
-      final r = RandomSound(File('sound.wav'), Point(0, 1), Point(5, 6), 15, 30,
+      final r = RandomSound(
+          SoundReference.file('sound.wav'), Point(0, 1), Point(5, 6), 15, 30,
           minGain: 0.1, maxGain: 1.0);
-      expect(r.path.path, equals('sound.wav'));
+      expect(r.sound, isA<SoundReference>());
       expect(r.minCoordinates.x, equals(0));
       expect(r.maxCoordinates.x, equals(5));
       expect(r.minCoordinates.y, equals(1));

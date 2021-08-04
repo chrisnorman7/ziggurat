@@ -1,6 +1,5 @@
 /// Provides the [Box] class.
 import 'dart:async';
-import 'dart:io';
 import 'dart:math';
 
 import 'package:meta/meta.dart';
@@ -11,6 +10,7 @@ import 'box_types/door.dart';
 import 'box_types/surface.dart';
 import 'box_types/wall.dart';
 import 'extensions.dart';
+import 'json/sound_reference.dart';
 import 'runner.dart';
 
 /// A box on a map.
@@ -86,7 +86,7 @@ class Box<T extends BoxType> {
   ///
   /// If this box is a [Surface], this sound will be heard when walking on
   /// it.
-  final FileSystemEntity? sound;
+  final SoundReference? sound;
 
   /// Move this tile to a new set of coordinates.
   ///

@@ -13,11 +13,11 @@ void main() {
   group('Tests requiring Synthizer', () {
     setUpAll(synthizer.initialize);
     tearDownAll(synthizer.shutdown);
-    final bufferCache = BufferCache(synthizer, pow(1024, 3).floor());
+    final bufferStore = BufferStore(Random(), synthizer);
     late Runner<GameState> r;
     setUp(() {
       final ctx = synthizer.createContext();
-      r = Runner<GameState>(ctx, bufferCache, GameState(),
+      r = Runner<GameState>(ctx, bufferStore, GameState(),
           Box('Player', Point(0, 0), Point(0, 0), Player()));
     });
     tearDown(() {

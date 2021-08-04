@@ -1,29 +1,9 @@
 /// Provides the [RunnerSettings] class.
-import 'dart:io';
-
 import 'package:json_annotation/json_annotation.dart';
 
+import 'sound_reference.dart';
+
 part 'runner_settings.g.dart';
-
-/// A function to load a file or directory from a JSON value.
-FileSystemEntity? pathFromValue(dynamic value) {
-  if (value == null) {
-    return null;
-  }
-  if (value is String) {
-    final d = Directory(value);
-    if (d.existsSync()) {
-      return d;
-    } else {
-      return File(value);
-    }
-  } else {
-    throw Exception('Invalid value $value.');
-  }
-}
-
-/// Convert a path to a string.
-String? pathToValue(FileSystemEntity? value) => value?.path;
 
 /// Runner settings.
 ///
@@ -99,16 +79,13 @@ class RunnerSettings {
   double directionalRadarDistance;
 
   /// The empty space sound to use when [directionalRadarEnabled] is `true`.
-  @JsonKey(fromJson: pathFromValue, toJson: pathToValue)
-  FileSystemEntity? directionalRadarEmptySpaceSound;
+  SoundReference? directionalRadarEmptySpaceSound;
 
   /// The door sound to use when [directionalRadarEnabled] is enabled.
-  @JsonKey(fromJson: pathFromValue, toJson: pathToValue)
-  FileSystemEntity? directionalRadarDoorSound;
+  SoundReference? directionalRadarDoorSound;
 
   /// The wall sound to use when [directionalRadarEnabled] is `true`.
-  @JsonKey(fromJson: pathFromValue, toJson: pathToValue)
-  FileSystemEntity? directionalRadarWallSound;
+  SoundReference? directionalRadarWallSound;
 
   /// The directions to scan when [directionalRadarEnabled] is `true`.
   final List<int> directionalRadarDirections;

@@ -5,6 +5,7 @@ import 'box.dart';
 import 'box_types/agents/player.dart';
 import 'event_loop.dart';
 import 'runner.dart';
+import 'sound/buffer_store.dart';
 import 'ziggurat.dart';
 
 /// The base class for all ziggurat errors.
@@ -83,4 +84,31 @@ class InvalidStateError extends ZigguratError {
 
   /// The loop which is already running.
   final EventLoop eventLoop;
+}
+
+/// No such buffer was found in a [BufferStore] instance.
+class NoSuchBufferError extends ZigguratError {
+  /// Create the error.
+  NoSuchBufferError(this.name, this.type);
+
+  /// The name that was used.
+  final String name;
+
+  /// The type of the sound.
+  final SoundType type;
+}
+
+/// A duplicate entry was added to a [BufferStore] instance.
+class DuplicateEntryError extends ZigguratError {
+  /// Create an instance.
+  DuplicateEntryError(this.bufferStore, this.name, this.type);
+
+  /// The buffer store instance.
+  final BufferStore bufferStore;
+
+  /// The name that has been duplicated.
+  final String name;
+
+  /// The type of the entry that was supposed to be added.
+  final SoundType type;
 }

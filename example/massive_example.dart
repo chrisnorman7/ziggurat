@@ -9,8 +9,8 @@ import 'package:ziggurat/ziggurat.dart';
 /// The runner for this example.
 class ExampleRunner extends Runner<Object> {
   /// Create an instance.
-  ExampleRunner(Context ctx, BufferCache cache, Ziggurat z)
-      : super(ctx, cache, Object(),
+  ExampleRunner(Context ctx, BufferStore store, Ziggurat z)
+      : super(ctx, store, Object(),
             Box('Player', Point(0, 0), Point(0, 0), Player())) {
     ziggurat = z;
   }
@@ -25,9 +25,10 @@ Future<void> main() async {
   final synthizer = Synthizer()..initialize();
   final ctx = synthizer.createContext();
   final z = Ziggurat('Massive Map');
+  final bufferStore = BufferStore(Random(), synthizer);
   const size = 1000;
-  final tileSound =
-      File('sounds/399934__old-waveplay__perc-short-click-snap-perc.wav');
+  final tileSound = await bufferStore.addFile(
+      File('sounds/399934__old-waveplay__perc-short-click-snap-perc.wav'));
   for (var i = 0; i < size; i++) {
     for (var j = 0; j < size; j++) {
       final t =
@@ -35,8 +36,10 @@ Future<void> main() async {
       z.boxes.add(t);
     }
   }
-  final runner = ExampleRunner(ctx, BufferCache(synthizer, 1024 ^ 3), z);
-  final interface = BasicInterface(runner,
-      File('sounds/399934__old-waveplay__perc-short-click-snap-perc.wav'));
+  final runner = ExampleRunner(ctx, bufferStore, z);
+  final interface = BasicInterface(
+      runner,
+      await bufferStore.addFile(
+          File('sounds/399934__old-waveplay__perc-short-click-snap-perc.wav')));
   await for (final _ in interface.run()) {}
 }

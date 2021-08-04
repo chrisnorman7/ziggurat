@@ -1,8 +1,8 @@
 /// Provides the [ReverbPreset] class.
 import 'package:dart_synthizer/dart_synthizer.dart';
 
-import 'box_types/surface.dart';
-import 'setting_defaults.dart';
+import '../box_types/surface.dart';
+import '../setting_defaults.dart';
 
 /// A reverb preset.
 ///

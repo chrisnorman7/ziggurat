@@ -82,7 +82,7 @@ class BasicInterface extends EventLoop {
   }
 
   /// The sound to play as an echo sound with the z key.
-  final File echoSound;
+  final SoundReference echoSound;
 
   /// Link keyboard keys to commands.
   final CommandsDict _commands;
@@ -118,6 +118,7 @@ class BasicInterface extends EventLoop {
     if (state == EventLoopState.stopped) {
       print('Goodbye.');
       runner.stop();
+      runner.bufferStore.clear(includeProtected: true);
       runner.context.destroy();
       runner.context.synthizer.shutdown();
       stdinListener?.cancel();

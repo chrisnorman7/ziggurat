@@ -1,5 +1,5 @@
 /// Provides the [Wall] class.
-import '../reverb_preset.dart';
+import '../sound/reverb_preset.dart';
 import 'surface.dart';
 
 /// A wall on a map.
