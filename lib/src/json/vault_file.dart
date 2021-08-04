@@ -1,5 +1,6 @@
 /// Provides the [VaultFile] class.
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:encrypt/encrypt.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -35,6 +36,11 @@ class VaultFile {
     final Map<String, dynamic> json = jsonDecode(data) as Map<String, dynamic>;
     return VaultFile.fromJson(json);
   }
+
+  /// Return an instance loaded from [file].
+  factory VaultFile.fromFile(File file, String encryptionKey) =>
+      VaultFile.fromEncryptedString(
+          contents: file.readAsStringSync(), encryptionKey: encryptionKey);
 
   /// A map of filenames to contents.
   final FilesType files;

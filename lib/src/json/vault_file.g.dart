@@ -8,14 +8,15 @@ part of 'vault_file.dart';
 
 VaultFile _$VaultFileFromJson(Map<String, dynamic> json) => VaultFile(
       files: (json['files'] as Map<String, dynamic>?)?.map(
-        (k, e) =>
-            MapEntry(k, (e as List<dynamic>).map((e) => e as int).toList()),
+        (k, dynamic e) => MapEntry(
+            k, (e as List<dynamic>).map((dynamic e) => e as int).toList()),
       ),
       folders: (json['folders'] as Map<String, dynamic>?)?.map(
-        (k, e) => MapEntry(
+        (k, dynamic e) => MapEntry(
             k,
             (e as List<dynamic>)
-                .map((e) => (e as List<dynamic>).map((e) => e as int).toList())
+                .map((dynamic e) =>
+                    (e as List<dynamic>).map((dynamic e) => e as int).toList())
                 .toList()),
       ),
     );
