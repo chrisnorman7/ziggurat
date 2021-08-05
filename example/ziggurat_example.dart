@@ -28,21 +28,44 @@ class ExampleRunner extends Runner<GameState> {
 
 /// Run the example.
 Future<void> main() async {
-  // TODO: Load sounds from a vault file for testing.
   final synthizer = Synthizer()..initialize();
-  final bufferStore = BufferStore(Random(), synthizer);
-  final runnerSettings = RunnerSettings(
-      directionalRadarEmptySpaceSound:
-          await bufferStore.addFile(File('sounds/radar/empty_space.wav')),
-      directionalRadarWallSound:
-          await bufferStore.addFile(File('sounds/radar/walls.wav')),
-      directionalRadarDoorSound:
-          await bufferStore.addFile(File('sounds/radar/doors.wav')));
   final ctx = synthizer.createContext()
     ..defaultPannerStrategy = PannerStrategies.hrtf;
+  final bufferStore = BufferStore(Random(), synthizer)
+    ..addVaultFile(VaultFile.fromFileSync(
+        File('loading.dat'), 'nNxiqTmQ/G1qWtSIm6YcjrxpwJrPwdUS4W97wWfTOkg='));
+  final buffer = bufferStore.getBuffer(
+      'loading/269169__heshl__transition-from-loading-screen-into-fps-game.wav',
+      SoundType.file);
+  final directSource = DirectSource(ctx)
+    ..gain = 0.7
+    ..addGenerator(BufferGenerator(ctx)
+      ..setBuffer(buffer)
+      ..configDeleteBehavior(linger: true)
+      ..looping = true);
+  bufferStore
+    ..addVaultFile(VaultFile.fromFileSync(
+        File('misc.dat'), 'e9x6CC+NUK2dLlo+WR6l1NOAEIkBsoNc9OO3aZM0eEs='))
+    ..addVaultFile(VaultFile.fromFileSync(
+        File('ambiances.dat'), 'q8I/PKPHPQSlBSsfTrMtlFIcEr+SkBmdZTNpl53D/oc='))
+    ..addVaultFile(VaultFile.fromFileSync(
+        File('doors.dat'), 'bXEt385EY8Y13dxPpu6gXSi2tvmQGTh7tAJcnegu91g='))
+    ..addVaultFile(VaultFile.fromFileSync(
+        File('footsteps.dat'), 'mBZ587QH7nPY8cv+zqP41O8wJVuSWkLzEUAsdB+aUeo='))
+    ..addVaultFile(VaultFile.fromFileSync(
+        File('radar.dat'), 'VnNyQvdM71VklKZvGyO2aQkrET6JnSHC2y3EtmAb1pQ='));
+  final lightsSound = bufferStore
+      .getSoundReference('ambiances/546153__ssssrt__buzzing-lights.wav');
+  final runnerSettings = RunnerSettings(
+      directionalRadarEmptySpaceSound:
+          bufferStore.getSoundReference('radar/empty_space.wav'),
+      directionalRadarWallSound:
+          bufferStore.getSoundReference('radar/walls.wav'),
+      directionalRadarDoorSound:
+          bufferStore.getSoundReference('radar/doors.wav'));
   final defaultReverb = ReverbPreset('Default');
-  final wallSound = await bufferStore
-      .addFile(File('sounds/249618__vincentm400__invalid.mp3'));
+  final wallSound =
+      bufferStore.getSoundReference('misc/249618__vincentm400__invalid.mp3');
   final westWall = Box<Wall>('West Wall', Point(0, 1), Point(1, 21), Wall(),
       sound: wallSound);
   final storageRoom = Box<Surface>(
@@ -50,8 +73,7 @@ Future<void> main() async {
       westWall.cornerSe + Point(1, 0),
       westWall.end + Point(20, 0),
       Surface(reverbPreset: defaultReverb),
-      sound:
-          await bufferStore.addDirectory(Directory('sounds/footsteps/wood')));
+      sound: bufferStore.getSoundReference('footsteps/wood'));
   final dividingWall = Box<Wall>(
       'Dividing Wall',
       storageRoom.cornerSe + Point(1, 0),
@@ -66,21 +88,19 @@ Future<void> main() async {
           reverbPreset: defaultReverb,
           open: false,
           openMessage: Message(
-              sound: await bufferStore.addFile(File(
-                  'sounds/doors/431117__inspectorj__door-front-opening-a.wav'))),
+              sound: bufferStore.getSoundReference(
+                  'doors/431117__inspectorj__door-front-opening-a.wav')),
           closeAfter: Duration(seconds: 1),
           closeMessage: Message(
-              sound: await bufferStore.addFile(File(
-                  'sounds/doors/431118__inspectorj__door-front-closing-a.wav')))),
-      sound:
-          await bufferStore.addDirectory(Directory('sounds/footsteps/metal')));
+              sound: bufferStore.getSoundReference(
+                  'doors/431118__inspectorj__door-front-closing-a.wav'))),
+      sound: bufferStore.getSoundReference('footsteps/metal'));
   final mainFloor = Box<Surface>(
       'Main floor',
       dividingWall.cornerSe + Point(1, 0),
       doorway.end + Point(20, 0),
       Surface(reverbPreset: ReverbPreset('Main Floor Reverb', t60: 5.0)),
-      sound: await bufferStore
-          .addDirectory(Directory('sounds/footsteps/concrete')));
+      sound: bufferStore.getSoundReference('footsteps/concrete'));
   final eastWall = Box<Wall>('East Wall', mainFloor.cornerSe + Point(1, 0),
       mainFloor.end + Point(1, 0), Wall(),
       sound: wallSound);
@@ -102,24 +122,20 @@ Future<void> main() async {
         southWall
       ],
       randomSoundsList: [
-        RandomSound(await bufferStore.addDirectory(Directory('sounds/random')),
+        RandomSound(bufferStore.getSoundReference('misc/random'),
             mainFloor.start.toDouble(), mainFloor.end.toDouble(), 5000, 15000,
             minGain: 0.1, maxGain: 0.5)
       ],
       ambiancesList: [
-        Ambiance(
-            await bufferStore.addFile(
-                File('sounds/ambiances/546153__ssssrt__buzzing-lights.wav')),
+        Ambiance(lightsSound,
             Point<double>(storageRoom.end.x.toDouble(), doorway.centre.y),
             gain: 2.0),
-        Ambiance(
-            await bufferStore.addFile(
-                File('sounds/ambiances/546153__ssssrt__buzzing-lights.wav')),
+        Ambiance(lightsSound,
             Point<double>(mainFloor.cornerNw.x.toDouble(), doorway.centre.y),
             gain: 2.0),
         Ambiance(
-            await bufferStore.addFile(File(
-                'sounds/ambiances/325647__shadydave__expressions-of-the-mind-piano-loop.mp3')),
+            bufferStore.getSoundReference(
+                'ambiances/325647__shadydave__expressions-of-the-mind-piano-loop.mp3'),
             null,
             gain: 0.25)
       ],
@@ -127,7 +143,8 @@ Future<void> main() async {
   final r = ExampleRunner(ctx, bufferStore, t, runnerSettings);
   final interface = BasicInterface(
       r,
-      await bufferStore.addFile(
-          File('sounds/399934__old-waveplay__perc-short-click-snap-perc.wav')));
+      bufferStore.getSoundReference(
+          'misc/399934__old-waveplay__perc-short-click-snap-perc.wav'));
+  directSource.destroy();
   await for (final _ in interface.run()) {}
 }

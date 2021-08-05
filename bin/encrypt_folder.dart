@@ -59,5 +59,6 @@ void main(List<String> args) {
   final data = vaultFile.toEncryptedString(encryptionKey: key);
   final outputFile = File(results.rest.last)..writeAsStringSync(data);
   print('To load the file:');
-  print("VaultFile.fromFile(File('${outputFile.path}'), '$key')");
+  print("VaultFile.fromFileSync(File('${outputFile.path}'), '$key')");
+  print("await VaultFile.fromFile(File('${outputFile.path}'), '$key')");
 }
