@@ -35,8 +35,14 @@ class BufferStore {
   /// The single buffer entries.
   final Map<String, Buffer> _bufferFiles;
 
+  /// A list of all file entries in this store.
+  List<String> get bufferFiles => _bufferFiles.keys.toList();
+
   /// The buffer collections.
   final Map<String, List<Buffer>> _bufferCollections;
+
+  /// A list of buffer collections in this store.
+  List<String> get bufferCollections => _bufferCollections.keys.toList();
 
   /// A list of buffer files that should be protected from the [clear] method.
   final List<String> _protectedBufferFiles;
@@ -150,7 +156,7 @@ class BufferStore {
       case SoundType.file:
         final buffer = _bufferFiles[name];
         if (buffer == null) {
-          throw NoSuchBufferError(name, type);
+          throw NoSuchBufferError(name, type: type);
         }
         return buffer;
       case SoundType.collection:
@@ -158,7 +164,23 @@ class BufferStore {
         if (buffers != null) {
           return buffers[random.nextInt(buffers.length)];
         }
-        throw NoSuchBufferError(name, type);
+        throw NoSuchBufferError(name, type: type);
+    }
+  }
+
+  /// Get a sound reference you can use with various objects in the library.
+  ///
+  /// This method will run through all files and collections to find a
+  /// reference.
+  ///
+  /// If nothing is found, [NoSuchBufferError] will be thrown.
+  SoundReference getSoundReference(String name) {
+    if (_bufferFiles.containsKey(name)) {
+      return SoundReference(name, SoundType.file);
+    } else if (_bufferCollections.containsKey(name)) {
+      return SoundReference(name, SoundType.collection);
+    } else {
+      throw NoSuchBufferError(name);
     }
   }
 }
