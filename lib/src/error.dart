@@ -89,13 +89,17 @@ class InvalidStateError extends ZigguratError {
 /// No such buffer was found in a [BufferStore] instance.
 class NoSuchBufferError extends ZigguratError {
   /// Create the error.
-  NoSuchBufferError(this.name, this.type);
+  NoSuchBufferError(this.name, {this.type});
 
   /// The name that was used.
   final String name;
 
   /// The type of the sound.
-  final SoundType type;
+  final SoundType? type;
+
+  /// Make it a string.
+  @override
+  String toString() => 'No such buffer "$name" of type $type.';
 }
 
 /// A duplicate entry was added to a [BufferStore] instance.
