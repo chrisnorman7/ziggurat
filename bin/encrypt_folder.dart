@@ -31,7 +31,7 @@ void main(List<String> args) {
   for (final item in folder.listSync()) {
     final f = item.path.replaceAll(Platform.pathSeparator, '/');
     if (item is Directory) {
-      print('Adding subdirectory $f.');
+      print('Recursing into subdirectory $f.');
       final l = <List<int>>[];
       for (final file in item.listSync()) {
         if (file is File) {
@@ -40,7 +40,13 @@ void main(List<String> args) {
           print('Skipping ${file.path}.');
         }
       }
-      vaultFile.folders[f] = l;
+      if (l.isEmpty) {
+        print('No files to add.');
+      } else {
+        print('Files: ${l.length}.');
+        vaultFile.folders[f] = l;
+      }
+      print('Leaving directory $f.');
     } else if (item is File) {
       print('Adding file $f.');
       vaultFile.files[f] = item.readAsBytesSync();
@@ -52,5 +58,6 @@ void main(List<String> args) {
   print("final encryptionKey = '$key';");
   final data = vaultFile.toEncryptedString(encryptionKey: key);
   final outputFile = File(results.rest.last)..writeAsStringSync(data);
-  print("final inputFile = File('${outputFile.path}');");
+  print('To load the file:');
+  print("VaultFile.fromFile(File('${outputFile.path}'), '$key')");
 }
