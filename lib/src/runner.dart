@@ -95,7 +95,10 @@ class Runner<T> {
   ///
   /// If setting the same ziggurat, the behaviour is undefined.
   set ziggurat(Ziggurat? value) {
-    stop();
+    // Only clear buffers if we're setting a ziggurat for the first time.
+    if (_ziggurat != null) {
+      stop();
+    }
     _ziggurat = value;
     if (value != null) {
       var maxX = 0;
@@ -299,6 +302,7 @@ class Runner<T> {
     }
     _reverbs.clear();
     _tiles = List.empty();
+    bufferStore.clear();
   }
 
   /// Play a random sound.
