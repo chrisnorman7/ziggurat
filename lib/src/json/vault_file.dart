@@ -28,8 +28,7 @@ class VaultFile {
   /// Create an instance from an encrypted string.
   factory VaultFile.fromEncryptedString(
       {required String contents, required String encryptionKey}) {
-    final key = Key.fromBase64(encryptionKey);
-    final encrypter = Encrypter(AES(key));
+    final encrypter = Encrypter(AES(Key.fromBase64(encryptionKey)));
     final iv = IV.fromLength(16);
     final encrypted = Encrypted.fromBase64(contents);
     final data = encrypter.decrypt(encrypted, iv: iv);
@@ -38,9 +37,15 @@ class VaultFile {
   }
 
   /// Return an instance loaded from [file].
-  factory VaultFile.fromFile(File file, String encryptionKey) =>
-      VaultFile.fromEncryptedString(
-          contents: file.readAsStringSync(), encryptionKey: encryptionKey);
+  static Future<VaultFile> fromFile(File file, String encryptionKey) async {
+    final buffer = StringBuffer();
+    final reader = file.openRead();
+    await for (final chunk in reader) {
+      buffer.write(String.fromCharCodes(chunk));
+    }
+    return VaultFile.fromEncryptedString(
+        contents: buffer.toString(), encryptionKey: encryptionKey);
+  }
 
   /// A map of filenames to contents.
   final FilesType files;
