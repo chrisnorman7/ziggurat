@@ -36,6 +36,11 @@ class VaultFile {
     return VaultFile.fromJson(json);
   }
 
+  /// Create an instance from a file synchronously.
+  factory VaultFile.fromFileSync(File file, String encryptionKey) =>
+      VaultFile.fromEncryptedString(
+          contents: file.readAsStringSync(), encryptionKey: encryptionKey);
+
   /// Return an instance loaded from [file].
   static Future<VaultFile> fromFile(File file, String encryptionKey) async {
     final buffer = StringBuffer();
