@@ -1,4 +1,5 @@
 /// Provides the [BufferStore] class, and other related machinery.
+import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
@@ -89,7 +90,8 @@ class BufferStore {
       if (_bufferFiles.containsKey(name)) {
         throw DuplicateEntryError(this, name, SoundType.file);
       }
-      _bufferFiles[name] = Buffer.fromBytes(synthizer, entry.value);
+      _bufferFiles[name] =
+          Buffer.fromBytes(synthizer, base64Decode(entry.value));
       if (protected) {
         _protectedBufferFiles.add(name);
       }
@@ -100,8 +102,8 @@ class BufferStore {
         throw DuplicateEntryError(this, name, SoundType.collection);
       }
       final buffers = <Buffer>[];
-      for (final bytesList in entry.value) {
-        buffers.add(Buffer.fromBytes(synthizer, bytesList));
+      for (final data in entry.value) {
+        buffers.add(Buffer.fromBytes(synthizer, base64Decode(data)));
       }
       _bufferCollections[name] = buffers;
       if (protected) {

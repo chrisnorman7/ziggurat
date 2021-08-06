@@ -8,10 +8,10 @@ import 'package:json_annotation/json_annotation.dart';
 part 'vault_file.g.dart';
 
 /// The type for [VaultFile.files].
-typedef FilesType = Map<String, List<int>>;
+typedef FilesType = Map<String, String>;
 
 /// The type for [VaultFile.folders].
-typedef FoldersType = Map<String, List<List<int>>>;
+typedef FoldersType = Map<String, List<String>>;
 
 /// A collection of files and folders stored as strings.
 @JsonSerializable()
