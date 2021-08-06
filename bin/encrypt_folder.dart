@@ -1,5 +1,6 @@
 // ignore_for_file: avoid_print
 /// Allows the encryption of a folder of files and subdirectories.
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:args/args.dart';
@@ -32,10 +33,10 @@ void main(List<String> args) {
     final f = item.path.replaceAll(Platform.pathSeparator, '/');
     if (item is Directory) {
       print('Recursing into subdirectory $f.');
-      final l = <List<int>>[];
+      final l = <String>[];
       for (final file in item.listSync()) {
         if (file is File) {
-          l.add(file.readAsBytesSync());
+          l.add(base64Encode(file.readAsBytesSync()));
         } else {
           print('Skipping ${file.path}.');
         }
@@ -49,7 +50,7 @@ void main(List<String> args) {
       print('Leaving directory $f.');
     } else if (item is File) {
       print('Adding file $f.');
-      vaultFile.files[f] = item.readAsBytesSync();
+      vaultFile.files[f] = base64Encode(item.readAsBytesSync());
     } else {
       print('Skipping $item.');
     }
