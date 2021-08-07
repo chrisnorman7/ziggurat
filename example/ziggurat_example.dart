@@ -3,6 +3,7 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'package:dart_sdl/dart_sdl.dart';
 import 'package:dart_synthizer/dart_synthizer.dart';
 import 'package:ziggurat/basic_interface.dart';
 import 'package:ziggurat/ziggurat.dart';
@@ -98,13 +99,17 @@ class Temple extends Ziggurat {
 /// The runner for this example.
 class ExampleRunner extends Runner<GameState> {
   /// Create an instance.
-  ExampleRunner(
-      Context ctx, BufferStore store, Ziggurat z, RunnerSettings runnerSettings)
+  ExampleRunner(Context ctx, BufferStore store, Ziggurat z,
+      RunnerSettings runnerSettings, this.window)
       : super(ctx, store, GameState(),
             Box('Player', Point(0, 0), Point(0, 0), Player()),
             runnerSettings: runnerSettings) {
     ziggurat = z;
   }
+
+  final Window window;
+
+  /// Output the new tile name.
   @override
   void onBoxChange(
       {required Box<Agent> agent,
@@ -119,9 +124,13 @@ class ExampleRunner extends Runner<GameState> {
         oldPosition: oldPosition,
         newPosition: newPosition);
     if (newBox != null) {
-      print(newBox.name);
+      outputText(newBox.name);
     }
   }
+
+  /// Override the output function.
+  @override
+  void outputText(String value) => window.title = value;
 }
 
 /// Run the example.
@@ -130,7 +139,7 @@ Future<void> main() async {
   final ctx = synthizer.createContext()
     ..defaultPannerStrategy = PannerStrategies.hrtf;
   final bufferStore = BufferStore(Random(), synthizer)
-    ..addVaultFile(VaultFile.fromFileSync(
+    ..addVaultFile(await VaultFile.fromFile(
         File('loading.dat'), 'nNxiqTmQ/G1qWtSIm6YcjrxpwJrPwdUS4W97wWfTOkg='));
   final buffer = bufferStore.getBuffer(
       'loading/269169__heshl__transition-from-loading-screen-into-fps-game.wav',
@@ -141,16 +150,18 @@ Future<void> main() async {
       ..setBuffer(buffer)
       ..configDeleteBehavior(linger: true)
       ..looping = true);
+  final sdl = Sdl()..init();
+  final window = sdl.createWindow('Loading...');
   bufferStore
-    ..addVaultFile(VaultFile.fromFileSync(
+    ..addVaultFile(await VaultFile.fromFile(
         File('misc.dat'), 'e9x6CC+NUK2dLlo+WR6l1NOAEIkBsoNc9OO3aZM0eEs='))
-    ..addVaultFile(VaultFile.fromFileSync(
+    ..addVaultFile(await VaultFile.fromFile(
         File('ambiances.dat'), 'q8I/PKPHPQSlBSsfTrMtlFIcEr+SkBmdZTNpl53D/oc='))
-    ..addVaultFile(VaultFile.fromFileSync(
+    ..addVaultFile(await VaultFile.fromFile(
         File('doors.dat'), 'bXEt385EY8Y13dxPpu6gXSi2tvmQGTh7tAJcnegu91g='))
-    ..addVaultFile(VaultFile.fromFileSync(
+    ..addVaultFile(await VaultFile.fromFile(
         File('footsteps.dat'), 'mBZ587QH7nPY8cv+zqP41O8wJVuSWkLzEUAsdB+aUeo='))
-    ..addVaultFile(VaultFile.fromFileSync(
+    ..addVaultFile(await VaultFile.fromFile(
         File('radar.dat'), 'VnNyQvdM71VklKZvGyO2aQkrET6JnSHC2y3EtmAb1pQ='));
   final runnerSettings = RunnerSettings(
       directionalRadarEmptySpaceSound:
@@ -159,12 +170,22 @@ Future<void> main() async {
           bufferStore.getSoundReference('radar/walls.wav'),
       directionalRadarDoorSound:
           bufferStore.getSoundReference('radar/doors.wav'));
+  window.title = 'Ziggurat Example';
   final t = Temple(bufferStore);
-  final r = ExampleRunner(ctx, bufferStore, t, runnerSettings);
+  final r = ExampleRunner(ctx, bufferStore, t, runnerSettings, window);
   final interface = BasicInterface(
+      sdl,
       r,
       bufferStore.getSoundReference(
           'misc/399934__old-waveplay__perc-short-click-snap-perc.wav'));
   directSource.destroy();
-  await for (final _ in interface.run()) {}
+  await for (final event in interface.run()) {
+    if (event is ControllerDeviceEvent) {
+      if (event.state == DeviceState.added) {
+        sdl.openGameController(event.joystickId);
+      }
+    }
+  }
+  window.destroy();
+  sdl.quit();
 }

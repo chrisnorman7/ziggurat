@@ -9,7 +9,7 @@ environment:
 
 dependencies:
   args: ^2.2.0
-  dart_sdl: ^0.1.2
+  dart_sdl: ^0.2.0
   dart_synthizer:
     git: https://github.com/chrisnorman7/dart_synthizer
   encrypt: ^5.0.0

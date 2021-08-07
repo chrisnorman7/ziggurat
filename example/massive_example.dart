@@ -2,6 +2,7 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'package:dart_sdl/dart_sdl.dart';
 import 'package:dart_synthizer/dart_synthizer.dart';
 import 'package:ziggurat/basic_interface.dart';
 import 'package:ziggurat/ziggurat.dart';
@@ -51,7 +52,9 @@ Future<void> main() async {
     }
   }
   final runner = ExampleRunner(ctx, bufferStore, z);
+  final sdl = Sdl();
   final interface = BasicInterface(
+      sdl,
       runner,
       await bufferStore.addFile(
           File('sounds/399934__old-waveplay__perc-short-click-snap-perc.wav')));

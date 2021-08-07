@@ -1,8 +1,9 @@
 /// Provides the [EventLoop] class.
+import 'package:dart_sdl/dart_sdl.dart';
 import 'package:meta/meta.dart';
 
+import 'command.dart';
 import 'error.dart';
-import 'runner.dart';
 
 /// The state of an [EventLoop] instance.
 enum EventLoopState {
@@ -25,12 +26,15 @@ enum EventLoopState {
 /// asynchronous code.
 class EventLoop {
   /// Create a loop.
-  EventLoop(this.runner, {int framesPerSecond = 60})
+  EventLoop(this.sdl, {this.commandHandler, int framesPerSecond = 60})
       : _state = EventLoopState.notStarted,
         _timeBetweenTicks = (1000 / framesPerSecond).floor();
 
-  /// The runner to use in this loop.
-  final Runner runner;
+  /// The sdl bindings to use.
+  final Sdl sdl;
+
+  /// The command handler to use in this loop.
+  CommandHandler? commandHandler;
 
   EventLoopState _state;
 
@@ -47,7 +51,7 @@ class EventLoop {
 
   /// Start the event loop.
   @mustCallSuper
-  Stream<int> run() async* {
+  Stream<Event> run() async* {
     if (_state != EventLoopState.notStarted) {
       throw InvalidStateError(this);
     }
@@ -56,14 +60,13 @@ class EventLoop {
     var tickEnd = DateTime.now().millisecondsSinceEpoch;
     while (isRunning) {
       tickStart = DateTime.now().millisecondsSinceEpoch;
-      tick(tickStart - tickEnd);
+      yield* tick(tickStart - tickEnd);
       tickEnd = DateTime.now().millisecondsSinceEpoch;
       final tickTime = tickEnd - tickStart;
       if (tickTime < _timeBetweenTicks) {
         await Future<void>.delayed(
             Duration(milliseconds: _timeBetweenTicks - tickTime));
       }
-      yield tickTime;
     }
   }
 
@@ -97,5 +100,23 @@ class EventLoop {
   }
 
   /// Tick the loop.
-  void tick(int timeDelta) {}
+  @mustCallSuper
+  Stream<Event> tick(int timeDelta) async* {
+    final handler = commandHandler;
+    // Get SDL events.
+    while (true) {
+      final event = sdl.pollEvent();
+      if (event == null) {
+        break;
+      }
+      yield event;
+      if (handler != null) {
+        if (event is KeyboardEvent) {
+          handler.handleKeyboardEvent(event);
+        } else if (event is ControllerButtonEvent) {
+          handler.handleButtonEvent(event);
+        }
+      }
+    }
+  }
 }

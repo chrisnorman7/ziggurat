@@ -16,6 +16,7 @@ export 'src/box_types/base.dart';
 export 'src/box_types/door.dart';
 export 'src/box_types/surface.dart';
 export 'src/box_types/wall.dart';
+export 'src/command.dart';
 export 'src/directions.dart';
 export 'src/error.dart';
 export 'src/event_loop.dart';
