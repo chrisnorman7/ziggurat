@@ -43,7 +43,7 @@ class Temple extends Ziggurat {
             openMessage: Message(
                 sound: bufferStore.getSoundReference(
                     'doors/431117__inspectorj__door-front-opening-a.wav')),
-            closeAfter: Duration(seconds: 1),
+            closeAfter: 1000,
             closeMessage: Message(
                 sound: bufferStore.getSoundReference(
                     'doors/431118__inspectorj__door-front-closing-a.wav'))),

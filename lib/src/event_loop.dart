@@ -27,17 +27,23 @@ class EventLoop {
   /// Create a loop.
   EventLoop(this.runner, {int framesPerSecond = 60})
       : _state = EventLoopState.notStarted,
-        _timeBetweenTicks = 1000 / framesPerSecond;
+        _timeBetweenTicks = (1000 / framesPerSecond).floor();
 
   /// The runner to use in this loop.
   final Runner runner;
+
   EventLoopState _state;
 
   /// How often to wait between ticks.
-  final double _timeBetweenTicks;
+  final int _timeBetweenTicks;
 
   /// The state of this loop.
   EventLoopState get state => _state;
+
+  /// Returns `true` if [state] is either [EventLoopState.running] or
+  /// [EventLoopState.paused].
+  bool get isRunning =>
+      _state == EventLoopState.paused || _state == EventLoopState.running;
 
   /// Start the event loop.
   @mustCallSuper
@@ -46,29 +52,16 @@ class EventLoop {
       throw InvalidStateError(this);
     }
     _state = EventLoopState.running;
-    while (_state != EventLoopState.stopped) {
-      final now = DateTime.now().millisecondsSinceEpoch;
-      if (_state == EventLoopState.running) {
-        final randomSounds = runner.ziggurat?.randomSounds;
-        if (randomSounds != null) {
-          for (final sound in randomSounds) {
-            final nextPlay = sound.nextPlay;
-            if (nextPlay == null || now >= nextPlay) {
-              if (nextPlay != null) {
-                runner.playRandomSound(sound);
-              }
-              final interval =
-                  sound.minInterval + runner.random.nextInt(sound.maxInterval);
-              sound.nextPlay = now + interval;
-            }
-          }
-        }
-      }
-      tick();
-      final tickTime = now - DateTime.now().millisecondsSinceEpoch;
+    var tickStart = 0;
+    var tickEnd = DateTime.now().millisecondsSinceEpoch;
+    while (isRunning) {
+      tickStart = DateTime.now().millisecondsSinceEpoch;
+      tick(tickStart - tickEnd);
+      tickEnd = DateTime.now().millisecondsSinceEpoch;
+      final tickTime = tickEnd - tickStart;
       if (tickTime < _timeBetweenTicks) {
         await Future<void>.delayed(
-            Duration(milliseconds: (_timeBetweenTicks - tickTime).floor()));
+            Duration(milliseconds: _timeBetweenTicks - tickTime));
       }
       yield tickTime;
     }
@@ -104,5 +97,5 @@ class EventLoop {
   }
 
   /// Tick the loop.
-  void tick() {}
+  void tick(int timeDelta) {}
 }

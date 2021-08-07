@@ -1,6 +1,4 @@
 /// Provides the [Door] class.
-import 'dart:async';
-
 import '../box.dart';
 import '../json/message.dart';
 import '../runner.dart';
@@ -24,13 +22,13 @@ class Door extends Wall {
   /// Whether or not this door is open.
   bool open;
 
-  /// If this value is not `null`, this door will automatically close after the
-  /// specified time.
-  final Duration? closeAfter;
+  /// The number of milliseconds before this door closes automatically.
+  final int? closeAfter;
 
-  /// The timer that is responsible for closing this door in accordance with
-  /// [closeAfter].
-  Timer? closeTimer;
+  /// The time after which this door should close.
+  ///
+  /// This is only used if [closeAfter] is not `null`.
+  int? closeWhen;
 
   /// The message to be shown when this door opens.
   final Message? openMessage;

@@ -1,5 +1,4 @@
 /// Provides the [Box] class.
-import 'dart:async';
 import 'dart:math';
 
 import 'package:meta/meta.dart';
@@ -126,8 +125,7 @@ class Box<T extends BoxType> {
   void onEnter(Runner runner, Box<Agent> agent, Point<double> oldCoordinates) {
     final t = type;
     if (t is Door) {
-      t.closeTimer?.cancel();
-      t.closeTimer = null;
+      t.closeWhen = null;
       if (t.open == false) {
         runner.openDoor(t, oldCoordinates);
       }
@@ -147,8 +145,7 @@ class Box<T extends BoxType> {
             return;
           }
         }
-        t.closeTimer =
-            Timer(closeAfter, () => runner.closeDoor(t, oldCoordinates));
+        t.closeWhen = DateTime.now().millisecondsSinceEpoch + closeAfter;
       }
     }
   }

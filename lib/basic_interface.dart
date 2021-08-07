@@ -111,7 +111,7 @@ class BasicInterface extends EventLoop {
 
   /// Tick the game.
   @override
-  void tick() {
+  void tick(int timeDelta) {
     while (_commandsQueue.isNotEmpty) {
       _commandsQueue.removeLast()();
     }

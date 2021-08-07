@@ -694,7 +694,7 @@ class Runner<T> {
   void closeDoor(Door d, Point<double> position) {
     d
       ..open = false
-      ..closeTimer = null;
+      ..closeWhen = null;
     final closeMessage = d.closeMessage;
     if (closeMessage != null) {
       outputMessage(closeMessage, position: position);
