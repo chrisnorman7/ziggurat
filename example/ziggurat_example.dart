@@ -102,12 +102,25 @@ class ExampleRunner extends Runner<GameState> {
       Context ctx, BufferStore store, Ziggurat z, RunnerSettings runnerSettings)
       : super(ctx, store, GameState(),
             Box('Player', Point(0, 0), Point(0, 0), Player()),
-            rSettings: runnerSettings) {
+            runnerSettings: runnerSettings) {
     ziggurat = z;
   }
   @override
-  void onBoxChange(Box t) {
-    print(t.name);
+  void onBoxChange(
+      {required Box<Agent> agent,
+      required Box? newBox,
+      required Box? oldBox,
+      required Point<double> oldPosition,
+      required Point<double> newPosition}) {
+    super.onBoxChange(
+        agent: agent,
+        newBox: newBox,
+        oldBox: oldBox,
+        oldPosition: oldPosition,
+        newPosition: newPosition);
+    if (newBox != null) {
+      print(newBox.name);
+    }
   }
 }
 

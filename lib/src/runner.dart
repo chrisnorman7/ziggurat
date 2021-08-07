@@ -2,9 +2,11 @@
 import 'dart:math';
 
 import 'package:dart_synthizer/dart_synthizer.dart';
+import 'package:meta/meta.dart';
 import 'package:spatialhash/spatialhash.dart';
 
 import 'box.dart';
+import 'box_types/agents/agent.dart';
 import 'box_types/agents/player.dart';
 import 'box_types/door.dart';
 import 'box_types/surface.dart';
@@ -27,9 +29,9 @@ import 'ziggurat.dart';
 class Runner<T> {
   /// Create the runner.
   Runner(this.context, this.bufferStore, this.gameState, this.player,
-      {RunnerSettings? rSettings})
+      {RunnerSettings? runnerSettings})
       : _tiles = [],
-        runnerSettings = rSettings ?? RunnerSettings(),
+        runnerSettings = runnerSettings ?? RunnerSettings(),
         directionalRadarState = {},
         _spatialHash = null,
         _reverbs = {},
@@ -68,7 +70,7 @@ class Runner<T> {
   final Random random;
 
   /// The last time a move was performed by way of the [move] method.
-  DateTime? lastMove;
+  int? lastMove;
 
   /// A dictionary to old random sound timers.
   final Map<RandomSound, RandomSoundContainer> _randomSoundContainers;
@@ -140,9 +142,12 @@ class Runner<T> {
       coordinates = value.initialCoordinates;
       value.ambiances.forEach(startAmbiance);
       final cb = currentBox;
-      if (cb != null) {
-        onBoxChange(cb);
-      }
+      onBoxChange(
+          agent: player,
+          newBox: cb,
+          oldBox: null,
+          oldPosition: coordinates,
+          newPosition: coordinates);
     }
   }
 
@@ -167,7 +172,7 @@ class Runner<T> {
   }
 
   /// The coordinates of the player.
-  Point<double> _coordinates = Point<double>(0.0, 0.0);
+  Point<double> _coordinates = Point(0, 0);
 
   /// Get the current coordinates.
   Point<double> get coordinates => _coordinates;
@@ -202,9 +207,9 @@ class Runner<T> {
     bearing ??= heading;
     final cb = currentBox;
     if (cb != null && cb is Box<Surface>) {
-      final now = DateTime.now();
+      final now = DateTime.now().millisecondsSinceEpoch;
       final lm = lastMove;
-      if (lm != null && now.difference(lm) < cb.type.moveInterval) {
+      if (lm != null && (now - lm) < cb.type.moveInterval) {
         return;
       } else {
         lastMove = now;
@@ -215,37 +220,26 @@ class Runner<T> {
     final nb = getBox(cf);
     if (nb != null) {
       if (nb is Box<Wall> && nb is! Box<Door>) {
-        final wallSound = nb.sound;
-        if (wallSound != null) {
-          playSound(wallSound);
-        }
+        onCollideWall(nb, player);
       } else {
-        if (nb is Box<Door>) {
-          if (nb.type.shouldOpen(player) == false) {
-            final collideMessage = nb.type.collideMessage;
-            if (collideMessage != null) {
-              return outputMessage(collideMessage, position: c);
-            }
-          }
+        if (nb is Box<Door> && nb.type.shouldOpen(player) == false) {
+          return onCollideDoor(nb, player, c);
         }
         final oldCoordinates = coordinates;
-        coordinates = c;
         player.move(cf, cf);
         _spatialHash?.update(player, Rectangle.fromPoints(c, c));
-        final movementSound = nb.sound;
-        if (movementSound != null) {
-          final source = playSound(movementSound);
-          if (runnerSettings.wallEchoEnabled) {
-            playWallEchoes(source);
-          }
-          if (runnerSettings.directionalRadarEnabled) {
-            playDirectionalRadar();
-          }
-        }
+        onMove(
+            agent: player,
+            surface: nb,
+            oldCoordinates: coordinates,
+            newCoordinates: c);
         if (nb != cb) {
-          cb?.onExit(this, player, coordinates);
-          nb.onEnter(this, player, oldCoordinates);
-          onBoxChange(nb);
+          onBoxChange(
+              agent: player,
+              newBox: nb,
+              oldBox: cb,
+              oldPosition: oldCoordinates,
+              newPosition: c);
         }
       }
     }
@@ -288,6 +282,7 @@ class Runner<T> {
   ///
   /// This method cancels all random sound timers, and prepares this object for
   /// garbage collection.
+  @mustCallSuper
   void stop() {
     directionalRadarState.clear();
     _randomSoundContainers.clear();
@@ -419,6 +414,15 @@ class Runner<T> {
         return WallLocation(t, c);
       }
     }
+  }
+
+  /// Get nearby objects for the given [agent].
+  Set<Box> getNearbyObjects(Box<Agent> agent) {
+    final sh = _spatialHash;
+    if (sh == null) {
+      return <Box>{};
+    }
+    return sh.near(agent);
   }
 
   /// Play a simple sound.
@@ -593,7 +597,8 @@ class Runner<T> {
   void outputMessage(Message message,
       {Point<double>? position, bool reverberate = true, bool filter = true}) {
     final text = message.text;
-    if (text != null) {
+    if (text != null &&
+        (position == null || getWallsBetween(position.floor()).isEmpty)) {
       outputText(text);
     }
     final sound = message.sound;
@@ -617,8 +622,63 @@ class Runner<T> {
     }
   }
 
+  /// Someone collided with a wall.
+  void onCollideWall(Box<Wall> wall, Box<Agent> agent) {
+    final wallSound = wall.sound;
+    if (wallSound != null) {
+      if (agent == player) {
+        playSound(wallSound);
+      } else {
+        playSound3D(wallSound, agent.centre);
+      }
+    }
+  }
+
+  /// [agent] collided with a door.
+  ///
+  /// This happens when a door's [Door.shouldOpen] method returns `false`.
+  void onCollideDoor(
+      Box<Door> door, Box<Agent> agent, Point<double> coordinates) {
+    final collideMessage = door.type.collideMessage;
+    if (collideMessage != null) {
+      outputMessage(collideMessage, position: coordinates);
+    }
+  }
+
+  /// [agent] moved from [oldCoordinates] to [newCoordinates].
+  void onMove(
+      {required Box<Agent> agent,
+      required Box surface,
+      required Point<double> oldCoordinates,
+      required Point<double> newCoordinates}) {
+    coordinates = newCoordinates;
+    final movementSound = surface.sound;
+    if (movementSound != null) {
+      if (agent == player) {
+        final source = playSound(movementSound);
+        if (runnerSettings.wallEchoEnabled) {
+          playWallEchoes(source);
+        }
+        if (runnerSettings.directionalRadarEnabled) {
+          playDirectionalRadar();
+        }
+      } else {
+        playSound3D(movementSound, newCoordinates);
+      }
+    }
+  }
+
   /// A function to be called whenever a new box is encountered.
-  void onBoxChange(Box t) {}
+  @mustCallSuper
+  void onBoxChange(
+      {required Box<Agent> agent,
+      required Box? newBox,
+      required Box? oldBox,
+      required Point<double> oldPosition,
+      required Point<double> newPosition}) {
+    oldBox?.onExit(this, agent, newPosition);
+    newBox?.onEnter(this, agent, oldPosition);
+  }
 
   /// Open a door.
   void openDoor(Door d, Point<double> position) {

@@ -14,10 +14,24 @@ class ExampleRunner extends Runner<Object> {
             Box('Player', Point(0, 0), Point(0, 0), Player())) {
     ziggurat = z;
   }
+
   @override
-  void onBoxChange(Box t) {
-    // ignore: avoid_print
-    print(t.name);
+  void onBoxChange(
+      {required Box<Agent> agent,
+      required Box? newBox,
+      required Box? oldBox,
+      required Point<double> oldPosition,
+      required Point<double> newPosition}) {
+    super.onBoxChange(
+        agent: agent,
+        newBox: newBox,
+        oldBox: oldBox,
+        oldPosition: oldPosition,
+        newPosition: newPosition);
+    if (newBox != null) {
+      // ignore: avoid_print
+      print(newBox.name);
+    }
   }
 }
 
