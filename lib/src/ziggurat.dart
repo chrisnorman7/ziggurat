@@ -28,7 +28,7 @@ class Ziggurat {
   ///
   /// These are the coordinates that players should be placed on when first
   /// joining the map.
-  final Point<double> initialCoordinates;
+  Point<double> initialCoordinates;
 
   /// The initial direction the player will face when starting on this map.
   final double initialHeading;
