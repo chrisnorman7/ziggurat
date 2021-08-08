@@ -1,6 +1,8 @@
 /// Provides the [BasicInterface] class.
 import 'package:dart_sdl/dart_sdl.dart';
 
+import 'src/box.dart';
+import 'src/box_types/door.dart';
 import 'src/command.dart';
 import 'src/directions.dart';
 import 'src/event_loop.dart';
@@ -145,6 +147,17 @@ class BasicInterface extends EventLoop {
     if (walkingState != null && now >= runner.nextMove) {
       runner.move(
           distance: walkingState.distance, bearing: walkingState.heading);
+    }
+    final boxes = runner.ziggurat?.boxes;
+    if (boxes != null) {
+      for (final box in boxes) {
+        if (box is Box<Door>) {
+          final closeWhen = box.type.closeWhen;
+          if (closeWhen != null && now >= closeWhen) {
+            runner.closeDoor(box.type, box.centre);
+          }
+        }
+      }
     }
   }
 }
