@@ -160,5 +160,20 @@ class BasicInterface extends EventLoop {
         }
       }
     }
+    final randomSounds = runner.ziggurat?.randomSounds;
+    if (randomSounds != null) {
+      for (final randomSound in randomSounds) {
+        final nextPlay = randomSound.nextPlay;
+        if (nextPlay != null && now >= nextPlay) {
+          runner.playRandomSound(randomSound);
+          randomSound.nextPlay = null;
+        }
+        if (nextPlay == null) {
+          randomSound.nextPlay = now +
+              (randomSound.minInterval +
+                  runner.random.nextInt(randomSound.maxInterval));
+        }
+      }
+    }
   }
 }
