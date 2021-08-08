@@ -1,4 +1,6 @@
 /// Provides the [Door] class.
+import 'dart:math';
+
 import '../box.dart';
 import '../json/message.dart';
 import '../runner.dart';
@@ -29,6 +31,9 @@ class Door extends Wall {
   ///
   /// This is only used if [closeAfter] is not `null`.
   int? closeWhen;
+
+  /// The coordinates the close sound should play at.
+  Point<double>? closeCoordinates;
 
   /// The message to be shown when this door opens.
   final Message? openMessage;

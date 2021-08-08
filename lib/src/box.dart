@@ -145,7 +145,9 @@ class Box<T extends BoxType> {
             return;
           }
         }
-        t.closeWhen = DateTime.now().millisecondsSinceEpoch + closeAfter;
+        t
+          ..closeWhen = DateTime.now().millisecondsSinceEpoch + closeAfter
+          ..closeCoordinates = oldCoordinates;
       }
     }
   }

@@ -155,7 +155,7 @@ class BasicInterface extends EventLoop {
         if (box is Box<Door>) {
           final closeWhen = box.type.closeWhen;
           if (closeWhen != null && now >= closeWhen) {
-            runner.closeDoor(box.type, box.centre);
+            runner.closeDoor(box.type, box.type.closeCoordinates ?? box.centre);
           }
         }
       }
