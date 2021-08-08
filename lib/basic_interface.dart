@@ -120,7 +120,8 @@ class BasicInterface extends EventLoop {
           button: GameControllerButton.dpadDown,
           onStart: () => runner.move(
               bearing: normaliseAngle(runner.heading + Directions.south),
-              distance: 0.5)),
+              distance: 0.5),
+          onStop: () => runner.walkingState = null),
       Command(
           name: 'playEchoSound',
           description: 'Play the echo sound',
