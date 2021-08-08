@@ -60,7 +60,7 @@ class EventLoop {
     var tickEnd = DateTime.now().millisecondsSinceEpoch;
     while (isRunning) {
       tickStart = DateTime.now().millisecondsSinceEpoch;
-      yield* tick(tickStart - tickEnd);
+      yield* tick(tickStart - tickEnd, tickStart);
       tickEnd = DateTime.now().millisecondsSinceEpoch;
       final tickTime = tickEnd - tickStart;
       if (tickTime < _timeBetweenTicks) {
@@ -101,7 +101,7 @@ class EventLoop {
 
   /// Tick the loop.
   @mustCallSuper
-  Stream<Event> tick(int timeDelta) async* {
+  Stream<Event> tick(int timeDelta, int now) async* {
     final handler = commandHandler;
     // Get SDL events.
     while (true) {
@@ -112,9 +112,18 @@ class EventLoop {
       yield event;
       if (handler != null) {
         if (event is KeyboardEvent) {
-          handler.handleKeyboardEvent(event);
+          if (event.repeat == false) {
+            handler.handleKeyboardEvent(event);
+          }
         } else if (event is ControllerButtonEvent) {
           handler.handleButtonEvent(event);
+        }
+      }
+    }
+    if (handler != null) {
+      for (final command in handler.commands) {
+        if (command.nextRun >= now) {
+          handler.startCommand(command, now);
         }
       }
     }

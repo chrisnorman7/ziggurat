@@ -12,7 +12,7 @@ import 'src/runner.dart';
 /// A basic command line interface for working with a single runner.
 class BasicInterface extends EventLoop {
   /// Create an interface.
-  BasicInterface(Sdl sdl, Runner runner, this.echoSound) : super(sdl) {
+  BasicInterface(Sdl sdl, this.runner, this.echoSound) : super(sdl) {
     commandHandler = CommandHandler([
       Command(
           name: 'pause',
@@ -95,7 +95,10 @@ class BasicInterface extends EventLoop {
           description: 'Move forwards',
           keyboardKey: CommandKeyboardKey(ScanCode.SCANCODE_W),
           button: GameControllerButton.dpadUp,
-          onStart: runner.move),
+          onStart: runner.move,
+          onStop: () {
+            runner.walkingState = null;
+          }),
       Command(
           name: 'turnEast',
           description: 'Turn 45 degrees east',
@@ -128,6 +131,20 @@ class BasicInterface extends EventLoop {
     ]);
   }
 
+  /// The runner to use.
+  final Runner runner;
+
   /// The sound to play as an echo sound with the z key.
   final SoundReference echoSound;
+
+  /// Override the tick.
+  @override
+  Stream<Event> tick(int timeDelta, int now) async* {
+    yield* super.tick(timeDelta, now);
+    final walkingState = runner.walkingState;
+    if (walkingState != null && now >= runner.nextMove) {
+      runner.move(
+          distance: walkingState.distance, bearing: walkingState.heading);
+    }
+  }
 }

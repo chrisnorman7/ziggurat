@@ -25,6 +25,18 @@ import 'sound/random_sound_container.dart';
 import 'wall_location.dart';
 import 'ziggurat.dart';
 
+/// The state of the next call to [Runner.move].
+class WalkingState {
+  /// Create the state.
+  WalkingState({required this.distance, required this.heading});
+
+  /// The distance to move.
+  final double distance;
+
+  /// The direction to move in.
+  final double heading;
+}
+
 /// A class for running maps.
 class Runner<T> {
   /// Create the runner.
@@ -69,8 +81,13 @@ class Runner<T> {
   /// The random number generator to use.
   final Random random;
 
-  /// The last time a move was performed by way of the [move] method.
-  int? lastMove;
+  /// The time the player can move again.
+  int nextMove = 0;
+
+  /// The distance the next call to [move] should move the player.
+  ///
+  /// If this value is `null`, the player will not automatically move.
+  WalkingState? walkingState;
 
   /// A dictionary to old random sound timers.
   final Map<RandomSound, RandomSoundContainer> _randomSoundContainers;
@@ -206,15 +223,6 @@ class Runner<T> {
   void move({double distance = 1.0, double? bearing}) {
     bearing ??= heading;
     final cb = currentBox;
-    if (cb != null && cb is Box<Surface>) {
-      final now = DateTime.now().millisecondsSinceEpoch;
-      final lm = lastMove;
-      if (lm != null && (now - lm) < cb.type.moveInterval) {
-        return;
-      } else {
-        lastMove = now;
-      }
-    }
     final c = coordinatesInDirection(coordinates, bearing, distance);
     final cf = c.floor();
     final nb = getBox(cf);
@@ -228,6 +236,7 @@ class Runner<T> {
         final oldCoordinates = coordinates;
         player.move(cf, cf);
         _spatialHash?.update(player, Rectangle.fromPoints(c, c));
+        walkingState = WalkingState(distance: distance, heading: bearing);
         onMove(
             agent: player,
             surface: nb,
@@ -247,6 +256,11 @@ class Runner<T> {
 
   /// Turn by the specified amount.
   void turn(double amount) {
+    final ws = walkingState;
+    if (ws != null) {
+      walkingState = WalkingState(
+          distance: ws.distance, heading: normaliseAngle(ws.heading + amount));
+    }
     heading = normaliseAngle(heading + amount);
     if (runnerSettings.directionalRadarResetOnTurn == true) {
       directionalRadarState.clear();
@@ -646,12 +660,17 @@ class Runner<T> {
   }
 
   /// [agent] moved from [oldCoordinates] to [newCoordinates].
+  @mustCallSuper
   void onMove(
       {required Box<Agent> agent,
       required Box surface,
       required Point<double> oldCoordinates,
       required Point<double> newCoordinates}) {
     coordinates = newCoordinates;
+    if (surface is Box<Surface>) {
+      final now = DateTime.now().millisecondsSinceEpoch;
+      nextMove = now + surface.type.moveInterval;
+    }
     final movementSound = surface.sound;
     if (movementSound != null) {
       if (agent == player) {

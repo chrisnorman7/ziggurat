@@ -96,6 +96,9 @@ class CommandHandler {
     if (interval == null || ((when - lastRun) >= interval)) {
       onRun();
       command.lastRun = when;
+      if (interval != null) {
+        command.nextRun = when + interval;
+      }
     }
   }
 
