@@ -14,8 +14,9 @@ import 'src/runner.dart';
 /// A basic command line interface for working with a single runner.
 class BasicInterface extends EventLoop {
   /// Create an interface.
-  BasicInterface(Sdl sdl, this.runner, this.echoSound) : super(sdl) {
-    commandHandler = CommandHandler([
+  BasicInterface(Sdl sdl, this.runner, this.echoSound)
+      : super(sdl, CommandHandler([])) {
+    commandHandler?.commands.addAll([
       Command(
           name: 'pause',
           description: 'Pause or unpause the game',
@@ -130,7 +131,51 @@ class BasicInterface extends EventLoop {
           onStart: () {
             final source = runner.playSound(echoSound, reverb: false);
             runner.playWallEchoes(source);
-          })
+          }),
+      Command(
+          name: 'menuUp',
+          description: 'Move up in a menu',
+          keyboardKey: CommandKeyboardKey(ScanCode.SCANCODE_UP),
+          button: GameControllerButton.dpadUp,
+          onStart: () {
+            final m = menu;
+            if (m != null) {
+              m.up();
+            }
+          }),
+      Command(
+          name: 'menuDown',
+          description: 'Move down in a menu',
+          keyboardKey: CommandKeyboardKey(ScanCode.SCANCODE_DOWN),
+          button: GameControllerButton.dpadDown,
+          onStart: () {
+            final m = menu;
+            if (m != null) {
+              m.down();
+            }
+          }),
+      Command(
+          name: 'menuActivate',
+          description: 'Activate a menu item',
+          keyboardKey: CommandKeyboardKey(ScanCode.SCANCODE_RETURN),
+          button: GameControllerButton.dpadRight,
+          onStart: () {
+            final m = menu;
+            if (m != null) {
+              m.activate();
+            }
+          }),
+      Command(
+          name: 'menuCancel',
+          description: 'Cancel the current menu',
+          keyboardKey: CommandKeyboardKey(ScanCode.SCANCODE_ESCAPE),
+          button: GameControllerButton.dpadLeft,
+          onStart: () {
+            final m = menu;
+            if (m != null) {
+              m.cancel();
+            }
+          }),
     ]);
   }
 

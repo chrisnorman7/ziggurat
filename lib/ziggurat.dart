@@ -26,6 +26,7 @@ export 'src/json/runner_settings.dart';
 export 'src/json/sound_reference.dart';
 export 'src/json/vault_file.dart';
 export 'src/math.dart';
+export 'src/menu/menu_base.dart';
 export 'src/quest.dart';
 export 'src/runner.dart';
 export 'src/setting_defaults.dart';

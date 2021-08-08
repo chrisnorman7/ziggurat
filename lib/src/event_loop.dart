@@ -4,6 +4,7 @@ import 'package:meta/meta.dart';
 
 import 'command.dart';
 import 'error.dart';
+import 'menu/menu.dart';
 
 /// The state of an [EventLoop] instance.
 enum EventLoopState {
@@ -26,7 +27,8 @@ enum EventLoopState {
 /// asynchronous code.
 class EventLoop {
   /// Create a loop.
-  EventLoop(this.sdl, {this.commandHandler, int framesPerSecond = 60})
+  EventLoop(this.sdl, this.commandHandler,
+      {this.menu, int framesPerSecond = 60})
       : _state = EventLoopState.notStarted,
         _timeBetweenTicks = (1000 / framesPerSecond).floor();
 
@@ -35,6 +37,9 @@ class EventLoop {
 
   /// The command handler to use in this loop.
   CommandHandler? commandHandler;
+
+  /// The current menu for this event loop.
+  Menu? menu;
 
   EventLoopState _state;
 
