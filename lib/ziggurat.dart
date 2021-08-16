@@ -21,6 +21,7 @@ export 'src/directions.dart';
 export 'src/error.dart';
 export 'src/event_loop.dart';
 export 'src/extensions.dart';
+export 'src/json/command_trigger.dart';
 export 'src/json/message.dart';
 export 'src/json/runner_settings.dart';
 export 'src/json/sound_reference.dart';

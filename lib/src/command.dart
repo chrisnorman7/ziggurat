@@ -1,25 +1,7 @@
 /// Provides classes related to commands.
 import 'package:dart_sdl/dart_sdl.dart';
 
-/// A keyboard key that must be held down in order for a [Command] to be
-/// triggered.
-class CommandKeyboardKey {
-  /// Create an instance.
-  CommandKeyboardKey(this.scanCode,
-      {this.shiftKey = false, this.controlKey = false, this.altKey = false});
-
-  /// The keyboard key which must be used to trigger this command.
-  final ScanCode scanCode;
-
-  /// The shift key.
-  final bool shiftKey;
-
-  /// The control key.
-  final bool controlKey;
-
-  /// The alt key.
-  final bool altKey;
-}
+import 'json/command_trigger.dart';
 
 /// A command which can be executed by the player, or by a simulation.
 class Command {
@@ -27,8 +9,6 @@ class Command {
   Command(
       {required this.name,
       required this.description,
-      this.keyboardKey,
-      this.button,
       this.interval,
       this.onStart,
       this.onUndo,
@@ -38,20 +18,13 @@ class Command {
 
   /// The short name of this command.
   ///
-  /// This name will be used for trigger remapping.
+  /// This name will be used in the trigger map.
   final String name;
 
   /// A one-line description for this command.
   ///
   /// This value will be used in help menus.
   final String description;
-
-  /// The keyboard key which must be held down in order for this command to be
-  /// triggered.
-  final CommandKeyboardKey? keyboardKey;
-
-  /// The games controller button which must be pressed to trigger this command.
-  final GameControllerButton? button;
 
   /// The number of milliseconds which must elapse between uses of this command.
   ///
@@ -77,10 +50,25 @@ class Command {
 /// A class which represents a collection of commands.
 class CommandHandler {
   /// Create a handler.
-  CommandHandler(this.commands);
+  CommandHandler()
+      : _commands = {},
+        _triggerMap = {};
+
+  final Map<String, Command> _commands;
 
   /// The commands supported by this handler.
-  final List<Command> commands;
+  Map<String, Command> get commands => _commands;
+
+  final Map<CommandTrigger, Command> _triggerMap;
+
+  /// The trigger map for this handler.
+  Map<CommandTrigger, Command> get triggerMap => _triggerMap;
+
+  /// Register a command.
+  void registerCommand(Command command, CommandTrigger defaultTrigger) {
+    _commands[command.name] = command;
+    _triggerMap[defaultTrigger] = command;
+  }
 
   /// Run the given [command].
   ///
@@ -113,8 +101,10 @@ class CommandHandler {
 
   /// Handle the [event] keyboard event.
   void handleKeyboardEvent(KeyboardEvent event) {
-    for (final command in commands) {
-      final keyboardKey = command.keyboardKey;
+    for (final entry in _triggerMap.entries) {
+      final trigger = entry.key;
+      final command = entry.value;
+      final keyboardKey = trigger.keyboardKey;
       if (keyboardKey == null) {
         continue;
       }
@@ -137,8 +127,10 @@ class CommandHandler {
 
   /// Handle the game controller button event [event].
   void handleButtonEvent(ControllerButtonEvent event) {
-    for (final command in commands) {
-      if (command.button == event.button) {
+    for (final entry in _triggerMap.entries) {
+      final trigger = entry.key;
+      final command = entry.value;
+      if (trigger.button == event.button) {
         switch (event.state) {
           case PressedState.pressed:
             startCommand(command, event.timestamp);

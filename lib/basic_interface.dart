@@ -7,6 +7,7 @@ import 'src/command.dart';
 import 'src/directions.dart';
 import 'src/event_loop.dart';
 import 'src/extensions.dart';
+import 'src/json/command_trigger.dart';
 import 'src/json/sound_reference.dart';
 import 'src/math.dart';
 import 'src/runner.dart';
@@ -15,168 +16,216 @@ import 'src/runner.dart';
 class BasicInterface extends EventLoop {
   /// Create an interface.
   BasicInterface(Sdl sdl, this.runner, this.echoSound)
-      : super(sdl, CommandHandler([])) {
-    commandHandler?.commands.addAll([
-      Command(
-          name: 'pause',
-          description: 'Pause or unpause the game',
-          button: GameControllerButton.rightShoulder,
-          keyboardKey: CommandKeyboardKey(ScanCode.SCANCODE_P),
-          onStart: () {
-            if (state == EventLoopState.running) {
-              pause();
-              runner.outputText('Paused.');
-            } else if (state == EventLoopState.paused) {
-              unpause();
-              runner.outputText('Unpaused.');
-            }
-          }),
-      Command(
-          name: 'quit',
-          description: 'Quit the game',
-          keyboardKey: CommandKeyboardKey(ScanCode.SCANCODE_Q),
-          button: GameControllerButton.leftShoulder,
-          onStart: () {
-            runner
-              ..outputText('Goodbye.')
-              ..stop()
-              ..bufferStore.clear(includeProtected: true)
-              ..context.destroy()
-              ..context.synthizer.shutdown();
-            stop();
-          }),
-      Command(
-          name: 'coordinates',
-          description: 'Show current coordinates',
-          keyboardKey: CommandKeyboardKey(ScanCode.SCANCODE_C),
-          button: GameControllerButton.y,
-          onStart: () {
-            final c = runner.coordinates.floor();
-            runner.outputText('${c.x}, ${c.y}');
-          }),
-      Command(
-          name: 'describeCurrentBox',
-          description: "Describe the player's position within the current box",
-          keyboardKey: CommandKeyboardKey(ScanCode.SCANCODE_C, shiftKey: true),
-          button: GameControllerButton.x,
-          onStart: () {
-            final b = runner.currentBox;
-            if (b != null) {
-              final x =
-                  (100 / b.width * (runner.coordinates.x - b.start.x)).round();
-              final y =
-                  (100 / b.height * (runner.coordinates.y - b.start.y)).round();
-              runner.outputText('${b.name} ($x%, $y%)');
-            }
-          }),
-      Command(
-          name: 'showFacing',
-          description: 'Show which direction the player is facing in',
-          keyboardKey: CommandKeyboardKey(ScanCode.SCANCODE_F),
-          button: GameControllerButton.a,
-          onStart: () {
-            final directions = <String>[
-              'north',
-              'northeast',
-              'east',
-              'southeast',
-              'south',
-              'southwest',
-              'west',
-              'northwest'
-            ];
-            final index = (((runner.heading % 360) < 0
-                            ? runner.heading + 360
-                            : runner.heading) /
-                        45)
-                    .round() %
-                directions.length;
-            runner.outputText(directions[index]);
-          }),
-      Command(
-          name: 'moveForward',
-          description: 'Move forwards',
-          keyboardKey: CommandKeyboardKey(ScanCode.SCANCODE_W),
-          button: GameControllerButton.dpadUp,
-          onStart: runner.move,
-          onStop: () {
-            runner.walkingState = null;
-          }),
-      Command(
-          name: 'turnEast',
-          description: 'Turn 45 degrees east',
-          keyboardKey: CommandKeyboardKey(ScanCode.SCANCODE_RIGHT),
-          button: GameControllerButton.dpadRight,
-          onStart: () => runner.turn(45)),
-      Command(
-          name: 'turnWest',
-          description: 'Turn 45 degrees west',
-          keyboardKey: CommandKeyboardKey(ScanCode.SCANCODE_LEFT),
-          button: GameControllerButton.dpadLeft,
-          onStart: () => runner.turn(-45)),
-      Command(
-          name: 'moveBackwards',
-          description: 'Move backwards',
-          keyboardKey: CommandKeyboardKey(ScanCode.SCANCODE_S),
-          button: GameControllerButton.dpadDown,
-          onStart: () => runner.move(
-              bearing: normaliseAngle(runner.heading + Directions.south),
-              distance: 0.5),
-          onStop: () => runner.walkingState = null),
-      Command(
-          name: 'playEchoSound',
-          description: 'Play the echo sound',
-          keyboardKey: CommandKeyboardKey(ScanCode.SCANCODE_Z),
-          button: GameControllerButton.b,
-          onStart: () {
-            final source = runner.playSound(echoSound, reverb: false);
-            runner.playWallEchoes(source);
-          }),
-      Command(
-          name: 'menuUp',
-          description: 'Move up in a menu',
-          keyboardKey: CommandKeyboardKey(ScanCode.SCANCODE_UP),
-          button: GameControllerButton.dpadUp,
-          onStart: () {
-            final m = menu;
-            if (m != null) {
-              m.up();
-            }
-          }),
-      Command(
-          name: 'menuDown',
-          description: 'Move down in a menu',
-          keyboardKey: CommandKeyboardKey(ScanCode.SCANCODE_DOWN),
-          button: GameControllerButton.dpadDown,
-          onStart: () {
-            final m = menu;
-            if (m != null) {
-              m.down();
-            }
-          }),
-      Command(
-          name: 'menuActivate',
-          description: 'Activate a menu item',
-          keyboardKey: CommandKeyboardKey(ScanCode.SCANCODE_RETURN),
-          button: GameControllerButton.dpadRight,
-          onStart: () {
-            final m = menu;
-            if (m != null) {
-              m.activate();
-            }
-          }),
-      Command(
-          name: 'menuCancel',
-          description: 'Cancel the current menu',
-          keyboardKey: CommandKeyboardKey(ScanCode.SCANCODE_ESCAPE),
-          button: GameControllerButton.dpadLeft,
-          onStart: () {
-            final m = menu;
-            if (m != null) {
-              m.cancel();
-            }
-          }),
-    ]);
+      : super(sdl, CommandHandler()) {
+    final handler = commandHandler;
+    if (handler == null) {
+      throw Exception('Command handler is null. No clue why.');
+    }
+    handler
+      ..registerCommand(
+          Command(
+              name: 'pause',
+              description: 'Pause or unpause the game',
+              onStart: () {
+                if (state == EventLoopState.running) {
+                  pause();
+                  runner.outputText('Paused.');
+                } else if (state == EventLoopState.paused) {
+                  unpause();
+                  runner.outputText('Unpaused.');
+                }
+              }),
+          CommandTrigger(
+            button: GameControllerButton.rightShoulder,
+            keyboardKey: CommandKeyboardKey(ScanCode.SCANCODE_P),
+          ))
+      ..registerCommand(
+          Command(
+              name: 'quit',
+              description: 'Quit the game',
+              onStart: () {
+                runner
+                  ..outputText('Goodbye.')
+                  ..stop()
+                  ..bufferStore.clear(includeProtected: true)
+                  ..context.destroy()
+                  ..context.synthizer.shutdown();
+                stop();
+              }),
+          CommandTrigger(
+            keyboardKey: CommandKeyboardKey(ScanCode.SCANCODE_Q),
+            button: GameControllerButton.leftShoulder,
+          ))
+      ..registerCommand(
+          Command(
+              name: 'coordinates',
+              description: 'Show current coordinates',
+              onStart: () {
+                final c = runner.coordinates.floor();
+                runner.outputText('${c.x}, ${c.y}');
+              }),
+          CommandTrigger(
+            keyboardKey: CommandKeyboardKey(ScanCode.SCANCODE_C),
+            button: GameControllerButton.y,
+          ))
+      ..registerCommand(
+          Command(
+              name: 'describeCurrentBox',
+              description:
+                  "Describe the player's position within the current box",
+              onStart: () {
+                final b = runner.currentBox;
+                if (b != null) {
+                  final x = (100 / b.width * (runner.coordinates.x - b.start.x))
+                      .round();
+                  final y =
+                      (100 / b.height * (runner.coordinates.y - b.start.y))
+                          .round();
+                  runner.outputText('${b.name} ($x%, $y%)');
+                }
+              }),
+          CommandTrigger(
+            button: GameControllerButton.x,
+            keyboardKey:
+                CommandKeyboardKey(ScanCode.SCANCODE_C, shiftKey: true),
+          ))
+      ..registerCommand(
+          Command(
+              name: 'showFacing',
+              description: 'Show which direction the player is facing in',
+              onStart: () {
+                final directions = <String>[
+                  'north',
+                  'northeast',
+                  'east',
+                  'southeast',
+                  'south',
+                  'southwest',
+                  'west',
+                  'northwest'
+                ];
+                final index = (((runner.heading % 360) < 0
+                                ? runner.heading + 360
+                                : runner.heading) /
+                            45)
+                        .round() %
+                    directions.length;
+                runner.outputText(directions[index]);
+              }),
+          CommandTrigger(
+            keyboardKey: CommandKeyboardKey(ScanCode.SCANCODE_F),
+            button: GameControllerButton.a,
+          ))
+      ..registerCommand(
+          Command(
+              name: 'moveForward',
+              description: 'Move forwards',
+              onStart: runner.move,
+              onStop: () {
+                runner.walkingState = null;
+              }),
+          CommandTrigger(
+            keyboardKey: CommandKeyboardKey(ScanCode.SCANCODE_W),
+            button: GameControllerButton.dpadUp,
+          ))
+      ..registerCommand(
+          Command(
+              name: 'turnEast',
+              description: 'Turn 45 degrees east',
+              onStart: () => runner.turn(45)),
+          CommandTrigger(
+            keyboardKey: CommandKeyboardKey(ScanCode.SCANCODE_RIGHT),
+            button: GameControllerButton.dpadRight,
+          ))
+      ..registerCommand(
+          Command(
+              name: 'turnWest',
+              description: 'Turn 45 degrees west',
+              onStart: () => runner.turn(-45)),
+          CommandTrigger(
+            keyboardKey: CommandKeyboardKey(ScanCode.SCANCODE_LEFT),
+            button: GameControllerButton.dpadLeft,
+          ))
+      ..registerCommand(
+          Command(
+              name: 'moveBackwards',
+              description: 'Move backwards',
+              onStart: () => runner.move(
+                  bearing: normaliseAngle(runner.heading + Directions.south),
+                  distance: 0.5),
+              onStop: () => runner.walkingState = null),
+          CommandTrigger(
+            keyboardKey: CommandKeyboardKey(ScanCode.SCANCODE_S),
+            button: GameControllerButton.dpadDown,
+          ))
+      ..registerCommand(
+          Command(
+              name: 'playEchoSound',
+              description: 'Play the echo sound',
+              onStart: () {
+                final source = runner.playSound(echoSound, reverb: false);
+                runner.playWallEchoes(source);
+              }),
+          CommandTrigger(
+            keyboardKey: CommandKeyboardKey(ScanCode.SCANCODE_Z),
+            button: GameControllerButton.b,
+          ))
+      ..registerCommand(
+          Command(
+              name: 'menuUp',
+              description: 'Move up in a menu',
+              onStart: () {
+                final m = menu;
+                if (m != null) {
+                  m.up();
+                }
+              }),
+          CommandTrigger(
+            keyboardKey: CommandKeyboardKey(ScanCode.SCANCODE_UP),
+            button: GameControllerButton.dpadUp,
+          ))
+      ..registerCommand(
+          Command(
+              name: 'menuDown',
+              description: 'Move down in a menu',
+              onStart: () {
+                final m = menu;
+                if (m != null) {
+                  m.down();
+                }
+              }),
+          CommandTrigger(
+            keyboardKey: CommandKeyboardKey(ScanCode.SCANCODE_DOWN),
+            button: GameControllerButton.dpadDown,
+          ))
+      ..registerCommand(
+          Command(
+              name: 'menuActivate',
+              description: 'Activate a menu item',
+              onStart: () {
+                final m = menu;
+                if (m != null) {
+                  m.activate();
+                }
+              }),
+          CommandTrigger(
+            keyboardKey: CommandKeyboardKey(ScanCode.SCANCODE_RETURN),
+            button: GameControllerButton.dpadRight,
+          ))
+      ..registerCommand(
+          Command(
+              name: 'menuCancel',
+              description: 'Cancel the current menu',
+              onStart: () {
+                final m = menu;
+                if (m != null) {
+                  m.cancel();
+                }
+              }),
+          CommandTrigger(
+            keyboardKey: CommandKeyboardKey(ScanCode.SCANCODE_ESCAPE),
+            button: GameControllerButton.dpadLeft,
+          ));
   }
 
   /// The runner to use.

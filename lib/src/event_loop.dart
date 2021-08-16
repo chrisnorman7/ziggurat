@@ -126,7 +126,7 @@ class EventLoop {
       }
     }
     if (handler != null) {
-      for (final command in handler.commands) {
+      for (final command in handler.commands.values) {
         if (command.nextRun >= now) {
           handler.startCommand(command, now);
         }
