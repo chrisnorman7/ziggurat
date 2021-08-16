@@ -59,15 +59,15 @@ class CommandHandler {
   /// The commands supported by this handler.
   Map<String, Command> get commands => _commands;
 
-  final Map<CommandTrigger, Command> _triggerMap;
+  final Map<Command, CommandTrigger> _triggerMap;
 
   /// The trigger map for this handler.
-  Map<CommandTrigger, Command> get triggerMap => _triggerMap;
+  Map<Command, CommandTrigger> get triggerMap => _triggerMap;
 
   /// Register a command.
   void registerCommand(Command command, CommandTrigger defaultTrigger) {
     _commands[command.name] = command;
-    _triggerMap[defaultTrigger] = command;
+    _triggerMap[command] = defaultTrigger;
   }
 
   /// Run the given [command].
@@ -102,8 +102,8 @@ class CommandHandler {
   /// Handle the [event] keyboard event.
   void handleKeyboardEvent(KeyboardEvent event) {
     for (final entry in _triggerMap.entries) {
-      final trigger = entry.key;
-      final command = entry.value;
+      final trigger = entry.value;
+      final command = entry.key;
       final keyboardKey = trigger.keyboardKey;
       if (keyboardKey == null) {
         continue;
@@ -128,8 +128,8 @@ class CommandHandler {
   /// Handle the game controller button event [event].
   void handleButtonEvent(ControllerButtonEvent event) {
     for (final entry in _triggerMap.entries) {
-      final trigger = entry.key;
-      final command = entry.value;
+      final trigger = entry.value;
+      final command = entry.key;
       if (trigger.button == event.button) {
         switch (event.state) {
           case PressedState.pressed:
