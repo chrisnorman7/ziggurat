@@ -178,6 +178,10 @@ Future<void> main() async {
       r,
       bufferStore.getSoundReference(
           'misc/399934__old-waveplay__perc-short-click-snap-perc.wav'));
+  final triggerFile = File('triggers.json');
+  if (triggerFile.existsSync()) {
+    interface.commandHandler.loadTriggers(triggerFile);
+  }
   directSource.destroy();
   await for (final event in interface.run()) {
     if (event is ControllerDeviceEvent) {
@@ -188,4 +192,5 @@ Future<void> main() async {
   }
   window.destroy();
   sdl.quit();
+  interface.commandHandler.dumpTriggers(triggerFile);
 }

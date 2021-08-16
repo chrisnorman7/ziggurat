@@ -25,6 +25,7 @@ export 'src/json/command_trigger.dart';
 export 'src/json/message.dart';
 export 'src/json/runner_settings.dart';
 export 'src/json/sound_reference.dart';
+export 'src/json/trigger_map.dart';
 export 'src/json/vault_file.dart';
 export 'src/math.dart';
 export 'src/menu/menu_base.dart';

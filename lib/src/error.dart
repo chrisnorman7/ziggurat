@@ -116,3 +116,14 @@ class DuplicateEntryError extends ZigguratError {
   /// The type of the entry that was supposed to be added.
   final SoundType type;
 }
+
+/// An invalid command name was used.
+class InvalidCommandNameError extends ZigguratError {
+  /// Create an error.
+  InvalidCommandNameError(this.name);
+
+  /// The invalid name.
+  final String name;
+  @override
+  String toString() => 'Invalid command name: $name.';
+}

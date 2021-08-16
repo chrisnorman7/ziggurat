@@ -1,7 +1,12 @@
 /// Provides classes related to commands.
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:dart_sdl/dart_sdl.dart';
 
+import 'error.dart';
 import 'json/command_trigger.dart';
+import 'json/trigger_map.dart';
 
 /// A command which can be executed by the player, or by a simulation.
 class Command {
@@ -9,6 +14,7 @@ class Command {
   Command(
       {required this.name,
       required this.description,
+      required this.defaultTrigger,
       this.interval,
       this.onStart,
       this.onUndo,
@@ -25,6 +31,9 @@ class Command {
   ///
   /// This value will be used in help menus.
   final String description;
+
+  /// The default trigger.
+  final CommandTrigger defaultTrigger;
 
   /// The number of milliseconds which must elapse between uses of this command.
   ///
@@ -65,9 +74,37 @@ class CommandHandler {
   Map<Command, CommandTrigger> get triggerMap => _triggerMap;
 
   /// Register a command.
-  void registerCommand(Command command, CommandTrigger defaultTrigger) {
+  void registerCommand(Command command) {
     _commands[command.name] = command;
-    _triggerMap[command] = defaultTrigger;
+    _triggerMap[command] = command.defaultTrigger;
+  }
+
+  /// Load a trigger map.
+  void loadTriggerMap(TriggerMap triggerMap) {
+    for (final entry in triggerMap.triggers.entries) {
+      final command = _commands[entry.key];
+      if (command == null) {
+        throw InvalidCommandNameError(entry.key);
+      }
+      _triggerMap[command] = entry.value;
+    }
+  }
+
+  /// Dump the trigger map.
+  TriggerMap dumpTriggerMap() => TriggerMap(
+      {for (final entry in _triggerMap.entries) entry.key.name: entry.value});
+
+  /// Load triggers from a file.
+  void loadTriggers(File file) {
+    final Map<String, dynamic> json =
+        jsonDecode(file.readAsStringSync()) as Map<String, dynamic>;
+    loadTriggerMap(TriggerMap.fromJson(json));
+  }
+
+  /// Save all triggers to a file.
+  void dumpTriggers(File file) {
+    final json = dumpTriggerMap().toJson();
+    file.writeAsStringSync(JsonEncoder.withIndent('  ').convert(json));
   }
 
   /// Run the given [command].

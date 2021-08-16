@@ -36,7 +36,7 @@ class EventLoop {
   final Sdl sdl;
 
   /// The command handler to use in this loop.
-  CommandHandler? commandHandler;
+  CommandHandler commandHandler;
 
   /// The current menu for this event loop.
   Menu? menu;
@@ -107,7 +107,6 @@ class EventLoop {
   /// Tick the loop.
   @mustCallSuper
   Stream<Event> tick(int timeDelta, int now) async* {
-    final handler = commandHandler;
     // Get SDL events.
     while (true) {
       final event = sdl.pollEvent();
@@ -115,21 +114,17 @@ class EventLoop {
         break;
       }
       yield event;
-      if (handler != null) {
-        if (event is KeyboardEvent) {
-          if (event.repeat == false) {
-            handler.handleKeyboardEvent(event);
-          }
-        } else if (event is ControllerButtonEvent) {
-          handler.handleButtonEvent(event);
+      if (event is KeyboardEvent) {
+        if (event.repeat == false) {
+          commandHandler.handleKeyboardEvent(event);
         }
+      } else if (event is ControllerButtonEvent) {
+        commandHandler.handleButtonEvent(event);
       }
     }
-    if (handler != null) {
-      for (final command in handler.commands.values) {
-        if (command.nextRun >= now) {
-          handler.startCommand(command, now);
-        }
+    for (final command in commandHandler.commands.values) {
+      if (command.nextRun >= now) {
+        commandHandler.startCommand(command, now);
       }
     }
   }
