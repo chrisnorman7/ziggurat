@@ -15,7 +15,7 @@ include: package:lints/recommended.yaml
 
 analyzer:
   exclude:
-    - lib/json/*.g.dart
+    - lib/src/json/*.g.dart
   strong-mode:
     implicit-casts: false
     implicit-dynamic: false
