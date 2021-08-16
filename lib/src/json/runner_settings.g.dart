@@ -39,7 +39,7 @@ RunnerSettings _$RunnerSettingsFromJson(Map<String, dynamic> json) =>
               json['directionalRadarWallSound'] as Map<String, dynamic>),
       directionalRadarDirections:
           (json['directionalRadarDirections'] as List<dynamic>?)
-                  ?.map((dynamic e) => e as int)
+                  ?.map((e) => e as int)
                   .toList() ??
               const [0, 90, 270],
       directionalRadarResetOnTurn:
