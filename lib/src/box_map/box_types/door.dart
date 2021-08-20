@@ -1,10 +1,10 @@
 /// Provides the [Door] class.
 import 'dart:math';
 
+import '../../json/message.dart';
+import '../../runner.dart';
+import '../../sound/reverb_preset.dart';
 import '../box.dart';
-import '../json/message.dart';
-import '../runner.dart';
-import '../sound/reverb_preset.dart';
 import 'agents/agent.dart';
 import 'wall.dart';
 

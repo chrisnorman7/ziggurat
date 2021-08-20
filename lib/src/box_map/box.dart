@@ -3,23 +3,21 @@ import 'dart:math';
 
 import 'package:meta/meta.dart';
 
+import '../extensions.dart';
+import '../json/sound_reference.dart';
+import '../runner.dart';
 import 'box_types/agents/agent.dart';
 import 'box_types/base.dart';
 import 'box_types/door.dart';
 import 'box_types/surface.dart';
 import 'box_types/wall.dart';
-import 'extensions.dart';
-import 'json/sound_reference.dart';
-import 'runner.dart';
 
 /// A box on a map.
 class Box<T extends BoxType> {
   /// Create a box.
-  Box(this.name, Point<int> startCoordinates, Point<int> endCoordinates,
-      this.type,
-      {this.sound})
-      : _start = startCoordinates,
-        _end = endCoordinates {
+  Box(this.name, Point<int> start, Point<int> end, this.type, {this.sound})
+      : _start = start,
+        _end = end {
     onAfterMove();
   }
 

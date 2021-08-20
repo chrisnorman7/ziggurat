@@ -1,8 +1,8 @@
 /// Provides various error types.
 import 'dart:io';
 
-import 'box.dart';
-import 'box_types/agents/player.dart';
+import 'box_map/box.dart';
+import 'box_map/box_types/agents/player.dart';
 import 'event_loop.dart';
 import 'runner.dart';
 import 'sound/buffer_store.dart';

@@ -5,24 +5,23 @@ import 'package:dart_synthizer/dart_synthizer.dart';
 import 'package:meta/meta.dart';
 import 'package:spatialhash/spatialhash.dart';
 
-import 'box.dart';
-import 'box_types/agents/agent.dart';
-import 'box_types/agents/player.dart';
-import 'box_types/door.dart';
-import 'box_types/surface.dart';
-import 'box_types/wall.dart';
+import 'box_map/box.dart';
+import 'box_map/box_types/agents/agent.dart';
+import 'box_map/box_types/agents/player.dart';
+import 'box_map/box_types/door.dart';
+import 'box_map/box_types/surface.dart';
+import 'box_map/box_types/wall.dart';
+import 'box_map/wall_location.dart';
 import 'directions.dart';
 import 'error.dart';
+import 'event_loop.dart';
 import 'extensions.dart';
-import 'json/message.dart';
 import 'json/runner_settings.dart';
 import 'json/sound_reference.dart';
 import 'math.dart';
 import 'sound/ambiance.dart';
-import 'sound/buffer_store.dart';
 import 'sound/random_sound.dart';
 import 'sound/random_sound_container.dart';
-import 'wall_location.dart';
 import 'ziggurat.dart';
 
 /// The state of the next call to [Runner.move].
@@ -38,10 +37,9 @@ class WalkingState {
 }
 
 /// A class for running maps.
-class Runner<T> {
+class Runner {
   /// Create the runner.
-  Runner(this.context, this.bufferStore, this.gameState, this.player,
-      {RunnerSettings? runnerSettings})
+  Runner(this.eventLoop, this.player, {RunnerSettings? runnerSettings})
       : _tiles = [],
         runnerSettings = runnerSettings ?? RunnerSettings(),
         directionalRadarState = {},
@@ -51,17 +49,8 @@ class Runner<T> {
         _randomSoundContainers = {},
         _ambianceSources = {};
 
-  /// The synthizer context to use.
-  final Context context;
-
-  /// The buffer cache used by this runner.
-  final BufferStore bufferStore;
-
-  /// The current state of the game.
-  ///
-  /// This object can be anything, and should probably be loaded from JSON or
-  /// similar.
-  final T gameState;
+  /// The event loop to use.
+  final EventLoop eventLoop;
 
   /// The settings for this runner.
   final RunnerSettings runnerSettings;
@@ -178,7 +167,7 @@ class Runner<T> {
   set heading(double value) {
     _heading = value;
     final rad = angleToRad(value);
-    context.orientation = Double6(
+    eventLoop.context.orientation = Double6(
       sin(rad),
       cos(rad),
       0,
@@ -197,7 +186,7 @@ class Runner<T> {
   /// Set the player's coordinates.
   set coordinates(Point<double> value) {
     _coordinates = value;
-    context.position = Double3(value.x, value.y, 0);
+    eventLoop.context.position = Double3(value.x, value.y, 0);
     filterSources();
   }
 
@@ -272,9 +261,9 @@ class Runner<T> {
     final p = ambiance.position;
     final Source source;
     if (p == null) {
-      source = DirectSource(context);
+      source = DirectSource(eventLoop.context);
     } else {
-      source = Source3D(context)..position = Double3(p.x, p.y, 0.0);
+      source = Source3D(eventLoop.context)..position = Double3(p.x, p.y, 0.0);
       final position = p.floor();
       reverberateSource(source, position);
       filterSource(source, position);
@@ -282,9 +271,9 @@ class Runner<T> {
     source
       ..gain = ambiance.gain
       ..configDeleteBehavior(linger: false);
-    final buffer =
-        bufferStore.getBuffer(ambiance.sound.name, ambiance.sound.type);
-    final g = BufferGenerator(context)
+    final buffer = eventLoop.bufferStore
+        .getBuffer(ambiance.sound.name, ambiance.sound.type);
+    final g = BufferGenerator(eventLoop.context)
       ..setBuffer(buffer)
       ..looping = true
       ..configDeleteBehavior(linger: false);
@@ -311,7 +300,7 @@ class Runner<T> {
     }
     _reverbs.clear();
     _tiles = List.empty();
-    bufferStore.clear();
+    eventLoop.bufferStore.clear();
   }
 
   /// Play a random sound.
@@ -324,16 +313,17 @@ class Runner<T> {
         sound.minCoordinates.y +
             (random.nextDouble() *
                 (sound.maxCoordinates.y - sound.minCoordinates.y)));
-    final s = Source3D(context)
+    final s = Source3D(eventLoop.context)
       ..position = Double3(soundPosition.x, soundPosition.y, 0)
       ..gain = sound.minGain + random.nextDouble() + sound.maxGain
       ..configDeleteBehavior(linger: true);
     final position = soundPosition.floor();
     reverberateSource(s, position);
     filterSource(s, position);
-    final g = BufferGenerator(context)
+    final g = BufferGenerator(eventLoop.context)
       ..configDeleteBehavior(linger: true)
-      ..setBuffer(bufferStore.getBuffer(sound.sound.name, sound.sound.type));
+      ..setBuffer(
+          eventLoop.bufferStore.getBuffer(sound.sound.name, sound.sound.type));
     s.addGenerator(g);
     _randomSoundContainers[sound] = RandomSoundContainer(soundPosition, s);
   }
@@ -348,11 +338,11 @@ class Runner<T> {
       if (reverbPreset != null) {
         GlobalFdnReverb? r = _reverbs[box];
         if (r == null) {
-          r = reverbPreset.makeReverb(context)
+          r = reverbPreset.makeReverb(eventLoop.context)
             ..configDeleteBehavior(linger: false);
           _reverbs[box] = r;
         }
-        context.ConfigRoute(source, r);
+        eventLoop.context.ConfigRoute(source, r);
       }
     }
   }
@@ -364,7 +354,7 @@ class Runner<T> {
     for (final w in walls) {
       filterAmount -= w.type.filterFrequency;
     }
-    source.filter = context.synthizer
+    source.filter = eventLoop.context.synthizer
         .designLowpass(max(runnerSettings.maxWallFilter, filterAmount));
   }
 
@@ -439,42 +429,6 @@ class Runner<T> {
     return sh.near(agent);
   }
 
-  /// Play a simple sound.
-  ///
-  /// A sound played via this method is not panned or occluded, but will be
-  /// reverberated if [reverb] is `true`.
-  DirectSource playSound(SoundReference sound,
-      {double gain = 0.7, bool reverb = true}) {
-    final s = DirectSource(context)
-      ..gain = gain
-      ..configDeleteBehavior(linger: true);
-    if (reverb) {
-      reverberateSource(s, coordinates.floor());
-    }
-    final g = BufferGenerator(context)
-      ..configDeleteBehavior(linger: true)
-      ..setBuffer(bufferStore.getBuffer(sound.name, sound.type));
-    s.addGenerator(g);
-    return s;
-  }
-
-  /// Play a sound in 3d.
-  Source3D playSound3D(SoundReference sound, Point<double> position,
-      {double gain = 0.7, bool reverb = true}) {
-    final s = Source3D(context)
-      ..position = Double3(position.x, position.y, 0.0)
-      ..gain = gain
-      ..configDeleteBehavior(linger: true);
-    if (reverb) {
-      reverberateSource(s, position.floor());
-    }
-    final g = BufferGenerator(context)
-      ..configDeleteBehavior(linger: true)
-      ..setBuffer(bufferStore.getBuffer(sound.name, sound.type));
-    s.addGenerator(g);
-    return s;
-  }
-
   /// Add wall echoes to a sound.
   void playWallEchoes(DirectSource source) {
     final c = coordinates.floor();
@@ -520,12 +474,13 @@ class Runner<T> {
     if (taps.isNotEmpty) {
       var echo = _wallEcho;
       if (echo == null) {
-        echo = context.createGlobalEcho()..configDeleteBehavior(linger: false);
+        echo = eventLoop.context.createGlobalEcho()
+          ..configDeleteBehavior(linger: false);
         _wallEcho = echo;
       }
       echo.setTaps(taps);
-      context.ConfigRoute(source, echo,
-          filter: context.synthizer
+      eventLoop.context.ConfigRoute(source, echo,
+          filter: eventLoop.context.synthizer
               .designLowpass(runnerSettings.wallEchoFilterFrequency));
     }
   }
@@ -558,7 +513,7 @@ class Runner<T> {
           sound = wallSound;
         }
         if (currentObject == null || box != currentObject) {
-          playSound3D(
+          eventLoop.playSound3D(
             sound,
             boxCoordinates,
             gain: runnerSettings.directionalRadarGain,
@@ -580,7 +535,7 @@ class Runner<T> {
     }
     final emptySpaceSound = runnerSettings.directionalRadarEmptySpaceSound;
     if (emptySpaceSound != null) {
-      playSound3D(emptySpaceSound, boxCoordinates, reverb: false);
+      eventLoop.playSound3D(emptySpaceSound, boxCoordinates, reverb: false);
     }
   }
 
@@ -601,49 +556,14 @@ class Runner<T> {
     }
   }
 
-  /// Output some text.
-  void outputText(String text) {
-    // ignore: avoid_print
-    print(text);
-  }
-
-  /// Output [message].
-  void outputMessage(Message message,
-      {Point<double>? position, bool reverberate = true, bool filter = true}) {
-    final text = message.text;
-    if (text != null &&
-        (position == null || getWallsBetween(position.floor()).isEmpty)) {
-      outputText(text);
-    }
-    final sound = message.sound;
-    if (sound != null) {
-      final Source source;
-      if (position == null) {
-        source = playSound(sound, gain: message.gain, reverb: reverberate);
-      } else {
-        final generator = BufferGenerator(context)
-          ..setBuffer(bufferStore.getBuffer(sound.name, sound.type))
-          ..configDeleteBehavior(linger: true);
-        source = Source3D(context)
-          ..gain = message.gain
-          ..position = Double3(position.x, position.y, 0.0)
-          ..addGenerator(generator)
-          ..configDeleteBehavior(linger: true);
-        if (filter == true) {
-          filterSource(source, position.floor());
-        }
-      }
-    }
-  }
-
   /// Someone collided with a wall.
   void onCollideWall(Box<Wall> wall, Box<Agent> agent) {
     final wallSound = wall.sound;
     if (wallSound != null) {
       if (agent == player) {
-        playSound(wallSound);
+        eventLoop.playSound(wallSound);
       } else {
-        playSound3D(wallSound, agent.centre);
+        eventLoop.playSound3D(wallSound, agent.centre);
       }
     }
   }
@@ -655,7 +575,7 @@ class Runner<T> {
       Box<Door> door, Box<Agent> agent, Point<double> coordinates) {
     final collideMessage = door.type.collideMessage;
     if (collideMessage != null) {
-      outputMessage(collideMessage, position: coordinates);
+      eventLoop.outputMessage(collideMessage, position: coordinates);
     }
   }
 
@@ -674,7 +594,7 @@ class Runner<T> {
     final movementSound = surface.sound;
     if (movementSound != null) {
       if (agent == player) {
-        final source = playSound(movementSound);
+        final source = eventLoop.playSound(movementSound);
         if (runnerSettings.wallEchoEnabled) {
           playWallEchoes(source);
         }
@@ -682,7 +602,7 @@ class Runner<T> {
           playDirectionalRadar();
         }
       } else {
-        playSound3D(movementSound, newCoordinates);
+        eventLoop.playSound3D(movementSound, newCoordinates);
       }
     }
   }
@@ -704,7 +624,7 @@ class Runner<T> {
     d.open = true;
     final openMessage = d.openMessage;
     if (openMessage != null) {
-      outputMessage(openMessage, position: position);
+      eventLoop.outputMessage(openMessage, position: position);
     }
     filterSources();
   }
@@ -716,7 +636,7 @@ class Runner<T> {
       ..closeWhen = null;
     final closeMessage = d.closeMessage;
     if (closeMessage != null) {
-      outputMessage(closeMessage, position: position);
+      eventLoop.outputMessage(closeMessage, position: position);
     }
     filterSources();
   }

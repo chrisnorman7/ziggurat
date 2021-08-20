@@ -5,11 +5,33 @@ import 'dart:math';
 
 import 'package:dart_sdl/dart_sdl.dart';
 import 'package:dart_synthizer/dart_synthizer.dart';
-import 'package:ziggurat/basic_interface.dart';
 import 'package:ziggurat/ziggurat.dart';
 
 /// Game state to keep track of progress.
 class GameState {}
+
+/// An even loop with an overridden [outputText] method.
+class ExampleEventLoop extends EventLoop<GameState> {
+  /// Create an instance.
+  ExampleEventLoop(this.window,
+      {required BufferStore bufferStore,
+      required CommandHandler commandHandler,
+      required Context context,
+      required Sdl sdl})
+      : super(
+            bufferStore: bufferStore,
+            commandHandler: commandHandler,
+            gameState: GameState(),
+            context: context,
+            sdl: sdl);
+
+  /// The sdl window to use.
+  final Window window;
+
+  /// Override the output function.
+  @override
+  void outputText(String value) => window.title = value;
+}
 
 /// The temple used in this example.
 class Temple extends Ziggurat {
@@ -97,12 +119,11 @@ class Temple extends Ziggurat {
 }
 
 /// The runner for this example.
-class ExampleRunner extends Runner<GameState> {
+class ExampleRunner extends Runner {
   /// Create an instance.
-  ExampleRunner(Context ctx, BufferStore store, Ziggurat z,
-      RunnerSettings runnerSettings, this.window)
-      : super(ctx, store, GameState(),
-            Box('Player', Point(0, 0), Point(0, 0), Player()),
+  ExampleRunner(EventLoop eventLoop, RunnerSettings runnerSettings, this.window,
+      Ziggurat z)
+      : super(eventLoop, Box('Player', Point(0, 0), Point(0, 0), Player()),
             runnerSettings: runnerSettings) {
     ziggurat = z;
   }
@@ -124,13 +145,9 @@ class ExampleRunner extends Runner<GameState> {
         oldPosition: oldPosition,
         newPosition: newPosition);
     if (newBox != null) {
-      outputText(newBox.name);
+      eventLoop.outputText(newBox.name);
     }
   }
-
-  /// Override the output function.
-  @override
-  void outputText(String value) => window.title = value;
 }
 
 /// Run the example.
@@ -171,18 +188,38 @@ Future<void> main() async {
       directionalRadarDoorSound:
           bufferStore.getSoundReference('radar/doors.wav'));
   window.title = 'Ziggurat Example';
+  final interface = ExampleEventLoop(window,
+      context: ctx,
+      bufferStore: bufferStore,
+      sdl: sdl,
+      commandHandler: CommandHandler())
+    ..registerDefaultCommands();
   final t = Temple(bufferStore);
-  final r = ExampleRunner(ctx, bufferStore, t, runnerSettings, window);
-  final interface = BasicInterface(
-      sdl,
-      r,
-      bufferStore.getSoundReference(
-          'misc/399934__old-waveplay__perc-short-click-snap-perc.wav'));
+  final r = ExampleRunner(interface, runnerSettings, window, t);
+  interface.commandHandler.registerCommand(Command(
+      name: 'pause',
+      description: 'Pause or unpause the game',
+      defaultTrigger: CommandTrigger(
+        button: GameControllerButton.rightShoulder,
+        keyboardKey: CommandKeyboardKey(ScanCode.SCANCODE_P),
+      ),
+      onStart: () {
+        if (interface.state == EventLoopState.running) {
+          interface
+            ..pause()
+            ..outputText('Paused.');
+        } else if (interface.state == EventLoopState.paused) {
+          interface
+            ..unpause()
+            ..outputText('Unpaused.');
+        }
+      }));
   final triggerFile = File('triggers.json');
   if (triggerFile.existsSync()) {
     interface.commandHandler.loadTriggers(triggerFile);
   }
   directSource.destroy();
+  interface.runner = r;
   await for (final event in interface.run()) {
     if (event is ControllerDeviceEvent) {
       if (event.state == DeviceState.added) {
@@ -191,6 +228,5 @@ Future<void> main() async {
     }
   }
   window.destroy();
-  sdl.quit();
   interface.commandHandler.dumpTriggers(triggerFile);
 }

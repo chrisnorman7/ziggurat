@@ -4,15 +4,13 @@ import 'dart:math';
 
 import 'package:dart_sdl/dart_sdl.dart';
 import 'package:dart_synthizer/dart_synthizer.dart';
-import 'package:ziggurat/basic_interface.dart';
 import 'package:ziggurat/ziggurat.dart';
 
 /// The runner for this example.
-class ExampleRunner extends Runner<Object> {
+class ExampleRunner extends Runner {
   /// Create an instance.
-  ExampleRunner(Context ctx, BufferStore store, Ziggurat z)
-      : super(ctx, store, Object(),
-            Box('Player', Point(0, 0), Point(0, 0), Player())) {
+  ExampleRunner(EventLoop eventLoop, Ziggurat z)
+      : super(eventLoop, Box('Player', Point(0, 0), Point(0, 0), Player())) {
     ziggurat = z;
   }
 
@@ -43,7 +41,7 @@ Future<void> main() async {
   final bufferStore = BufferStore(Random(), synthizer);
   const size = 1000;
   final tileSound = await bufferStore.addFile(
-      File('sounds/399934__old-waveplay__perc-short-click-snap-perc.wav'));
+      File('sounds/misc/399934__old-waveplay__perc-short-click-snap-perc.wav'));
   for (var i = 0; i < size; i++) {
     for (var j = 0; j < size; j++) {
       final t =
@@ -51,12 +49,15 @@ Future<void> main() async {
       z.boxes.add(t);
     }
   }
-  final runner = ExampleRunner(ctx, bufferStore, z);
-  final sdl = Sdl();
-  final interface = BasicInterface(
-      sdl,
-      runner,
-      await bufferStore.addFile(
-          File('sounds/399934__old-waveplay__perc-short-click-snap-perc.wav')));
+  final sdl = Sdl()..init();
+  final window = sdl.createWindow('Massive Example');
+  final interface = EventLoop(
+      context: ctx,
+      bufferStore: bufferStore,
+      sdl: sdl,
+      commandHandler: CommandHandler(),
+      gameState: Object())
+    ..registerDefaultCommands();
   await for (final _ in interface.run()) {}
+  window.destroy();
 }
