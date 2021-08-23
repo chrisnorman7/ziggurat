@@ -7,8 +7,7 @@ void main() {
       final game = Game('Test Game');
       expect(game.title, equals('Test Game'));
       expect(game.currentLevel, isNull);
-      expect(
-          game.defaultTriggerMap.triggers, equals(<String, CommandTrigger>{}));
+      expect(game.triggerMap.triggers, equals(<String, CommandTrigger>{}));
     });
     test('Current Level', () {
       final game = Game('Test Game');

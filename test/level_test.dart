@@ -43,7 +43,54 @@ class CustomLevel extends Level {
   }
 }
 
+/// A level with commands.
+class CommandLevel extends Level {
+  /// Create a level.
+  CommandLevel(Game game)
+      : started = false,
+        stopped = false,
+        super(game) {
+    registerCommand('testCommand',
+        Command(onStart: () => started = true, onStop: () => stopped = true));
+  }
+
+  /// The command was started.
+  bool started;
+
+  /// The command was stopped.
+  bool stopped;
+}
+
+/// A level with an increment command.
+class IncrementLevel extends Level {
+  /// Create a level.
+  IncrementLevel(Game game)
+      : counter = 0,
+        super(game) {
+    registerCommand(
+        'increment', Command(onStart: () => counter++, interval: 500));
+  }
+
+  /// The number of increments.
+  int counter;
+}
+
 void main() {
+  group('Level Tests', () {
+    test('Test Initialisation', () {
+      final game = Game('Test Game');
+      final level = Level(game);
+      expect(level.game, equals(game));
+      expect(level.commands, equals(<String, Command>{}));
+    });
+    test('Register Commands', () {
+      final game = Game('Test Game');
+      final level = Level(game);
+      final command = Command();
+      level.registerCommand('testing', command);
+      expect(level.commands, equals({'testing': command}));
+    });
+  });
   group('Custom Levels', () {
     test('Initialisation', () {
       final game = Game('Test game');
@@ -77,6 +124,42 @@ void main() {
       expect(level2.wasPopped, isTrue);
       expect(game.currentLevel, equals(level1));
       expect(level1.wasRevealed, equals(level2));
+    });
+    test('Command Tests', () {
+      final game = Game('Test Game');
+      final level = CommandLevel(game);
+      expect(level.started, isFalse);
+      expect(level.stopped, isFalse);
+      level.startCommand('invalidCommand');
+      expect(level.started, isFalse);
+      expect(level.stopped, isFalse);
+      level.stopCommand('invalidCommand');
+      expect(level.started, isFalse);
+      expect(level.stopped, isFalse);
+      level.startCommand('testCommand');
+      expect(level.started, isTrue);
+      expect(level.stopped, isFalse);
+      level.stopCommand('testCommand');
+      expect(level.started, isTrue);
+      expect(level.stopped, isTrue);
+    });
+    test('Start Command Tests', () {
+      final game = Game('Test Game');
+      final level = IncrementLevel(game);
+      final command = level.commands['increment'];
+      expect(command, isA<Command>());
+      expect(level.counter, equals(0));
+      game.time = DateTime.now().millisecondsSinceEpoch;
+      level.startCommand('increment');
+      expect(level.counter, equals(1));
+      expect(command!.nextRun, equals(game.time + 500));
+      level.startCommand('increment');
+      expect(level.counter, equals(1));
+      expect(command.nextRun, equals(game.time + 500));
+      game.time += 500;
+      level.startCommand('increment');
+      expect(level.counter, equals(2));
+      expect(command.nextRun, equals(game.time + 500));
     });
   });
 }

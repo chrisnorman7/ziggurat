@@ -25,6 +25,7 @@ export 'src/json/vault_file.dart';
 export 'src/levels/level.dart';
 export 'src/math.dart';
 export 'src/menu/menu_base.dart';
+export 'src/menu/widgets/widgets_base.dart';
 export 'src/quest.dart';
 export 'src/setting_defaults.dart';
 export 'src/sound/ambiance.dart';

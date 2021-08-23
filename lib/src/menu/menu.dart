@@ -1,12 +1,13 @@
 /// Provides the [Menu] class.
 import 'dart:math';
 
-import 'package:dart_synthizer/dart_synthizer.dart';
-
+import '../command.dart';
+import '../game.dart';
 import '../json/message.dart';
-import '../sound/buffer_store.dart';
+import '../levels/level.dart';
 import 'menu_item.dart';
 import 'widgets/button.dart';
+import 'widgets/label.dart';
 
 /// A menu.
 ///
@@ -18,15 +19,11 @@ import 'widgets/button.dart';
 ///
 /// If it is possible to cancel from this menu, you can do so with the [cancel]
 /// method.
-class Menu {
+class Menu extends Level {
   /// Create a menu.
-  Menu(this.title, this.menuItems, this.outputText, Context context,
-      this.bufferStore,
-      {this.onCancel}) {
-    source = DirectSource(context);
-    generator = BufferGenerator(context);
-    source.addGenerator(generator);
-  }
+  Menu({required Game game, required this.title, List<MenuItem>? items})
+      : menuItems = items ?? [],
+        super(game);
 
   /// The title of this menu.
   final Message title;
@@ -34,54 +31,47 @@ class Menu {
   /// The menu items contained by this menu.
   final List<MenuItem> menuItems;
 
-  /// The function to use to output text.
-  final void Function(String) outputText;
-
-  /// The buffer store to use.
-  final BufferStore bufferStore;
-
-  /// If this value is not `null`, then the [cancel] method will call it.
-  final void Function()? onCancel;
-
   //// The current position in this menu.
   int? _position;
 
-  /// The source to use to play sounds.
-  late final DirectSource source;
-
-  /// The generator to use for playing sounds.
-  late final BufferGenerator generator;
+  /// Register default commands.
+  ///
+  /// If any of the arguments are `null`, then that command will not be
+  /// registered.
+  void registerCommands(
+      {String? upCommandName,
+      String? downCommandName,
+      String? activateCommandName,
+      String? cancelCommandName}) {
+    if (upCommandName != null) {
+      registerCommand(upCommandName, Command(onStart: up));
+    }
+    if (downCommandName != null) {
+      registerCommand(downCommandName, Command(onStart: down));
+    }
+    if (activateCommandName != null) {
+      registerCommand(activateCommandName, Command(onStart: activate));
+    }
+    if (cancelCommandName != null) {
+      registerCommand(cancelCommandName, Command(onStart: cancel));
+    }
+  }
 
   /// Activate the currently-focused menu item.
   void activate() {
     final item = currentMenuItem;
-    if (item is MenuItem<Button>) {
-      item.widget.onActivate();
+    final widget = item?.widget;
+    if (widget is Label) {
+      return;
+    } else if (widget is Button) {
+      widget.onActivate();
+    } else {
+      throw Exception('Need to handle $widget widgets.');
     }
   }
 
-  /// Cancel this menu.
-  ///
-  /// If [onCancel] is `null`, nothing will happen.
-  void cancel() {
-    final cancelFunc = onCancel;
-    if (cancelFunc != null) {
-      cancelFunc();
-    }
-  }
-
-  /// Output a message.
-  void outputMessage(Message message) {
-    final text = message.text;
-    if (text != null) {
-      outputText(text);
-    }
-    final sound = message.sound;
-    if (sound != null) {
-      generator.setBuffer(bufferStore.getBuffer(sound.name, sound.type));
-      source.gain = message.gain;
-    }
-  }
+  /// What happens when this menu is cancelled.
+  void cancel() {}
 
   /// Get the currently focussed menu item.
   MenuItem? get currentMenuItem {
@@ -94,16 +84,14 @@ class Menu {
   /// Move up in this menu.
   void up() {
     var position = _position;
-    final Message message;
     if (position == null || position == 0) {
-      message = title;
+      game.outputMessage(title);
       _position = null;
     } else {
       position--;
       _position = position;
-      message = menuItems.elementAt(position).message;
+      menuItems.elementAt(position).onFocus(this);
     }
-    outputMessage(message);
   }
 
   /// Move down in this menu.
@@ -114,7 +102,7 @@ class Menu {
     } else {
       position = min(position + 1, menuItems.length - 1);
     }
-    final item = menuItems.elementAt(position);
-    outputMessage(item.message);
+    _position = position;
+    menuItems.elementAt(position).onFocus(this);
   }
 }
