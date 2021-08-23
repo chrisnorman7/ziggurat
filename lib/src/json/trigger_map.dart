@@ -20,6 +20,11 @@ class TriggerMap {
   /// Keys are command names.
   final Map<String, CommandTrigger> triggers;
 
+  /// Register a new command with the given [name] and [trigger].
+  void registerCommand(
+          {required String name, required CommandTrigger trigger}) =>
+      triggers[name] = trigger;
+
   /// Convert an instance to JSON.
   Map<String, dynamic> toJson() => _$TriggerMapToJson(this);
 }

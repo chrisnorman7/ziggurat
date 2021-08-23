@@ -3,26 +3,12 @@ import 'dart:io';
 
 import 'box_map/box.dart';
 import 'box_map/box_types/agents/player.dart';
-import 'event_loop.dart';
-import 'runner.dart';
+import 'game.dart';
 import 'sound/buffer_store.dart';
 import 'ziggurat.dart';
 
 /// The base class for all ziggurat errors.
 class ZigguratError extends Error {}
-
-/// The error which is thrown when a [Runner] has no [Ziggurat] loaded.
-class NoZigguratError extends ZigguratError {
-  /// Create the exception.
-  NoZigguratError(this.runner);
-
-  /// The runner which was at fault.
-  final Runner runner;
-
-  /// Change the string representation of this object.
-  @override
-  String toString() => 'No ziggurat on $runner.';
-}
 
 /// An attempt was made to get a random file from an empty directory.
 class NoFilesError extends ZigguratError {
@@ -77,13 +63,13 @@ class PlayerInBoxesError extends ZigguratError {
   final Ziggurat ziggurat;
 }
 
-/// An [EventLoop] instance is in an invalid state.
+/// A [Game] instance is in an invalid state.
 class InvalidStateError extends ZigguratError {
   /// Create an error.
-  InvalidStateError(this.eventLoop);
+  InvalidStateError(this.game);
 
-  /// The loop which is already running.
-  final EventLoop eventLoop;
+  /// The game which is already running.
+  final Game game;
 }
 
 /// No such buffer was found in a [BufferStore] instance.

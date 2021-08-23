@@ -1,10 +1,13 @@
 /// Provides the [Game] class.
+import 'json/trigger_map.dart';
 import 'levels/level.dart';
 
 /// The main game object.
 class Game {
   /// Create an instance.
-  Game(this.title) : _levels = [];
+  Game(this.title, {TriggerMap? triggerMap})
+      : _levels = [],
+        defaultTriggerMap = triggerMap ?? TriggerMap({});
 
   /// The title of this game.
   ///
@@ -18,6 +21,9 @@ class Game {
   ///
   /// This is the level which is last in the levels stack.
   Level? get currentLevel => _levels.isEmpty ? null : _levels.last;
+
+  /// The default trigger map.
+  final TriggerMap defaultTriggerMap;
 
   /// Push a level onto the stack.
   void pushLevel(Level level) {

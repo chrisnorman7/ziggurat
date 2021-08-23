@@ -2,8 +2,8 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'box_map/box_map.dart';
 import 'error.dart';
-import 'runner.dart';
 
 /// An extension for returning a `Point<int>` from a `Point<double>`.
 extension RunnerDoubleMethods on Point<double> {
@@ -51,7 +51,7 @@ extension RunnerFileMethods on FileSystemEntity {
   }
 }
 
-/// Various extension methods mainly used when setting [Runner.ziggurat].
+/// Various extension methods mainly used by the [BoxMap] class.
 extension VariousMethods on List<int> {
   /// Get the sum of this list.
   int get sum => reduce((a, b) => a + b);

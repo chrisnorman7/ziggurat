@@ -7,13 +7,15 @@ void main() {
       final game = Game('Test Game');
       expect(game.title, equals('Test Game'));
       expect(game.currentLevel, isNull);
+      expect(
+          game.defaultTriggerMap.triggers, equals(<String, CommandTrigger>{}));
     });
     test('Current Level', () {
       final game = Game('Test Game');
-      final level1 = Level();
+      final level1 = Level(game);
       game.pushLevel(level1);
       expect(game.currentLevel, equals(level1));
-      final level2 = Level();
+      final level2 = Level(game);
       game.pushLevel(level2);
       expect(game.currentLevel, equals(level2));
     });

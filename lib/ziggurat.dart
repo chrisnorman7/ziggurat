@@ -1,12 +1,5 @@
-/// A library for creating RPGs.
-///
-/// The notion of game maps is provided by the [Ziggurat] class.
-///
-/// Games can be played with the [Runner] class.
+/// A library for creating games.
 library ziggurat;
-
-import 'src/runner.dart';
-import 'src/ziggurat.dart';
 
 export 'src/box_map/box.dart';
 export 'src/box_map/box_map.dart';
@@ -21,7 +14,6 @@ export 'src/box_map/wall_location.dart';
 export 'src/command.dart';
 export 'src/directions.dart';
 export 'src/error.dart';
-export 'src/event_loop.dart';
 export 'src/extensions.dart';
 export 'src/game.dart';
 export 'src/json/command_trigger.dart';
@@ -34,7 +26,6 @@ export 'src/levels/level.dart';
 export 'src/math.dart';
 export 'src/menu/menu_base.dart';
 export 'src/quest.dart';
-export 'src/runner.dart';
 export 'src/setting_defaults.dart';
 export 'src/sound/ambiance.dart';
 export 'src/sound/buffer_store.dart';

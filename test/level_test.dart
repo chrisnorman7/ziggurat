@@ -3,6 +3,9 @@ import 'package:ziggurat/ziggurat.dart';
 
 /// Custom level.
 class CustomLevel extends Level {
+  /// Create a custom level.
+  CustomLevel(Game game) : super(game);
+
   /// Whether or not this level has been pushed.
   bool wasPushed = false;
 
@@ -43,7 +46,9 @@ class CustomLevel extends Level {
 void main() {
   group('Custom Levels', () {
     test('Initialisation', () {
-      final level = CustomLevel();
+      final game = Game('Test game');
+      final level = CustomLevel(game);
+      expect(level.game, equals(game));
       expect(level.wasPushed, isFalse);
       expect(level.wasPopped, isFalse);
       expect(level.wasCovered, isNull);
@@ -53,14 +58,14 @@ void main() {
   group('Level Tests', () {
     test('Push Level', () {
       final game = Game('Test Game');
-      final level1 = CustomLevel();
+      final level1 = CustomLevel(game);
       game.pushLevel(level1);
       expect(game.currentLevel, equals(level1));
       expect(level1.wasPushed, isTrue);
       expect(level1.wasPopped, isFalse);
       expect(level1.wasCovered, isNull);
       expect(level1.wasRevealed, isNull);
-      final level2 = CustomLevel();
+      final level2 = CustomLevel(game);
       game.pushLevel(level2);
       expect(game.currentLevel, equals(level2));
       expect(level2.wasPushed, isTrue);

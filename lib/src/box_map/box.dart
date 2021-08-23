@@ -3,9 +3,7 @@ import 'dart:math';
 
 import 'package:meta/meta.dart';
 
-import '../extensions.dart';
 import '../json/sound_reference.dart';
-import '../runner.dart';
 import 'box_types/agents/agent.dart';
 import 'box_types/base.dart';
 import 'box_types/door.dart';
@@ -120,29 +118,22 @@ class Box<T extends BoxType> {
 
   /// What happens when [agent] enters this box.
   @mustCallSuper
-  void onEnter(Runner runner, Box<Agent> agent, Point<double> oldCoordinates) {
+  void onEnter(Box<Agent> agent, Point<double> oldCoordinates) {
     final t = type;
     if (t is Door) {
       t.closeWhen = null;
       if (t.open == false) {
-        runner.openDoor(t, oldCoordinates);
+        // runner.openDoor(t, oldCoordinates);
       }
     }
   }
 
   /// What happens when [agent] leaves this box.
-  void onExit(Runner runner, Box<Agent> agent, Point<double> oldCoordinates) {
+  void onExit(Box<Agent> agent, Point<double> oldCoordinates) {
     final t = type;
     if (t is Door) {
-      final spatialHash = runner.spatialHash;
       final closeAfter = t.closeAfter;
-      if (spatialHash != null && closeAfter != null) {
-        for (final occupant in spatialHash
-            .itemsInRegion(Rectangle(start.x, start.y, width, height))) {
-          if (occupant != this && containsPoint(occupant.centre.floor())) {
-            return;
-          }
-        }
+      if (closeAfter != null) {
         t
           ..closeWhen = DateTime.now().millisecondsSinceEpoch + closeAfter
           ..closeCoordinates = oldCoordinates;

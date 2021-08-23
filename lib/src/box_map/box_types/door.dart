@@ -2,7 +2,6 @@
 import 'dart:math';
 
 import '../../json/message.dart';
-import '../../runner.dart';
 import '../../sound/reverb_preset.dart';
 import '../box.dart';
 import 'agents/agent.dart';
@@ -47,15 +46,13 @@ class Door extends Wall {
 
   /// A function to be called when this door is opened.
   ///
-  /// This function is given the [runner] which is running the game, as well as
-  /// the [box] this door is attached to.
-  void onOpen(Runner runner, Box<Door> box) {}
+  /// This function is given the [box] this door is attached to.
+  void onOpen(Box<Door> box) {}
 
   /// A function to be called when this door is closed.
   ///
-  /// This function is given the [runner] which is running the game, as well as
-  /// the [box] this door is attached to.
-  void onClose(Runner runner, Box<Door> box) {}
+  /// This function is given the [box] this door is attached to.
+  void onClose(Box<Door> box) {}
 
   /// Returns `true` if this door should open for [agent].
   ///

@@ -3,6 +3,12 @@ import '../game.dart';
 
 /// A level in a [Game] instance.
 class Level {
+  /// Create a level.
+  Level(this.game);
+
+  /// The game this level is part of.
+  final Game game;
+
   /// What should happen when this game is pushed into a level stack.
   void onPush() {}
 
