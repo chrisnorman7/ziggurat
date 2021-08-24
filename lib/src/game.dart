@@ -5,6 +5,7 @@ import 'package:meta/meta.dart';
 import 'json/message.dart';
 import 'json/trigger_map.dart';
 import 'levels/level.dart';
+import 'task.dart';
 
 /// The main game object.
 class Game {
@@ -13,7 +14,8 @@ class Game {
       : _levels = [],
         triggerMap = triggerMap ?? TriggerMap({}),
         time = 0,
-        _isRunning = false;
+        _isRunning = false,
+        tasks = [];
 
   /// The title of this game.
   ///
@@ -41,6 +43,22 @@ class Game {
 
   /// Whether or not this game is running.
   bool get isRunning => _isRunning;
+
+  /// The tasks which have been registered using [registerTask].
+  final List<Task> tasks;
+
+  /// Register a new task.
+  ///
+  /// This method is shorthand for:
+  ///
+  /// ```
+  /// task = Task(game.time + runAfter, func);
+  /// ```
+  Task registerTask(int runAfter, void Function() func) {
+    final task = Task(time + runAfter, func);
+    tasks.add(task);
+    return task;
+  }
 
   /// Push a level onto the stack.
   void pushLevel(Level level) {
@@ -141,6 +159,14 @@ class Game {
         }
       }
     }
+    final completedTasks = <Task>[];
+    for (final task in tasks) {
+      if (time >= task.runWhen) {
+        task.func();
+        completedTasks.add(task);
+      }
+    }
+    tasks.removeWhere(completedTasks.contains);
   }
 
   /// Stop this game.

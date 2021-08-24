@@ -32,4 +32,5 @@ export 'src/sound/ambiance.dart';
 export 'src/sound/buffer_store.dart';
 export 'src/sound/random_sound.dart';
 export 'src/sound/reverb_preset.dart';
+export 'src/task.dart';
 export 'src/ziggurat.dart';
