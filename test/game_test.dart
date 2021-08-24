@@ -19,7 +19,7 @@ void main() {
       game.pushLevel(level2);
       expect(game.currentLevel, equals(level2));
     });
-    test('Task Tests', () {
+    test('One-off Task Test', () {
       final game = Game('Test Game');
       final sdl = Sdl();
       var i = 0;
@@ -28,7 +28,7 @@ void main() {
       });
       expect(game.tasks.contains(task), isTrue);
       expect(task.runWhen, equals(3));
-      expect(i, equals(0));
+      expect(i, isZero);
       while (game.time < task.runWhen) {
         game.tick(sdl, 1);
         expect(
@@ -39,6 +39,38 @@ void main() {
       game.tick(sdl, 1);
       expect(i, equals(1));
       expect(game.tasks, isEmpty);
+    });
+    test('Repeating Task Test', () {
+      final game = Game('Test Game');
+      final sdl = Sdl();
+      var i = 0;
+      final task = game.registerTask(3, () {
+        i++;
+      }, interval: 2);
+      expect(task.interval, equals(2));
+      expect(game.tasks.contains(task), isTrue);
+      expect(task.runWhen, equals(3));
+      expect(i, isZero);
+      while (game.time < task.runWhen) {
+        game.tick(sdl, 1);
+        expect(
+            game.time, allOf(greaterThanOrEqualTo(0), lessThan(task.runWhen)));
+        expect(i, equals(0));
+        game.time++;
+      }
+      game.tick(sdl, 1);
+      expect(i, equals(1));
+      expect(game.tasks, isNotEmpty);
+      expect(game.tasks.first, equals(task));
+      game
+        ..time += 1
+        ..tick(sdl, 1);
+      expect(i, equals(1));
+      game
+        ..time += 1
+        ..tick(sdl, 1);
+      expect(i, equals(2));
+      expect(game.tasks.length, equals(1));
     });
   });
 }

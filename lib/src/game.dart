@@ -54,8 +54,8 @@ class Game {
   /// ```
   /// task = Task(game.time + runAfter, func);
   /// ```
-  Task registerTask(int runAfter, void Function() func) {
-    final task = Task(time + runAfter, func);
+  Task registerTask(int runAfter, void Function() func, {int? interval}) {
+    final task = Task(time + runAfter, interval, func);
     tasks.add(task);
     return task;
   }
@@ -163,7 +163,12 @@ class Game {
     for (final task in tasks) {
       if (time >= task.runWhen) {
         task.func();
-        completedTasks.add(task);
+        final interval = task.interval;
+        if (interval == null) {
+          completedTasks.add(task);
+        } else {
+          task.runWhen = time + interval;
+        }
       }
     }
     tasks.removeWhere(completedTasks.contains);
