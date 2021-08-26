@@ -5,6 +5,7 @@ import '../command.dart';
 import '../game.dart';
 import '../json/message.dart';
 import '../levels/level.dart';
+import '../sound/ambiance.dart';
 import 'menu_item.dart';
 import 'widgets/button.dart';
 import 'widgets/label.dart';
@@ -21,9 +22,13 @@ import 'widgets/label.dart';
 /// method.
 class Menu extends Level {
   /// Create a menu.
-  Menu({required Game game, required this.title, List<MenuItem>? items})
+  Menu(
+      {required Game game,
+      required this.title,
+      List<MenuItem>? items,
+      List<Ambiance>? ambiances})
       : menuItems = items ?? [],
-        super(game);
+        super(game, ambiances: ambiances ?? []);
 
   /// The title of this menu.
   final Message title;
