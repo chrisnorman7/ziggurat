@@ -292,7 +292,7 @@ const _$ScanCodeEnumMap = {
   ScanCode.SCANCODE_APP2: 'SCANCODE_APP2',
   ScanCode.SCANCODE_AUDIOREWIND: 'SCANCODE_AUDIOREWIND',
   ScanCode.SCANCODE_AUDIOFASTFORWARD: 'SCANCODE_AUDIOFASTFORWARD',
-  ScanCode.keycode_NUM_SCANCODES: 'keycode_NUM_SCANCODES',
+  ScanCode.NUM_SCANCODES: 'NUM_SCANCODES',
 };
 
 CommandTrigger _$CommandTriggerFromJson(Map<String, dynamic> json) =>

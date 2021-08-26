@@ -104,9 +104,12 @@ class Game {
           if ((event is KeyboardEvent &&
                   key != null &&
                   event.key.scancode == key.scanCode &&
-                  event.key.alt == key.altKey &&
-                  event.key.ctrl == key.controlKey &&
-                  event.key.shift == key.shiftKey &&
+                  (key.altKey == false ||
+                      event.key.modifiers.contains(KeyMod.alt)) &&
+                  (key.controlKey == false ||
+                      event.key.modifiers.contains(KeyMod.ctrl)) &&
+                  (key.shiftKey == false ||
+                      event.key.modifiers.contains(KeyMod.shift)) &&
                   event.repeat == false) ||
               (event is ControllerButtonEvent &&
                   button != null &&
