@@ -154,7 +154,7 @@ class Game {
   /// The [timeDelta] argument will be the number of milliseconds since the last
   /// tick. If the game hasn't ticked before, then this value will be 0.
   @mustCallSuper
-  void tick(Sdl sdl, int timeDelta) {
+  Future<void> tick(Sdl sdl, int timeDelta) async {
     Event? event;
     do {
       event = sdl.pollEvent();
@@ -215,7 +215,7 @@ class Game {
       } else {
         timeDelta = time - lastTick;
       }
-      tick(sdl, timeDelta);
+      await tick(sdl, timeDelta);
       lastTick = DateTime.now().millisecondsSinceEpoch;
       final tickTime = lastTick - time;
       if (tickEvery > tickTime) {
