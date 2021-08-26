@@ -197,7 +197,11 @@ class Game {
   ///
   /// This method destroys any created [window].
   @mustCallSuper
-  void destroy() => window?.destroy();
+  Future<void> destroy() async {
+    window?.destroy();
+    await sounds.done;
+    await sounds.close();
+  }
 
   /// Run this game.
   @mustCallSuper
@@ -223,7 +227,7 @@ class Game {
             Duration(milliseconds: tickEvery - tickTime));
       }
     }
-    destroy();
+    await destroy();
   }
 
   /// Output a message.
