@@ -1,10 +1,15 @@
 /// Provides the [Game] class.
+import 'dart:async';
+
 import 'package:dart_sdl/dart_sdl.dart';
 import 'package:meta/meta.dart';
 
 import 'json/message.dart';
+import 'json/sound_reference.dart';
 import 'json/trigger_map.dart';
 import 'levels/level.dart';
+import 'sound/events/events_base.dart';
+import 'sound/reverb_preset.dart';
 import 'task.dart';
 
 /// The main game object.
@@ -15,7 +20,8 @@ class Game {
         triggerMap = triggerMap ?? TriggerMap({}),
         time = 0,
         _isRunning = false,
-        tasks = [];
+        tasks = [],
+        sounds = StreamController();
 
   /// The title of this game.
   ///
@@ -46,6 +52,12 @@ class Game {
 
   /// The tasks which have been registered using [registerTask].
   final List<Task> tasks;
+
+  /// The stream controller for dispatching sound events.
+  ///
+  /// You can add to this stream either manually, or by using the various sound
+  /// methods on instances of this class.
+  final StreamController<SoundEvent> sounds;
 
   /// Register a new task.
   ///
@@ -220,5 +232,62 @@ class Game {
     if (text != null) {
       window?.title = text;
     }
+  }
+
+  /// Create a reverb.
+  CreateReverb createReverb(ReverbPreset reverb) {
+    final event = CreateReverb(id: SoundEvent.nextId(), reverb: reverb);
+    sounds.add(event);
+    return event;
+  }
+
+  /// Destroy a reverb previously created with [createReverb].
+  DestroyReverb destroyReverb(CreateReverb reverb) {
+    final event = DestroyReverb(reverb.id);
+    sounds.add(event);
+    return event;
+  }
+
+  /// Play a sound.
+  PlaySound playSound(SoundReference sound,
+      {SoundPosition position = unpanned,
+      double gain = 0.7,
+      CreateReverb? reverb}) {
+    final event = PlaySound(
+        sound: sound,
+        position: position,
+        id: SoundEvent.nextId(),
+        gain: gain,
+        reverb: reverb?.id);
+    sounds.add(event);
+    return event;
+  }
+
+  /// Destroy a sound previously started by [playSound].
+  DestroySound destroySound(PlaySound sound) {
+    final event = DestroySound(sound.id);
+    sounds.add(event);
+    return event;
+  }
+
+  /// Pause a sound previously started with [playSound].
+  PauseSound pauseSound(PlaySound sound) {
+    final event = PauseSound(sound.id);
+    sounds.add(event);
+    return event;
+  }
+
+  /// Unpause a sound which was previously paused with [pauseSound].
+  UnpauseSound unpauseSound(PlaySound sound) {
+    final event = UnpauseSound(sound.id);
+    sounds.add(event);
+    return event;
+  }
+
+  /// Set the gain on a sound previously started with [playSound].
+  SetGain setGain(PlaySound sound, double gain) {
+    final event = SetGain(id: sound.id, gain: gain);
+    sounds.add(event);
+    return event;
   }
 }

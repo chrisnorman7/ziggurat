@@ -4,17 +4,23 @@ import 'package:meta/meta.dart';
 
 import '../command.dart';
 import '../game.dart';
+import '../sound/ambiance.dart';
 
 /// A level in a [Game] instance.
 class Level {
   /// Create a level.
-  Level(this.game) : commands = {};
+  Level(this.game, {List<Ambiance>? ambiances})
+      : commands = {},
+        ambiances = ambiances ?? [];
 
   /// The game this level is part of.
   final Game game;
 
   /// The commands this level recognises.
   final Map<String, Command> commands;
+
+  /// A list of ambiances for this level.
+  final List<Ambiance> ambiances;
 
   /// What should happen when this game is pushed into a level stack.
   void onPush() {}
