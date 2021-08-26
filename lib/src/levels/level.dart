@@ -5,13 +5,15 @@ import 'package:meta/meta.dart';
 import '../command.dart';
 import '../game.dart';
 import '../sound/ambiance.dart';
+import '../sound/events/playback.dart';
 
 /// A level in a [Game] instance.
 class Level {
   /// Create a level.
   Level(this.game, {List<Ambiance>? ambiances})
       : commands = {},
-        ambiances = ambiances ?? [];
+        ambiances = ambiances ?? [],
+        ambianceSounds = [];
 
   /// The game this level is part of.
   final Game game;
@@ -22,11 +24,26 @@ class Level {
   /// A list of ambiances for this level.
   final List<Ambiance> ambiances;
 
+  /// The list of ambiance sounds created by the [onPush] method.
+  final List<PlaySound> ambianceSounds;
+
   /// What should happen when this game is pushed into a level stack.
-  void onPush() {}
+  @mustCallSuper
+  void onPush() {
+    for (final ambiance in ambiances) {
+      ambianceSounds.add(
+          game.playSound(ambiance.sound, gain: ambiance.gain, looping: true));
+    }
+  }
 
   /// What should happen when this level is popped from a level stack.
-  void onPop() {}
+  @mustCallSuper
+  void onPop() {
+    while (ambianceSounds.isNotEmpty) {
+      final sound = ambianceSounds.removeLast();
+      game.destroySound(sound);
+    }
+  }
 
   /// What should happen when this level is covered by another level.
   void onCover(Level other) {}

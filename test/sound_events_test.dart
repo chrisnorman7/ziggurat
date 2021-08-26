@@ -23,6 +23,7 @@ void main() {
       final pause = game.pauseSound(sound);
       final unpause = game.unpauseSound(sound);
       final setGain = game.setGain(sound, 1.0);
+      final setLoop = game.setLoop(sound, true);
       final destroySound = game.destroySound(sound);
       final destroyReverb = game.destroyReverb(reverb);
       expect(
@@ -33,6 +34,7 @@ void main() {
             pause,
             unpause,
             setGain,
+            setLoop,
             destroySound,
             destroyReverb
           ]));

@@ -252,6 +252,7 @@ class Game {
   PlaySound playSound(SoundReference sound,
       {SoundPosition position = unpanned,
       double gain = 0.7,
+      bool looping = false,
       CreateReverb? reverb}) {
     final event = PlaySound(
         sound: sound,
@@ -287,6 +288,14 @@ class Game {
   /// Set the gain on a sound previously started with [playSound].
   SetGain setGain(PlaySound sound, double gain) {
     final event = SetGain(id: sound.id, gain: gain);
+    sounds.add(event);
+    return event;
+  }
+
+  /// Set whether or not a sound previously created with [playSound] should
+  /// loop.
+  SetLoop setLoop(PlaySound sound, bool loop) {
+    final event = SetLoop(id: sound.id, looping: loop);
     sounds.add(event);
     return event;
   }

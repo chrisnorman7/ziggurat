@@ -21,12 +21,14 @@ class CustomLevel extends Level {
   /// This level was pushed.
   @override
   void onPush() {
+    super.onPush();
     wasPushed = true;
   }
 
   /// This level was popped.
   @override
   void onPop() {
+    super.onPop();
     wasPopped = true;
   }
 
