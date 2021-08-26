@@ -1,5 +1,4 @@
 /// Provides the [Menu] class.
-import 'dart:math';
 
 import '../command.dart';
 import '../game.dart';
@@ -89,7 +88,9 @@ class Menu extends Level {
   /// Move up in this menu.
   void up() {
     var position = _position;
-    if (position == null || position == 0) {
+    if (position == null) {
+      return;
+    } else if (position == 0) {
       game.outputMessage(title);
       _position = null;
     } else {
@@ -105,7 +106,10 @@ class Menu extends Level {
     if (position == null) {
       position = 0;
     } else {
-      position = min(position + 1, menuItems.length - 1);
+      position++;
+      if (position == menuItems.length) {
+        return;
+      }
     }
     _position = position;
     menuItems.elementAt(position).onFocus(this);
