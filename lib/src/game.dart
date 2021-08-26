@@ -232,6 +232,10 @@ class Game {
     if (text != null) {
       window?.title = text;
     }
+    final sound = message.sound;
+    if (sound != null) {
+      playSound(sound, gain: message.gain);
+    }
   }
 
   /// Create a reverb.
