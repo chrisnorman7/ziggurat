@@ -10,8 +10,6 @@ environment:
 dependencies:
   args: ^2.2.0
   dart_sdl: ^0.3.0
-  dart_synthizer:
-    git: https://github.com/chrisnorman7/dart_synthizer
   encrypt: ^5.0.0
   json_annotation: ^4.1.0
   meta: ^1.7.0

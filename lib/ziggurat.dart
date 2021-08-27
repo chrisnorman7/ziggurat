@@ -29,7 +29,6 @@ export 'src/menu/widgets/widgets_base.dart';
 export 'src/quest.dart';
 export 'src/setting_defaults.dart';
 export 'src/sound/ambiance.dart';
-export 'src/sound/buffer_store.dart';
 export 'src/sound/events/events_base.dart';
 export 'src/sound/random_sound.dart';
 export 'src/sound/reverb_preset.dart';

@@ -4,7 +4,6 @@ import 'dart:io';
 import 'box_map/box.dart';
 import 'box_map/box_types/agents/player.dart';
 import 'game.dart';
-import 'sound/buffer_store.dart';
 import 'ziggurat.dart';
 
 /// The base class for all ziggurat errors.
@@ -70,37 +69,6 @@ class InvalidStateError extends ZigguratError {
 
   /// The game which is already running.
   final Game game;
-}
-
-/// No such buffer was found in a [BufferStore] instance.
-class NoSuchBufferError extends ZigguratError {
-  /// Create the error.
-  NoSuchBufferError(this.name, {this.type});
-
-  /// The name that was used.
-  final String name;
-
-  /// The type of the sound.
-  final SoundType? type;
-
-  /// Make it a string.
-  @override
-  String toString() => 'No such buffer "$name" of type $type.';
-}
-
-/// A duplicate entry was added to a [BufferStore] instance.
-class DuplicateEntryError extends ZigguratError {
-  /// Create an instance.
-  DuplicateEntryError(this.bufferStore, this.name, this.type);
-
-  /// The buffer store instance.
-  final BufferStore bufferStore;
-
-  /// The name that has been duplicated.
-  final String name;
-
-  /// The type of the entry that was supposed to be added.
-  final SoundType type;
 }
 
 /// An invalid command name was used.
