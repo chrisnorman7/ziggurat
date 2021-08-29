@@ -19,6 +19,8 @@
     "encrypter",
     "eternitys",
     "formals",
+    "gx",
+    "gy",
     "heshl",
     "hrtf",
     "inspectorj",
@@ -28,6 +30,7 @@
     "npc",
     "perc",
     "posix",
+    "rect",
     "sdl",
     "shadydave",
     "spatialhash",
@@ -38,6 +41,7 @@
     "typedefs",
     "unpanned",
     "vincentm",
-    "waveplay"
+    "waveplay",
+    "worldspace"
   ]
 }

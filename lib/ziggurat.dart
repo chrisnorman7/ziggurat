@@ -10,6 +10,7 @@ export 'src/box_map/box_types/base.dart';
 export 'src/box_map/box_types/door.dart';
 export 'src/box_map/box_types/surface.dart';
 export 'src/box_map/box_types/wall.dart';
+export 'src/box_map/spatial_hash.dart';
 export 'src/box_map/wall_location.dart';
 export 'src/command.dart';
 export 'src/directions.dart';
