@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.3.0]
+
+### Changed
+
+* Changed the type of `PlaySound.channel` from `SoundChannel` to `int`.
+
 ## [0.2.0]
 
 ### Added

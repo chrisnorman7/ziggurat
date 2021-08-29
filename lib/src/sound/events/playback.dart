@@ -26,7 +26,7 @@ class PlaySound extends SoundEvent {
   final SoundReference sound;
 
   /// The channel this sound should play through.
-  final SoundChannel channel;
+  final int channel;
 
   double _gain;
 

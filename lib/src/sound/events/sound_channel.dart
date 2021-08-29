@@ -43,7 +43,7 @@ class SoundChannel extends SoundEvent {
         sound: sound,
         id: SoundEvent.nextId(),
         gain: gain,
-        channel: this);
+        channel: id);
     game.sounds.add(event);
     return event;
   }
