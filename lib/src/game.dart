@@ -108,8 +108,17 @@ class Game {
   /// ```
   /// task = Task(game.time + runAfter, func);
   /// ```
-  Task registerTask(int runAfter, void Function() func, {int? interval}) {
-    final task = Task(time + runAfter, interval, func);
+  ///
+  /// If you are registering a task before calling [run], you can use the
+  /// [timeOffset] argument to add the current time, rather than having the task
+  /// executed immediately.
+  Task registerTask(int runAfter, void Function() func,
+      {int? interval, int? timeOffset}) {
+    var when = time + runAfter;
+    if (timeOffset != null) {
+      when += timeOffset;
+    }
+    final task = Task(when, interval, func);
     tasks.add(task);
     return task;
   }

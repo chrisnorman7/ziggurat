@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.6.6]
+
+### Added
+
+* Added a time offset to `Game.registerTask` for tasks that are scheduled before calling `Game.run`..
+
 ## [0.6.5]
 
 ### Changed

@@ -23,7 +23,7 @@ void main() {
       final game = Game('Test Game');
       final sdl = Sdl();
       var i = 0;
-      final task = game.registerTask(3, () {
+      var task = game.registerTask(3, () {
         i++;
       });
       expect(game.tasks.contains(task), isTrue);
@@ -39,6 +39,10 @@ void main() {
       game.tick(sdl, 1);
       expect(i, equals(1));
       expect(game.tasks, isEmpty);
+      final now = DateTime.now().millisecondsSinceEpoch;
+      game.time = 0;
+      task = game.registerTask(5, () => 0, timeOffset: now);
+      expect(task.runWhen, equals(now + 5));
     });
     test('Repeating Task Test', () {
       final game = Game('Test Game');
