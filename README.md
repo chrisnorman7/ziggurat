@@ -1,5 +1,6 @@
 # Ziggurat
 
-This package aims to provide a basic set of packages for building RPGs that can be extended by the programmer.
+This package allows you to build audio games with Dart.
 
-Eventually, GUI tools will be provided for the purpose of creating common elements, like game maps and quests.
+It started out as tools for making maps, but has since expanded to provide a
+general set of APIs for making audio games.
