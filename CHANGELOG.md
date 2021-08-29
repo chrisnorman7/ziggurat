@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.6.0]
+
+### Changed
+
+* Bumped version number.
+
 ## [0.5.0]
 
 ### Added
