@@ -176,11 +176,14 @@ void main() {
           level.ambianceSounds.first,
           predicate((value) =>
               value is PlaySound &&
-              value.sound == level.ambianceSounds.first.sound));
+              value.sound == level.ambianceSounds.first.sound &&
+              value.keepAlive == true));
       expect(
           level.ambianceSounds.last,
           predicate((value) =>
-              value is PlaySound && value.sound == level.ambiances.last.sound));
+              value is PlaySound &&
+              value.sound == level.ambiances.last.sound &&
+              value.keepAlive == true));
     });
   });
 }
