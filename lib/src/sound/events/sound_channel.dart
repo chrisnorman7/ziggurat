@@ -32,7 +32,7 @@ class SoundChannel extends SoundEvent {
   /// Set the gain of this channel.
   set gain(double value) {
     _gain = value;
-    game.sounds.add(SetSoundChannelGain(id: id, gain: value));
+    game.queueSoundEvent(SetSoundChannelGain(id: id, gain: value));
   }
 
   /// Play a sound through this channel.
@@ -44,12 +44,12 @@ class SoundChannel extends SoundEvent {
         id: SoundEvent.nextId(),
         gain: gain,
         channel: id);
-    game.sounds.add(event);
+    game.queueSoundEvent(event);
     return event;
   }
 
   /// Destroy this channel.
-  void destroy() => game.sounds.add(DestroySoundChannel(id));
+  void destroy() => game.queueSoundEvent(DestroySoundChannel(id));
 }
 
 /// Destroy a [SoundChannel] instance.

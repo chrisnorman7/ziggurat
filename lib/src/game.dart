@@ -20,7 +20,9 @@ class Game {
         time = 0,
         _isRunning = false,
         tasks = [],
-        sounds = StreamController() {
+        _queuedSoundEvents = [] {
+    soundsController = StreamController(
+        onListen: _addAllSoundEvents, onResume: _addAllSoundEvents);
     interfaceSounds = createSoundChannel();
     ambianceSounds = createSoundChannel();
   }
@@ -57,15 +59,46 @@ class Game {
 
   /// The stream controller for dispatching sound events.
   ///
-  /// You can add to this stream either manually, or by using the various sound
-  /// methods on instances of this class.
-  final StreamController<SoundEvent> sounds;
+  /// Do not add events to this controller directly, instead, use the
+  /// [queueSoundEvent] method.
+  late final StreamController<SoundEvent> soundsController;
+
+  /// The place where sound events go until [soundsController] has listeners.
+  final List<SoundEvent> _queuedSoundEvents;
+
+  /// The stream for listening to sound events.
+  ///
+  /// You can add sounds with the [queueSoundEvent] method.
+  Stream<SoundEvent> get sounds => soundsController.stream;
 
   /// The default channel for playing interface sounds through.
   late final SoundChannel interfaceSounds;
 
   /// The sound channel to play ambiance sounds through.
   late final SoundChannel ambianceSounds;
+
+  /// Queue a sound event.
+  ///
+  /// If [soundsController] is paused, then events will be queued.
+  ///
+  /// It is not possible to fully pause sound events, since this could lead to
+  /// problems if a sound delete event was never received for example. Instead,
+  /// events are simply queued until the [soundsController] is unpaused.
+  void queueSoundEvent(SoundEvent event) {
+    if (soundsController.isPaused || soundsController.hasListener == false) {
+      _queuedSoundEvents.add(event);
+    } else {
+      soundsController.add(event);
+    }
+  }
+
+  /// Fire all the events that have built up.
+  void _addAllSoundEvents() {
+    while (_queuedSoundEvents.isNotEmpty) {
+      final event = _queuedSoundEvents.removeAt(0);
+      soundsController.add(event);
+    }
+  }
 
   /// Register a new task.
   ///
@@ -207,8 +240,8 @@ class Game {
   @mustCallSuper
   Future<void> destroy() async {
     window?.destroy();
-    await sounds.done;
-    await sounds.close();
+    await soundsController.done;
+    await soundsController.close();
   }
 
   /// Run this game.
@@ -255,7 +288,7 @@ class Game {
   CreateReverb createReverb(ReverbPreset reverb) {
     final event =
         CreateReverb(game: this, id: SoundEvent.nextId(), reverb: reverb);
-    sounds.add(event);
+    queueSoundEvent(event);
     return event;
   }
 
@@ -270,7 +303,7 @@ class Game {
         reverb: reverb?.id,
         gain: gain,
         position: position);
-    sounds.add(event);
+    queueSoundEvent(event);
     return event;
   }
 }

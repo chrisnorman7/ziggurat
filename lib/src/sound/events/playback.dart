@@ -36,7 +36,7 @@ class PlaySound extends SoundEvent {
   /// Set the gain for this sound.
   set gain(double value) {
     _gain = value;
-    game.sounds.add(SetSoundGain(id: id, gain: value));
+    game.queueSoundEvent(SetSoundGain(id: id, gain: value));
   }
 
   bool _looping;
@@ -47,7 +47,7 @@ class PlaySound extends SoundEvent {
   /// Set whether or not this sound should loop.
   set looping(bool value) {
     _looping = value;
-    game.sounds.add(SetLoop(id: id, looping: value));
+    game.queueSoundEvent(SetLoop(id: id, looping: value));
   }
 
   bool _paused;
@@ -64,13 +64,13 @@ class PlaySound extends SoundEvent {
     } else {
       event = UnpauseSound(id);
     }
-    game.sounds.add(event);
+    game.queueSoundEvent(event);
   }
 
   /// Destroy this sound.
   void destroy() {
     final event = DestroySound(id: id, channel: channel);
-    game.sounds.add(event);
+    game.queueSoundEvent(event);
   }
 }
 

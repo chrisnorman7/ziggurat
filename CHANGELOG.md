@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.3.2]
+
+### Changed
+
+* Sound events are now queued while the stream has no listeners or is paused.
+
 ## [0.3.1]
 
 ### Added

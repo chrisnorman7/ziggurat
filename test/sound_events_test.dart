@@ -3,6 +3,27 @@ import 'package:ziggurat/ziggurat.dart';
 
 void main() {
   group('Sound Event Tests', () {
+    test('Ensure listening works', () async {
+      final game = Game('Ensure Listener');
+      expect(game.soundsController.hasListener, isFalse);
+      expect(game.sounds, equals(game.soundsController.stream));
+      final events = <SoundEvent>[];
+      final subscription = game.sounds.listen(events.add);
+      expect(game.soundsController.hasListener, isTrue);
+      await Future<void>.delayed(Duration.zero);
+      expect(events.length, equals(2));
+      game.queueSoundEvent(SoundEvent(SoundEvent.nextId()));
+      await Future<void>.delayed(Duration.zero);
+      expect(events.length, equals(3));
+      events.clear();
+      subscription.pause();
+      game.queueSoundEvent(SoundEvent(SoundEvent.nextId()));
+      expect(events.isEmpty, isTrue);
+      subscription.resume();
+      await Future<void>.delayed(Duration.zero);
+      expect(events.length, equals(1));
+      subscription.cancel();
+    });
     test('Default sound channels', () {
       final game = Game('Sound Channels');
       expect(game.interfaceSounds.id, equals(SoundEvent.maxEventId - 1));
@@ -39,7 +60,7 @@ void main() {
       sound.destroy();
       reverb.destroy();
       expect(
-          game.sounds.stream,
+          game.sounds,
           emitsInOrder(<Matcher>[
             equals(game.interfaceSounds),
             equals(game.ambianceSounds),

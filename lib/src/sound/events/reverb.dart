@@ -18,7 +18,7 @@ class CreateReverb extends SoundEvent {
   final ReverbPreset reverb;
 
   /// Destroy this reverb.
-  void destroy() => game.sounds.add(DestroyReverb(id));
+  void destroy() => game.queueSoundEvent(DestroyReverb(id));
 }
 
 /// Destroy a pre-existing reverb.
