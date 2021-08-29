@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.6.2]
+
+* Destroy interface and ambiance channels with `Game.destroy`.
+
 ## [0.6.1]
 
 ### Changed

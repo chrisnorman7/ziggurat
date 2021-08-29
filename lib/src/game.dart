@@ -241,6 +241,8 @@ class Game {
   @mustCallSuper
   Future<void> destroy() async {
     window?.destroy();
+    interfaceSounds.destroy();
+    ambianceSounds.destroy();
     await soundsController.done;
     await soundsController.close();
   }
