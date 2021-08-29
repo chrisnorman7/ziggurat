@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.4.0]
+
+### Added
+
+* Added a `keepAlive` property to the `PlaySound` event.
+
+### Changed
+
+* Calling `destroy` on a `PlaySound` event with its `keepAlive` property set to `false` will result in a `DeadSound` error being thrown.
+
 ## [0.3.2]
 
 ### Changed
