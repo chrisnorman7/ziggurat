@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.6.5]
+
+### Changed
+
+* Show menu items with the `onPush` method, rather than `onReveal`.
+
 ## [0.6.4]
 
 ### Changed

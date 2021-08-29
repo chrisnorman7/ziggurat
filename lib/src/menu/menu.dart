@@ -64,9 +64,10 @@ class Menu extends Level {
     }
   }
 
-  /// Show the current item in this menu when revealing.
+  /// Show the current item in this menu when it is pushed.
   @override
-  void onReveal(Level old) {
+  void onPush() {
+    super.onPush();
     final position = _position;
     if (position == null) {
       sound = game.outputMessage(title, oldSound: sound);
