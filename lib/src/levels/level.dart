@@ -31,8 +31,8 @@ class Level {
   @mustCallSuper
   void onPush() {
     for (final ambiance in ambiances) {
-      ambianceSounds.add(
-          game.playSound(ambiance.sound, gain: ambiance.gain, looping: true));
+      ambianceSounds.add(game.ambianceSounds
+          .playSound(ambiance.sound, gain: ambiance.gain, looping: true));
     }
   }
 
@@ -40,8 +40,7 @@ class Level {
   @mustCallSuper
   void onPop() {
     while (ambianceSounds.isNotEmpty) {
-      final sound = ambianceSounds.removeLast();
-      game.destroySound(sound);
+      ambianceSounds.removeLast().destroySound();
     }
   }
 

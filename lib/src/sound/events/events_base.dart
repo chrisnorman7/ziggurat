@@ -1,6 +1,7 @@
 /// Provides sound events and the [SoundEvent] class.
 export 'playback.dart';
 export 'reverb.dart';
+export 'sound_channel.dart';
 export 'sound_position.dart';
 
 /// The base class for all sound events.

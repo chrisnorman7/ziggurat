@@ -17,7 +17,7 @@ class CreateReverb extends SoundEvent {
 /// NOTE: No error checking is performed by [PlaySound]. If a reverb is
 /// destroyed using this event, and then another sound attempts to play through
 /// the same reverb, the behaviour is undefined.
-class DestroyReverb extends PauseSound {
+class DestroyReverb extends SoundEvent {
   /// Create an event.
   DestroyReverb(int id) : super(id);
 }
