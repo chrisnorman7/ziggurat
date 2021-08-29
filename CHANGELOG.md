@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.6.4]
+
+### Changed
+
+* Show the current menu item when revealing a menu.
+
 ## [0.6.3]
 
 ### Changes

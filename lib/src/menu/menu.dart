@@ -64,6 +64,17 @@ class Menu extends Level {
     }
   }
 
+  /// Show the current item in this menu when revealing.
+  @override
+  void onReveal(Level old) {
+    final position = _position;
+    if (position == null) {
+      sound = game.outputMessage(title, oldSound: sound);
+    } else {
+      menuItems.elementAt(position).onFocus(this);
+    }
+  }
+
   /// Activate the currently-focused menu item.
   void activate() {
     final item = currentMenuItem;
