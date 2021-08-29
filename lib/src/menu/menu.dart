@@ -94,7 +94,7 @@ class Menu extends Level {
     if (position == null) {
       return;
     } else if (position == 0) {
-      game.outputMessage(title);
+      sound = game.outputMessage(title, oldSound: sound);
       _position = null;
     } else {
       position--;

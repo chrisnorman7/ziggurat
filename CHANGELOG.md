@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.6.1]
+
+### Changed
+
+* Stop menu sounds playing when returning to the top of the menu.
+
 ## [0.6.0]
 
 ### Changed

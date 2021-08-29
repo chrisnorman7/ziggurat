@@ -68,6 +68,8 @@ void main() {
       menu.up();
       expect(menu.sound,
           predicate((value) => value is PlaySound && value.sound == sound1));
+      menu.up();
+      expect(menu.sound, isNull);
     });
   });
 }
