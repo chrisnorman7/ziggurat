@@ -9,7 +9,8 @@ part 'message.g.dart';
 @JsonSerializable()
 class Message {
   /// Create an instance.
-  Message({this.text, this.sound, this.gain = 0.7});
+  const Message(
+      {this.text, this.sound, this.gain = 0.7, this.keepAlive = false});
 
   /// Create an instance from a JSON object.
   factory Message.fromJson(Map<String, dynamic> json) =>
@@ -23,6 +24,9 @@ class Message {
 
   /// The gain to play [sound] at.
   final double gain;
+
+  /// Whether or not [sound] should be kept alive after playing.
+  final bool keepAlive;
 
   /// Convert an instance to JSON.
   Map<String, dynamic> toJson() => _$MessageToJson(this);

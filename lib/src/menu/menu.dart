@@ -1,10 +1,10 @@
 /// Provides the [Menu] class.
-
 import '../command.dart';
 import '../game.dart';
 import '../json/message.dart';
 import '../levels/level.dart';
 import '../sound/ambiance.dart';
+import '../sound/events/events_base.dart';
 import 'menu_item.dart';
 import 'widgets/button.dart';
 import 'widgets/label.dart';
@@ -37,6 +37,9 @@ class Menu extends Level {
 
   //// The current position in this menu.
   int? _position;
+
+  /// The last sound played by this menu.
+  PlaySound? sound;
 
   /// Register default commands.
   ///

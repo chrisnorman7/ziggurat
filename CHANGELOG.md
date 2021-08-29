@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.5.0]
+
+### Added
+
+* Added a `keepAlive` property to the `Message` class.
+* Added a `Game.outputText` method.
+* Added a `Game.outputSound` method.
+
+### Changed
+
+* Split `Game.outputMessage` up to use the new `outputText` and `outputSound` methods.
+* Made `Game.outputMessage` return a `PlaySound` instance.
+* Remove `oldSound`, when passed as an argument to `outputMessage`.
+
 ## [0.4.0]
 
 ### Added

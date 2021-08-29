@@ -16,6 +16,7 @@ class MenuItem<T extends Widget> {
 
   /// What happens when this item is focused.
   void onFocus(Menu menu) {
-    menu.game.outputMessage(label);
+    final sound = menu.game.outputMessage(label, oldSound: menu.sound);
+    menu.sound = sound;
   }
 }

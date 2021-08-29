@@ -5,6 +5,7 @@ import 'package:dart_sdl/dart_sdl.dart';
 import 'package:meta/meta.dart';
 
 import 'json/message.dart';
+import 'json/sound_reference.dart';
 import 'json/trigger_map.dart';
 import 'levels/level.dart';
 import 'sound/events/events_base.dart';
@@ -271,17 +272,40 @@ class Game {
     await destroy();
   }
 
-  /// Output a message.
-  void outputMessage(Message message, {SoundChannel? soundChannel}) {
-    final text = message.text;
-    if (text != null) {
-      window?.title = text;
+  /// How to output text.
+  void outputText(String text) => window?.title = text;
+
+  /// Output a sound.
+  ///
+  /// This method is used by [outputMessage].
+  PlaySound? outputSound(
+      {required SoundReference? sound,
+      SoundChannel? soundChannel,
+      PlaySound? oldSound,
+      double gain = 0.7,
+      bool keepAlive = false}) {
+    if (oldSound != null && oldSound.keepAlive == true) {
+      oldSound.destroy();
     }
-    final sound = message.sound;
     if (sound != null) {
       soundChannel ??= interfaceSounds;
-      soundChannel.playSound(sound, gain: message.gain);
+      return soundChannel.playSound(sound, gain: gain, keepAlive: keepAlive);
     }
+  }
+
+  /// Output a message.
+  PlaySound? outputMessage(Message message,
+      {SoundChannel? soundChannel, PlaySound? oldSound}) {
+    final text = message.text;
+    if (text != null) {
+      outputText(text);
+    }
+    return outputSound(
+        sound: message.sound,
+        oldSound: oldSound,
+        soundChannel: soundChannel,
+        gain: message.gain,
+        keepAlive: message.keepAlive);
   }
 
   /// Create a reverb.

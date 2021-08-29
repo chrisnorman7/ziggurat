@@ -50,5 +50,24 @@ void main() {
             upCommandName: 'up');
       expect(menu.commands.length, equals(4));
     });
+    test('Menu Sounds', () {
+      final game = Game('Menu Sounds');
+      final sound1 = SoundReference('Sound 1', SoundType.file);
+      final sound2 = SoundReference('Sound 2', SoundType.file);
+      final menu = Menu(game: game, title: Message(text: 'Test Menu'), items: [
+        MenuItem(Message(sound: sound1), Label()),
+        MenuItem(Message(sound: sound2), Label())
+      ]);
+      expect(menu.sound, isNull);
+      menu.down();
+      expect(menu.sound,
+          predicate((value) => value is PlaySound && value.sound == sound1));
+      menu.down();
+      expect(menu.sound,
+          predicate((value) => value is PlaySound && value.sound == sound2));
+      menu.up();
+      expect(menu.sound,
+          predicate((value) => value is PlaySound && value.sound == sound1));
+    });
   });
 }
