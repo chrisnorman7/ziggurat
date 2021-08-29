@@ -37,10 +37,11 @@ class SoundChannel extends SoundEvent {
 
   /// Play a sound through this channel.
   PlaySound playSound(SoundReference sound,
-      {double gain = 0.7, bool looping = false}) {
+      {double gain = 0.7, bool looping = false, bool keepAlive = false}) {
     final event = PlaySound(
         game: game,
         sound: sound,
+        keepAlive: keepAlive,
         id: SoundEvent.nextId(),
         gain: gain,
         channel: id);

@@ -40,6 +40,23 @@ void main() {
       expect(sound.id, equals(channel.id + 1));
       expect(SoundEvent.maxEventId, equals(sound.id));
     });
+    test('Sound Keep Alive', () async {
+      final game = Game('Sound Keep Alive');
+      final reference = SoundReference('testing', SoundType.file);
+      var sound = game.interfaceSounds.playSound(reference, keepAlive: true)
+        ..destroy();
+      sound = game.interfaceSounds.playSound(reference);
+      expect(sound.destroy, throwsA(isA<DeadSound>()));
+      expect(
+          game.sounds,
+          emitsInOrder(<Matcher>[
+            isA<SoundChannel>(),
+            isA<SoundChannel>(),
+            isA<PlaySound>(),
+            isA<DestroySound>(),
+            isA<PlaySound>(),
+          ]));
+    });
   });
   group('Sounds stream tests', () {
     final game = Game('Test Sounds');
@@ -48,8 +65,9 @@ void main() {
       final channel = game.createSoundChannel()..gain = 1.0;
       expect(channel.gain, equals(1.0));
       final sound = channel.playSound(
-        SoundReference('testing.wav', SoundType.file),
-      )..paused = true;
+          SoundReference('testing.wav', SoundType.file),
+          keepAlive: true)
+        ..paused = true;
       expect(sound.paused, isTrue);
       sound.paused = false;
       expect(sound.paused, isFalse);
@@ -57,6 +75,7 @@ void main() {
       expect(sound.gain, equals(1.0));
       sound.looping = true;
       expect(sound.looping, isTrue);
+      expect(sound.keepAlive, isTrue);
       sound.destroy();
       reverb.destroy();
       expect(

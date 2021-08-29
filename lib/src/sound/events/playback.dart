@@ -1,4 +1,5 @@
 /// Provides events relating to playing sounds.
+import '../../error.dart';
 import '../../game.dart';
 import '../../json/sound_reference.dart';
 import 'events_base.dart';
@@ -11,6 +12,7 @@ class PlaySound extends SoundEvent {
       {required this.game,
       required this.sound,
       required this.channel,
+      required this.keepAlive,
       required int id,
       double gain = 0.7,
       bool looping = false})
@@ -27,6 +29,16 @@ class PlaySound extends SoundEvent {
 
   /// The channel this sound should play through.
   final int channel;
+
+  /// Whether or not this sound should be kept around.
+  ///
+  /// If this value is `true`, then the [destroy] method must be used to destroy
+  /// this sound.
+  ///
+  /// If this value is `false`, the sound will go away on its own, and calling
+  /// [destroy] will result in
+  /// [DeadSound] being thrown.
+  final bool keepAlive;
 
   double _gain;
 
@@ -69,6 +81,9 @@ class PlaySound extends SoundEvent {
 
   /// Destroy this sound.
   void destroy() {
+    if (keepAlive == false) {
+      throw DeadSound(this);
+    }
     final event = DestroySound(id: id, channel: channel);
     game.queueSoundEvent(event);
   }
