@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.6.3]
+
+### Changes
+
+* `SoundChannel.playSound` now respects the `looping` argument.
+
 ## [0.6.2]
 
 * Destroy interface and ambiance channels with `Game.destroy`.

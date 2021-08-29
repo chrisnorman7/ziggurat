@@ -108,5 +108,11 @@ void main() {
                 (value) => value is DestroyReverb && value.id == reverb.id)
           ]));
     });
+    test('SoundChannel.playSound', () {
+      final sound = game.ambianceSounds
+          .playSound(SoundReference.file('loop.wav'), looping: true, gain: 0.2);
+      expect(sound.looping, isTrue);
+      expect(sound.gain, equals(0.2));
+    });
   });
 }
