@@ -13,6 +13,7 @@
 * Split `Game.outputMessage` up to use the new `outputText` and `outputSound` methods.
 * Made `Game.outputMessage` return a `PlaySound` instance.
 * Remove `oldSound`, when passed as an argument to `outputMessage`.
+* Changed the constructor for the `Ambiance` class.
 
 ## [0.4.0]
 

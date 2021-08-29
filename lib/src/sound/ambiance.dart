@@ -6,7 +6,7 @@ import '../json/sound_reference.dart';
 /// A constantly playing sound on a map.
 class Ambiance {
   /// Create an instance.
-  Ambiance(this.sound, this.position, {this.gain = 0.75});
+  Ambiance({required this.sound, this.position, this.gain = 0.75});
 
   /// The path where the sound file is stored.
   final SoundReference sound;

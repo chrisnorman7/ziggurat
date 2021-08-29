@@ -31,8 +31,8 @@ class Level {
   @mustCallSuper
   void onPush() {
     for (final ambiance in ambiances) {
-      ambianceSounds.add(game.ambianceSounds
-          .playSound(ambiance.sound, gain: ambiance.gain, looping: true));
+      ambianceSounds.add(game.ambianceSounds.playSound(ambiance.sound,
+          gain: ambiance.gain, looping: true, keepAlive: true));
     }
   }
 

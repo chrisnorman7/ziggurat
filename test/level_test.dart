@@ -163,5 +163,24 @@ void main() {
       expect(level.counter, equals(2));
       expect(command.nextRun, equals(game.time + 500));
     });
+    test('Ambiances', () {
+      final game = Game('Level Ambiances');
+      final level = Level(game, ambiances: [
+        Ambiance(sound: SoundReference.file('sound1')),
+        Ambiance(sound: SoundReference.collection('sound2'))
+      ]);
+      expect(level.ambianceSounds, isEmpty);
+      game.pushLevel(level);
+      expect(level.ambianceSounds.length, equals(2));
+      expect(
+          level.ambianceSounds.first,
+          predicate((value) =>
+              value is PlaySound &&
+              value.sound == level.ambianceSounds.first.sound));
+      expect(
+          level.ambianceSounds.last,
+          predicate((value) =>
+              value is PlaySound && value.sound == level.ambiances.last.sound));
+    });
   });
 }
