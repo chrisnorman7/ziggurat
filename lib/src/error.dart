@@ -4,6 +4,7 @@ import 'dart:io';
 import 'box_map/box.dart';
 import 'box_map/box_types/agents/player.dart';
 import 'game.dart';
+import 'sound/events/events_base.dart';
 import 'ziggurat.dart';
 
 /// The base class for all ziggurat errors.
@@ -80,4 +81,16 @@ class InvalidCommandNameError extends ZigguratError {
   final String name;
   @override
   String toString() => 'Invalid command name: $name.';
+}
+
+/// The [sound] had its [PlaySound.keepAlive] value set to `false`.
+class DeadSound extends ZigguratError {
+  /// Create an instance.
+  DeadSound(this.sound);
+
+  /// The sound that was supposed to be destroyed.
+  final PlaySound sound;
+
+  @override
+  String toString() => 'Sound $sound was already scheduled for destruction.';
 }
