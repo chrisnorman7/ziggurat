@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.3.1]
+
+### Added
+
+* Added a `channel` property to `DestroySound`.
+
 ## [0.3.0]
 
 ### Changed

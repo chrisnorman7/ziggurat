@@ -69,7 +69,7 @@ class PlaySound extends SoundEvent {
 
   /// Destroy this sound.
   void destroy() {
-    final event = DestroySound(id);
+    final event = DestroySound(id: id, channel: channel);
     game.sounds.add(event);
   }
 }
@@ -89,7 +89,10 @@ class UnpauseSound extends PauseSound {
 /// Destroy a sound.
 class DestroySound extends SoundEvent {
   /// Create an event.
-  const DestroySound(int id) : super(id);
+  const DestroySound({required int id, required this.channel}) : super(id);
+
+  /// The ID of the channel the sound was previously registered on.
+  final int channel;
 }
 
 /// Set the gain for a sound.

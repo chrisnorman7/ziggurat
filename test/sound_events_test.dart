@@ -60,7 +60,10 @@ void main() {
                 value is SetLoop &&
                 value.looping == true &&
                 value.id == sound.id),
-            predicate((value) => value is DestroySound && value.id == sound.id),
+            predicate((value) =>
+                value is DestroySound &&
+                value.id == sound.id &&
+                value.channel == sound.channel),
             predicate(
                 (value) => value is DestroyReverb && value.id == reverb.id)
           ]));
