@@ -47,4 +47,13 @@ class SoundChannel extends SoundEvent {
     game.sounds.add(event);
     return event;
   }
+
+  /// Destroy this channel.
+  void destroy() => game.sounds.add(DestroySoundChannel(id));
+}
+
+/// Destroy a [SoundChannel] instance.
+class DestroySoundChannel extends SoundEvent {
+  /// Create an event.
+  DestroySoundChannel(int id) : super(id);
 }

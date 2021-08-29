@@ -253,14 +253,8 @@ class Game {
 
   /// Create a reverb.
   CreateReverb createReverb(ReverbPreset reverb) {
-    final event = CreateReverb(id: SoundEvent.nextId(), reverb: reverb);
-    sounds.add(event);
-    return event;
-  }
-
-  /// Destroy a reverb previously created with [createReverb].
-  DestroyReverb destroyReverb(CreateReverb reverb) {
-    final event = DestroyReverb(reverb.id);
+    final event =
+        CreateReverb(game: this, id: SoundEvent.nextId(), reverb: reverb);
     sounds.add(event);
     return event;
   }

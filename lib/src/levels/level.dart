@@ -40,7 +40,7 @@ class Level {
   @mustCallSuper
   void onPop() {
     while (ambianceSounds.isNotEmpty) {
-      ambianceSounds.removeLast().destroySound();
+      ambianceSounds.removeLast().destroy();
     }
   }
 

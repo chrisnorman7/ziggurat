@@ -68,7 +68,7 @@ class PlaySound extends SoundEvent {
   }
 
   /// Destroy this sound.
-  void destroySound() {
+  void destroy() {
     final event = DestroySound(id);
     game.sounds.add(event);
   }

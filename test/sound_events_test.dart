@@ -36,8 +36,8 @@ void main() {
       expect(sound.gain, equals(1.0));
       sound.looping = true;
       expect(sound.looping, isTrue);
-      sound.destroySound();
-      final destroyReverb = game.destroyReverb(reverb);
+      sound.destroy();
+      reverb.destroy();
       expect(
           game.sounds.stream,
           emitsInOrder(<Matcher>[
@@ -61,7 +61,8 @@ void main() {
                 value.looping == true &&
                 value.id == sound.id),
             predicate((value) => value is DestroySound && value.id == sound.id),
-            equals(destroyReverb)
+            predicate(
+                (value) => value is DestroyReverb && value.id == reverb.id)
           ]));
     });
   });
