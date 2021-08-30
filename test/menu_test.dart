@@ -58,18 +58,38 @@ void main() {
         MenuItem(Message(sound: sound1), Label()),
         MenuItem(Message(sound: sound2), Label())
       ]);
-      expect(menu.sound, isNull);
+      expect(menu.oldSound, isNull);
       menu.down();
-      expect(menu.sound,
+      expect(menu.oldSound,
           predicate((value) => value is PlaySound && value.sound == sound1));
       menu.down();
-      expect(menu.sound,
+      expect(menu.oldSound,
           predicate((value) => value is PlaySound && value.sound == sound2));
       menu.up();
-      expect(menu.sound,
+      expect(menu.oldSound,
           predicate((value) => value is PlaySound && value.sound == sound1));
       menu.up();
-      expect(menu.sound, isNull);
+      expect(menu.oldSound, isNull);
+    });
+    test('Button Widget', () {
+      final game = Game('Button Widget');
+      var number = 0;
+      final button = Button(() {
+        number++;
+      }, sound: SoundReference.file('something.wav'));
+      final menu = Menu(
+          game: game,
+          title: Message(text: 'Test Menu'),
+          items: [MenuItem(Message(text: 'Button'), button)])
+        ..activate();
+      expect(number, isZero);
+      expect(menu.oldSound, isNull);
+      menu.down();
+      expect(menu.currentMenuItem?.widget, equals(button));
+      expect(menu.oldSound, isNull);
+      menu.activate();
+      expect(number, equals(1));
+      expect(menu.oldSound?.sound, equals(button.sound));
     });
   });
 }

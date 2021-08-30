@@ -39,7 +39,7 @@ class Menu extends Level {
   int? _position;
 
   /// The last sound played by this menu.
-  PlaySound? sound;
+  PlaySound? oldSound;
 
   /// Register default commands.
   ///
@@ -70,7 +70,7 @@ class Menu extends Level {
     super.onPush();
     final position = _position;
     if (position == null) {
-      sound = game.outputMessage(title, oldSound: sound);
+      oldSound = game.outputMessage(title, oldSound: oldSound);
     } else {
       menuItems.elementAt(position).onFocus(this);
     }
@@ -80,10 +80,17 @@ class Menu extends Level {
   void activate() {
     final item = currentMenuItem;
     final widget = item?.widget;
-    if (widget is Label) {
+    if (widget == null) {
+      return;
+    } else if (widget is Label) {
       return;
     } else if (widget is Button) {
       widget.onActivate();
+      final sound = widget.sound;
+      if (sound != null) {
+        oldSound =
+            game.outputMessage(Message(sound: sound), oldSound: oldSound);
+      }
     } else {
       throw Exception('Need to handle $widget widgets.');
     }
@@ -106,7 +113,7 @@ class Menu extends Level {
     if (position == null) {
       return;
     } else if (position == 0) {
-      sound = game.outputMessage(title, oldSound: sound);
+      oldSound = game.outputMessage(title, oldSound: oldSound);
       _position = null;
     } else {
       position--;

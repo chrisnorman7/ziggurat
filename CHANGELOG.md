@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.6.7]
+
+### Added
+
+* Added an activate `sound` property to `Button`.
+
+### Changed
+
+* When activating a menu, if the current widget is a button, play the button's activate sound.
+
 ## [0.6.6]
 
 ### Added
