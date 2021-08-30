@@ -64,10 +64,8 @@ class Menu extends Level {
     }
   }
 
-  /// Show the current item in this menu when it is pushed.
-  @override
-  void onPush() {
-    super.onPush();
+  /// Show the current item.
+  void showCurrentItem() {
     final position = _position;
     if (position == null) {
       oldSound = game.outputMessage(title, oldSound: oldSound);
@@ -76,8 +74,15 @@ class Menu extends Level {
     }
   }
 
+  /// Show the current item in this menu when it is pushed.
   @override
-  void onReveal(Level old) => onPush();
+  void onPush() {
+    super.onPush();
+    showCurrentItem();
+  }
+
+  @override
+  void onReveal(Level old) => showCurrentItem();
 
   /// Activate the currently-focused menu item.
   void activate() {
@@ -112,31 +117,28 @@ class Menu extends Level {
 
   /// Move up in this menu.
   void up() {
-    var position = _position;
+    final position = _position;
     if (position == null) {
       return;
     } else if (position == 0) {
-      oldSound = game.outputMessage(title, oldSound: oldSound);
       _position = null;
     } else {
-      position--;
-      _position = position;
-      menuItems.elementAt(position).onFocus(this);
+      _position = position - 1;
     }
+    showCurrentItem();
   }
 
   /// Move down in this menu.
   void down() {
-    var position = _position;
+    final position = _position;
     if (position == null) {
-      position = 0;
+      _position = 0;
     } else {
-      position++;
-      if (position == menuItems.length) {
+      if (position == (menuItems.length - 1)) {
         return;
       }
+      _position = position + 1;
     }
-    _position = position;
-    menuItems.elementAt(position).onFocus(this);
+    showCurrentItem();
   }
 }

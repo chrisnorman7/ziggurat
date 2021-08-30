@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.6.9]
+
+### Changed
+
+* Fixed a bug with double-playing menu ambiances.
+
 ## [0.6.8]
 
 ### Changed
