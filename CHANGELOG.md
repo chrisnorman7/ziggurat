@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.6.8]
+
+### Changed
+
+* Menus now properly announce themselves when they're revealed.
+
 ## [0.6.7]
 
 ### Added

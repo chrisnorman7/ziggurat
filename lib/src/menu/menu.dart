@@ -76,6 +76,9 @@ class Menu extends Level {
     }
   }
 
+  @override
+  void onReveal(Level old) => onPush();
+
   /// Activate the currently-focused menu item.
   void activate() {
     final item = currentMenuItem;
