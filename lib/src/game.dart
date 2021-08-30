@@ -21,7 +21,8 @@ class Game {
         time = 0,
         _isRunning = false,
         tasks = [],
-        _queuedSoundEvents = [] {
+        _queuedSoundEvents = [],
+        gameControllers = {} {
     soundsController = StreamController(
         onListen: _addAllSoundEvents, onResume: _addAllSoundEvents);
     interfaceSounds = createSoundChannel();
@@ -66,6 +67,9 @@ class Game {
 
   /// The place where sound events go until [soundsController] has listeners.
   final List<SoundEvent> _queuedSoundEvents;
+
+  /// The game controllers that are currently open.
+  final Map<int, GameController> gameControllers;
 
   /// The stream for listening to sound events.
   ///
@@ -154,7 +158,10 @@ class Game {
       stop();
     } else if (event is ControllerDeviceEvent) {
       if (event.state == DeviceState.added) {
-        event.sdl.openGameController(event.joystickId);
+        final controller = event.sdl.openGameController(event.joystickId);
+        gameControllers[event.joystickId] = controller;
+      } else {
+        gameControllers.remove(event.joystickId);
       }
     } else {
       final level = currentLevel;

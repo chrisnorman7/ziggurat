@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.6.10]
+
+### Added
+
+* Maintain a list of open game controllers on `Game` instances.
+
 ## [0.6.9]
 
 ### Changed
