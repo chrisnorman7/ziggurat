@@ -18,6 +18,7 @@ export 'src/error.dart';
 export 'src/extensions.dart';
 export 'src/game.dart';
 export 'src/json/command_trigger.dart';
+export 'src/json/data_file.dart';
 export 'src/json/message.dart';
 export 'src/json/runner_settings.dart';
 export 'src/json/sound_reference.dart';
