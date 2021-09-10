@@ -17,18 +17,25 @@ class LsCommand extends Command<void> {
     if (results != null) {
       final rest = results.rest;
       if (rest.isEmpty) {
-        print('You must provide at least one filename.');
+        print('You must provide at least one filename.\n');
+        print('Usage: ${runner?.executableName} <filename>');
       } else {
         for (final filename in rest) {
-          print('--- $filename ---');
-          final dataFile = DataFile.fromFile(File(filename));
-          if (dataFile.entries.isEmpty) {
-            print('No files to show.');
-          } else {
-            for (final entry in dataFile.entries) {
-              print('${entry.variableName}: ${entry.comment}');
-              print('Filename: ${entry.fileName}');
+          final file = File(filename);
+          if (file.existsSync()) {
+            print('--- $filename ---');
+            final dataFile = DataFile.fromFile(file);
+            if (dataFile.entries.isEmpty) {
+              print('No files to show.');
+            } else {
+              for (final entry in dataFile.entries) {
+                print('${entry.variableName}: ${entry.comment}');
+                print('Filename: ${entry.fileName}');
+              }
             }
+          } else {
+            print('Could not show the contents of $filename: '
+                'File does not exist.');
           }
         }
       }
@@ -53,7 +60,8 @@ class CreateCommand extends Command<void> {
     final results = argResults;
     if (results != null) {
       if (results.rest.isEmpty) {
-        print('You must provide at least one filename to create.');
+        print('You must provide at least one filename to create.\n');
+        print('Usage: ${runner?.executableName} <filename>');
       } else {
         final dataFile = DataFile(comment: results['comment'] as String?);
         for (final filename in results.rest) {
@@ -131,7 +139,8 @@ class CommentCommand extends Command<void> {
     final results = argResults;
     if (results != null) {
       if (results.rest.length != 2) {
-        print('Usage: $name <json-filename> <variableName>');
+        print('Usage: ${runner?.executableName} $name <json-filename> '
+            '<variableName>');
       } else {
         final filename = results.rest.first;
         final variableName = results.rest.last;
@@ -167,7 +176,8 @@ class RemoveFileCommand extends Command<void> {
     final results = argResults;
     if (results != null) {
       if (results.rest.length != 2) {
-        print('Usage: $name <json-filename> <variable-name>');
+        print('Usage: ${runner?.executableName} $name <json-filename> '
+            '<variable-name>');
       } else {
         final file = File(results.rest.first);
         if (file.existsSync()) {
@@ -204,7 +214,8 @@ class CompileCommand extends Command<void> {
     final results = argResults;
     if (results != null) {
       if (results.rest.length != 2) {
-        print('Usage: $name <json-filename> <dart-filename>');
+        print('Usage: ${runner?.executableName} $name <json-filename> '
+            '<dart-filename>');
       } else {
         final jsonFilename = results.rest.first;
         final dartFilename = results.rest.last;
@@ -256,14 +267,18 @@ class CompileCommand extends Command<void> {
 }
 
 Future<void> main(List<String> args) async {
-  final command =
-      CommandRunner<void>('data2json', 'Convert data files into code via json.')
-        ..addCommand(CreateCommand())
-        ..addCommand(AddFileCommand())
-        ..addCommand(CommentCommand())
-        ..addCommand(RemoveFileCommand())
-        ..addCommand(LsCommand())
-        ..addCommand(CompileCommand());
+  final command = CommandRunner<void>(
+      'data2json',
+      'Convert data files into code via json.\n\n'
+          'It is first necessary to create a file:\n'
+          '  `data2json create music.json -c "Music to be loaded from code."`\n\n'
+          'Then you can add files to the collection with the `add command`.')
+    ..addCommand(CreateCommand())
+    ..addCommand(AddFileCommand())
+    ..addCommand(CommentCommand())
+    ..addCommand(RemoveFileCommand())
+    ..addCommand(LsCommand())
+    ..addCommand(CompileCommand());
   try {
     await command.run(args);
   } on UsageException catch (e) {
