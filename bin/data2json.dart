@@ -271,7 +271,8 @@ Future<void> main(List<String> args) async {
       'data2json',
       'Convert data files into code via json.\n\n'
           'It is first necessary to create a file:\n'
-          '  `data2json create music.json -c "Music to be loaded from code."`\n\n'
+          '  `data2json create music.json -c "Music to be loaded from code."`'
+          '\n\n'
           'Then you can add files to the collection with the `add command`.')
     ..addCommand(CreateCommand())
     ..addCommand(AddFileCommand())
