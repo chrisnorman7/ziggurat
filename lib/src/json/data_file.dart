@@ -4,6 +4,8 @@ import 'dart:io';
 
 import 'package:json_annotation/json_annotation.dart';
 
+import 'common.dart';
+
 part 'data_file.g.dart';
 
 /// An entry in a [DataFile] instance.
@@ -31,7 +33,7 @@ class DataFileEntry {
 
 /// A class which holds a list of [DataFileEntry] instances.
 @JsonSerializable()
-class DataFile {
+class DataFile with DumpLoadMixin {
   /// Create an instance.
   DataFile({this.comment, List<DataFileEntry>? entries})
       : entries = entries ?? [];
@@ -51,13 +53,6 @@ class DataFile {
   final String? comment;
 
   /// Convert an instance to JSON.
+  @override
   Map<String, dynamic> toJson() => _$DataFileToJson(this);
-
-  /// Dump an instance to [file].
-  void dump(File file) {
-    final jsonEncoder = JsonEncoder.withIndent('  ');
-    final data = toJson();
-    final json = jsonEncoder.convert(data);
-    file.writeAsStringSync(json);
-  }
 }
