@@ -1,5 +1,5 @@
 name: ziggurat
-version: 0.6.10
+version: 0.7.0
 description: >
   A library for making audio games.
 
@@ -12,7 +12,6 @@ environment:
   sdk: ">=2.13.0 <3.0.0"
 
 dependencies:
-  args: ^2.2.0
   dart_sdl: ^0.4.0
   encrypt: ^5.0.0
   json_annotation: ^4.1.0
@@ -23,7 +22,3 @@ dev_dependencies:
   json_serializable: ^5.0.0
   lints: ^1.0.0
   test: ^1.16.0
-
-executables:
-  encrypt-folder: encrypt_folder
-  ls-vault: ls_vault

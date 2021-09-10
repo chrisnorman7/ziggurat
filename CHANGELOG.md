@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.7.0]
+
+### Removed
+
+* Moved executable scripts and accompanying JSON schemas to to the [ziggurat_sounds](https://github.com/chrisnorman7/ziggurat_sounds) package.
+
 ## [0.6.10]
 
 ### Added
