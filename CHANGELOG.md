@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.9.0]
+
+### Changed
+
+* Changed the way sound events are created and what information they hold.
+
 ## [0.8.0]
 
 ### Added

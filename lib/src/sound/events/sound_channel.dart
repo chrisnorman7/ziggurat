@@ -42,7 +42,6 @@ class SoundChannel extends SoundEvent {
         game: game,
         sound: sound,
         keepAlive: keepAlive,
-        id: SoundEvent.nextId(),
         gain: gain,
         looping: looping,
         channel: id);

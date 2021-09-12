@@ -14,13 +14,12 @@ class PlaySound extends SoundEvent {
       required this.sound,
       required this.channel,
       required this.keepAlive,
-      required int id,
       double gain = 0.7,
       bool looping = false})
       : _gain = gain,
         _paused = false,
         _looping = looping,
-        super(id);
+        super(SoundEvent.nextId());
 
   /// The game to use.
   final Game game;
@@ -87,10 +86,12 @@ class PlaySound extends SoundEvent {
   /// complete silence.
   AutomationFade fade(
       {required double length, double endGain = 0.0, double? startGain}) {
+    if (keepAlive == false) {
+      throw DeadSound(this);
+    }
     final event = AutomationFade(
         game: game,
-        channel: channel,
-        sound: sound,
+        id: id,
         fadeLength: length,
         startGain: startGain ?? _gain,
         endGain: endGain);
@@ -103,7 +104,7 @@ class PlaySound extends SoundEvent {
     if (keepAlive == false) {
       throw DeadSound(this);
     }
-    final event = DestroySound(id: id, channel: channel);
+    final event = DestroySound(id);
     game.queueSoundEvent(event);
   }
 }
@@ -123,10 +124,7 @@ class UnpauseSound extends PauseSound {
 /// Destroy a sound.
 class DestroySound extends SoundEvent {
   /// Create an event.
-  const DestroySound({required int id, required this.channel}) : super(id);
-
-  /// The ID of the channel the sound was previously registered on.
-  final int channel;
+  const DestroySound(int id) : super(id);
 }
 
 /// Set the gain for a sound.
@@ -148,7 +146,7 @@ class SetSoundChannelGain extends SetSoundGain {
 /// Set whether or not a sound should loop.
 class SetLoop extends SoundEvent {
   /// Create an event.
-  SetLoop({required int id, required this.looping}) : super(id);
+  const SetLoop({required int id, required this.looping}) : super(id);
 
   /// Whether or not the sound should loop.
   final bool looping;
