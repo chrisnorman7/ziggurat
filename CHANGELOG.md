@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.8.0]
+
+### Added
+
+* Added the ability to cancel a fade.
+
+### Changed
+
+* Added a reference to the sound that should be faded.
+
 ## [0.7.1]
 
 ### Added

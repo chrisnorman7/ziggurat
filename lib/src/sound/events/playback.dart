@@ -88,7 +88,9 @@ class PlaySound extends SoundEvent {
   AutomationFade fade(
       {required double length, double endGain = 0.0, double? startGain}) {
     final event = AutomationFade(
-        id: SoundEvent.nextId(),
+        game: game,
+        channel: channel,
+        sound: sound,
         fadeLength: length,
         startGain: startGain ?? _gain,
         endGain: endGain);

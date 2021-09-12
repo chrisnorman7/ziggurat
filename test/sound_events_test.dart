@@ -76,9 +76,12 @@ void main() {
       sound.looping = true;
       expect(sound.looping, isTrue);
       expect(sound.keepAlive, isTrue);
-      sound
-        ..fade(length: 2.0)
-        ..destroy();
+      final fade = sound.fade(length: 2.0);
+      expect(fade.game, equals(game));
+      expect(fade.channel, equals(channel.id));
+      expect(fade.sound, equals(sound.sound));
+      fade.cancel();
+      sound.destroy();
       reverb.destroy();
       expect(
           game.sounds,
@@ -104,9 +107,14 @@ void main() {
                 value.id == sound.id),
             predicate((value) =>
                 value is AutomationFade &&
+                value.game == game &&
+                value.channel == channel.id &&
+                value.sound == sound.sound &&
                 value.fadeLength == 2.0 &&
                 value.startGain == sound.gain &&
                 value.endGain == 0.0),
+            predicate((value) =>
+                value is CancelAutomationFade && value.id == fade.id),
             predicate((value) =>
                 value is DestroySound &&
                 value.id == sound.id &&
