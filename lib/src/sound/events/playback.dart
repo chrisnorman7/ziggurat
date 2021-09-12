@@ -81,6 +81,10 @@ class PlaySound extends SoundEvent {
   }
 
   /// Fade this sound in or out.
+  ///
+  /// By default, only [length] is necessary. The [startGain] argument will
+  /// default to [gain], and [endGain] to `0.0`, providing a fade out to
+  /// complete silence.
   AutomationFade fade(
       {required double length, double endGain = 0.0, double? startGain}) {
     final event = AutomationFade(
