@@ -2,6 +2,7 @@
 import '../../error.dart';
 import '../../game.dart';
 import '../../json/sound_reference.dart';
+import 'automation_fade.dart';
 import 'events_base.dart';
 import 'sound_channel.dart';
 
@@ -77,6 +78,18 @@ class PlaySound extends SoundEvent {
       event = UnpauseSound(id);
     }
     game.queueSoundEvent(event);
+  }
+
+  /// Fade this sound in or out.
+  AutomationFade fade(
+      {required double length, double endGain = 0.0, double? startGain}) {
+    final event = AutomationFade(
+        id: SoundEvent.nextId(),
+        fadeLength: length,
+        startGain: startGain ?? _gain,
+        endGain: endGain);
+    game.queueSoundEvent(event);
+    return event;
   }
 
   /// Destroy this sound.

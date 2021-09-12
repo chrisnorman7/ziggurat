@@ -76,7 +76,9 @@ void main() {
       sound.looping = true;
       expect(sound.looping, isTrue);
       expect(sound.keepAlive, isTrue);
-      sound.destroy();
+      sound
+        ..fade(length: 2.0)
+        ..destroy();
       reverb.destroy();
       expect(
           game.sounds,
@@ -100,6 +102,11 @@ void main() {
                 value is SetLoop &&
                 value.looping == true &&
                 value.id == sound.id),
+            predicate((value) =>
+                value is AutomationFade &&
+                value.fadeLength == 2.0 &&
+                value.startGain == sound.gain &&
+                value.endGain == 0.0),
             predicate((value) =>
                 value is DestroySound &&
                 value.id == sound.id &&

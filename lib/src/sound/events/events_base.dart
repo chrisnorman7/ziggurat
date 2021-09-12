@@ -1,4 +1,5 @@
 /// Provides sound events and the [SoundEvent] class.
+export 'automation_fade.dart';
 export 'playback.dart';
 export 'reverb.dart';
 export 'sound_channel.dart';

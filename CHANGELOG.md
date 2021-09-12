@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.7.1]
+
+### Added
+
+* Added an `AutomationFade` sound event.
+
 ## [0.7.0]
 
 ### Removed
