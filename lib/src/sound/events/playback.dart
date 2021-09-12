@@ -85,13 +85,17 @@ class PlaySound extends SoundEvent {
   /// default to [gain], and [endGain] to `0.0`, providing a fade out to
   /// complete silence.
   AutomationFade fade(
-      {required double length, double endGain = 0.0, double? startGain}) {
+      {required double length,
+      double endGain = 0.0,
+      double? startGain,
+      double preFade = 0.0}) {
     if (keepAlive == false) {
       throw DeadSound(this);
     }
     final event = AutomationFade(
         game: game,
         id: id,
+        preFade: preFade,
         fadeLength: length,
         startGain: startGain ?? _gain,
         endGain: endGain);

@@ -14,6 +14,7 @@ class AutomationFade extends CancelAutomationFade {
   AutomationFade(
       {required this.game,
       required int id,
+      required this.preFade,
       required this.fadeLength,
       required this.startGain,
       required this.endGain})
@@ -21,6 +22,9 @@ class AutomationFade extends CancelAutomationFade {
 
   /// The game this fade is associated with.
   final Game game;
+
+  /// The number of seconds to elapse before applying this fade.
+  final double preFade;
 
   /// The length of the fade in seconds.
   final double fadeLength;

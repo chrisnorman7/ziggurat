@@ -107,6 +107,7 @@ void main() {
             predicate((value) =>
                 value is AutomationFade &&
                 value.game == game &&
+                value.preFade == 0.0 &&
                 value.fadeLength == 2.0 &&
                 value.startGain == sound.gain &&
                 value.endGain == 0.0),

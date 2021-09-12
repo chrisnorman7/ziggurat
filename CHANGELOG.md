@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.10.1]
+
+### Added
+
+* You can now set a time to wait before applying an automation fade.
+
 ## [0.10.0]
 
 ### Changed
