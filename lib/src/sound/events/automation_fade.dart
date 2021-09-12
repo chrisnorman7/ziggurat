@@ -32,9 +32,5 @@ class AutomationFade extends CancelAutomationFade {
   final double endGain;
 
   /// Cancel this fade.
-  CancelAutomationFade cancel() {
-    final event = CancelAutomationFade(id);
-    game.queueSoundEvent(event);
-    return event;
-  }
+  void cancel() => game.queueSoundEvent(CancelAutomationFade(id));
 }

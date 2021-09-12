@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.10.0]
+
+### Changed
+
+* The `AutomationFade.cancel` method now returns void.
+
 ## [0.9.0]
 
 ### Changed

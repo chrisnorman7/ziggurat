@@ -111,7 +111,7 @@ void main() {
                 value.startGain == sound.gain &&
                 value.endGain == 0.0),
             predicate((value) =>
-                value is CancelAutomationFade && value.id == fade.id),
+                value is CancelAutomationFade && value.id == sound.id),
             predicate((value) => value is DestroySound && value.id == sound.id),
             predicate(
                 (value) => value is DestroyReverb && value.id == reverb.id)
