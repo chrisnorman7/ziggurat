@@ -149,6 +149,16 @@ class Game {
     }
   }
 
+  /// Replace the current level with [level].
+  void replaceLevel(Level level, {double? ambianceFadeTime}) {
+    popLevel(ambianceFadeTime: ambianceFadeTime);
+    if (ambianceFadeTime != null) {
+      registerTask((ambianceFadeTime * 1000).round(), () => pushLevel(level));
+    } else {
+      pushLevel(level);
+    }
+  }
+
   /// Handle SDL events.
   ///
   ///This method will be passed one event at a time.

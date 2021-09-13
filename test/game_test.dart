@@ -76,5 +76,23 @@ void main() {
       expect(i, equals(2));
       expect(game.tasks.length, equals(1));
     });
+    test('replaceLevel', () {
+      final game = Game('Replace Level');
+      final level1 = Level(game);
+      final level2 = Level(game);
+      game
+        ..pushLevel(level1)
+        ..replaceLevel(level2);
+      expect(game.currentLevel, equals(level2));
+      game.popLevel();
+      expect(game.currentLevel, isNull);
+      game
+        ..pushLevel(level1)
+        ..replaceLevel(level2, ambianceFadeTime: 2.0);
+      expect(game.currentLevel, isNull);
+      expect(game.tasks.length, equals(1));
+      final task = game.tasks.first;
+      expect(task.runWhen, equals(2000));
+    });
   });
 }
