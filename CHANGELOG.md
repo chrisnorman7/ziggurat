@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.12.0]
+
+### Added
+
+* Added the `SetSoundChannelPosition` event.
+
+### Changed
+
+* Made both parameters to the constructor of `SoundPositionPanned` optional.
+* Made all parameters to the constructor of `SoundPosition3d` optional.
+
 ## [0.11.1]
 
 ### Added

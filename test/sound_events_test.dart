@@ -62,8 +62,16 @@ void main() {
     final game = Game('Test Sounds');
     test('Events', () async {
       final reverb = game.createReverb(ReverbPreset('Test Reverb'));
-      final channel = game.createSoundChannel()..gain = 1.0;
+      final channel = game.createSoundChannel()
+        ..gain = 1.0
+        ..position = SoundPositionPanned(scalar: 1.0);
       expect(channel.gain, equals(1.0));
+      expect(
+          channel.position,
+          predicate((value) =>
+              value is SoundPositionPanned &&
+              value.elevation == 0.0 &&
+              value.scalar == 1.0));
       final sound = channel.playSound(
           SoundReference('testing.wav', SoundType.file),
           keepAlive: true)
@@ -93,6 +101,10 @@ void main() {
                 value is SetSoundChannelGain &&
                 value.id == channel.id &&
                 value.gain == channel.gain),
+            predicate((value) =>
+                value is SetSoundChannelPosition &&
+                value.id == channel.id &&
+                value.position == channel.position),
             equals(sound),
             predicate((value) => value is PauseSound && value.id == sound.id),
             predicate((value) => value is UnpauseSound && value.id == sound.id),

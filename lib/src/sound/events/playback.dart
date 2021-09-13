@@ -4,7 +4,6 @@ import '../../game.dart';
 import '../../json/sound_reference.dart';
 import 'automation_fade.dart';
 import 'events_base.dart';
-import 'sound_channel.dart';
 
 /// An event which means a sound should be played.
 class PlaySound extends SoundEvent {
@@ -138,13 +137,6 @@ class SetSoundGain extends SoundEvent {
 
   /// The new gain.
   final double gain;
-}
-
-/// Set the gain for a [SoundChannel].
-class SetSoundChannelGain extends SetSoundGain {
-  /// Create an event.
-  const SetSoundChannelGain({required int id, required double gain})
-      : super(id: id, gain: gain);
 }
 
 /// Set whether or not a sound should loop.

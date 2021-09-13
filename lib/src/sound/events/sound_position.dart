@@ -17,7 +17,7 @@ const unpanned = SoundPosition();
 /// elevation with the [elevation] property.
 class SoundPositionPanned extends SoundPosition {
   /// Create a panned position.
-  const SoundPositionPanned({required this.scalar, required this.elevation});
+  const SoundPositionPanned({this.scalar = 0.0, this.elevation = 0.0});
 
   /// The left right balance of this sound.
   final double scalar;
@@ -29,7 +29,7 @@ class SoundPositionPanned extends SoundPosition {
 /// A sound which should be positioned in 3d space.
 class SoundPosition3d extends SoundPosition {
   /// Create the position.
-  const SoundPosition3d(this.x, this.y, this.z);
+  const SoundPosition3d({this.x = 0.0, this.y = 0.0, this.z = 0.0});
 
   /// The x coordinate.
   final double x;

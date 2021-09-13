@@ -9,17 +9,26 @@ class SoundChannel extends SoundEvent {
   SoundChannel(
       {required this.game,
       required int id,
-      this.position = unpanned,
+      SoundPosition? position,
       this.reverb,
       double gain = 0.7})
       : _gain = gain,
+        _position = position ?? unpanned,
         super(id);
 
   /// The game object to use for this channel.
   final Game game;
 
+  SoundPosition _position;
+
   /// The position of this channel.
-  final SoundPosition position;
+  SoundPosition get position => _position;
+
+  /// Set the position of this channel.
+  set position(SoundPosition value) {
+    _position = value;
+    game.queueSoundEvent(SetSoundChannelPosition(id, value));
+  }
 
   /// The ID of a reverb that was previously created.
   final int? reverb;
@@ -57,4 +66,20 @@ class SoundChannel extends SoundEvent {
 class DestroySoundChannel extends SoundEvent {
   /// Create an event.
   DestroySoundChannel(int id) : super(id);
+}
+
+/// Set the gain for a [SoundChannel].
+class SetSoundChannelGain extends SetSoundGain {
+  /// Create an event.
+  const SetSoundChannelGain({required int id, required double gain})
+      : super(id: id, gain: gain);
+}
+
+/// Set the position for a [SoundChannel].
+class SetSoundChannelPosition extends SoundEvent {
+  /// Create an instance.
+  const SetSoundChannelPosition(int id, this.position) : super(id);
+
+  /// The new position.
+  final SoundPosition position;
 }
