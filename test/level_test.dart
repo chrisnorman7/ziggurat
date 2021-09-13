@@ -27,8 +27,8 @@ class CustomLevel extends Level {
 
   /// This level was popped.
   @override
-  void onPop() {
-    super.onPop();
+  void onPop(double? ambianceFadeLength) {
+    super.onPop(ambianceFadeLength);
     wasPopped = true;
   }
 

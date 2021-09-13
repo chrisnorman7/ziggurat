@@ -138,9 +138,9 @@ class Game {
   }
 
   /// Pop the most recent level.
-  Level? popLevel() {
+  Level? popLevel({double? ambianceFadeTime}) {
     if (_levels.isNotEmpty) {
-      final oldLevel = _levels.removeLast()..onPop();
+      final oldLevel = _levels.removeLast()..onPop(ambianceFadeTime);
       final cl = currentLevel;
       if (cl != null) {
         cl.onReveal(oldLevel);

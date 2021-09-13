@@ -38,9 +38,16 @@ class Level {
 
   /// What should happen when this level is popped from a level stack.
   @mustCallSuper
-  void onPop() {
+  void onPop(double? ambianceFadeLength) {
     while (ambianceSounds.isNotEmpty) {
-      ambianceSounds.removeLast().destroy();
+      final ambiance = ambianceSounds.removeLast();
+      if (ambianceFadeLength != null) {
+        ambiance.fade(length: ambianceFadeLength);
+        game.registerTask(
+            (ambianceFadeLength * 1000).round(), ambiance.destroy);
+      } else {
+        ambiance.destroy();
+      }
     }
   }
 

@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.11.0]
+
+### Added
+
+* Added the ability to specify a fade time for ambiances when popping levels.
+
 ## [0.10.2]
 
 ### Changed

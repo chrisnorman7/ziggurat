@@ -127,5 +127,76 @@ void main() {
     test('Destroy test', () async {
       Game('Test Destroy').destroy();
     });
+    test('Level.onPop', () {
+      final game = Game('Test onPop');
+      final ambiance1 = SoundReference.file('ambiance1.wav');
+      final ambiance2 = SoundReference.file('ambiance2.wav');
+      final level = Level(game, ambiances: <Ambiance>[
+        Ambiance(sound: ambiance1),
+        Ambiance(sound: ambiance2)
+      ]);
+      game
+        ..pushLevel(level)
+        ..popLevel()
+        ..pushLevel(level)
+        ..popLevel(ambianceFadeTime: 2.0);
+      expect(game.tasks.length, equals(2));
+      expect(
+          game.sounds,
+          emitsInOrder(<Matcher>[
+            equals(game.interfaceSounds),
+            equals(game.ambianceSounds),
+            predicate(
+                (value) =>
+                    value is PlaySound &&
+                    value.channel == game.ambianceSounds.id &&
+                    value.sound == ambiance1 &&
+                    value.id == game.ambianceSounds.id + 1,
+                'Plays ambiance1'),
+            predicate(
+                (value) =>
+                    value is PlaySound &&
+                    value.channel == game.ambianceSounds.id &&
+                    value.sound == ambiance2 &&
+                    value.id == game.ambianceSounds.id + 2,
+                'Plays ambiance2'),
+            predicate(
+                (value) =>
+                    value is DestroySound &&
+                    value.id == game.ambianceSounds.id + 2,
+                'Destroys ambiance2'),
+            predicate(
+                (value) =>
+                    value is DestroySound &&
+                    value.id == game.ambianceSounds.id + 1,
+                'Destroys ambiance1'),
+            predicate(
+                (value) =>
+                    value is PlaySound &&
+                    value.channel == game.ambianceSounds.id &&
+                    value.sound == ambiance1 &&
+                    value.id == game.ambianceSounds.id + 3,
+                'Replays ambiance1'),
+            predicate(
+                (value) =>
+                    value is PlaySound &&
+                    value.channel == game.ambianceSounds.id &&
+                    value.sound == ambiance2 &&
+                    value.id == game.ambianceSounds.id + 4,
+                'Replays ambiance2'),
+            predicate(
+                (value) =>
+                    value is AutomationFade &&
+                    value.id == game.ambianceSounds.id + 4 &&
+                    value.fadeLength == 2.0,
+                'Fades ambiance2'),
+            predicate(
+                (value) =>
+                    value is AutomationFade &&
+                    value.id == game.ambianceSounds.id + 3 &&
+                    value.fadeLength == 2.0,
+                'Fades ambiance1'),
+          ]));
+    });
   });
 }
