@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.10.2]
+
+### Changed
+
+* Made `Game.destroy` not a future.
+
 ## [0.10.1]
 
 ### Added

@@ -124,5 +124,8 @@ void main() {
       expect(sound.looping, isTrue);
       expect(sound.gain, equals(0.2));
     });
+    test('Destroy test', () async {
+      Game('Test Destroy').destroy();
+    });
   });
 }

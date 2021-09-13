@@ -255,12 +255,13 @@ class Game {
   ///
   /// This method destroys any created [window].
   @mustCallSuper
-  Future<void> destroy() async {
+  void destroy() {
     window?.destroy();
     interfaceSounds.destroy();
     ambianceSounds.destroy();
-    await soundsController.done;
-    await soundsController.close();
+    soundsController
+      ..close()
+      ..done;
   }
 
   /// Run this game.
@@ -287,7 +288,7 @@ class Game {
             Duration(milliseconds: tickEvery - tickTime));
       }
     }
-    await destroy();
+    destroy();
   }
 
   /// How to output text.
