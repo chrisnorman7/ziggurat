@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.13.0]
+
+### Changed
+
+* No longer allow changing from one sound position type to another.
+
 ## [0.12.0]
 
 ### Added

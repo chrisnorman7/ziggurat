@@ -94,3 +94,19 @@ class DeadSound extends ZigguratError {
   @override
   String toString() => 'Sound $sound was already scheduled for destruction.';
 }
+
+/// An attempt was made to set a channel position to a position not supported
+/// by its source type.
+class PositionMismatchError extends ZigguratError {
+  /// Create an instance.
+  PositionMismatchError(this.channel, this.position);
+
+  /// The channel whose position was supposed to be set.
+  final SoundChannel channel;
+
+  /// The position that was used.
+  final SoundPosition position;
+
+  @override
+  String toString() => 'Cannot set position of $channel to $position.';
+}

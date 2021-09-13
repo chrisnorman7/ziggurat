@@ -1,4 +1,5 @@
 /// Provides the [SoundChannel] class.
+import '../../error.dart';
 import '../../game.dart';
 import '../../json/sound_reference.dart';
 import 'events_base.dart';
@@ -26,6 +27,9 @@ class SoundChannel extends SoundEvent {
 
   /// Set the position of this channel.
   set position(SoundPosition value) {
+    if (value.runtimeType != _position.runtimeType) {
+      throw PositionMismatchError(this, value);
+    }
     _position = value;
     game.queueSoundEvent(SetSoundChannelPosition(id, value));
   }

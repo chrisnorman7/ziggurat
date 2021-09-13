@@ -62,7 +62,9 @@ void main() {
     final game = Game('Test Sounds');
     test('Events', () async {
       final reverb = game.createReverb(ReverbPreset('Test Reverb'));
-      final channel = game.createSoundChannel()
+      final channel = game.createSoundChannel(position: SoundPositionPanned());
+      expect(channel.position, isA<SoundPositionPanned>());
+      channel
         ..gain = 1.0
         ..position = SoundPositionPanned(scalar: 1.0);
       expect(channel.gain, equals(1.0));
@@ -209,6 +211,24 @@ void main() {
                     value.fadeLength == 2.0,
                 'Fades ambiance1'),
           ]));
+    });
+    test('Sound positions', () {
+      final game = Game('Sound positions');
+      var channel = game.createSoundChannel();
+      expect(() => channel.position = SoundPositionPanned(),
+          throwsA(isA<PositionMismatchError>()));
+      expect(() => channel.position = SoundPosition3d(),
+          throwsA(isA<PositionMismatchError>()));
+      channel = game.createSoundChannel(position: SoundPositionPanned());
+      expect(() => channel.position = SoundPosition3d(),
+          throwsA(isA<PositionMismatchError>()));
+      expect(() => channel.position = unpanned,
+          throwsA(isA<PositionMismatchError>()));
+      channel = game.createSoundChannel(position: SoundPosition3d());
+      expect(() => channel.position = SoundPositionPanned(),
+          throwsA(isA<PositionMismatchError>()));
+      expect(() => channel.position = unpanned,
+          throwsA(isA<PositionMismatchError>()));
     });
   });
 }
