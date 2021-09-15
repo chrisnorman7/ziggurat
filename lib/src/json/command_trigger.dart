@@ -44,6 +44,13 @@ class CommandTrigger {
   factory CommandTrigger.fromJson(Map<String, dynamic> json) =>
       _$CommandTriggerFromJson(json);
 
+  /// Create a basic trigger.
+  ///
+  /// Creating instances can be quite verbose, so this method exists to make
+  /// that process shorter.
+  CommandTrigger.basic({ScanCode? scanCode, this.button})
+      : keyboardKey = (scanCode == null) ? null : CommandKeyboardKey(scanCode);
+
   /// The keyboard key which must be held down in order for this command to be
   /// triggered.
   final CommandKeyboardKey? keyboardKey;
