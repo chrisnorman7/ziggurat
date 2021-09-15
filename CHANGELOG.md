@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.13.1]
+
+### Added
+
+* Added the `CommandTrigger.basic constructor.
+* Added more tests.
+
 ## [0.13.0]
 
 ### Changed
