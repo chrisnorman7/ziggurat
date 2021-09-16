@@ -66,12 +66,14 @@ void main() {
       expect(channel.position, isA<SoundPositionPanned>());
       channel
         ..gain = 1.0
-        ..position = SoundPositionPanned(scalar: 1.0);
+        ..position = SoundPositionPanned(azimuthOrScalar: 1.0);
       expect(channel.gain, equals(1.0));
       expect(
           channel.position,
-          predicate(
-              (value) => value is SoundPositionPanned && value.scalar == 1.0));
+          predicate((value) =>
+              value is SoundPositionPanned &&
+              value.azimuthOrScalar == 1.0 &&
+              value.elevation == null));
       final sound = channel.playSound(
           SoundReference('testing.wav', SoundType.file),
           keepAlive: true);

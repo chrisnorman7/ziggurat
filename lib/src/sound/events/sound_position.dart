@@ -13,13 +13,23 @@ const unpanned = SoundPosition();
 
 /// A sound which should be panned.
 ///
-/// You can set the left right panning with the [scalar] property.
+/// You can set the left right panning with the [azimuthOrScalar] property.
 class SoundPositionPanned extends SoundPosition {
   /// Create a panned position.
-  const SoundPositionPanned({this.scalar = 0.0});
+  const SoundPositionPanned({this.azimuthOrScalar = 0.0, this.elevation});
 
   /// The left right balance of this sound.
-  final double scalar;
+  ///
+  /// If [elevation] is `null`, then this value is treated as a scalar.
+  ///
+  /// Otherwise, this value is treated as an azimuth value.
+  final double azimuthOrScalar;
+
+  /// The elevation to use.
+  ///
+  /// If this value is not `null`, then [azimuthOrScalar] is treated as an
+  /// azimuth value.
+  final double? elevation;
 }
 
 /// A sound which should be positioned in 3d space.

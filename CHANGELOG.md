@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.14.1]
+
+### Changed
+
+* Changed the constructor of `SoundPositionPanned` to allow the use of either  a scalar value, or an azimuth / elevation pair.
+
 ## [0.14.0]
 
 ### Removed
