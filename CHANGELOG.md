@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.13.3]
+
+### Added
+
+* Added the `Menu.addButton` convenience method.
+* Added the `Menu.addLabel` convenience method.
+
 ## [0.13.2]
 
 ### Added

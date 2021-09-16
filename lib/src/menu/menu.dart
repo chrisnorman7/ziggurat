@@ -2,6 +2,7 @@
 import '../command.dart';
 import '../game.dart';
 import '../json/message.dart';
+import '../json/sound_reference.dart';
 import '../levels/level.dart';
 import '../sound/ambiance.dart';
 import '../sound/events/events_base.dart';
@@ -140,5 +141,23 @@ class Menu extends Level {
       _position = position + 1;
     }
     showCurrentItem();
+  }
+
+  /// Add a button to this menu.
+  MenuItem<Button> addButton(void Function() onActivate,
+      {String? label,
+      SoundReference? selectSound,
+      SoundReference? activateSound}) {
+    final item = MenuItem(Message(sound: selectSound, text: label),
+        Button(onActivate, sound: activateSound));
+    menuItems.add(item);
+    return item;
+  }
+
+  /// Add a label.
+  MenuItem<Label> addLabel({String? label, SoundReference? selectSound}) {
+    final item = MenuItem(Message(sound: selectSound, text: label), Label());
+    menuItems.add(item);
+    return item;
   }
 }

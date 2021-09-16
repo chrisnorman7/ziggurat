@@ -91,5 +91,35 @@ void main() {
       expect(number, equals(1));
       expect(menu.oldSound?.sound, equals(button.sound));
     });
+    test('.addButton', () {
+      final game = Game('Menu.addButton');
+      final menu = Menu(game: game, title: Message());
+      expect(menu.menuItems, isEmpty);
+      var i = 0;
+      final activateSound = SoundReference.file('activate.wav');
+      final selectSound = SoundReference.file('select.wav');
+      final item = menu.addButton(() => i++,
+          activateSound: activateSound,
+          label: 'Activate',
+          selectSound: selectSound);
+      expect(menu.menuItems.length, equals(1));
+      expect(menu.menuItems.last, equals(item));
+      expect(item.label.text, equals('Activate'));
+      expect(item.label.sound, equals(selectSound));
+      final widget = item.widget;
+      expect(widget, isA<Button>());
+      expect(widget.sound, equals(activateSound));
+      widget.onActivate();
+      expect(i, equals(1));
+    });
+    test('.addLabel', () {
+      final game = Game('Menu.addLabel');
+      final menu = Menu(game: game, title: Message());
+      final selectSound = SoundReference.file('select.wav');
+      final item = menu.addLabel(label: 'Testing', selectSound: selectSound);
+      expect(item.label.text, equals('Testing'));
+      expect(item.label.sound, equals(selectSound));
+      expect(item.widget, isA<Label>());
+    });
   });
 }
