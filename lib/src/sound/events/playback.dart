@@ -14,10 +14,12 @@ class PlaySound extends SoundEvent {
       required this.channel,
       required this.keepAlive,
       double gain = 0.7,
-      bool looping = false})
+      bool looping = false,
+      double pitchBend = 1.0})
       : _gain = gain,
         _paused = false,
         _looping = looping,
+        _pitchBend = pitchBend,
         super(SoundEvent.nextId());
 
   /// The game to use.
@@ -76,6 +78,19 @@ class PlaySound extends SoundEvent {
       event = UnpauseSound(id);
     }
     game.queueSoundEvent(event);
+  }
+
+  double _pitchBend;
+
+  /// Get the pitch bend for this sound.
+  ///
+  /// A value of `1.0` is "normal".
+  double get pitchBend => _pitchBend;
+
+  /// Set [pitchBend].
+  set pitchBend(double value) {
+    _pitchBend = value;
+    game.queueSoundEvent(SetSoundPitchBend(id: id, pitchBend: value));
   }
 
   /// Fade this sound in or out.
@@ -146,4 +161,14 @@ class SetLoop extends SoundEvent {
 
   /// Whether or not the sound should loop.
   final bool looping;
+}
+
+/// Set the pitch bend for a sound.
+class SetSoundPitchBend extends SoundEvent {
+  /// Create the event.
+  const SetSoundPitchBend({required int id, required this.pitchBend})
+      : super(id);
+
+  /// The new pitch bend.
+  final double pitchBend;
 }
