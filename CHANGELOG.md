@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.13.2]
+
+### Added
+
+* Added the `PitchBend` sound event.
+* Added events for applying filters to `SoundChannel` instances.
+
 ## [0.13.1]
 
 ### Added

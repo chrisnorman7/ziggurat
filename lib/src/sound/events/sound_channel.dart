@@ -3,6 +3,7 @@ import '../../error.dart';
 import '../../game.dart';
 import '../../json/sound_reference.dart';
 import 'events_base.dart';
+import 'sound_channel_filter.dart';
 
 /// A channel for playing sounds through.
 class SoundChannel extends SoundEvent {
@@ -61,6 +62,22 @@ class SoundChannel extends SoundEvent {
     game.queueSoundEvent(event);
     return event;
   }
+
+  /// Remove any filtering applied to this channel.
+  void clearFilter() => game.queueSoundEvent(SoundChannelFilter(id));
+
+  /// Apply a lowpass to this channel.
+  void filterLowpass(double frequency, {double q = 0.7071135624381276}) =>
+      game.queueSoundEvent(SoundChannelLowpass(id, frequency, q));
+
+  /// Apply a highpass to this channel.
+  void filterHighpass(double frequency, {double q = 0.7071135624381276}) =>
+      game.queueSoundEvent(SoundChannelHighpass(id, frequency, q));
+
+  /// Add a bandpass to this channel.
+  void filterBandpass(double frequency, double bandwidth) =>
+      game.queueSoundEvent(SoundChannelBandpass(
+          id: id, frequency: frequency, bandwidth: bandwidth));
 
   /// Destroy this channel.
   void destroy() => game.queueSoundEvent(DestroySoundChannel(id));

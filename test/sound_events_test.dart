@@ -76,8 +76,9 @@ void main() {
               value.scalar == 1.0));
       final sound = channel.playSound(
           SoundReference('testing.wav', SoundType.file),
-          keepAlive: true)
-        ..paused = true;
+          keepAlive: true);
+      expect(sound.keepAlive, isTrue);
+      sound.paused = true;
       expect(sound.paused, isTrue);
       sound.paused = false;
       expect(sound.paused, isFalse);
@@ -85,7 +86,14 @@ void main() {
       expect(sound.gain, equals(1.0));
       sound.looping = true;
       expect(sound.looping, isTrue);
-      expect(sound.keepAlive, isTrue);
+      expect(sound.pitchBend, equals(1.0));
+      sound.pitchBend = 2.0;
+      expect(sound.pitchBend, equals(2.0));
+      channel
+        ..filterBandpass(440.0, 200.0)
+        ..filterHighpass(440.0)
+        ..filterLowpass(440.0)
+        ..clearFilter();
       final fade = sound.fade(length: 2.0);
       expect(fade.game, equals(game));
       expect(fade.id, equals(sound.id));
@@ -118,6 +126,30 @@ void main() {
                 value is SetLoop &&
                 value.looping == true &&
                 value.id == sound.id),
+            predicate((value) =>
+                value is SetSoundPitchBend &&
+                value.id == sound.id &&
+                value.pitchBend == sound.pitchBend),
+            predicate((value) =>
+                value is SoundChannelBandpass &&
+                value.id == channel.id &&
+                value.frequency == 440.0 &&
+                value.bandwidth == 200.0),
+            predicate((value) =>
+                value is SoundChannelHighpass &&
+                value.id == channel.id &&
+                value.frequency == 440.0 &&
+                value.q == 0.7071135624381276),
+            predicate((value) =>
+                value is SoundChannelLowpass &&
+                value.id == channel.id &&
+                value.frequency == 440.0 &&
+                value.q == 0.7071135624381276),
+            predicate((value) =>
+                value is SoundChannelFilter &&
+                value is! SoundChannelLowpass &&
+                value is! SoundChannelHighpass &&
+                value is! SoundChannelBandpass),
             predicate((value) =>
                 value is AutomationFade &&
                 value.game == game &&
