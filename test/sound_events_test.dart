@@ -70,10 +70,8 @@ void main() {
       expect(channel.gain, equals(1.0));
       expect(
           channel.position,
-          predicate((value) =>
-              value is SoundPositionPanned &&
-              value.elevation == 0.0 &&
-              value.scalar == 1.0));
+          predicate(
+              (value) => value is SoundPositionPanned && value.scalar == 1.0));
       final sound = channel.playSound(
           SoundReference('testing.wav', SoundType.file),
           keepAlive: true);

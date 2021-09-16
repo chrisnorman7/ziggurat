@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.14.0]
+
+### Removed
+
+* Removed the `elevation` property from `SoundPositionPanned`.
+
 ## [0.13.3]
 
 ### Added
