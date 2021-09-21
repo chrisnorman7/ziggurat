@@ -62,18 +62,16 @@ void main() {
     final game = Game('Test Sounds');
     test('Events', () async {
       final reverb = game.createReverb(ReverbPreset('Test Reverb'));
-      final channel = game.createSoundChannel(position: SoundPositionPanned());
-      expect(channel.position, isA<SoundPositionPanned>());
+      final channel = game.createSoundChannel(position: SoundPositionScalar());
+      expect(channel.position, isA<SoundPositionScalar>());
       channel
         ..gain = 1.0
-        ..position = SoundPositionPanned(azimuthOrScalar: 1.0);
+        ..position = SoundPositionScalar(scalar: 1.0);
       expect(channel.gain, equals(1.0));
       expect(
           channel.position,
-          predicate((value) =>
-              value is SoundPositionPanned &&
-              value.azimuthOrScalar == 1.0 &&
-              value.elevation == null));
+          predicate(
+              (value) => value is SoundPositionScalar && value.scalar == 1.0));
       final sound = channel.playSound(
           SoundReference('testing.wav', SoundType.file),
           keepAlive: true);
@@ -247,17 +245,17 @@ void main() {
     test('Sound positions', () {
       final game = Game('Sound positions');
       var channel = game.createSoundChannel();
-      expect(() => channel.position = SoundPositionPanned(),
+      expect(() => channel.position = SoundPositionScalar(),
           throwsA(isA<PositionMismatchError>()));
       expect(() => channel.position = SoundPosition3d(),
           throwsA(isA<PositionMismatchError>()));
-      channel = game.createSoundChannel(position: SoundPositionPanned());
+      channel = game.createSoundChannel(position: SoundPositionScalar());
       expect(() => channel.position = SoundPosition3d(),
           throwsA(isA<PositionMismatchError>()));
       expect(() => channel.position = unpanned,
           throwsA(isA<PositionMismatchError>()));
       channel = game.createSoundChannel(position: SoundPosition3d());
-      expect(() => channel.position = SoundPositionPanned(),
+      expect(() => channel.position = SoundPositionScalar(),
           throwsA(isA<PositionMismatchError>()));
       expect(() => channel.position = unpanned,
           throwsA(isA<PositionMismatchError>()));

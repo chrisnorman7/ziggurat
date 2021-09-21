@@ -11,11 +11,11 @@ class SoundChannel extends SoundEvent {
   SoundChannel(
       {required this.game,
       required int id,
-      SoundPosition? position,
+      SoundPosition position = unpanned,
       this.reverb,
       double gain = 0.7})
       : _gain = gain,
-        _position = position ?? unpanned,
+        _position = position,
         super(id);
 
   /// The game object to use for this channel.

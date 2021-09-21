@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.15.0]
+
+### Added
+
+* Added the `SoundPositionScalar` class.
+* Added the `SoundPositionAngular` class.
+
+### Removed
+
+* Removed the `SoundPositionPanned` class.
+
+### Changed
+
+* Updated the API to reflect changes in [dart_synthizer]([URL](https://pub.dev/packages/dart_synthizer)).
+
 ## [0.14.1]
 
 ### Changed
