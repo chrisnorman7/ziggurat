@@ -10,12 +10,14 @@ SoundReference _$SoundReferenceFromJson(Map<String, dynamic> json) =>
     SoundReference(
       json['name'] as String,
       _$enumDecode(_$SoundTypeEnumMap, json['type']),
+      encryptionKey: json['encryptionKey'] as String?,
     );
 
 Map<String, dynamic> _$SoundReferenceToJson(SoundReference instance) =>
     <String, dynamic>{
       'name': instance.name,
       'type': _$SoundTypeEnumMap[instance.type],
+      'encryptionKey': instance.encryptionKey,
     };
 
 K _$enumDecode<K, V>(

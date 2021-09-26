@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.15.1]
+
+### Added
+
+Added a `encryptionKey` field to the `SoundReference` class.
+
 ## [0.15.0]
 
 ### Added
