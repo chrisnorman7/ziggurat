@@ -1,22 +1,22 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'sound_reference.dart';
+part of 'assets.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-SoundReference _$SoundReferenceFromJson(Map<String, dynamic> json) =>
-    SoundReference(
+AssetReference _$AssetReferenceFromJson(Map<String, dynamic> json) =>
+    AssetReference(
       json['name'] as String,
-      _$enumDecode(_$SoundTypeEnumMap, json['type']),
+      _$enumDecode(_$AssetTypeEnumMap, json['type']),
       encryptionKey: json['encryptionKey'] as String?,
     );
 
-Map<String, dynamic> _$SoundReferenceToJson(SoundReference instance) =>
+Map<String, dynamic> _$AssetReferenceToJson(AssetReference instance) =>
     <String, dynamic>{
       'name': instance.name,
-      'type': _$SoundTypeEnumMap[instance.type],
+      'type': _$AssetTypeEnumMap[instance.type],
       'encryptionKey': instance.encryptionKey,
     };
 
@@ -46,7 +46,22 @@ K _$enumDecode<K, V>(
   ).key;
 }
 
-const _$SoundTypeEnumMap = {
-  SoundType.file: 'file',
-  SoundType.collection: 'collection',
+const _$AssetTypeEnumMap = {
+  AssetType.file: 'file',
+  AssetType.collection: 'collection',
 };
+
+AssetStore _$AssetStoreFromJson(Map<String, dynamic> json) => AssetStore(
+      json['filename'] as String,
+      comment: json['comment'] as String?,
+      assets: (json['assets'] as List<dynamic>?)
+          ?.map((e) => AssetReference.fromJson(e as Map<String, dynamic>))
+          .toList(),
+    );
+
+Map<String, dynamic> _$AssetStoreToJson(AssetStore instance) =>
+    <String, dynamic>{
+      'filename': instance.filename,
+      'comment': instance.comment,
+      'assets': instance.assets,
+    };

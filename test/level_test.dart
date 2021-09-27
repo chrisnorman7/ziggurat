@@ -166,8 +166,8 @@ void main() {
     test('Ambiances', () {
       final game = Game('Level Ambiances');
       final level = Level(game, ambiances: [
-        Ambiance(sound: SoundReference.file('sound1')),
-        Ambiance(sound: SoundReference.collection('sound2'))
+        Ambiance(sound: AssetReference.file('sound1')),
+        Ambiance(sound: AssetReference.collection('sound2'))
       ]);
       expect(level.ambianceSounds, isEmpty);
       game.pushLevel(level);

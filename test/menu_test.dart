@@ -52,8 +52,8 @@ void main() {
     });
     test('Menu Sounds', () {
       final game = Game('Menu Sounds');
-      final sound1 = SoundReference('Sound 1', SoundType.file);
-      final sound2 = SoundReference('Sound 2', SoundType.file);
+      final sound1 = AssetReference('Sound 1', AssetType.file);
+      final sound2 = AssetReference('Sound 2', AssetType.file);
       final menu = Menu(game: game, title: Message(text: 'Test Menu'), items: [
         MenuItem(Message(sound: sound1), Label()),
         MenuItem(Message(sound: sound2), Label())
@@ -76,7 +76,7 @@ void main() {
       var number = 0;
       final button = Button(() {
         number++;
-      }, sound: SoundReference.file('something.wav'));
+      }, sound: AssetReference.file('something.wav'));
       final menu = Menu(
           game: game,
           title: Message(text: 'Test Menu'),
@@ -96,8 +96,8 @@ void main() {
       final menu = Menu(game: game, title: Message());
       expect(menu.menuItems, isEmpty);
       var i = 0;
-      final activateSound = SoundReference.file('activate.wav');
-      final selectSound = SoundReference.file('select.wav');
+      final activateSound = AssetReference.file('activate.wav');
+      final selectSound = AssetReference.file('select.wav');
       final item = menu.addButton(() => i++,
           activateSound: activateSound,
           label: 'Activate',
@@ -115,7 +115,7 @@ void main() {
     test('.addLabel', () {
       final game = Game('Menu.addLabel');
       final menu = Menu(game: game, title: Message());
-      final selectSound = SoundReference.file('select.wav');
+      final selectSound = AssetReference.file('select.wav');
       final item = menu.addLabel(label: 'Testing', selectSound: selectSound);
       expect(item.label.text, equals('Testing'));
       expect(item.label.sound, equals(selectSound));

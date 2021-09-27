@@ -1,8 +1,8 @@
 /// Provides the [Menu] class.
 import '../command.dart';
 import '../game.dart';
+import '../json/assets.dart';
 import '../json/message.dart';
-import '../json/sound_reference.dart';
 import '../levels/level.dart';
 import '../sound/ambiance.dart';
 import '../sound/events/events_base.dart';
@@ -146,8 +146,8 @@ class Menu extends Level {
   /// Add a button to this menu.
   MenuItem<Button> addButton(void Function() onActivate,
       {String? label,
-      SoundReference? selectSound,
-      SoundReference? activateSound}) {
+      AssetReference? selectSound,
+      AssetReference? activateSound}) {
     final item = MenuItem(Message(sound: selectSound, text: label),
         Button(onActivate, sound: activateSound));
     menuItems.add(item);
@@ -155,7 +155,7 @@ class Menu extends Level {
   }
 
   /// Add a label.
-  MenuItem<Label> addLabel({String? label, SoundReference? selectSound}) {
+  MenuItem<Label> addLabel({String? label, AssetReference? selectSound}) {
     final item = MenuItem(Message(sound: selectSound, text: label), Label());
     menuItems.add(item);
     return item;

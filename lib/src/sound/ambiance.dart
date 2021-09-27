@@ -1,7 +1,7 @@
 /// Provides the [Ambiance] class.
 import 'dart:math';
 
-import '../json/sound_reference.dart';
+import '../json/assets.dart';
 
 /// A constantly playing sound on a map.
 class Ambiance {
@@ -9,7 +9,7 @@ class Ambiance {
   Ambiance({required this.sound, this.position, this.gain = 0.75});
 
   /// The path where the sound file is stored.
-  final SoundReference sound;
+  final AssetReference sound;
 
   /// The position of the sound.
   ///

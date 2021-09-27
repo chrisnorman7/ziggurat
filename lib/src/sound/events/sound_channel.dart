@@ -1,7 +1,7 @@
 /// Provides the [SoundChannel] class.
 import '../../error.dart';
 import '../../game.dart';
-import '../../json/sound_reference.dart';
+import '../../json/assets.dart';
 import 'events_base.dart';
 import 'sound_channel_filter.dart';
 
@@ -50,7 +50,7 @@ class SoundChannel extends SoundEvent {
   }
 
   /// Play a sound through this channel.
-  PlaySound playSound(SoundReference sound,
+  PlaySound playSound(AssetReference sound,
       {double gain = 0.7, bool looping = false, bool keepAlive = false}) {
     final event = PlaySound(
         game: game,

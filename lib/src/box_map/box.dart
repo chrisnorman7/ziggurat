@@ -3,7 +3,7 @@ import 'dart:math';
 
 import 'package:meta/meta.dart';
 
-import '../json/sound_reference.dart';
+import '../json/assets.dart';
 import 'box_types/agents/agent.dart';
 import 'box_types/base.dart';
 import 'box_types/door.dart';
@@ -81,7 +81,7 @@ class Box<T extends BoxType> {
   ///
   /// If this box is a [Surface], this sound will be heard when walking on
   /// it.
-  final SoundReference? sound;
+  final AssetReference? sound;
 
   /// Move this tile to a new set of coordinates.
   ///

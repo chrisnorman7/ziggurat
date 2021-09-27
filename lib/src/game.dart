@@ -4,8 +4,8 @@ import 'dart:async';
 import 'package:dart_sdl/dart_sdl.dart';
 import 'package:meta/meta.dart';
 
+import 'json/assets.dart';
 import 'json/message.dart';
-import 'json/sound_reference.dart';
 import 'json/trigger_map.dart';
 import 'levels/level.dart';
 import 'sound/events/events_base.dart';
@@ -308,7 +308,7 @@ class Game {
   ///
   /// This method is used by [outputMessage].
   PlaySound? outputSound(
-      {required SoundReference? sound,
+      {required AssetReference? sound,
       SoundChannel? soundChannel,
       PlaySound? oldSound,
       double gain = 0.7,

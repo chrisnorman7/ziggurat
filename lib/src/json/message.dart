@@ -1,7 +1,7 @@
 /// Provides the [Message] class.
 import 'package:json_annotation/json_annotation.dart';
 
-import 'sound_reference.dart';
+import 'assets.dart';
 
 part 'message.g.dart';
 
@@ -20,7 +20,7 @@ class Message {
   final String? text;
 
   /// The sound which should be played.
-  final SoundReference? sound;
+  final AssetReference? sound;
 
   /// The gain to play [sound] at.
   final double gain;

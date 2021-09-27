@@ -1,7 +1,7 @@
 /// Provides the [RunnerSettings] class.
 import 'package:json_annotation/json_annotation.dart';
 
-import 'sound_reference.dart';
+import 'assets.dart';
 
 part 'runner_settings.g.dart';
 
@@ -79,13 +79,13 @@ class RunnerSettings {
   double directionalRadarDistance;
 
   /// The empty space sound to use when [directionalRadarEnabled] is `true`.
-  SoundReference? directionalRadarEmptySpaceSound;
+  AssetReference? directionalRadarEmptySpaceSound;
 
   /// The door sound to use when [directionalRadarEnabled] is enabled.
-  SoundReference? directionalRadarDoorSound;
+  AssetReference? directionalRadarDoorSound;
 
   /// The wall sound to use when [directionalRadarEnabled] is `true`.
-  SoundReference? directionalRadarWallSound;
+  AssetReference? directionalRadarWallSound;
 
   /// The directions to scan when [directionalRadarEnabled] is `true`.
   final List<int> directionalRadarDirections;

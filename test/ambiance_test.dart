@@ -8,10 +8,10 @@ void main() {
   group('Ambiance tests', () {
     test('Initialisation', () {
       final a = Ambiance(
-          sound: SoundReference('sound.wav', SoundType.file),
+          sound: AssetReference('sound.wav', AssetType.file),
           position: Point(5.0, 4.0));
       expect(a.sound.name, equals('sound.wav'));
-      expect(a.sound.type, equals(SoundType.file));
+      expect(a.sound.type, equals(AssetType.file));
       expect(a.position, equals(Point<double>(5.0, 4.0)));
     });
   });

@@ -1,7 +1,7 @@
 /// Provides events relating to playing sounds.
 import '../../error.dart';
 import '../../game.dart';
-import '../../json/sound_reference.dart';
+import '../../json/assets.dart';
 import 'automation_fade.dart';
 import 'events_base.dart';
 
@@ -26,7 +26,7 @@ class PlaySound extends SoundEvent {
   final Game game;
 
   /// The reference to the sound.
-  final SoundReference sound;
+  final AssetReference sound;
 
   /// The channel this sound should play through.
   final int channel;

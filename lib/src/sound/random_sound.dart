@@ -1,7 +1,7 @@
 /// Provides the [RandomSound] class.
 import 'dart:math';
 
-import '../json/sound_reference.dart';
+import '../json/assets.dart';
 
 /// A random sound.
 ///
@@ -13,7 +13,7 @@ class RandomSound {
       {this.minGain = 0.75, this.maxGain = 0.75});
 
   /// The sound to play.
-  final SoundReference sound;
+  final AssetReference sound;
 
   /// The minimum coordinates.
   final Point<double> minCoordinates;

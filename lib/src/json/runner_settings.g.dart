@@ -27,15 +27,15 @@ RunnerSettings _$RunnerSettingsFromJson(Map<String, dynamic> json) =>
       directionalRadarEmptySpaceSound:
           json['directionalRadarEmptySpaceSound'] == null
               ? null
-              : SoundReference.fromJson(json['directionalRadarEmptySpaceSound']
+              : AssetReference.fromJson(json['directionalRadarEmptySpaceSound']
                   as Map<String, dynamic>),
       directionalRadarDoorSound: json['directionalRadarDoorSound'] == null
           ? null
-          : SoundReference.fromJson(
+          : AssetReference.fromJson(
               json['directionalRadarDoorSound'] as Map<String, dynamic>),
       directionalRadarWallSound: json['directionalRadarWallSound'] == null
           ? null
-          : SoundReference.fromJson(
+          : AssetReference.fromJson(
               json['directionalRadarWallSound'] as Map<String, dynamic>),
       directionalRadarDirections:
           (json['directionalRadarDirections'] as List<dynamic>?)

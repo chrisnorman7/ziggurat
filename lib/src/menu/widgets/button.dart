@@ -1,5 +1,5 @@
 /// Provides the [Button] class.
-import '../../json/sound_reference.dart';
+import '../../json/assets.dart';
 import 'widgets_base.dart';
 
 /// A button that can be activated.
@@ -11,5 +11,5 @@ class Button extends Widget {
   final void Function() onActivate;
 
   /// The sound that should play when this widget is activated.
-  final SoundReference? sound;
+  final AssetReference? sound;
 }

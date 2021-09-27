@@ -21,14 +21,14 @@ void main() {
   });
   group('SoundReference', () {
     test('.file', () {
-      final sound = SoundReference.file('test.wav');
+      final sound = AssetReference.file('test.wav');
       expect(sound.name, equals('test.wav'));
-      expect(sound.type, equals(SoundType.file));
+      expect(sound.type, equals(AssetType.file));
     });
     test('.collection', () {
-      final sound = SoundReference.collection('testing');
+      final sound = AssetReference.collection('testing');
       expect(sound.name, equals('testing'));
-      expect(sound.type, equals(SoundType.collection));
+      expect(sound.type, equals(AssetType.collection));
     });
   });
 }

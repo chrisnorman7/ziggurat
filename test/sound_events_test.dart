@@ -36,13 +36,13 @@ void main() {
       expect(channel.id, equals(game.ambianceSounds.id + 1));
       expect(SoundEvent.maxEventId, equals(channel.id));
       final sound =
-          channel.playSound(SoundReference('testing', SoundType.file));
+          channel.playSound(AssetReference('testing', AssetType.file));
       expect(sound.id, equals(channel.id + 1));
       expect(SoundEvent.maxEventId, equals(sound.id));
     });
     test('Sound Keep Alive', () async {
       final game = Game('Sound Keep Alive');
-      final reference = SoundReference('testing', SoundType.file);
+      final reference = AssetReference('testing', AssetType.file);
       var sound = game.interfaceSounds.playSound(reference, keepAlive: true)
         ..destroy();
       sound = game.interfaceSounds.playSound(reference);
@@ -73,7 +73,7 @@ void main() {
           predicate(
               (value) => value is SoundPositionScalar && value.scalar == 1.0));
       final sound = channel.playSound(
-          SoundReference('testing.wav', SoundType.file),
+          AssetReference('testing.wav', AssetType.file),
           keepAlive: true);
       expect(sound.keepAlive, isTrue);
       sound.paused = true;
@@ -164,7 +164,7 @@ void main() {
     });
     test('SoundChannel.playSound', () {
       final sound = game.ambianceSounds
-          .playSound(SoundReference.file('loop.wav'), looping: true, gain: 0.2);
+          .playSound(AssetReference.file('loop.wav'), looping: true, gain: 0.2);
       expect(sound.looping, isTrue);
       expect(sound.gain, equals(0.2));
     });
@@ -173,8 +173,8 @@ void main() {
     });
     test('Level.onPop', () {
       final game = Game('Test onPop');
-      final ambiance1 = SoundReference.file('ambiance1.wav');
-      final ambiance2 = SoundReference.file('ambiance2.wav');
+      final ambiance1 = AssetReference.file('ambiance1.wav');
+      final ambiance2 = AssetReference.file('ambiance2.wav');
       final level = Level(game, ambiances: <Ambiance>[
         Ambiance(sound: ambiance1),
         Ambiance(sound: ambiance2)

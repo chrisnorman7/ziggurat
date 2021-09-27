@@ -10,7 +10,7 @@ Message _$MessageFromJson(Map<String, dynamic> json) => Message(
       text: json['text'] as String?,
       sound: json['sound'] == null
           ? null
-          : SoundReference.fromJson(json['sound'] as Map<String, dynamic>),
+          : AssetReference.fromJson(json['sound'] as Map<String, dynamic>),
       gain: (json['gain'] as num?)?.toDouble() ?? 0.7,
       keepAlive: json['keepAlive'] as bool? ?? false,
     );

@@ -8,9 +8,9 @@ void main() {
   group('Random sounds tests', () {
     test('Initialisation', () {
       final r = RandomSound(
-          SoundReference.file('sound.wav'), Point(0, 1), Point(5, 6), 15, 30,
+          AssetReference.file('sound.wav'), Point(0, 1), Point(5, 6), 15, 30,
           minGain: 0.1, maxGain: 1.0);
-      expect(r.sound, isA<SoundReference>());
+      expect(r.sound, isA<AssetReference>());
       expect(r.minCoordinates.x, equals(0));
       expect(r.maxCoordinates.x, equals(5));
       expect(r.minCoordinates.y, equals(1));
