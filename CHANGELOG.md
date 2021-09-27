@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.16.0]
+
+### Added
+
+* Added the ability to load files (and random files) via the `AssetReference.load` method.
+* Added the `AssetStore` class, which will be used by [ziggurat_utils]([URL](https://pub.dev/packages/ziggurat_utils)).
+* Added a load more tests.
+
+### Changed
+
+* Renamed `SoundReference` to `AssetReference`.
+
 ## [0.15.1]
 
 ### Added
