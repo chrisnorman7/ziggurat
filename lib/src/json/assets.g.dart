@@ -51,11 +51,29 @@ const _$AssetTypeEnumMap = {
   AssetType.collection: 'collection',
 };
 
+AssetReferenceReference _$AssetReferenceReferenceFromJson(
+        Map<String, dynamic> json) =>
+    AssetReferenceReference(
+      variableName: json['variableName'] as String,
+      reference:
+          AssetReference.fromJson(json['reference'] as Map<String, dynamic>),
+      comment: json['comment'] as String?,
+    );
+
+Map<String, dynamic> _$AssetReferenceReferenceToJson(
+        AssetReferenceReference instance) =>
+    <String, dynamic>{
+      'variableName': instance.variableName,
+      'comment': instance.comment,
+      'reference': instance.reference,
+    };
+
 AssetStore _$AssetStoreFromJson(Map<String, dynamic> json) => AssetStore(
       json['filename'] as String,
       comment: json['comment'] as String?,
       assets: (json['assets'] as List<dynamic>?)
-          ?.map((e) => AssetReference.fromJson(e as Map<String, dynamic>))
+          ?.map((e) =>
+              AssetReferenceReference.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 
