@@ -51,6 +51,18 @@ void main() {
           equals(File(ar.name).readAsBytesSync()));
       encryptedFile.deleteSync();
     });
+    test('.getFile', () {
+      final random = Random();
+      var reference = AssetReference.file('SDL2.dll');
+      var file = reference.getFile(random);
+      expect(file.path, equals(reference.name));
+      reference = AssetReference.collection('test');
+      file = reference.getFile(random);
+      final filenames = <String>[
+        for (final file in Directory('test').listSync()) file.path
+      ];
+      expect(filenames, contains(file.path));
+    });
   });
   group('AssetStore', () {
     late Directory tempDirectory;

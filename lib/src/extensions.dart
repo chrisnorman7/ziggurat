@@ -39,7 +39,7 @@ extension RunnerMethods on Directory {
 }
 
 /// Adds a method for always returning a file.
-extension RunnerFileMethods on FileSystemEntity {
+extension RunnerFileSystemEntityMethods on FileSystemEntity {
   /// Always return a file.
   File ensureFile(Random random) {
     if (this is File) {

@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.16.1]
+
+### Added
+
+* Added a `getFile` method to the `AssetReference` class.
+
 ## [0.16.0]
 
 ### Added

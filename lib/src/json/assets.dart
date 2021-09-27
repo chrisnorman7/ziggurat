@@ -76,6 +76,18 @@ class AssetReference {
       return encrypter.decryptBytes(encrypted, iv: iv);
     }
   }
+
+  /// Get a file from this reference.
+  ///
+  /// If [type] is [AssetType.file], just return a [File] with its path set to
+  /// [name]. Otherwise, use the [RunnerFileSystemEntityMethods] extension to
+  /// return a random file from a [Directory] with [name] as the path.
+  File getFile(Random random) {
+    if (type == AssetType.file) {
+      return File(name);
+    }
+    return Directory(name).randomFile(random);
+  }
 }
 
 /// A class to hold an [AssetReference], as well as other meta data required to
