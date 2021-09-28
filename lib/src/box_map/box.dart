@@ -3,7 +3,7 @@ import 'dart:math';
 
 import 'package:meta/meta.dart';
 
-import '../json/assets.dart';
+import '../json/asset_reference.dart';
 import 'box_types/agents/agent.dart';
 import 'box_types/base.dart';
 import 'box_types/door.dart';

@@ -1,7 +1,7 @@
 /// Provides the [Message] class.
 import 'package:json_annotation/json_annotation.dart';
 
-import 'assets.dart';
+import 'asset_reference.dart';
 
 part 'message.g.dart';
 

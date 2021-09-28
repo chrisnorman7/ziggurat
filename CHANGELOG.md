@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.17.0]
+
+### Removed
+
+* Moved the `AssetStore` class to the [ziggurat_sounds]([URL](https://pub.dev/packages/ziggurat_sounds)) package.
+
 ## [0.16.1]
 
 ### Added

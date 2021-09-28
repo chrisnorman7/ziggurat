@@ -1,7 +1,7 @@
 /// Provides the [Menu] class.
 import '../command.dart';
 import '../game.dart';
-import '../json/assets.dart';
+import '../json/asset_reference.dart';
 import '../json/message.dart';
 import '../levels/level.dart';
 import '../sound/ambiance.dart';

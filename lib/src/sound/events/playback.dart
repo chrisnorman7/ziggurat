@@ -1,7 +1,7 @@
 /// Provides events relating to playing sounds.
 import '../../error.dart';
 import '../../game.dart';
-import '../../json/assets.dart';
+import '../../json/asset_reference.dart';
 import 'automation_fade.dart';
 import 'events_base.dart';
 

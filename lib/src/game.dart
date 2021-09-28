@@ -4,7 +4,7 @@ import 'dart:async';
 import 'package:dart_sdl/dart_sdl.dart';
 import 'package:meta/meta.dart';
 
-import 'json/assets.dart';
+import 'json/asset_reference.dart';
 import 'json/message.dart';
 import 'json/trigger_map.dart';
 import 'levels/level.dart';

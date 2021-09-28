@@ -1,7 +1,7 @@
 /// Provides the [RandomSound] class.
 import 'dart:math';
 
-import '../json/assets.dart';
+import '../json/asset_reference.dart';
 
 /// A random sound.
 ///

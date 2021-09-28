@@ -1,5 +1,5 @@
 /// Provides the [Button] class.
-import '../../json/assets.dart';
+import '../../json/asset_reference.dart';
 import 'widgets_base.dart';
 
 /// A button that can be activated.
