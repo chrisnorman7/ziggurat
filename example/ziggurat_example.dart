@@ -71,7 +71,7 @@ void main() {
         name: quitCommandName,
         trigger: CommandTrigger(
             keyboardKey: CommandKeyboardKey(ScanCode.SCANCODE_Q),
-            button: GameControllerButton.leftShoulder))
+            button: GameControllerButton.leftshoulder))
     ..registerCommand(
         name: leftCommandName,
         trigger: CommandTrigger(
