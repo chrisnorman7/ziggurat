@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.18.1]
+
+### Added
+
+* Add events for setting global audio settings.
+
 ## [0.18.0]
 
 ### Changed

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:test/test.dart';
 import 'package:ziggurat/ziggurat.dart';
 
@@ -61,6 +63,10 @@ void main() {
   group('Sounds stream tests', () {
     final game = Game('Test Sounds');
     test('Events', () async {
+      game
+        ..setDefaultPannerStrategy(DefaultPannerStrategy.hrtf)
+        ..setListenerOrientation(180)
+        ..setListenerPosition(3.0, 4.0, 5.0);
       final reverb = game.createReverb(ReverbPreset('Test Reverb'));
       final channel = game.createSoundChannel(position: SoundPositionScalar());
       expect(channel.position, isA<SoundPositionScalar>());
@@ -103,6 +109,28 @@ void main() {
           emitsInOrder(<Matcher>[
             equals(game.interfaceSounds),
             equals(game.ambianceSounds),
+            predicate(
+                (value) =>
+                    value is SetDefaultPannerStrategy &&
+                    value.strategy == DefaultPannerStrategy.hrtf,
+                'sets the default panner strategy to HRTF'),
+            predicate(
+                (value) =>
+                    value is ListenerOrientationEvent &&
+                    value.x1 == sin(180.0 * pi / 180) &&
+                    value.y1 == cos(180.0 * pi / 180) &&
+                    value.z1 == 0 &&
+                    value.x2 == 0 &&
+                    value.y2 == 0 &&
+                    value.z2 == 1.0,
+                'sets the listener orientation'),
+            predicate(
+                (value) =>
+                    value is ListenerPositionEvent &&
+                    value.x == 3.0 &&
+                    value.y == 4.0 &&
+                    value.z == 5.0,
+                'sets the listener position'),
             equals(reverb),
             equals(channel),
             predicate((value) =>

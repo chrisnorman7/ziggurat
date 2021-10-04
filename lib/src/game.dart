@@ -9,6 +9,7 @@ import 'json/message.dart';
 import 'json/trigger_map.dart';
 import 'levels/level.dart';
 import 'sound/events/events_base.dart';
+import 'sound/events/global.dart';
 import 'sound/reverb_preset.dart';
 import 'task.dart';
 
@@ -359,4 +360,16 @@ class Game {
     queueSoundEvent(event);
     return event;
   }
+
+  /// Set the listener position.
+  void setListenerPosition(double x, double y, double z) =>
+      queueSoundEvent(ListenerPositionEvent(x, y, z));
+
+  /// Set the orientation of the listener.
+  void setListenerOrientation(double angle) =>
+      queueSoundEvent(ListenerOrientationEvent.fromAngle(angle));
+
+  /// Set the default panner strategy.
+  void setDefaultPannerStrategy(DefaultPannerStrategy strategy) =>
+      queueSoundEvent(SetDefaultPannerStrategy(strategy));
 }

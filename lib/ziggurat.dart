@@ -30,6 +30,7 @@ export 'src/quest.dart';
 export 'src/setting_defaults.dart';
 export 'src/sound/ambiance.dart';
 export 'src/sound/events/events_base.dart';
+export 'src/sound/events/global.dart';
 export 'src/sound/events/sound_channel_filter.dart';
 export 'src/sound/random_sound.dart';
 export 'src/sound/reverb_preset.dart';
