@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.18.0]
+
+### Changed
+
+* Updated dart_sdl.
+
 ## [0.17.0]
 
 ### Removed
