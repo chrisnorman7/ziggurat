@@ -3,7 +3,6 @@ import 'dart:math';
 
 import '../error.dart';
 import '../sound/ambiance.dart';
-import '../sound/random_sound.dart';
 import 'box.dart';
 
 /// A map made up of boxes.
@@ -17,10 +16,8 @@ class BoxMap {
     Point<double>? initialCoordinates,
     this.initialHeading = 0,
     List<Ambiance>? ambiances,
-    List<RandomSound>? randomSounds,
   })  : initialCoordinates = initialCoordinates ?? Point(0, 0),
-        ambiances = ambiances ?? [],
-        randomSounds = randomSounds ?? [] {
+        ambiances = ambiances ?? [] {
     var sizeX = 0;
     var sizeY = 0;
     for (final box in boxes) {
@@ -62,9 +59,6 @@ class BoxMap {
 
   /// All the ambiances of this map.
   final List<Ambiance> ambiances;
-
-  /// All the random sounds on this map.
-  final List<RandomSound> randomSounds;
 
   /// All the boxes on this map.
   final List<Box> boxes;

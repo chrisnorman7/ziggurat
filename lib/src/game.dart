@@ -1,5 +1,6 @@
 /// Provides the [Game] class.
 import 'dart:async';
+import 'dart:math';
 
 import 'package:dart_sdl/dart_sdl.dart';
 import 'package:meta/meta.dart';
@@ -20,10 +21,12 @@ class Game {
       : _levels = [],
         triggerMap = triggerMap ?? TriggerMap({}),
         time = 0,
+        _started = 0,
         _isRunning = false,
         tasks = [],
         _queuedSoundEvents = [],
-        gameControllers = {} {
+        gameControllers = {},
+        random = Random() {
     soundsController = StreamController(
         onListen: _addAllSoundEvents, onResume: _addAllSoundEvents);
     interfaceSounds = createSoundChannel();
@@ -41,16 +44,34 @@ class Game {
   /// Get the current level.
   ///
   /// This is the level which is last in the levels stack.
+  @doNotStore
   Level? get currentLevel => _levels.isEmpty ? null : _levels.last;
 
   /// The trigger map.
   final TriggerMap triggerMap;
 
+  Window? _window;
+
   /// The sdl window that will be shown when the [run] method is called.
-  Window? window;
+  Window? get window => _window;
 
   /// Game time.
+  ///
+  /// This value is given in milliseconds since the epoch.
   int time;
+
+  int _started;
+
+  /// The time when [run] was first called.
+  ///
+  /// If this value is 0, you can be assured that [run] has never been called.
+  int get started => _started;
+
+  /// The number of milliseconds this game has been running for.
+  int get runDurationMilliseconds => time - _started;
+
+  /// The number of seconds this game has been running for.
+  double get runDurationSeconds => runDurationMilliseconds / 1000;
 
   bool _isRunning;
 
@@ -71,6 +92,9 @@ class Game {
 
   /// The game controllers that are currently open.
   final Map<int, GameController> gameControllers;
+
+  /// The random number generator to use.
+  final Random random;
 
   /// The stream for listening to sound events.
   ///
@@ -242,6 +266,40 @@ class Game {
           level.startCommand(name);
         }
       }
+      for (final sound in level.randomSounds) {
+        final nextPlay = sound.nextPlay;
+        if (nextPlay == null) {
+          final int offset;
+          if (sound.minInterval == sound.maxInterval) {
+            offset = 0;
+          } else {
+            offset = random.nextInt(sound.maxInterval - sound.minInterval);
+          }
+          sound.nextPlay = time + (sound.minInterval + offset);
+        } else if (time >= nextPlay) {
+          final minX = sound.minCoordinates.x;
+          final maxX = sound.maxCoordinates.x;
+          final minY = sound.minCoordinates.y;
+          final maxY = sound.maxCoordinates.y;
+          final xDifference = maxX - minX;
+          final yDifference = maxY - minY;
+          final x = minX + (xDifference * random.nextDouble());
+          final y = minY + (yDifference * random.nextDouble());
+          var c = sound.channel;
+          if (c == null) {
+            c = createSoundChannel(position: SoundPosition3d(x: x, y: y));
+            sound.channel = c;
+          } else {
+            c.position = SoundPosition3d(x: x, y: y);
+          }
+          c
+            ..gain = sound.minGain == sound.maxGain
+                ? sound.minGain
+                : (sound.minGain +
+                    ((sound.maxGain - sound.minGain) * random.nextDouble()))
+            ..playSound(sound.sound);
+        }
+      }
     }
     final completedTasks = <Task>[];
     for (final task in tasks) {
@@ -264,10 +322,10 @@ class Game {
 
   /// Destroy this game.
   ///
-  /// This method destroys any created [window].
+  /// This method destroys any created [_window].
   @mustCallSuper
   void destroy() {
-    window?.destroy();
+    _window?.destroy();
     interfaceSounds.destroy();
     ambianceSounds.destroy();
     soundsController
@@ -278,10 +336,11 @@ class Game {
   /// Run this game.
   @mustCallSuper
   Future<void> run(Sdl sdl, {int framesPerSecond = 60}) async {
-    final int tickEvery = (1000 / framesPerSecond).round();
-    window = sdl.createWindow(title);
+    final int tickEvery = 1000 ~/ framesPerSecond;
+    _window = sdl.createWindow(title);
     var lastTick = 0;
     _isRunning = true;
+    _started = DateTime.now().millisecondsSinceEpoch;
     while (_isRunning == true) {
       time = DateTime.now().millisecondsSinceEpoch;
       final int timeDelta;
@@ -303,7 +362,7 @@ class Game {
   }
 
   /// How to output text.
-  void outputText(String text) => window?.title = text;
+  void outputText(String text) => _window?.title = text;
 
   /// Output a sound.
   ///

@@ -6,13 +6,15 @@ import '../command.dart';
 import '../game.dart';
 import '../sound/ambiance.dart';
 import '../sound/events/playback.dart';
+import '../sound/random_sound.dart';
 
 /// A level in a [Game] instance.
 class Level {
   /// Create a level.
-  Level(this.game, {List<Ambiance>? ambiances})
+  Level(this.game, {List<Ambiance>? ambiances, List<RandomSound>? randomSounds})
       : commands = {},
         ambiances = ambiances ?? [],
+        randomSounds = randomSounds ?? [],
         ambianceSounds = [];
 
   /// The game this level is part of.
@@ -27,6 +29,9 @@ class Level {
   /// The list of ambiance sounds created by the [onPush] method.
   final List<PlaySound> ambianceSounds;
 
+  /// All the random sounds on this level.
+  final List<RandomSound> randomSounds;
+
   /// What should happen when this game is pushed into a level stack.
   @mustCallSuper
   void onPush() {
@@ -38,15 +43,25 @@ class Level {
 
   /// What should happen when this level is popped from a level stack.
   @mustCallSuper
-  void onPop(double? ambianceFadeLength) {
+  void onPop(double? fadeLength) {
     while (ambianceSounds.isNotEmpty) {
       final ambiance = ambianceSounds.removeLast();
-      if (ambianceFadeLength != null) {
-        ambiance.fade(length: ambianceFadeLength);
-        game.registerTask(
-            (ambianceFadeLength * 1000).round(), ambiance.destroy);
+      if (fadeLength != null) {
+        ambiance.fade(length: fadeLength);
+        game.registerTask((fadeLength * 1000).round(), ambiance.destroy);
       } else {
         ambiance.destroy();
+      }
+    }
+    for (final sound in randomSounds) {
+      final channel = sound.channel;
+      sound.channel = null;
+      if (channel != null) {
+        if (fadeLength != null) {
+          game.registerTask((fadeLength * 1000).round(), channel.destroy);
+        } else {
+          channel.destroy();
+        }
       }
     }
   }

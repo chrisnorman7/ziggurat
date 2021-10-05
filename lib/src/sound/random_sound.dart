@@ -2,6 +2,7 @@
 import 'dart:math';
 
 import '../json/asset_reference.dart';
+import 'events/sound_channel.dart';
 
 /// A random sound.
 ///
@@ -37,4 +38,7 @@ class RandomSound {
 
   /// The time this sound will play next.
   int? nextPlay;
+
+  /// The channel this sound should play through.
+  SoundChannel? channel;
 }

@@ -94,5 +94,17 @@ void main() {
       final task = game.tasks.first;
       expect(task.runWhen, equals(2000));
     });
+    test('.started', () async {
+      final sdl = Sdl()..init();
+      final game = Game('Game.started');
+      expect(game.started, isZero);
+      final now = DateTime.now().millisecondsSinceEpoch;
+      game.run(sdl);
+      await Future<void>.delayed(Duration(milliseconds: 100));
+      expect(
+          game.started,
+          allOf(greaterThanOrEqualTo(now),
+              lessThan(DateTime.now().millisecondsSinceEpoch)));
+    });
   });
 }

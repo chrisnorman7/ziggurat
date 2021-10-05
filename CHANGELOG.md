@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.18.2]
+
+### Added
+
+* It is now possible to add random sounds to any level.
+* It is now possible to know when a `Game` instance started running with the `started` property.
+* You can now get the time that a `Game` instance has been running with the `runDurationMilliseconds` integer, and the `runDurationSeconds` double.
+
+### Changed
+
+* Made `Game.window` a readonly property.
+
 ## [0.18.1]
 
 ### Added
