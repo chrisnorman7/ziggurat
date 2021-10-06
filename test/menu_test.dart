@@ -67,6 +67,14 @@ void main() {
             downCommandName: 'down',
             upCommandName: 'up');
       expect(menu.commands.length, equals(4));
+      var value = true;
+      final checkbox = MenuItem(Message(), Checkbox((b) => value = b));
+      menu.menuItems.add(checkbox);
+      expect(value, isTrue);
+      menu.down();
+      expect(menu.currentMenuItem, equals(checkbox));
+      menu.activate();
+      expect(value, isFalse);
     });
     test('ListButton', () {
       var newValue = '';
@@ -86,6 +94,21 @@ void main() {
       expect(listButton.index, isZero);
       expect(listButton.value, equals('First'));
       expect(newValue, equals(listButton.value));
+    });
+    test('Checkbox', () {
+      bool? value;
+      final checkbox = Checkbox((b) => value = b);
+      expect(checkbox.value, isTrue);
+      expect(value, isNull);
+      checkbox.changeValue();
+      expect(value, isFalse);
+      expect(checkbox.value, isFalse);
+      checkbox.changeValue();
+      expect(value, isTrue);
+      expect(checkbox.value, isTrue);
+      checkbox.changeValue();
+      expect(value, isFalse);
+      expect(checkbox.value, isFalse);
     });
     test('Menu Sounds', () {
       final game = Game('Menu Sounds');

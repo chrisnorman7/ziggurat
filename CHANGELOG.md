@@ -5,6 +5,7 @@
 ### Added
 
 * Added the `ListButton` class.
+* Added the `Checkbox` class.
 
 ### Fixed
 

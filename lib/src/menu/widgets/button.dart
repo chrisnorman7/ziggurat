@@ -44,3 +44,12 @@ class ListButton<T> extends Widget {
   /// Get the currently-focused item.
   T get value => items[index];
 }
+
+/// A checkbox.
+///
+/// This control can toggle between `true` and `false`.
+class Checkbox extends ListButton<bool> {
+  /// Create an instance.
+  Checkbox(void Function(bool) onChange, {bool initialValue = true})
+      : super([initialValue, !initialValue], onChange: onChange);
+}
