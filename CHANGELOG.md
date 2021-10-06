@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.20.0]
+
+### Changed
+
+* The `onChanged` argument to `ListButton` is now mandatory.
+
 ## [0.19.0]
 
 ### Added

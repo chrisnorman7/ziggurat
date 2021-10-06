@@ -17,7 +17,7 @@ class Button extends Widget {
 /// A button which can toggle through a list of items.
 class ListButton<T> extends Widget {
   /// Create an instance.
-  ListButton(this.items, {this.onChange, this.index = 0});
+  ListButton(this.items, this.onChange, {this.index = 0});
 
   /// The items that [changeValue] will cycle through.
   final List<T> items;
@@ -51,5 +51,5 @@ class ListButton<T> extends Widget {
 class Checkbox extends ListButton<bool> {
   /// Create an instance.
   Checkbox(void Function(bool) onChange, {bool initialValue = true})
-      : super([initialValue, !initialValue], onChange: onChange);
+      : super([initialValue, !initialValue], onChange);
 }

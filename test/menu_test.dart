@@ -14,7 +14,7 @@ void main() {
       var menu = Menu(game: game, title: Message(text: 'Test Menu'), items: [
         MenuItem(Message(text: 'First Item'), Label()),
         MenuItem(Message(text: 'Second Item'),
-            ListButton(['First', 'Second', 'Third'])),
+            ListButton(['First', 'Second', 'Third'], (value) {})),
         MenuItem(Message(text: 'Quit'), Button(game.stop))
       ]);
       expect(menu.menuItems.length, equals(3));
@@ -25,7 +25,6 @@ void main() {
       final widget = selectItem.widget;
       expect(widget, isA<ListButton<String>>());
       widget as ListButton<String>;
-      expect(widget.onChange, isNull);
       expect(widget.items, equals(['First', 'Second', 'Third']));
       expect(widget.value, equals('First'));
       final quitItem = menu.menuItems.last;
@@ -78,8 +77,8 @@ void main() {
     });
     test('ListButton', () {
       var newValue = '';
-      final listButton = ListButton(['First', 'Second', 'Third'],
-          onChange: (String value) => newValue = value);
+      final listButton = ListButton(
+          ['First', 'Second', 'Third'], (String value) => newValue = value);
       expect(listButton.index, isZero);
       expect(newValue, isEmpty);
       listButton.changeValue();
