@@ -100,6 +100,8 @@ class Menu extends Level {
         oldSound =
             game.outputMessage(Message(sound: sound), oldSound: oldSound);
       }
+    } else if (widget is ListButton) {
+      widget.changeValue();
     } else {
       throw Exception('Need to handle $widget widgets.');
     }

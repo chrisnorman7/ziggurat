@@ -2,6 +2,10 @@
 
 ## [0.19.0]
 
+### Added
+
+* Added the `ListButton` class.
+
 ### Fixed
 
 * Ambiance positions are now respected.
