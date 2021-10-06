@@ -122,8 +122,7 @@ class PlaySound extends SoundEvent {
     if (keepAlive == false) {
       throw DeadSound(this);
     }
-    final event = DestroySound(id);
-    game.queueSoundEvent(event);
+    game.queueSoundEvent(DestroySound(id));
   }
 }
 

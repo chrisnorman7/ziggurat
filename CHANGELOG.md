@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.19.0]
+
+### Changed
+
+* Ambiances now store their own playback information.
+
+### Removed
+
+* Removed the `Level.ambianceSounds` list.
+
 ## [0.18.2]
 
 ### Added

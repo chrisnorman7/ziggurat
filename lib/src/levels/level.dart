@@ -5,7 +5,8 @@ import 'package:meta/meta.dart';
 import '../command.dart';
 import '../game.dart';
 import '../sound/ambiance.dart';
-import '../sound/events/playback.dart';
+import '../sound/events/events_base.dart';
+import '../sound/events/sound_channel.dart';
 import '../sound/random_sound.dart';
 
 /// A level in a [Game] instance.
@@ -14,8 +15,7 @@ class Level {
   Level(this.game, {List<Ambiance>? ambiances, List<RandomSound>? randomSounds})
       : commands = {},
         ambiances = ambiances ?? [],
-        randomSounds = randomSounds ?? [],
-        ambianceSounds = [];
+        randomSounds = randomSounds ?? [];
 
   /// The game this level is part of.
   final Game game;
@@ -26,9 +26,6 @@ class Level {
   /// A list of ambiances for this level.
   final List<Ambiance> ambiances;
 
-  /// The list of ambiance sounds created by the [onPush] method.
-  final List<PlaySound> ambianceSounds;
-
   /// All the random sounds on this level.
   final List<RandomSound> randomSounds;
 
@@ -36,21 +33,45 @@ class Level {
   @mustCallSuper
   void onPush() {
     for (final ambiance in ambiances) {
-      ambianceSounds.add(game.ambianceSounds.playSound(ambiance.sound,
-          gain: ambiance.gain, looping: true, keepAlive: true));
+      final SoundChannel channel;
+      final position = ambiance.position;
+      if (position == null) {
+        channel = game.ambianceSounds;
+      } else {
+        channel = game.createSoundChannel(
+            position: SoundPosition3d(x: position.x, y: position.y));
+      }
+      final sound = channel.playSound(ambiance.sound,
+          gain: ambiance.gain, keepAlive: true, looping: true);
+      ambiance.playback = AmbiancePlayback(channel, sound);
+    }
+  }
+
+  /// Stop [playback].
+  ///
+  /// If [AmbiancePlayback.channel] is not [Game.ambianceSounds], then the
+  /// channel will be destroyed.
+  void stopAmbiance(AmbiancePlayback playback) {
+    playback.sound.destroy();
+    if (playback.channel != game.ambianceSounds) {
+      playback.channel.destroy();
     }
   }
 
   /// What should happen when this level is popped from a level stack.
   @mustCallSuper
   void onPop(double? fadeLength) {
-    while (ambianceSounds.isNotEmpty) {
-      final ambiance = ambianceSounds.removeLast();
+    for (final ambiance in ambiances) {
+      final playback = ambiance.playback;
+      if (playback == null) {
+        continue;
+      }
       if (fadeLength != null) {
-        ambiance.fade(length: fadeLength);
-        game.registerTask((fadeLength * 1000).round(), ambiance.destroy);
+        playback.sound.fade(length: fadeLength);
+        game.registerTask(
+            (fadeLength * 1000).round(), () => stopAmbiance(playback));
       } else {
-        ambiance.destroy();
+        stopAmbiance(playback);
       }
     }
     for (final sound in randomSounds) {

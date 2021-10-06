@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:test/test.dart';
 import 'package:ziggurat/ziggurat.dart';
 
@@ -165,24 +167,38 @@ void main() {
     });
     test('Ambiances', () {
       final game = Game('Level Ambiances');
-      final level = Level(game, ambiances: [
-        Ambiance(sound: AssetReference.file('sound1')),
-        Ambiance(sound: AssetReference.collection('sound2'))
-      ]);
-      expect(level.ambianceSounds, isEmpty);
+      final ambiance1 =
+          Ambiance(sound: AssetReference.file('sound1'), gain: 0.1);
+      final ambiance2 = Ambiance(
+          sound: AssetReference.collection('sound2'),
+          gain: 0.2,
+          position: Point(5.0, 6.0));
+      final level = Level(game, ambiances: [ambiance1, ambiance2]);
       game.pushLevel(level);
-      expect(level.ambianceSounds.length, equals(2));
+      expect(ambiance1.playback, isNotNull);
+      expect(ambiance2.playback, isNotNull);
       expect(
-          level.ambianceSounds.first,
+          ambiance1.playback?.sound,
           predicate((value) =>
               value is PlaySound &&
-              value.sound == level.ambianceSounds.first.sound &&
+              value.sound == ambiance1.sound &&
+              value.gain == ambiance1.gain &&
               value.keepAlive == true));
+      expect(ambiance1.playback?.channel, equals(game.ambianceSounds));
       expect(
-          level.ambianceSounds.last,
+          ambiance2.playback?.channel,
+          predicate((value) =>
+              value is SoundChannel && value.position is SoundPosition3d));
+      final position = ambiance2.playback!.channel.position as SoundPosition3d;
+      expect(position.x, equals(ambiance2.position!.x));
+      expect(position.y, equals(ambiance2.position!.y));
+      expect(position.z, isZero);
+      expect(
+          ambiance2.playback?.sound,
           predicate((value) =>
               value is PlaySound &&
-              value.sound == level.ambiances.last.sound &&
+              value.sound == ambiance2.sound &&
+              value.gain == ambiance2.gain &&
               value.keepAlive == true));
     });
   });
