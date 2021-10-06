@@ -2,6 +2,10 @@
 
 ## [0.19.0]
 
+### Fixed
+
+* Ambiance positions are now respected.
+
 ### Changed
 
 * Ambiances now store their own playback information.
