@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.20.1]
+
+### Changed
+
+* Updated SDL.
+
 ## [0.20.0]
 
 ### Changed
