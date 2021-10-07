@@ -6,9 +6,14 @@ import 'package:ziggurat/ziggurat.dart';
 Future<void> main() async {
   final sdl = Sdl()..init();
   final game = Game('Editor Example');
-  final editor = Editor(game, text: 'Hello, ziggurat');
+  final editor = Editor(game, (value) {
+    game.stop();
+    print('Final value was $value.');
+  }, onCancel: () {
+    game.stop();
+    print('Cancelled.');
+  });
   game.pushLevel(editor);
   await game.run(sdl);
-  print('Final text was: ${editor.text}');
   sdl.quit();
 }
