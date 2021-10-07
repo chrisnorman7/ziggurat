@@ -2,6 +2,10 @@
 
 ## [0.21.0]
 
+### Added
+
+* Added a `Editor` level.
+
 ### Changes
 
 * Cleaned up code.
