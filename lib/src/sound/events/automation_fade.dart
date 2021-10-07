@@ -5,7 +5,7 @@ import 'events_base.dart';
 /// Cancel an automation fade.
 class CancelAutomationFade extends SoundEvent {
   /// Create an instance.
-  CancelAutomationFade(int id) : super(id);
+  CancelAutomationFade(int? id) : super(id: id);
 }
 
 /// An event to fade a sound in or out.

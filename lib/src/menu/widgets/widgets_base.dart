@@ -7,4 +7,7 @@ export 'button.dart';
 export 'label.dart';
 
 /// The base class for all widgets.
-class Widget {}
+class Widget {
+  /// Allow subclasses to be constant.
+  const Widget();
+}

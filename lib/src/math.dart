@@ -16,7 +16,7 @@ double normaliseAngle(double angle) {
 ///
 /// Formula taken from
 /// [this link]([https://synthizer.github.io/tutorials/python.html]
-double angleToRad(double angle) => (angle / 180.0) * pi;
+double angleToRad(double angle) => angle * pi / 180.0;
 
 /// Return coordinates in a given direction.
 Point<double> coordinatesInDirection(

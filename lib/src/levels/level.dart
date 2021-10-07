@@ -95,9 +95,8 @@ class Level {
   void onReveal(Level old) {}
 
   /// Register a command on this level.
-  void registerCommand(String name, Command command) {
-    commands[name] = command;
-  }
+  void registerCommand(String name, Command command) =>
+      commands[name] = command;
 
   /// Start the command with the given [name].
   @mustCallSuper

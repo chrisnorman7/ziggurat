@@ -20,7 +20,7 @@ class PlaySound extends SoundEvent {
         _paused = false,
         _looping = looping,
         _pitchBend = pitchBend,
-        super(SoundEvent.nextId());
+        super(id: SoundEvent.nextId());
 
   /// The game to use.
   final Game game;
@@ -49,7 +49,7 @@ class PlaySound extends SoundEvent {
   /// Set the gain for this sound.
   set gain(double value) {
     _gain = value;
-    game.queueSoundEvent(SetSoundGain(id: id, gain: value));
+    game.queueSoundEvent(SetSoundGain(id: id!, gain: value));
   }
 
   bool _looping;
@@ -60,7 +60,7 @@ class PlaySound extends SoundEvent {
   /// Set whether or not this sound should loop.
   set looping(bool value) {
     _looping = value;
-    game.queueSoundEvent(SetLoop(id: id, looping: value));
+    game.queueSoundEvent(SetLoop(id: id!, looping: value));
   }
 
   bool _paused;
@@ -73,9 +73,9 @@ class PlaySound extends SoundEvent {
     _paused = value;
     final PauseSound event;
     if (value) {
-      event = PauseSound(id);
+      event = PauseSound(id!);
     } else {
-      event = UnpauseSound(id);
+      event = UnpauseSound(id!);
     }
     game.queueSoundEvent(event);
   }
@@ -90,7 +90,7 @@ class PlaySound extends SoundEvent {
   /// Set [pitchBend].
   set pitchBend(double value) {
     _pitchBend = value;
-    game.queueSoundEvent(SetSoundPitchBend(id: id, pitchBend: value));
+    game.queueSoundEvent(SetSoundPitchBend(id: id!, pitchBend: value));
   }
 
   /// Fade this sound in or out.
@@ -108,7 +108,7 @@ class PlaySound extends SoundEvent {
     }
     final event = AutomationFade(
         game: game,
-        id: id,
+        id: id!,
         preFade: preFade,
         fadeLength: length,
         startGain: startGain ?? _gain,
@@ -122,32 +122,32 @@ class PlaySound extends SoundEvent {
     if (keepAlive == false) {
       throw DeadSound(this);
     }
-    game.queueSoundEvent(DestroySound(id));
+    game.queueSoundEvent(DestroySound(id!));
   }
 }
 
 /// Pause a sound.
 class PauseSound extends SoundEvent {
   /// Create an event.
-  const PauseSound(int id) : super(id);
+  PauseSound(int id) : super(id: id);
 }
 
 /// Unpause a sound.
 class UnpauseSound extends PauseSound {
   /// Create an event.
-  const UnpauseSound(int id) : super(id);
+  UnpauseSound(int id) : super(id);
 }
 
 /// Destroy a sound.
 class DestroySound extends SoundEvent {
   /// Create an event.
-  const DestroySound(int id) : super(id);
+  DestroySound(int id) : super(id: id);
 }
 
 /// Set the gain for a sound.
 class SetSoundGain extends SoundEvent {
   /// Create the event.
-  const SetSoundGain({required int id, required this.gain}) : super(id);
+  SetSoundGain({required int id, required this.gain}) : super(id: id);
 
   /// The new gain.
   final double gain;
@@ -156,7 +156,7 @@ class SetSoundGain extends SoundEvent {
 /// Set whether or not a sound should loop.
 class SetLoop extends SoundEvent {
   /// Create an event.
-  const SetLoop({required int id, required this.looping}) : super(id);
+  SetLoop({required int id, required this.looping}) : super(id: id);
 
   /// Whether or not the sound should loop.
   final bool looping;
@@ -165,8 +165,7 @@ class SetLoop extends SoundEvent {
 /// Set the pitch bend for a sound.
 class SetSoundPitchBend extends SoundEvent {
   /// Create the event.
-  const SetSoundPitchBend({required int id, required this.pitchBend})
-      : super(id);
+  SetSoundPitchBend({required int id, required this.pitchBend}) : super(id: id);
 
   /// The new pitch bend.
   final double pitchBend;

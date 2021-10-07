@@ -13,11 +13,10 @@ class BoxMap {
   BoxMap({
     required this.name,
     required this.boxes,
-    Point<double>? initialCoordinates,
+    this.initialCoordinates = const Point(0, 0),
     this.initialHeading = 0,
     List<Ambiance>? ambiances,
-  })  : initialCoordinates = initialCoordinates ?? Point(0, 0),
-        ambiances = ambiances ?? [] {
+  }) : ambiances = ambiances ?? [] {
     var sizeX = 0;
     var sizeY = 0;
     for (final box in boxes) {

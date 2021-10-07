@@ -6,7 +6,7 @@ import 'events_base.dart';
 /// Set the position of the listener.
 class ListenerPositionEvent extends SoundEvent {
   /// Create an instance.
-  ListenerPositionEvent(this.x, this.y, this.z) : super(SoundEvent.nextId());
+  ListenerPositionEvent(this.x, this.y, this.z) : super();
 
   /// The x coordinate.
   final double x;
@@ -22,17 +22,12 @@ class ListenerPositionEvent extends SoundEvent {
 class ListenerOrientationEvent extends SoundEvent {
   /// Create an instance.
   ListenerOrientationEvent(this.x1, this.y1, this.z1, this.x2, this.y2, this.z2)
-      : super(SoundEvent.nextId());
+      : super();
 
   /// Create an instance from [angle].
-  ListenerOrientationEvent.fromAngle(double angle)
-      : x1 = sin(angle * pi / 180),
-        y1 = cos(angle * pi / 180),
-        z1 = 0,
-        x2 = 0,
-        y2 = 0,
-        z2 = 1,
-        super(SoundEvent.nextId());
+  factory ListenerOrientationEvent.fromAngle(double angle) =>
+      ListenerOrientationEvent(
+          sin(angle * pi / 180), cos(angle * pi / 180), 0, 0, 0, 1);
 
   /// X1.
   final double x1;
@@ -65,7 +60,7 @@ enum DefaultPannerStrategy {
 /// Set default panner strategy.
 class SetDefaultPannerStrategy extends SoundEvent {
   /// Create an instance.
-  SetDefaultPannerStrategy(this.strategy) : super(SoundEvent.nextId());
+  SetDefaultPannerStrategy(this.strategy) : super();
 
   /// The new strategy to use.
   final DefaultPannerStrategy strategy;

@@ -2,10 +2,8 @@
 import 'dart:io';
 
 import 'box_map/box.dart';
-import 'box_map/box_types/agents/player.dart';
 import 'game.dart';
 import 'sound/events/events_base.dart';
-import 'ziggurat.dart';
 
 /// The base class for all ziggurat errors.
 class ZigguratError extends Error {}
@@ -49,18 +47,6 @@ class NegativeCoordinatesError extends ZigguratError {
   @override
   String toString() =>
       'Negative coordinates for box ${box.name}: ${box.start}.';
-}
-
-/// A player has been included in the list of tiles given to [ziggurat].
-class PlayerInBoxesError extends ZigguratError {
-  /// Create the error.
-  PlayerInBoxesError(this.player, this.ziggurat);
-
-  /// The player that was found.
-  final Box<Player> player;
-
-  /// The ziggurat that [player] was included in.
-  final Ziggurat ziggurat;
 }
 
 /// A [Game] instance is in an invalid state.

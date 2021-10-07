@@ -8,7 +8,7 @@ import '../setting_defaults.dart';
 /// instances.
 class ReverbPreset {
   /// Create a preset.
-  ReverbPreset(this.name,
+  const ReverbPreset(this.name,
       {this.meanFreePath = 0.1,
       this.t60 = 0.3,
       this.lateReflectionsLfRolloff = 1.0,

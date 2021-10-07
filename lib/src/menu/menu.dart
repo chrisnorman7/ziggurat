@@ -91,7 +91,7 @@ class Menu extends Level {
     final widget = item?.widget;
     if (widget == null) {
       return;
-    } else if (widget is Label) {
+    } else if (widget == menuItemLabel) {
       return;
     } else if (widget is Button) {
       widget.onActivate();
@@ -157,8 +157,9 @@ class Menu extends Level {
   }
 
   /// Add a label.
-  MenuItem<Label> addLabel({String? label, AssetReference? selectSound}) {
-    final item = MenuItem(Message(sound: selectSound, text: label), Label());
+  MenuItem addLabel({String? text, AssetReference? selectSound}) {
+    final item =
+        MenuItem(Message(sound: selectSound, text: text), menuItemLabel);
     menuItems.add(item);
     return item;
   }

@@ -14,12 +14,12 @@ void main() {
       expect(game.soundsController.hasListener, isTrue);
       await Future<void>.delayed(Duration.zero);
       expect(events.length, equals(2));
-      game.queueSoundEvent(SoundEvent(SoundEvent.nextId()));
+      game.queueSoundEvent(SoundEvent(id: SoundEvent.nextId()));
       await Future<void>.delayed(Duration.zero);
       expect(events.length, equals(3));
       events.clear();
       subscription.pause();
-      game.queueSoundEvent(SoundEvent(SoundEvent.nextId()));
+      game.queueSoundEvent(SoundEvent(id: SoundEvent.nextId()));
       expect(events.isEmpty, isTrue);
       subscription.resume();
       await Future<void>.delayed(Duration.zero);
@@ -29,17 +29,17 @@ void main() {
     test('Default sound channels', () {
       final game = Game('Sound Channels');
       expect(game.interfaceSounds.id, equals(SoundEvent.maxEventId - 1));
-      expect(game.ambianceSounds.id, equals(game.interfaceSounds.id + 1));
+      expect(game.ambianceSounds.id, equals(game.interfaceSounds.id! + 1));
     });
     test('Event ID increment', () {
       final game = Game('Sound Channel');
       expect(SoundEvent.maxEventId, equals(game.ambianceSounds.id));
       final channel = game.createSoundChannel();
-      expect(channel.id, equals(game.ambianceSounds.id + 1));
+      expect(channel.id, equals(game.ambianceSounds.id! + 1));
       expect(SoundEvent.maxEventId, equals(channel.id));
       final sound =
           channel.playSound(AssetReference('testing', AssetType.file));
-      expect(sound.id, equals(channel.id + 1));
+      expect(sound.id, equals(channel.id! + 1));
       expect(SoundEvent.maxEventId, equals(sound.id));
     });
     test('Sound Keep Alive', () async {

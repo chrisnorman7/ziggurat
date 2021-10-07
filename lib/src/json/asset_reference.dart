@@ -22,17 +22,18 @@ enum AssetType {
 @JsonSerializable()
 class AssetReference {
   /// Create an instance.
-  AssetReference(this.name, this.type, {this.encryptionKey});
+  const AssetReference(this.name, this.type, {this.encryptionKey});
 
   /// Create an instance from a JSON object.
   factory AssetReference.fromJson(Map<String, dynamic> json) =>
       _$AssetReferenceFromJson(json);
 
   /// Create an instance with its [type] set to [AssetType.file].
-  AssetReference.file(this.name, {this.encryptionKey}) : type = AssetType.file;
+  const AssetReference.file(this.name, {this.encryptionKey})
+      : type = AssetType.file;
 
   /// Create an instance with its [type] set to [AssetType.collection].
-  AssetReference.collection(this.name, {this.encryptionKey})
+  const AssetReference.collection(this.name, {this.encryptionKey})
       : type = AssetType.collection;
 
   /// The name of this sound.

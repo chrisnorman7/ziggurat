@@ -12,7 +12,7 @@ void main() {
     });
     test('Using Menus', () {
       var menu = Menu(game: game, title: Message(text: 'Test Menu'), items: [
-        MenuItem(Message(text: 'First Item'), Label()),
+        MenuItem(Message(text: 'First Item'), menuItemLabel),
         MenuItem(Message(text: 'Second Item'),
             ListButton(['First', 'Second', 'Third'], (value) {})),
         MenuItem(Message(text: 'Quit'), Button(game.stop))
@@ -20,7 +20,7 @@ void main() {
       expect(menu.menuItems.length, equals(3));
       final firstItem = menu.menuItems.first;
       expect(firstItem.label.text, equals('First Item'));
-      expect(firstItem.widget, isA<Label>());
+      expect(firstItem.widget, equals(menuItemLabel));
       final selectItem = menu.menuItems[1];
       final widget = selectItem.widget;
       expect(widget, isA<ListButton<String>>());
@@ -114,8 +114,8 @@ void main() {
       final sound1 = AssetReference('Sound 1', AssetType.file);
       final sound2 = AssetReference('Sound 2', AssetType.file);
       final menu = Menu(game: game, title: Message(text: 'Test Menu'), items: [
-        MenuItem(Message(sound: sound1), Label()),
-        MenuItem(Message(sound: sound2), Label())
+        MenuItem(Message(sound: sound1), menuItemLabel),
+        MenuItem(Message(sound: sound2), menuItemLabel)
       ]);
       expect(menu.oldSound, isNull);
       menu.down();
@@ -175,10 +175,10 @@ void main() {
       final game = Game('Menu.addLabel');
       final menu = Menu(game: game, title: Message());
       final selectSound = AssetReference.file('select.wav');
-      final item = menu.addLabel(label: 'Testing', selectSound: selectSound);
+      final item = menu.addLabel(text: 'Testing', selectSound: selectSound);
       expect(item.label.text, equals('Testing'));
       expect(item.label.sound, equals(selectSound));
-      expect(item.widget, isA<Label>());
+      expect(item.widget, equals(menuItemLabel));
     });
   });
 }

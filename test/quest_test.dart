@@ -21,31 +21,42 @@ enum QuestStates {
 class TestQuest extends Quest<QuestStates> {
   const TestQuest() : super(QuestStates.notStarted);
 
-  /// Get a string representation of the state.
+  /// Get a message to tell the player about the current state.
   @override
-  String getStateString(QuestStates state) {
+  Message getStateMessage(QuestStates state) {
     switch (state) {
       case QuestStates.notStarted:
-        return 'Not started';
+        return Message(
+            text: 'Not started',
+            sound: AssetReference.file('quest_started.wav'));
       case QuestStates.accepted:
-        return 'Find the test item';
+        return Message(
+            text: 'Find the first item',
+            sound: AssetReference.file('first_item.wav'));
       case QuestStates.firstItemFound:
-        return 'Find the second test item';
+        return Message(
+            text: 'Find the second item',
+            sound: AssetReference.file('second_item.wav'));
       case QuestStates.completed:
-        return 'Completed';
+        return Message(
+            text: 'Completed',
+            sound: AssetReference.file('quest_completed.wav'));
     }
   }
 }
 
 void main() {
-  group('Quests test', () {
+  group('Quest', () {
     final TestQuest q = TestQuest();
-    test('Initialisation test', () {
+    test('Initialisation', () {
       expect(q.defaultState, equals(QuestStates.notStarted));
     });
-    test('getStateString tests', () {
-      expect(q.getStateString(QuestStates.notStarted), equals('Not started'));
-      expect(q.getStateString(QuestStates.completed), equals('Completed'));
+    test('.getStateMessage', () {
+      var message = q.getStateMessage(QuestStates.notStarted);
+      expect(message, isA<Message>());
+      expect(message.text, equals('Not started'));
+      message = q.getStateMessage(QuestStates.completed);
+      expect(message.text, equals('Completed'));
     });
   });
 }

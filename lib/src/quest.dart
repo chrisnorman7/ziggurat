@@ -1,6 +1,8 @@
 /// Provides the [Quest] class.
 import 'package:meta/meta.dart';
 
+import 'json/message.dart';
+
 /// A quest.
 ///
 /// All in-game quests should subclass this class.
@@ -16,5 +18,5 @@ class Quest<T> {
   final T defaultState;
 
   /// Return the given [state] as a string.
-  String getStateString(T state) => state.toString();
+  Message getStateMessage(T state) => Message(text: state.toString());
 }

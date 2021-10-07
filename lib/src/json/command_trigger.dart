@@ -11,7 +11,7 @@ part 'command_trigger.g.dart';
 @JsonSerializable()
 class CommandKeyboardKey {
   /// Create an instance.
-  CommandKeyboardKey(this.scanCode,
+  const CommandKeyboardKey(this.scanCode,
       {this.shiftKey = false, this.controlKey = false, this.altKey = false});
 
   /// Create an instance from a JSON object.

@@ -9,7 +9,7 @@ part 'trigger_map.g.dart';
 @JsonSerializable()
 class TriggerMap {
   /// Create an instance.
-  TriggerMap(this.triggers);
+  const TriggerMap(this.triggers);
 
   /// Create an instance from a JSON object.
   factory TriggerMap.fromJson(Map<String, dynamic> json) =>
