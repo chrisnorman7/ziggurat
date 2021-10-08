@@ -7,6 +7,7 @@ import '../json/message.dart';
 import '../levels/level.dart';
 import '../sound/ambiance.dart';
 import '../sound/events/events_base.dart';
+import '../sound/random_sound.dart';
 import 'menu_item.dart';
 import 'widgets/button.dart';
 import 'widgets/label.dart';
@@ -23,17 +24,28 @@ import 'widgets/label.dart';
 /// method.
 class Menu extends Level {
   /// Create a menu.
+  ///
+  /// If [position] is `null`, then the menu title will be selected. Otherwise,
+  /// the menu item at the given position (starting at 0) in the [menuItems]
+  /// list will be selected.
+  ///
+  /// You can either specify a list of menu items as the [items] argument, or
+  /// use the provided [addButton], and [addLabel] methods afterwards.
+  ///
+  /// Please note: Whether or not you provide an [items] list, you can still
+  /// pass a [position] value, as this only affects the [currentMenuItem]
+  /// getter.
+  ///
+  /// The list of [ambiances] and [randomSounds] are passed to the [Level]
+  /// constructor.
   Menu(
       {required Game game,
       required this.title,
       List<MenuItem>? items,
-
-      /// The position within the menu.
-      ///
-      /// If this value is `null`, then the title will be focused.
       int? position,
       this.onCancel,
       List<Ambiance>? ambiances,
+      List<RandomSound>? randomSounds,
       this.upScanCode = ScanCode.SCANCODE_UP,
       this.upButton = GameControllerButton.dpadUp,
       this.downScanCode = ScanCode.SCANCODE_DOWN,
@@ -44,7 +56,7 @@ class Menu extends Level {
       this.cancelButton = GameControllerButton.dpadLeft})
       : menuItems = items ?? [],
         _position = position,
-        super(game, ambiances: ambiances ?? []);
+        super(game, ambiances: ambiances, randomSounds: randomSounds);
 
   /// The title of this menu.
   final Message title;

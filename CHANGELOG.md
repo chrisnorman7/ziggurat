@@ -13,6 +13,7 @@
 * Cleaned up code.
 * Update SDL.
 * Added a bunch of parameters to the `Menu` constructor, to replace the old `registerCommands` method.
+* Fixed a broken link in the documentation for `angleToRad`.
 
 ### Removed
 
