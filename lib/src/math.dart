@@ -15,7 +15,7 @@ double normaliseAngle(double angle) {
 /// Convert an angle to radians.
 ///
 /// Formula taken from
-/// [this link]([https://synthizer.github.io/tutorials/python.html]
+/// [this link](https://synthizer.github.io/tutorials/python.html).
 double angleToRad(double angle) => angle * pi / 180.0;
 
 /// Return coordinates in a given direction.
