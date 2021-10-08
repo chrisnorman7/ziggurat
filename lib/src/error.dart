@@ -2,7 +2,6 @@
 import 'dart:io';
 
 import 'box_map/box.dart';
-import 'game.dart';
 import 'sound/events/events_base.dart';
 
 /// The base class for all ziggurat errors.
@@ -49,26 +48,6 @@ class NegativeCoordinatesError extends ZigguratError {
       'Negative coordinates for box ${box.name}: ${box.start}.';
 }
 
-/// A [Game] instance is in an invalid state.
-class InvalidStateError extends ZigguratError {
-  /// Create an error.
-  InvalidStateError(this.game);
-
-  /// The game which is already running.
-  final Game game;
-}
-
-/// An invalid command name was used.
-class InvalidCommandNameError extends ZigguratError {
-  /// Create an error.
-  InvalidCommandNameError(this.name);
-
-  /// The invalid name.
-  final String name;
-  @override
-  String toString() => 'Invalid command name: $name.';
-}
-
 /// The [sound] had its [PlaySound.keepAlive] value set to `false`.
 class DeadSound extends ZigguratError {
   /// Create an instance.
@@ -95,4 +74,13 @@ class PositionMismatchError extends ZigguratError {
 
   @override
   String toString() => 'Cannot set position of $channel to $position.';
+}
+
+/// An attempt was made to register a duplicate command name.
+class DuplicateCommandName extends ZigguratError {
+  /// Create the error.
+  DuplicateCommandName(this.name);
+
+  /// The name of the command.
+  final String name;
 }

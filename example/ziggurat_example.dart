@@ -1,6 +1,5 @@
 /// A quick example.
-import 'package:dart_sdl/dart_sdl.dart'
-    show Sdl, ScanCode, GameControllerButton;
+import 'package:dart_sdl/dart_sdl.dart';
 import 'package:ziggurat/ziggurat.dart';
 
 const quitCommandName = 'quit';
@@ -17,13 +16,14 @@ class ExcitingLevel extends Level {
   ExcitingLevel(Game game)
       : coordinate = 0,
         super(game) {
-    registerCommand(quitCommandName, Command(onStart: game.popLevel));
+    registerCommand(quitCommandName,
+        Command(onStart: () => game.replaceLevel(MainMenu(game))));
     registerCommand(
         leftCommandName,
         Command(
             onStart: () {
               coordinate--;
-              output('Left: $coordinate');
+              game.outputText('Left: $coordinate');
             },
             interval: 500));
     registerCommand(
@@ -31,19 +31,13 @@ class ExcitingLevel extends Level {
         Command(
             onStart: () {
               coordinate++;
-              output('Right: $coordinate');
+              game.outputText('Right: $coordinate');
             },
             interval: 500));
   }
 
   /// The x/y coordinate.
   int coordinate;
-
-  /// Output some text.
-  void output(String text) {
-    final message = Message(text: text);
-    game.outputMessage(message);
-  }
 }
 
 /// The main menu.
@@ -51,19 +45,13 @@ class MainMenu extends Menu {
   /// Create the menu.
   MainMenu(Game game)
       : super(game: game, title: Message(text: 'Main Menu'), items: [
-          MenuItem(Message(text: 'Play'), Button(() {
-            game.pushLevel(ExcitingLevel(game));
-          })),
-          MenuItem(Message(text: 'Quit'), Button(() {
-            game.stop();
-          }))
-        ]) {
-    registerCommand(upCommandName, Command(onStart: up));
-    registerCommand(downCommandName, Command(onStart: down));
-  }
+          MenuItem(Message(text: 'Play'),
+              Button(() => game.replaceLevel(ExcitingLevel(game)))),
+          MenuItem(Message(text: 'Quit'), Button(() => game.stop()))
+        ]);
 }
 
-void main() {
+Future<void> main() async {
   final sdl = Sdl()..init();
   final game = Game('Ziggurat Example');
   game.triggerMap
@@ -96,14 +84,8 @@ void main() {
         name: activateCommandName,
         trigger: CommandTrigger(
             keyboardKey: CommandKeyboardKey(ScanCode.SCANCODE_RETURN),
-            button: GameControllerButton.dpadRight))
-    ..registerCommand(
-        name: quitCommandName,
-        trigger: CommandTrigger(
-            keyboardKey: CommandKeyboardKey(ScanCode.SCANCODE_ESCAPE),
-            button: GameControllerButton.dpadLeft));
+            button: GameControllerButton.dpadRight));
   final level = MainMenu(game);
-  game
-    ..pushLevel(level)
-    ..run(sdl);
+  game.pushLevel(level);
+  await game.run(sdl);
 }
