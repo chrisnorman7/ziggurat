@@ -54,7 +54,7 @@ class ControllerAxisDispatcher {
       return;
     }
     final now = DateTime.now().millisecondsSinceEpoch;
-    if ((now - _controllerLastMoved) > functionInterval) {
+    if ((now - _controllerLastMoved) >= functionInterval) {
       _controllerLastMoved = now;
       f(value);
     }
