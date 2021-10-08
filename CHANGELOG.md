@@ -7,13 +7,17 @@
 * Added a `Editor` level.
 * Added a `onCancel` parameter to the `Menu` constructor, so the `cancel` method doesn't need to be overridden every time.
 * When creating a `Menu` instance, it is now possible to set the initial position within the menu.
+* You can now specify random sounds for `Menu` instances.
+
+### Fixed
+
+* Fixed a broken link in the documentation for `angleToRad`.
 
 ### Changes
 
 * Cleaned up code.
 * Update SDL.
 * Added a bunch of parameters to the `Menu` constructor, to replace the old `registerCommands` method.
-* Fixed a broken link in the documentation for `angleToRad`.
 
 ### Removed
 
