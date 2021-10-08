@@ -13,6 +13,7 @@ export 'src/box_map/box_types/wall.dart';
 export 'src/box_map/spatial_hash.dart';
 export 'src/box_map/wall_location.dart';
 export 'src/command.dart';
+export 'src/controller_axis_dispatcher.dart';
 export 'src/directions.dart';
 export 'src/error.dart';
 export 'src/extensions.dart';
