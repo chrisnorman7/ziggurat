@@ -5,6 +5,8 @@ import 'package:dart_sdl/dart_sdl.dart';
 
 import '../controller_axis_dispatcher.dart';
 import '../game.dart';
+import '../sound/ambiance.dart';
+import '../sound/random_sound.dart';
 import 'level.dart';
 
 /// A level for editing text.
@@ -38,9 +40,11 @@ class Editor extends Level {
     GameControllerAxis backspaceAxis = GameControllerAxis.triggerleft,
     int controllerMovementSpeed = 500,
     double controllerAxisSensitivity = 0.5,
+    List<Ambiance>? ambiances,
+    List<RandomSound>? randomSounds,
   })  : _shiftPressed = false,
         _currentPosition = 0,
-        super(game) {
+        super(game, ambiances: ambiances, randomSounds: randomSounds) {
     controllerAxisDispatcher = ControllerAxisDispatcher({
       upDownAxis: (double value) {
         if (value > 0) {
