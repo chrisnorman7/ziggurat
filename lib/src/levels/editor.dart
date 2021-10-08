@@ -12,6 +12,26 @@ import 'level.dart';
 /// A level for editing text.
 class Editor extends Level {
   /// Create an instance.
+  ///
+  /// The [upDownAxis] value decides which axis will call the [moveUp] and
+  /// [moveDown] methods.
+  ///
+  /// The [leftRightAxis] value decides which axis will call the [moveLeft] and
+  /// [moveRight] methods.
+  ///
+  /// The [typeAxis] value decides which axis will call the [type] method.
+  ///
+  /// The [backspaceAxis] value decides which axis will call the [backspace]
+  /// method.
+  ///
+  /// The [controllerAxisSensitivity] value decides how sensitive the axis
+  /// controls are.
+  ///
+  /// The [controllerMovementSpeed] value decides how regularly axis controllers
+  /// can be used.
+  ///
+  /// The [ambiances] and [randomSounds] lists are passed directly to the
+  /// [Level] constructor.
   Editor(
     Game game,
     this.onDone, {
@@ -38,7 +58,7 @@ class Editor extends Level {
     GameControllerAxis leftRightAxis = GameControllerAxis.rightx,
     GameControllerAxis typeAxis = GameControllerAxis.triggerright,
     GameControllerAxis backspaceAxis = GameControllerAxis.triggerleft,
-    int controllerMovementSpeed = 500,
+    int controllerMovementSpeed = 400,
     double controllerAxisSensitivity = 0.5,
     List<Ambiance>? ambiances,
     List<RandomSound>? randomSounds,
