@@ -102,12 +102,7 @@ void main() {
         trigger: CommandTrigger(
             keyboardKey: CommandKeyboardKey(ScanCode.SCANCODE_ESCAPE),
             button: GameControllerButton.dpadLeft));
-  final level = MainMenu(game)
-    ..registerCommands(
-        activateCommandName: activateCommandName,
-        cancelCommandName: cancelCommandName,
-        downCommandName: downCommandName,
-        upCommandName: upCommandName);
+  final level = MainMenu(game);
   game
     ..pushLevel(level)
     ..run(sdl);

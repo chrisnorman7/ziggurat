@@ -5,11 +5,18 @@
 ### Added
 
 * Added a `Editor` level.
+* Added a `onCancel` parameter to the `Menu` constructor, so the `cancel` method doesn't need to be overridden every time.
+* When creating a `Menu` instance, it is now possible to set the initial position within the menu.
 
 ### Changes
 
 * Cleaned up code.
 * Update SDL.
+* Added a bunch of parameters to the `Menu` constructor, to replace the old `registerCommands` method.
+
+### Removed
+
+* Removed `Menu.registerCommands`, in favour of the new parameters to the constructor.
 
 ## [0.20.1]
 

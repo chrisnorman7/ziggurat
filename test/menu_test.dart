@@ -1,3 +1,4 @@
+import 'package:dart_sdl/dart_sdl.dart';
 import 'package:test/test.dart';
 import 'package:ziggurat/ziggurat.dart';
 
@@ -5,10 +6,15 @@ void main() {
   group('Menu Tests', () {
     final game = Game('Menu Testing Game');
     test('Initialisation', () {
-      final menu = Menu(game: game, title: Message(text: 'Test Menu'));
+      var menu = Menu(game: game, title: Message(text: 'Test Menu'));
       expect(menu.title, isA<Message>());
       expect(menu.menuItems, isEmpty);
+      expect(menu.onCancel, isNull);
       expect(menu.currentMenuItem, isNull);
+      menu = Menu(game: game, title: Message(text: 'Test Menu'), position: 0)
+        ..addLabel(text: 'Label')
+        ..addButton(() {});
+      expect(menu.currentMenuItem, equals(menu.menuItems.first));
     });
     test('Using Menus', () {
       var menu = Menu(game: game, title: Message(text: 'Test Menu'), items: [
@@ -59,13 +65,7 @@ void main() {
       expect(menu.currentMenuItem!.label.text, equals('Increment'));
       menu.activate();
       expect(number, equals(1));
-      menu = Menu(game: game, title: Message(text: 'Default Commands Menu'))
-        ..registerCommands(
-            activateCommandName: 'activate',
-            cancelCommandName: 'cancel',
-            downCommandName: 'down',
-            upCommandName: 'up');
-      expect(menu.commands.length, equals(4));
+      menu = Menu(game: game, title: Message(text: 'Default Commands Menu'));
       var value = true;
       final checkbox = MenuItem(Message(), Checkbox((b) => value = b));
       menu.menuItems.add(checkbox);
@@ -74,6 +74,99 @@ void main() {
       expect(menu.currentMenuItem, equals(checkbox));
       menu.activate();
       expect(value, isFalse);
+    });
+    test('.cancel', () {
+      var cancel = 0;
+      final menu = Menu(
+          game: game,
+          title: Message(text: 'Test Menu'),
+          onCancel: () => cancel++);
+      expect(cancel, isZero);
+      menu.cancel();
+      expect(cancel, equals(1));
+    });
+    test('.handleSdlEvent', () {
+      final sdl = Sdl();
+      final timestamp = DateTime.now().millisecondsSinceEpoch;
+      var cancel = 0;
+      var activate = 0;
+      final menu = Menu(
+          game: game,
+          title: Message(text: 'Test Menu'),
+          onCancel: () => cancel++)
+        ..addButton(() => activate++);
+      expect(cancel, isZero);
+      expect(activate, isZero);
+      menu.handleSdlEvent(KeyboardEvent(
+          sdl,
+          timestamp,
+          0,
+          PressedState.released,
+          false,
+          KeyboardKey(
+              scancode: ScanCode.SCANCODE_LEFT,
+              keycode: KeyCode.keycode_LEFT,
+              modifiers: [])));
+      expect(cancel, isZero);
+      expect(menu.currentMenuItem, isNull);
+      final downEvent = KeyboardEvent(
+          sdl,
+          timestamp,
+          0,
+          PressedState.pressed,
+          false,
+          KeyboardKey(
+              scancode: ScanCode.SCANCODE_DOWN,
+              keycode: KeyCode.keycode_DOWN,
+              modifiers: []));
+      menu.handleSdlEvent(downEvent);
+      expect(menu.currentMenuItem, equals(menu.menuItems.first));
+      menu.handleSdlEvent(KeyboardEvent(
+          sdl,
+          timestamp,
+          0,
+          PressedState.pressed,
+          false,
+          KeyboardKey(
+              scancode: ScanCode.SCANCODE_UP,
+              keycode: KeyCode.keycode_UP,
+              modifiers: [])));
+      expect(menu.currentMenuItem, isNull);
+      menu
+        ..handleSdlEvent(downEvent)
+        ..handleSdlEvent(KeyboardEvent(
+            sdl,
+            timestamp,
+            0,
+            PressedState.pressed,
+            false,
+            KeyboardKey(
+                scancode: ScanCode.SCANCODE_LEFT,
+                keycode: KeyCode.keycode_LEFT,
+                modifiers: [])));
+      expect(cancel, equals(1));
+      menu.handleSdlEvent(KeyboardEvent(
+          sdl,
+          timestamp,
+          0,
+          PressedState.released,
+          false,
+          KeyboardKey(
+              scancode: ScanCode.SCANCODE_RIGHT,
+              keycode: KeyCode.keycode_RIGHT,
+              modifiers: [])));
+      expect(activate, isZero);
+      menu.handleSdlEvent(KeyboardEvent(
+          sdl,
+          timestamp,
+          0,
+          PressedState.pressed,
+          false,
+          KeyboardKey(
+              scancode: ScanCode.SCANCODE_RIGHT,
+              keycode: KeyCode.keycode_RIGHT,
+              modifiers: [])));
+      expect(activate, equals(1));
     });
     test('ListButton', () {
       var newValue = '';
