@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:dart_sdl/dart_sdl.dart';
 
+import '../controller_axis_dispatcher.dart';
 import '../game.dart';
 import 'level.dart';
 
@@ -31,9 +32,36 @@ class Editor extends Level {
     this.spaceButton = GameControllerButton.b,
     this.backspaceScanCode = ScanCode.SCANCODE_BACKSPACE,
     this.backspaceButton = GameControllerButton.x,
+    GameControllerAxis upDownAxis = GameControllerAxis.lefty,
+    GameControllerAxis leftRightAxis = GameControllerAxis.rightx,
+    GameControllerAxis typeAxis = GameControllerAxis.triggerright,
+    GameControllerAxis backspaceAxis = GameControllerAxis.triggerleft,
+    int controllerMovementSpeed = 500,
+    double controllerAxisSensitivity = 0.5,
   })  : _shiftPressed = false,
         _currentPosition = 0,
-        super(game);
+        super(game) {
+    controllerAxisDispatcher = ControllerAxisDispatcher({
+      upDownAxis: (double value) {
+        if (value > 0) {
+          moveDown();
+        } else {
+          moveUp();
+        }
+      },
+      leftRightAxis: (double value) {
+        if (value > 0) {
+          moveRight();
+        } else {
+          moveLeft();
+        }
+      },
+      typeAxis: (double value) => type(),
+      backspaceAxis: (double value) => backspace()
+    },
+        axisSensitivity: controllerAxisSensitivity,
+        functionInterval: controllerMovementSpeed);
+  }
 
   /// The current text of this editor.
   String text;
@@ -89,6 +117,9 @@ class Editor extends Level {
 
   /// The button that will call the [backspace] method.
   final GameControllerButton backspaceButton;
+
+  /// The controller axis dispatcher used by this instance.
+  late final ControllerAxisDispatcher controllerAxisDispatcher;
 
   /// Whether or not the next selected letter should be capitalised.
   bool _shiftPressed;
@@ -215,6 +246,8 @@ class Editor extends Level {
           appendText(' ');
         }
       }
+    } else if (event is ControllerAxisEvent) {
+      controllerAxisDispatcher.handleAxisValue(event.axis, event.smallValue);
     }
   }
 }
