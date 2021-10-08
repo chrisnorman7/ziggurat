@@ -16,6 +16,8 @@ void main() {
       expect(text, isNull);
       expect(editor.text, isEmpty);
       expect(editor.onCancel, isNull);
+      expect(editor.controllerAxisDispatcher.functionInterval, equals(400));
+      expect(editor.controllerAxisDispatcher.axisSensitivity, equals(0.5));
     });
     test('Handle text', () {
       final editor = Editor(game, print)
