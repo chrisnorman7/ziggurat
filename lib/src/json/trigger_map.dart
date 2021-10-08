@@ -22,6 +22,9 @@ class TriggerMap {
   final Map<String, CommandTrigger> triggers;
 
   /// Register a new command with the given [name] and [trigger].
+  ///
+  /// If there is already a trigger registered with that [name],
+  /// [DuplicateCommandName] will be thrown.
   void registerCommand(
       {required String name, required CommandTrigger trigger}) {
     if (triggers.containsKey(name)) {
