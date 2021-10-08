@@ -297,6 +297,8 @@ const _$ScanCodeEnumMap = {
 
 CommandTrigger _$CommandTriggerFromJson(Map<String, dynamic> json) =>
     CommandTrigger(
+      name: json['name'] as String,
+      description: json['description'] as String,
       keyboardKey: json['keyboardKey'] == null
           ? null
           : CommandKeyboardKey.fromJson(
@@ -307,6 +309,8 @@ CommandTrigger _$CommandTriggerFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$CommandTriggerToJson(CommandTrigger instance) =>
     <String, dynamic>{
+      'name': instance.name,
+      'description': instance.description,
       'keyboardKey': instance.keyboardKey,
       'button': _$GameControllerButtonEnumMap[instance.button],
     };

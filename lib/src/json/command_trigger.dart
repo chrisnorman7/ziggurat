@@ -38,7 +38,11 @@ class CommandKeyboardKey {
 @JsonSerializable()
 class CommandTrigger {
   /// Create an instance.
-  CommandTrigger({this.keyboardKey, this.button});
+  CommandTrigger(
+      {required this.name,
+      required this.description,
+      this.keyboardKey,
+      this.button});
 
   /// Create an instance from a JSON object.
   factory CommandTrigger.fromJson(Map<String, dynamic> json) =>
@@ -48,8 +52,18 @@ class CommandTrigger {
   ///
   /// Creating instances can be quite verbose, so this method exists to make
   /// that process shorter.
-  CommandTrigger.basic({ScanCode? scanCode, this.button})
+  CommandTrigger.basic(
+      {required this.name,
+      required this.description,
+      ScanCode? scanCode,
+      this.button})
       : keyboardKey = (scanCode == null) ? null : CommandKeyboardKey(scanCode);
+
+  /// The name of the command which this trigger will send.
+  final String name;
+
+  /// The description of this command.
+  final String description;
 
   /// The keyboard key which must be held down in order for this command to be
   /// triggered.

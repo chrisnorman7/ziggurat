@@ -7,10 +7,9 @@ part of 'trigger_map.dart';
 // **************************************************************************
 
 TriggerMap _$TriggerMapFromJson(Map<String, dynamic> json) => TriggerMap(
-      (json['triggers'] as Map<String, dynamic>).map(
-        (k, e) =>
-            MapEntry(k, CommandTrigger.fromJson(e as Map<String, dynamic>)),
-      ),
+      (json['triggers'] as List<dynamic>)
+          .map((e) => CommandTrigger.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
 
 Map<String, dynamic> _$TriggerMapToJson(TriggerMap instance) =>

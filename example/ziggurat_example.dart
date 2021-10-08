@@ -44,47 +44,51 @@ class ExcitingLevel extends Level {
 class MainMenu extends Menu {
   /// Create the menu.
   MainMenu(Game game)
-      : super(game: game, title: Message(text: 'Main Menu'), items: [
-          MenuItem(Message(text: 'Play'),
-              Button(() => game.replaceLevel(ExcitingLevel(game)))),
-          MenuItem(Message(text: 'Quit'), Button(() => game.stop()))
-        ]);
+      : super(
+            game: game,
+            title: Message(text: 'Main Menu'),
+            items: [
+              MenuItem(Message(text: 'Play'),
+                  Button(() => game.replaceLevel(ExcitingLevel(game)))),
+              MenuItem(Message(text: 'Quit'), Button(() => game.stop()))
+            ],
+            onCancel: () => game.outputText('You cannot exit from this menu.'));
 }
 
 Future<void> main() async {
   final sdl = Sdl()..init();
-  final game = Game('Ziggurat Example');
-  game.triggerMap
-    ..registerCommand(
-        name: quitCommandName,
-        trigger: CommandTrigger(
-            keyboardKey: CommandKeyboardKey(ScanCode.SCANCODE_Q),
-            button: GameControllerButton.leftshoulder))
-    ..registerCommand(
-        name: leftCommandName,
-        trigger: CommandTrigger(
-            keyboardKey: CommandKeyboardKey(ScanCode.SCANCODE_LEFT),
-            button: GameControllerButton.dpadLeft))
-    ..registerCommand(
-        name: rightCommandName,
-        trigger: CommandTrigger(
+  final game = Game('Ziggurat Example',
+      triggerMap: TriggerMap([
+        CommandTrigger.basic(
+            name: quitCommandName,
+            description: 'Quit the game',
+            scanCode: ScanCode.SCANCODE_Q,
+            button: GameControllerButton.leftshoulder),
+        CommandTrigger.basic(
+            name: quitCommandName,
+            description: 'Quit the game',
+            scanCode: ScanCode.SCANCODE_ESCAPE),
+        CommandTrigger.basic(
+            name: leftCommandName,
+            description: 'Decrease the coordinate',
+            scanCode: ScanCode.SCANCODE_LEFT,
+            button: GameControllerButton.dpadLeft),
+        CommandTrigger(
+            name: rightCommandName,
+            description: 'Increase the coordinate',
             keyboardKey: CommandKeyboardKey(ScanCode.SCANCODE_RIGHT),
-            button: GameControllerButton.dpadRight))
-    ..registerCommand(
-        name: upCommandName,
-        trigger: CommandTrigger(
+            button: GameControllerButton.dpadRight),
+        CommandTrigger(
+            name: upCommandName,
+            description: 'Move up in the menu',
             keyboardKey: CommandKeyboardKey(ScanCode.SCANCODE_UP),
-            button: GameControllerButton.dpadUp))
-    ..registerCommand(
-        name: downCommandName,
-        trigger: CommandTrigger(
+            button: GameControllerButton.dpadUp),
+        CommandTrigger(
+            name: downCommandName,
+            description: 'Move down in a menu',
             keyboardKey: CommandKeyboardKey(ScanCode.SCANCODE_DOWN),
-            button: GameControllerButton.dpadDown))
-    ..registerCommand(
-        name: activateCommandName,
-        trigger: CommandTrigger(
-            keyboardKey: CommandKeyboardKey(ScanCode.SCANCODE_RETURN),
-            button: GameControllerButton.dpadRight));
+            button: GameControllerButton.dpadDown),
+      ]));
   final level = MainMenu(game);
   game.pushLevel(level);
   await game.run(sdl);

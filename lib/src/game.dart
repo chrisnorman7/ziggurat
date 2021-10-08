@@ -19,7 +19,7 @@ class Game {
   /// Create an instance.
   Game(this.title, {TriggerMap? triggerMap})
       : _levels = [],
-        triggerMap = triggerMap ?? TriggerMap({}),
+        triggerMap = triggerMap ?? TriggerMap([]),
         time = 0,
         _started = 0,
         _isRunning = false,
@@ -201,9 +201,8 @@ class Game {
     } else {
       final level = currentLevel;
       if (level != null) {
-        for (final element in triggerMap.triggers.entries) {
-          final name = element.key;
-          final commandTrigger = element.value;
+        for (final commandTrigger in triggerMap.triggers) {
+          final name = commandTrigger.name;
           final key = commandTrigger.keyboardKey;
           final button = commandTrigger.button;
           if ((event is KeyboardEvent &&

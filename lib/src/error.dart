@@ -75,12 +75,3 @@ class PositionMismatchError extends ZigguratError {
   @override
   String toString() => 'Cannot set position of $channel to $position.';
 }
-
-/// An attempt was made to register a duplicate command name.
-class DuplicateCommandName extends ZigguratError {
-  /// Create the error.
-  DuplicateCommandName(this.name);
-
-  /// The name of the command.
-  final String name;
-}
