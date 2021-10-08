@@ -18,10 +18,13 @@
 * Cleaned up code.
 * Update SDL.
 * Added a bunch of parameters to the `Menu` constructor, to replace the old `registerCommands` method.
+* It is now an error to register multiple commands with the same name.
 
 ### Removed
 
 * Removed `Menu.registerCommands`, in favour of the new parameters to the constructor.
+* Removed the unused `InvalidCommandNameError` error.
+* Removed the unused `InvalidStateError` error.
 
 ## [0.20.1]
 

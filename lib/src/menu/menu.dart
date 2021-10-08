@@ -38,24 +38,28 @@ class Menu extends Level {
   ///
   /// The list of [ambiances] and [randomSounds] are passed to the [Level]
   /// constructor.
-  Menu(
-      {required Game game,
-      required this.title,
-      List<MenuItem>? items,
-      int? position,
-      this.onCancel,
-      List<Ambiance>? ambiances,
-      List<RandomSound>? randomSounds,
-      this.upScanCode = ScanCode.SCANCODE_UP,
-      this.upButton = GameControllerButton.dpadUp,
-      this.downScanCode = ScanCode.SCANCODE_DOWN,
-      this.downButton = GameControllerButton.dpadDown,
-      this.activateScanCode = ScanCode.SCANCODE_RIGHT,
-      this.activateButton = GameControllerButton.dpadRight,
-      this.cancelScanCode = ScanCode.SCANCODE_LEFT,
-      this.cancelButton = GameControllerButton.dpadLeft})
-      : menuItems = items ?? [],
+  Menu({
+    required Game game,
+    required this.title,
+    List<MenuItem>? items,
+    int? position,
+    this.onCancel,
+    this.upScanCode = ScanCode.SCANCODE_UP,
+    this.upButton = GameControllerButton.dpadUp,
+    this.downScanCode = ScanCode.SCANCODE_DOWN,
+    this.downButton = GameControllerButton.dpadDown,
+    this.activateScanCode = ScanCode.SCANCODE_RIGHT,
+    this.activateButton = GameControllerButton.dpadRight,
+    this.cancelScanCode = ScanCode.SCANCODE_LEFT,
+    this.cancelButton = GameControllerButton.dpadLeft,
+    this.movementAxis = GameControllerAxis.lefty,
+    this.controllerMovementSpeed = 500,
+    List<Ambiance>? ambiances,
+    List<RandomSound>? randomSounds,
+  })  : menuItems = items ?? [],
+        _controllerLastMoved = 0,
         _position = position,
+        controllerAxisSensitivity = 0.5,
         super(game, ambiances: ambiances, randomSounds: randomSounds);
 
   /// The title of this menu.
@@ -93,6 +97,20 @@ class Menu extends Level {
 
   /// The button that will call the [cancel] method.
   final GameControllerButton cancelButton;
+
+  /// How often (in milliseconds) controller axis movements will be checked.
+  final int controllerMovementSpeed;
+
+  /// The sensitivity of controller axis movements.
+  ///
+  /// Values that are less than this value will be ignored.
+  final double controllerAxisSensitivity;
+
+  /// The last time controller movement was checked.
+  int _controllerLastMoved;
+
+  /// The axis which can be used to move through the menu.
+  final GameControllerAxis movementAxis;
 
   //// The current position in this menu.
   int? _position;
@@ -232,6 +250,21 @@ class Menu extends Level {
         activate();
       } else if (button == cancelButton) {
         cancel();
+      }
+    } else if (event is ControllerAxisEvent) {
+      final now = DateTime.now().millisecondsSinceEpoch;
+      final value = event.smallValue;
+      if ((now - _controllerLastMoved) >= controllerMovementSpeed &&
+          value.abs() >= controllerAxisSensitivity) {
+        _controllerLastMoved = now;
+        final axis = event.axis;
+        if (axis == movementAxis) {
+          if (value < 0) {
+            up();
+          } else {
+            down();
+          }
+        }
       }
     }
   }
