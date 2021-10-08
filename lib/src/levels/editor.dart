@@ -14,11 +14,10 @@ class Editor extends Level {
     this.onDone, {
     this.text = '',
     this.onCancel,
-    this.controllerAlphabet = 'abcdefghijklmnopqrstuvwxyz'
-        // r'.,/\'
+    this.controllerAlphabet = 'abcdefghijklmnopqrstuvwxyz,.'
         '1234567890'
-        "-=_+@'"
-        r'!"£$%^&*(){}~|',
+        r'!"£$%^&*(){}~\/'
+        "-=_+@'",
     this.leftButton = GameControllerButton.dpadLeft,
     this.rightButton = GameControllerButton.dpadRight,
     this.upButton = GameControllerButton.dpadUp,
