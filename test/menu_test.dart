@@ -104,8 +104,8 @@ void main() {
           PressedState.released,
           false,
           KeyboardKey(
-              scancode: ScanCode.SCANCODE_LEFT,
-              keycode: KeyCode.keycode_LEFT,
+              scancode: ScanCode.SCANCODE_ESCAPE,
+              keycode: KeyCode.keycode_ESCAPE,
               modifiers: [])));
       expect(cancel, isZero);
       expect(menu.currentMenuItem, isNull);
@@ -141,8 +141,8 @@ void main() {
             PressedState.pressed,
             false,
             KeyboardKey(
-                scancode: ScanCode.SCANCODE_LEFT,
-                keycode: KeyCode.keycode_LEFT,
+                scancode: ScanCode.SCANCODE_ESCAPE,
+                keycode: KeyCode.keycode_ESCAPE,
                 modifiers: [])));
       expect(cancel, equals(1));
       menu.handleSdlEvent(KeyboardEvent(
@@ -152,8 +152,8 @@ void main() {
           PressedState.released,
           false,
           KeyboardKey(
-              scancode: ScanCode.SCANCODE_RIGHT,
-              keycode: KeyCode.keycode_RIGHT,
+              scancode: ScanCode.SCANCODE_SPACE,
+              keycode: KeyCode.keycode_SPACE,
               modifiers: [])));
       expect(activate, isZero);
       menu.handleSdlEvent(KeyboardEvent(
@@ -163,8 +163,8 @@ void main() {
           PressedState.pressed,
           false,
           KeyboardKey(
-              scancode: ScanCode.SCANCODE_RIGHT,
-              keycode: KeyCode.keycode_RIGHT,
+              scancode: ScanCode.SCANCODE_SPACE,
+              keycode: KeyCode.keycode_SPACE,
               modifiers: [])));
       expect(activate, equals(1));
     });
