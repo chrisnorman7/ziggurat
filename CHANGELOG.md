@@ -9,6 +9,7 @@
 * When creating a `Menu` instance, it is now possible to set the initial position within the menu.
 * You can now specify random sounds for `Menu` instances.
 * It is now possible to specify multiple triggers with the same name.
+* Added the `ControllerAxisDispatcher` class.
 
 ### Fixed
 

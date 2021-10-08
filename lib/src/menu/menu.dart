@@ -1,6 +1,7 @@
 /// Provides the [Menu] class.
 import 'package:dart_sdl/dart_sdl.dart';
 
+import '../../ziggurat.dart';
 import '../game.dart';
 import '../json/asset_reference.dart';
 import '../json/message.dart';
@@ -38,6 +39,23 @@ class Menu extends Level {
   ///
   /// The list of [ambiances] and [randomSounds] are passed to the [Level]
   /// constructor.
+  ///
+  /// The [controllerAxisSensitivity] value defines how sensitive an axis is to
+  /// controlling this instance. The higher this value, the further the
+  /// controller axis has to be pushed before anything happens. The lower the
+  /// value, the easier it is to accidentally do things in the menu.
+  ///
+  /// The [controllerMovementSpeed] value controls how often the player can use
+  /// a controller in this menu.
+  ///
+  /// The [activateAxis] value is the axis which can be used to call the
+  /// [activate] method.
+  ///
+  /// The [cancelAxis] value is the axis which can be used to call the [cancel]
+  /// method.
+  ///
+  /// The [movementAxis] value is the axis which can be used to move within this
+  /// menu.
   Menu({
     required Game game,
     required this.title,
@@ -52,15 +70,30 @@ class Menu extends Level {
     this.activateButton = GameControllerButton.dpadRight,
     this.cancelScanCode = ScanCode.SCANCODE_ESCAPE,
     this.cancelButton = GameControllerButton.dpadLeft,
-    this.movementAxis = GameControllerAxis.lefty,
-    this.controllerMovementSpeed = 500,
+    GameControllerAxis movementAxis = GameControllerAxis.lefty,
+    GameControllerAxis activateAxis = GameControllerAxis.triggerright,
+    GameControllerAxis cancelAxis = GameControllerAxis.triggerleft,
+    int controllerMovementSpeed = 500,
+    double controllerAxisSensitivity = 0.5,
     List<Ambiance>? ambiances,
     List<RandomSound>? randomSounds,
   })  : menuItems = items ?? [],
-        _controllerLastMoved = 0,
         _position = position,
-        controllerAxisSensitivity = 0.5,
-        super(game, ambiances: ambiances, randomSounds: randomSounds);
+        super(game, ambiances: ambiances, randomSounds: randomSounds) {
+    controllerAxisDispatcher = ControllerAxisDispatcher({
+      movementAxis: (double value) {
+        if (value < 0) {
+          up();
+        } else {
+          down();
+        }
+      },
+      activateAxis: (double value) => activate(),
+      cancelAxis: (double value) => cancel()
+    },
+        axisSensitivity: controllerAxisSensitivity,
+        functionInterval: controllerMovementSpeed);
+  }
 
   /// The title of this menu.
   final Message title;
@@ -98,22 +131,11 @@ class Menu extends Level {
   /// The button that will call the [cancel] method.
   final GameControllerButton cancelButton;
 
-  /// How often (in milliseconds) controller axis movements will be checked.
-  final int controllerMovementSpeed;
-
-  /// The sensitivity of controller axis movements.
-  ///
-  /// Values that are less than this value will be ignored.
-  final double controllerAxisSensitivity;
-
-  /// The last time controller movement was checked.
-  int _controllerLastMoved;
-
-  /// The axis which can be used to move through the menu.
-  final GameControllerAxis movementAxis;
-
   //// The current position in this menu.
   int? _position;
+
+  /// The axis dispatcher used for controller movements.
+  late final ControllerAxisDispatcher controllerAxisDispatcher;
 
   /// The last sound played by this menu.
   PlaySound? oldSound;
@@ -252,20 +274,7 @@ class Menu extends Level {
         cancel();
       }
     } else if (event is ControllerAxisEvent) {
-      final now = DateTime.now().millisecondsSinceEpoch;
-      final value = event.smallValue;
-      if ((now - _controllerLastMoved) >= controllerMovementSpeed &&
-          value.abs() >= controllerAxisSensitivity) {
-        _controllerLastMoved = now;
-        final axis = event.axis;
-        if (axis == movementAxis) {
-          if (value < 0) {
-            up();
-          } else {
-            down();
-          }
-        }
-      }
+      controllerAxisDispatcher.handleAxisValue(event.axis, event.smallValue);
     }
   }
 }
