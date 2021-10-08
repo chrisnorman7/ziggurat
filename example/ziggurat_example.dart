@@ -2,13 +2,31 @@
 import 'package:dart_sdl/dart_sdl.dart';
 import 'package:ziggurat/ziggurat.dart';
 
-const quitCommandName = 'quit';
-const upCommandName = 'up';
-const downCommandName = 'down';
-const activateCommandName = 'activate';
-const cancelCommandName = 'cancel';
-const leftCommandName = 'left';
-const rightCommandName = 'right';
+final quitCommandTrigger = CommandTrigger.basic(
+    name: 'quit',
+    description: 'Quit the game',
+    scanCode: ScanCode.SCANCODE_Q,
+    button: GameControllerButton.leftshoulder);
+final leftCommandTrigger = CommandTrigger.basic(
+    name: 'left',
+    description: 'Decrease the coordinate',
+    scanCode: ScanCode.SCANCODE_LEFT,
+    button: GameControllerButton.dpadLeft);
+final rightCommandTrigger = CommandTrigger(
+    name: 'right',
+    description: 'Increase the coordinate',
+    keyboardKey: CommandKeyboardKey(ScanCode.SCANCODE_RIGHT),
+    button: GameControllerButton.dpadRight);
+final upCommandTrigger = CommandTrigger(
+    name: 'up',
+    description: 'Move up in the menu',
+    keyboardKey: CommandKeyboardKey(ScanCode.SCANCODE_UP),
+    button: GameControllerButton.dpadUp);
+final downCommandTrigger = CommandTrigger(
+    name: 'down',
+    description: 'Move down in a menu',
+    keyboardKey: CommandKeyboardKey(ScanCode.SCANCODE_DOWN),
+    button: GameControllerButton.dpadDown);
 
 /// A level with some commands registered.
 class ExcitingLevel extends Level {
@@ -16,10 +34,10 @@ class ExcitingLevel extends Level {
   ExcitingLevel(Game game)
       : coordinate = 0,
         super(game) {
-    registerCommand(quitCommandName,
+    registerCommand(quitCommandTrigger.name,
         Command(onStart: () => game.replaceLevel(MainMenu(game))));
     registerCommand(
-        leftCommandName,
+        leftCommandTrigger.name,
         Command(
             onStart: () {
               coordinate--;
@@ -27,7 +45,7 @@ class ExcitingLevel extends Level {
             },
             interval: 500));
     registerCommand(
-        rightCommandName,
+        rightCommandTrigger.name,
         Command(
             onStart: () {
               coordinate++;
@@ -59,35 +77,15 @@ Future<void> main() async {
   final sdl = Sdl()..init();
   final game = Game('Ziggurat Example',
       triggerMap: TriggerMap([
+        quitCommandTrigger,
         CommandTrigger.basic(
-            name: quitCommandName,
-            description: 'Quit the game',
-            scanCode: ScanCode.SCANCODE_Q,
-            button: GameControllerButton.leftshoulder),
-        CommandTrigger.basic(
-            name: quitCommandName,
+            name: quitCommandTrigger.name,
             description: 'Quit the game',
             scanCode: ScanCode.SCANCODE_ESCAPE),
-        CommandTrigger.basic(
-            name: leftCommandName,
-            description: 'Decrease the coordinate',
-            scanCode: ScanCode.SCANCODE_LEFT,
-            button: GameControllerButton.dpadLeft),
-        CommandTrigger(
-            name: rightCommandName,
-            description: 'Increase the coordinate',
-            keyboardKey: CommandKeyboardKey(ScanCode.SCANCODE_RIGHT),
-            button: GameControllerButton.dpadRight),
-        CommandTrigger(
-            name: upCommandName,
-            description: 'Move up in the menu',
-            keyboardKey: CommandKeyboardKey(ScanCode.SCANCODE_UP),
-            button: GameControllerButton.dpadUp),
-        CommandTrigger(
-            name: downCommandName,
-            description: 'Move down in a menu',
-            keyboardKey: CommandKeyboardKey(ScanCode.SCANCODE_DOWN),
-            button: GameControllerButton.dpadDown),
+        leftCommandTrigger,
+        rightCommandTrigger,
+        upCommandTrigger,
+        downCommandTrigger,
       ]));
   final level = MainMenu(game);
   game.pushLevel(level);
