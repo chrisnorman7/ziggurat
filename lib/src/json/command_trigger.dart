@@ -52,12 +52,17 @@ class CommandTrigger {
   ///
   /// Creating instances can be quite verbose, so this method exists to make
   /// that process shorter.
-  CommandTrigger.basic(
-      {required this.name,
-      required this.description,
-      ScanCode? scanCode,
-      this.button})
-      : keyboardKey = (scanCode == null) ? null : CommandKeyboardKey(scanCode);
+  factory CommandTrigger.basic(
+          {required String name,
+          required String description,
+          ScanCode? scanCode,
+          GameControllerButton? button}) =>
+      CommandTrigger(
+          name: name,
+          description: description,
+          button: button,
+          keyboardKey:
+              (scanCode == null) ? null : CommandKeyboardKey(scanCode));
 
   /// The name of the command which this trigger will send.
   final String name;
