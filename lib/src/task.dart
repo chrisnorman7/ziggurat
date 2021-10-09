@@ -1,6 +1,9 @@
 /// Provides the [Task] class.
 import 'game.dart';
 
+/// The signature for task functions.
+typedef TaskFunction = void Function();
+
 /// A task which runs once on or after [runWhen].
 class Task {
   /// Create a task.
@@ -16,5 +19,5 @@ class Task {
   int? interval;
 
   /// The function which this task will run.
-  final void Function() func;
+  final TaskFunction func;
 }

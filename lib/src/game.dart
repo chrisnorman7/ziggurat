@@ -152,6 +152,11 @@ class Game {
     return task;
   }
 
+  /// Unregister a task.
+  void unregisterTask(TaskFunction func) {
+    tasks.removeWhere((element) => element.func == func);
+  }
+
   /// Push a level onto the stack.
   void pushLevel(Level level) {
     final cl = currentLevel;

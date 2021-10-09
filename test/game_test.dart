@@ -86,6 +86,15 @@ void main() {
       expect(game.tasks.length, equals(1));
       expect(game.tasks.first.func, equals(game.stop));
     });
+    test('.unregisterTask', () {
+      final game = Game('unregisterTask');
+      game.registerTask(1234, game.stop);
+      expect(game.tasks.length, equals(1));
+      game.unregisterTask(() => game.registerTask(200, game.stop));
+      expect(game.tasks.length, equals(1));
+      game.unregisterTask(game.stop);
+      expect(game.tasks, isEmpty);
+    });
     test('replaceLevel', () {
       final game = Game('Replace Level');
       final level1 = Level(game);

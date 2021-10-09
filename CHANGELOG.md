@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.21.3]
+
+### Added
+
+* It is now possible to unregister game tasks.
+
 ## [0.21.2]
 
 ### Fixed
