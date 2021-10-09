@@ -53,10 +53,14 @@ class ControllerAxisDispatcher {
     if (f == null || value.abs() < axisSensitivity) {
       return;
     }
-    final now = DateTime.now().millisecondsSinceEpoch;
-    if ((now - _controllerLastMoved) >= functionInterval) {
-      _controllerLastMoved = now;
-      f(value);
+    if (functionInterval != 0) {
+      final now = DateTime.now().millisecondsSinceEpoch;
+      if ((now - _controllerLastMoved) >= functionInterval) {
+        _controllerLastMoved = now;
+      } else {
+        return;
+      }
     }
+    f(value);
   }
 }
