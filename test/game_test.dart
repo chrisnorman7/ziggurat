@@ -76,6 +76,16 @@ void main() {
       expect(i, equals(2));
       expect(game.tasks.length, equals(1));
     });
+    test('Tasks adding tasks', () {
+      final sdl = Sdl();
+      final game = Game('Tasks that add tasks');
+      expect(game.tasks, isEmpty);
+      game.registerTask(0, () => game.registerTask(0, game.stop));
+      expect(game.tasks.length, equals(1));
+      game.tick(sdl, 0);
+      expect(game.tasks.length, equals(1));
+      expect(game.tasks.first.func, equals(game.stop));
+    });
     test('replaceLevel', () {
       final game = Game('Replace Level');
       final level1 = Level(game);

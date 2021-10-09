@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.21.2]
+
+### Fixed
+
+* Tasks can now be registered from within other task functions.
+
 ## [0.21.1]
 
 ### Added

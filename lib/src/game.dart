@@ -301,7 +301,9 @@ class Game {
       }
     }
     final completedTasks = <Task>[];
-    for (final task in tasks) {
+    // We must copy the `tasks` list to prevent Concurrent modification during
+    // iteration.
+    for (final task in List<Task>.from(tasks, growable: false)) {
       if (time >= task.runWhen) {
         task.func();
         final interval = task.interval;
