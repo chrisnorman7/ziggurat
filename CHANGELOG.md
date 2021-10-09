@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.21.1]
+
+### Added
+
+* Added checked and unchecked sounds for checkboxes.
+* Added the `Widget.getLabel` method.
+
+### Changed
+
+* Any widget can now override the `getLabel` method to override the label on its parent `MenuItem`..
+
 ## [0.21.0]
 
 ### Added
