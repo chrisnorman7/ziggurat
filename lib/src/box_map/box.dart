@@ -140,4 +140,7 @@ class Box<T extends BoxType> {
       }
     }
   }
+
+  @override
+  String toString() => name;
 }
