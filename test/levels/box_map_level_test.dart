@@ -1,20 +1,21 @@
-/// Test the [BoxMap] class.
 import 'dart:math';
 
 import 'package:test/test.dart';
 import 'package:ziggurat/ziggurat.dart';
 
 void main() {
-  group('GameMap tests', () {
-    test('Single box', () {
+  group('GameMapLevel', () {
+    final game = Game('GameMapLevel');
+    test('Initialisation', () {
       final map = BoxMap(
           name: 'Test Map',
           boxes: [Box('Only box', Point(0, 0), Point(9, 9), Surface())]);
-      expect(map.width, equals(map.boxes.first.width));
-      expect(map.height, equals(map.boxes.first.height));
-      expect(map.boxes.length, equals(1));
-      expect(map.tileAt(0, 0), equals(map.boxes.first));
-      expect(map.tileAtPoint(map.boxes.last.end), equals(map.boxes.first));
+      final level = BoxMapLevel(game, map);
+      expect(level.boxMap, equals(map));
+      expect(level.width, equals(map.boxes.first.width));
+      expect(level.height, equals(map.boxes.first.height));
+      expect(level.tileAt(0, 0), equals(map.boxes.first));
+      expect(level.tileAtPoint(map.boxes.last.end), equals(map.boxes.first));
     });
     test('Multiple boxes', () {
       final westField =
@@ -25,8 +26,9 @@ void main() {
           path.end + Point(westField.width, 0), Surface());
       final map =
           BoxMap(name: 'Multiple boxes', boxes: [westField, path, eastField]);
-      expect(map.tileAt(0, 0), westField);
-      expect(map.tileAtPoint(eastField.end), equals(eastField));
+      final level = BoxMapLevel(game, map);
+      expect(level.tileAt(0, 0), equals(westField));
+      expect(level.tileAtPoint(eastField.end), equals(eastField));
     });
   });
 }
