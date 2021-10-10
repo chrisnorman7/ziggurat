@@ -68,6 +68,8 @@ class BoxMapLevel extends Level {
   double get heading => _heading;
 
   /// Set the direction the player is facing in.
+  ///
+  /// this setter also sets the listener heading.
   set heading(double value) {
     _heading = value;
     game.setListenerOrientation(value);

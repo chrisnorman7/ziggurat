@@ -26,7 +26,7 @@ void main() {
     });
     test('Multiple boxes', () {
       final westField =
-          Box('East Field', Point(0, 0), Point(10, 20), Surface());
+          Box('West Field', Point(0, 0), Point(10, 20), Surface());
       final path = Box('Path', westField.cornerSe + Point(1, 0),
           westField.end + Point(5, 0), Surface());
       final eastField = Box('West Field', path.cornerSe + Point(1, 0),
@@ -76,6 +76,29 @@ void main() {
       expect(event.x2, isZero);
       expect(event.y2, isZero);
       expect(event.z2, equals(1));
+    });
+    test('.tileAt', () {
+      final box1 = Box('Box 1', Point(0, 0), Point(3, 3), Surface());
+      final box2 = Box('Box 2', box1.cornerSe + Point(1, 0),
+          box1.end + Point(1, 0), Surface());
+      final box3 = Box('Box 3', box2.cornerSe + Point(2, 0),
+          box2.end + Point(4, 0), Surface());
+      final boxMap =
+          BoxMap(name: 'BoxMapLevel.tileAt', boxes: [box1, box2, box3]);
+      final level = BoxMapLevel(game, boxMap);
+      expect(level.tileAt(box1.start.x, box1.start.y), equals(box1));
+      expect(level.tileAt(box1.centre.x.floor(), box1.centre.y.floor()),
+          equals(box1));
+      expect(level.tileAt(box1.end.x, box1.end.y), equals(box1));
+      expect(level.tileAt(box2.start.x, box2.start.y), equals(box2));
+      expect(level.tileAt(box2.centre.x.floor(), box2.centre.y.floor()),
+          equals(box2));
+      expect(level.tileAt(box2.end.x, box2.end.y), equals(box2));
+      expect(level.tileAt(box3.start.x, box3.start.y), equals(box3));
+      expect(level.tileAt(box3.centre.x.floor(), box3.centre.y.floor()),
+          equals(box3));
+      expect(level.tileAt(box3.end.x, box3.end.y), equals(box3));
+      expect(level.tileAt(box2.cornerSe.x + 1, box2.end.y), isNull);
     });
   });
 }
