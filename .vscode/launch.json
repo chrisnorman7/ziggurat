@@ -7,7 +7,7 @@
     {
       "name": "ziggurat",
       "request": "launch",
-      "type": "dart"
+      "type": "dart",
     }
   ]
 }

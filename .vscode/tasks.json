@@ -1,0 +1,22 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "dart",
+			"command": "dart",
+			"args": [
+				"run",
+				"build_runner",
+				"test"
+			],
+			"problemMatcher": [
+				"$dart-build_runner"
+			],
+			"group": {
+				"kind": "test",
+				"isDefault": true
+			},
+			"label": "dart: dart run build_runner test"
+		}
+	]
+}
