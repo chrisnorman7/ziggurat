@@ -27,7 +27,7 @@ void main() {
       expect(trigger.keyboardKey?.scanCode, equals(ScanCode.SCANCODE_1));
     });
   });
-  group('SoundReference', () {
+  group('AssetReference', () {
     test('.file', () {
       final sound = AssetReference.file('test.wav');
       expect(sound.name, equals('test.wav'));

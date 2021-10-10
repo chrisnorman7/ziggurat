@@ -8,7 +8,6 @@ import '../helpers.dart';
 
 void main() {
   final game = Game('Edit Test');
-  final sdl = Sdl();
   group('Editor', () {
     test('Initialisation', () {
       String? text;
@@ -22,13 +21,13 @@ void main() {
     test('Handle text', () {
       final editor = Editor(game, print)
         ..handleSdlEvent(
-            makeKeyboardEvent(sdl, ScanCode.SCANCODE_0, KeyCode.keycode_0));
+            makeKeyboardEvent(ScanCode.SCANCODE_0, KeyCode.keycode_0));
       expect(editor.text, isEmpty);
-      editor.handleSdlEvent(makeTextInputEvent(sdl, 'hello'));
+      editor.handleSdlEvent(makeTextInputEvent('hello'));
       expect(editor.text, equals('hello'));
-      editor.handleSdlEvent(makeControllerButtonEvent(sdl, editor.spaceButton));
+      editor.handleSdlEvent(makeControllerButtonEvent(editor.spaceButton));
       expect(editor.text, equals('hello '));
-      editor.handleSdlEvent(makeTextInputEvent(sdl, 'world'));
+      editor.handleSdlEvent(makeTextInputEvent('world'));
       expect(editor.text, equals('hello world'));
     });
     test('.onDone', () {
@@ -36,40 +35,39 @@ void main() {
       final editor = Editor(game, (value) {
         text = value;
       })
-        ..handleSdlEvent(makeTextInputEvent(sdl, 'Testing things.'));
+        ..handleSdlEvent(makeTextInputEvent('Testing things.'));
       expect(text, isNull);
       editor.handleSdlEvent(makeKeyboardEvent(
-          sdl, ScanCode.SCANCODE_RETURN, KeyCode.keycode_RETURN,
+          ScanCode.SCANCODE_RETURN, KeyCode.keycode_RETURN,
           state: PressedState.pressed));
       expect(text, isNull);
-      editor.handleSdlEvent(makeKeyboardEvent(
-          sdl, ScanCode.SCANCODE_RETURN, KeyCode.keycode_RETURN));
+      editor.handleSdlEvent(
+          makeKeyboardEvent(ScanCode.SCANCODE_RETURN, KeyCode.keycode_RETURN));
       expect(text, equals(editor.text));
       text = '';
-      editor.handleSdlEvent(makeControllerButtonEvent(sdl, editor.doneButton));
+      editor.handleSdlEvent(makeControllerButtonEvent(editor.doneButton));
       expect(text, equals(editor.text));
     });
     test('.onCancel', () {
       var editor = Editor(game, print);
-      final escapeEvent = makeKeyboardEvent(
-          sdl, ScanCode.SCANCODE_ESCAPE, KeyCode.keycode_ESCAPE);
+      final escapeEvent =
+          makeKeyboardEvent(ScanCode.SCANCODE_ESCAPE, KeyCode.keycode_ESCAPE);
       editor.handleSdlEvent(escapeEvent);
       var cancelled = 0;
       editor = Editor(game, print, onCancel: () => cancelled++)
         ..handleSdlEvent(makeKeyboardEvent(
-            sdl, escapeEvent.key.scancode, escapeEvent.key.keycode,
+            escapeEvent.key.scancode, escapeEvent.key.keycode,
             state: PressedState.pressed));
       expect(cancelled, isZero);
       editor.handleSdlEvent(escapeEvent);
       expect(cancelled, equals(1));
-      editor
-          .handleSdlEvent(makeControllerButtonEvent(sdl, editor.cancelButton));
+      editor.handleSdlEvent(makeControllerButtonEvent(editor.cancelButton));
       expect(cancelled, equals(2));
     });
     test('.backspace', () {
       final editor = Editor(game, print);
       final backspaceEvent = makeKeyboardEvent(
-          sdl, ScanCode.SCANCODE_BACKSPACE, KeyCode.keycode_BACKSPACE);
+          ScanCode.SCANCODE_BACKSPACE, KeyCode.keycode_BACKSPACE);
       editor.handleSdlEvent(backspaceEvent);
       expect(editor.text, isEmpty);
       editor
@@ -77,7 +75,6 @@ void main() {
         ..handleSdlEvent(backspaceEvent);
       expect(editor.text, equals('Testing'));
       editor.handleSdlEvent(makeControllerButtonEvent(
-        sdl,
         editor.backspaceButton,
       ));
       expect(editor.text, equals('Testin'));
@@ -88,50 +85,50 @@ void main() {
       final editor = Editor(game, print, controllerMovementSpeed: 0);
       expect(editor.controllerAxisDispatcher.axisSensitivity, equals(0.5));
       expect(editor.controllerAxisDispatcher.functionInterval, isZero);
-      editor.handleSdlEvent(makeControllerAxisEvent(
-          sdl, GameControllerAxis.triggerright, maxValue));
+      editor.handleSdlEvent(
+          makeControllerAxisEvent(GameControllerAxis.triggerright, maxValue));
       expect(editor.text, equals('a'));
       expect(editor.currentLetter, equals(editor.controllerAlphabet[0]));
       editor.handleSdlEvent(
-          makeControllerAxisEvent(sdl, GameControllerAxis.rightx, maxValue));
+          makeControllerAxisEvent(GameControllerAxis.rightx, maxValue));
       expect(editor.currentLetter, equals(editor.controllerAlphabet[1]));
-      editor.handleSdlEvent(makeControllerAxisEvent(
-          sdl, GameControllerAxis.triggerright, maxValue));
+      editor.handleSdlEvent(
+          makeControllerAxisEvent(GameControllerAxis.triggerright, maxValue));
       expect(editor.text, equals('ab'));
-      editor.handleSdlEvent(makeControllerAxisEvent(
-          sdl, GameControllerAxis.triggerleft, maxValue));
+      editor.handleSdlEvent(
+          makeControllerAxisEvent(GameControllerAxis.triggerleft, maxValue));
       expect(editor.text, equals('a'));
       editor.handleSdlEvent(
-          makeControllerAxisEvent(sdl, GameControllerAxis.rightx, minValue));
+          makeControllerAxisEvent(GameControllerAxis.rightx, minValue));
       expect(editor.currentLetter, equals(editor.controllerAlphabet[0]));
       editor.handleSdlEvent(
-          makeControllerAxisEvent(sdl, GameControllerAxis.lefty, maxValue));
+          makeControllerAxisEvent(GameControllerAxis.lefty, maxValue));
       expect(
           editor.currentLetter,
           equals(editor.controllerAlphabet[
               sqrt(editor.controllerAlphabet.length).round()]));
       editor.handleSdlEvent(
-          makeControllerAxisEvent(sdl, GameControllerAxis.rightx, minValue));
+          makeControllerAxisEvent(GameControllerAxis.rightx, minValue));
       expect(
           editor.currentLetter,
           equals(editor.controllerAlphabet[
               sqrt(editor.controllerAlphabet.length).round() - 1]));
       editor.handleSdlEvent(
-          makeControllerAxisEvent(sdl, GameControllerAxis.lefty, minValue));
+          makeControllerAxisEvent(GameControllerAxis.lefty, minValue));
       expect(editor.currentLetter, equals(editor.controllerAlphabet[0]));
     });
     test('Shift key', () {
       final editor = Editor(game, print);
       editor
-        ..handleSdlEvent(makeControllerButtonEvent(sdl, editor.shiftButton))
-        ..handleSdlEvent(makeControllerButtonEvent(sdl, editor.typeButton));
+        ..handleSdlEvent(makeControllerButtonEvent(editor.shiftButton))
+        ..handleSdlEvent(makeControllerButtonEvent(editor.typeButton));
       expect(editor.text, equals('A'));
-      editor.handleSdlEvent(makeControllerButtonEvent(sdl, editor.typeButton));
+      editor.handleSdlEvent(makeControllerButtonEvent(editor.typeButton));
       expect(editor.text, equals('AA'));
       editor
-        ..handleSdlEvent(makeControllerButtonEvent(sdl, editor.shiftButton,
+        ..handleSdlEvent(makeControllerButtonEvent(editor.shiftButton,
             state: PressedState.released))
-        ..handleSdlEvent(makeControllerButtonEvent(sdl, editor.typeButton));
+        ..handleSdlEvent(makeControllerButtonEvent(editor.typeButton));
       expect(editor.text, equals('AAa'));
     });
   });

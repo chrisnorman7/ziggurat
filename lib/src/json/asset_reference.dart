@@ -80,7 +80,7 @@ class AssetReference {
   /// Get a file from this reference.
   ///
   /// If [type] is [AssetType.file], just return a [File] with its path set to
-  /// [name]. Otherwise, use the [RunnerFileSystemEntityMethods] extension to
+  /// [name]. Otherwise, use the [FileSystemEntityMethods] extension to
   /// return a random file from a [Directory] with [name] as the path.
   File getFile(Random random) {
     if (type == AssetType.file) {

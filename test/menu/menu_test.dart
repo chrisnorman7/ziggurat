@@ -2,6 +2,8 @@ import 'package:dart_sdl/dart_sdl.dart';
 import 'package:test/test.dart';
 import 'package:ziggurat/ziggurat.dart';
 
+import '../helpers.dart';
+
 void main() {
   group('Menu Tests', () {
     final game = Game('Menu Testing Game');
@@ -86,7 +88,6 @@ void main() {
       expect(cancel, equals(1));
     });
     test('.handleSdlEvent', () {
-      final sdl = Sdl();
       final timestamp = DateTime.now().millisecondsSinceEpoch;
       var cancel = 0;
       var activate = 0;

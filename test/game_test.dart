@@ -1,6 +1,7 @@
-import 'package:dart_sdl/dart_sdl.dart';
 import 'package:test/test.dart';
 import 'package:ziggurat/ziggurat.dart';
+
+import 'helpers.dart';
 
 void main() {
   group('Game tests', () {
@@ -21,7 +22,6 @@ void main() {
     });
     test('One-off Task Test', () {
       final game = Game('Test Game');
-      final sdl = Sdl();
       var i = 0;
       var task = game.registerTask(3, () {
         i++;
@@ -46,7 +46,6 @@ void main() {
     });
     test('Repeating Task Test', () {
       final game = Game('Test Game');
-      final sdl = Sdl();
       var i = 0;
       final task = game.registerTask(3, () {
         i++;
@@ -77,7 +76,6 @@ void main() {
       expect(game.tasks.length, equals(1));
     });
     test('Tasks adding tasks', () {
-      final sdl = Sdl();
       final game = Game('Tasks that add tasks');
       expect(game.tasks, isEmpty);
       game.registerTask(0, () => game.registerTask(0, game.stop));
@@ -114,7 +112,6 @@ void main() {
       expect(task.runWhen, equals(2000));
     });
     test('.started', () async {
-      final sdl = Sdl()..init();
       final game = Game('Game.started');
       expect(game.started, isZero);
       final now = DateTime.now().millisecondsSinceEpoch;

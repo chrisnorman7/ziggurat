@@ -1,9 +1,12 @@
 /// Provides extension methods used by tests.
 import 'package:dart_sdl/dart_sdl.dart';
 
+/// The main sdl instance to use.
+final sdl = Sdl()..init();
+
 /// Make controller events easier to work with.
 ControllerAxisEvent makeControllerAxisEvent(
-        Sdl sdl, GameControllerAxis axis, int value) =>
+        GameControllerAxis axis, int value) =>
     ControllerAxisEvent(
         sdl: sdl,
         timestamp: DateTime.now().millisecondsSinceEpoch,
@@ -12,7 +15,7 @@ ControllerAxisEvent makeControllerAxisEvent(
         value: value);
 
 /// Get a keyboard event.
-KeyboardEvent makeKeyboardEvent(Sdl sdl, ScanCode scanCode, KeyCode keyCode,
+KeyboardEvent makeKeyboardEvent(ScanCode scanCode, KeyCode keyCode,
         {PressedState state = PressedState.released,
         List<KeyMod>? modifiers}) =>
     KeyboardEvent(
@@ -25,12 +28,11 @@ KeyboardEvent makeKeyboardEvent(Sdl sdl, ScanCode scanCode, KeyCode keyCode,
             scancode: scanCode, keycode: keyCode, modifiers: modifiers ?? []));
 
 /// Make a text input event.
-TextInputEvent makeTextInputEvent(Sdl sdl, String text) =>
+TextInputEvent makeTextInputEvent(String text) =>
     TextInputEvent(sdl, DateTime.now().millisecondsSinceEpoch, text);
 
 /// Make a controller button event.
-ControllerButtonEvent makeControllerButtonEvent(
-        Sdl sdl, GameControllerButton button,
+ControllerButtonEvent makeControllerButtonEvent(GameControllerButton button,
         {PressedState state = PressedState.pressed}) =>
     ControllerButtonEvent(
         sdl: sdl,

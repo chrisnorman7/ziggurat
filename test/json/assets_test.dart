@@ -57,9 +57,12 @@ void main() {
       expect(file.path, equals(reference.name));
       reference = AssetReference.collection('test');
       file = reference.getFile(random);
-      final filenames = <String>[
-        for (final file in Directory('test').listSync()) file.path
-      ];
+      final filenames = <String>[];
+      for (final entity in Directory('test').listSync()) {
+        if (entity is File) {
+          filenames.add(entity.path);
+        }
+      }
       expect(filenames, contains(file.path));
     });
   });

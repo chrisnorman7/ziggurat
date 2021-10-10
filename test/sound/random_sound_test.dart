@@ -1,13 +1,13 @@
 import 'dart:math';
 
-import 'package:dart_sdl/dart_sdl.dart';
 import 'package:test/test.dart';
 import 'package:ziggurat/ziggurat.dart';
+
+import '../helpers.dart';
 
 /// Test random sounds.
 void main() {
   group('Random sounds tests', () {
-    final sdl = Sdl();
     setUpAll(sdl.init);
     tearDownAll(sdl.quit);
     test('Initialisation', () {

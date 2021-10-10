@@ -15,6 +15,8 @@ class BoxMapLevel extends Level {
   BoxMapLevel(Game game, this.boxMap,
       {List<Ambiance>? ambiances, List<RandomSound>? randomSounds})
       : super(game, ambiances: ambiances, randomSounds: randomSounds) {
+    _coordinates = boxMap.initialCoordinates;
+    _heading = boxMap.initialHeading;
     var sizeX = 0;
     var sizeY = 0;
     for (final box in boxMap.boxes) {
@@ -44,6 +46,32 @@ class BoxMapLevel extends Level {
 
   /// The box map to render.
   final BoxMap boxMap;
+
+  /// The coordinates of the player.
+  late Point<double> _coordinates;
+
+  /// Get the coordinates of the player.
+  Point<double> get coordinates => _coordinates;
+
+  /// Set the player coordinates.
+  ///
+  /// this setter also sets the listener position.
+  set coordinates(Point<double> value) {
+    _coordinates = value;
+    game.setListenerPosition(value.x, value.y, 0.0);
+  }
+
+  /// The direction the player is facing.
+  late double _heading;
+
+  /// Get the heading that the player is facing in..
+  double get heading => _heading;
+
+  /// Set the direction the player is facing in.
+  set heading(double value) {
+    _heading = value;
+    game.setListenerOrientation(value);
+  }
 
   /// All the tiles present on this map.
   late final List<List<Box?>> _tiles;
