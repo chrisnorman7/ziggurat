@@ -2,7 +2,6 @@
 import 'dart:io';
 import 'dart:math';
 
-import 'box_map/box_map.dart';
 import 'error.dart';
 
 /// An extension for returning a `Point<int>` from a `Point<double>`.
@@ -18,28 +17,24 @@ extension RunnerIntMethods on Point<int> {
 }
 
 /// An extension for getting random files from directories.
-extension RunnerMethods on Directory {
+extension DirectoryMethods on Directory {
   /// Return a random file from a directory.
   ///
   /// If this entity is already a file, it will be returned.
   File randomFile(Random random) {
-    final files = listSync();
+    final files = <File>[
+      for (final file in listSync())
+        if (file is File) file
+    ];
     if (files.isEmpty) {
       throw NoFilesError(this);
     }
-    final f = files[random.nextInt(files.length)];
-    if (f is File) {
-      return f;
-    } else if (f is Directory) {
-      return f.randomFile(random);
-    } else {
-      throw InvalidEntityError(f);
-    }
+    return files[random.nextInt(files.length)];
   }
 }
 
 /// Adds a method for always returning a file.
-extension RunnerFileSystemEntityMethods on FileSystemEntity {
+extension FileSystemEntityMethods on FileSystemEntity {
   /// Always return a file.
   File ensureFile(Random random) {
     if (this is File) {
@@ -49,13 +44,4 @@ extension RunnerFileSystemEntityMethods on FileSystemEntity {
     }
     throw InvalidEntityError(this);
   }
-}
-
-/// Various extension methods mainly used by the [BoxMap] class.
-extension VariousMethods on List<int> {
-  /// Get the sum of this list.
-  int get sum => reduce((a, b) => a + b);
-
-  /// Get the average number in this list.
-  double get average => sum / length;
 }
