@@ -2,8 +2,6 @@ import 'package:dart_sdl/dart_sdl.dart';
 import 'package:test/test.dart';
 import 'package:ziggurat/ziggurat.dart';
 
-import '../helpers.dart';
-
 void main() {
   group('Menu Tests', () {
     final game = Game('Menu Testing Game');
@@ -88,6 +86,7 @@ void main() {
       expect(cancel, equals(1));
     });
     test('.handleSdlEvent', () {
+      final sdl = Sdl()..init();
       final timestamp = DateTime.now().millisecondsSinceEpoch;
       var cancel = 0;
       var activate = 0;
@@ -168,6 +167,7 @@ void main() {
               keycode: KeyCode.keycode_SPACE,
               modifiers: [])));
       expect(activate, equals(1));
+      sdl.quit();
     });
     test('ListButton', () {
       var newValue = '';

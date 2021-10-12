@@ -32,6 +32,8 @@ class Door extends Wall {
   int? closeWhen;
 
   /// The coordinates the close sound should play at.
+  ///
+  /// This value is determined when automatically closing the door.
   Point<double>? closeCoordinates;
 
   /// The message to be shown when this door opens.

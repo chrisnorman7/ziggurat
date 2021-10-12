@@ -1,7 +1,6 @@
+import 'package:dart_sdl/dart_sdl.dart';
 import 'package:test/test.dart';
 import 'package:ziggurat/ziggurat.dart';
-
-import 'helpers.dart';
 
 void main() {
   group('Game tests', () {
@@ -21,6 +20,7 @@ void main() {
       expect(game.currentLevel, equals(level2));
     });
     test('One-off Task Test', () {
+      final sdl = Sdl()..init();
       final game = Game('Test Game');
       var i = 0;
       var task = game.registerTask(3, () {
@@ -43,8 +43,10 @@ void main() {
       game.time = 0;
       task = game.registerTask(5, () => 0, timeOffset: now);
       expect(task.runWhen, equals(now + 5));
+      sdl.quit();
     });
     test('Repeating Task Test', () {
+      final sdl = Sdl()..init();
       final game = Game('Test Game');
       var i = 0;
       final task = game.registerTask(3, () {
@@ -74,8 +76,10 @@ void main() {
         ..tick(sdl, 1);
       expect(i, equals(2));
       expect(game.tasks.length, equals(1));
+      sdl.quit();
     });
     test('Tasks adding tasks', () {
+      final sdl = Sdl()..init();
       final game = Game('Tasks that add tasks');
       expect(game.tasks, isEmpty);
       game.registerTask(0, () => game.registerTask(0, game.stop));
@@ -83,6 +87,7 @@ void main() {
       game.tick(sdl, 0);
       expect(game.tasks.length, equals(1));
       expect(game.tasks.first.func, equals(game.stop));
+      sdl.quit();
     });
     test('.unregisterTask', () {
       final game = Game('unregisterTask');
@@ -112,6 +117,7 @@ void main() {
       expect(task.runWhen, equals(2000));
     });
     test('.started', () async {
+      final sdl = Sdl()..init();
       final game = Game('Game.started');
       expect(game.started, isZero);
       final now = DateTime.now().millisecondsSinceEpoch;
@@ -121,6 +127,7 @@ void main() {
           game.started,
           allOf(greaterThanOrEqualTo(now),
               lessThan(DateTime.now().millisecondsSinceEpoch)));
+      sdl.quit();
     });
   });
 }

@@ -1,15 +1,12 @@
 import 'dart:math';
 
+import 'package:dart_sdl/dart_sdl.dart';
 import 'package:test/test.dart';
 import 'package:ziggurat/ziggurat.dart';
-
-import '../helpers.dart';
 
 /// Test random sounds.
 void main() {
   group('Random sounds tests', () {
-    setUpAll(sdl.init);
-    tearDownAll(sdl.quit);
     test('Initialisation', () {
       final r = RandomSound(
           AssetReference.file('sound.wav'), Point(0, 1), Point(5, 6), 15, 30,
@@ -26,6 +23,7 @@ void main() {
       expect(r.nextPlay, isNull);
     });
     test('play', () async {
+      final sdl = Sdl()..init();
       final game = Game('Play Random Sounds');
       final randomSound1 = RandomSound(AssetReference.file('sound1.wav'),
           Point(1.0, 2.0), Point(5.0, 6.0), 1000, 1000);
@@ -80,6 +78,7 @@ void main() {
           inOpenClosedRange(
               randomSound2.minCoordinates.y, randomSound2.maxCoordinates.y));
       expect(position.z, isZero);
+      sdl.quit();
     });
   });
 }
