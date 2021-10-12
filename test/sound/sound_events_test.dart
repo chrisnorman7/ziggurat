@@ -78,6 +78,10 @@ void main() {
           channel.position,
           predicate(
               (value) => value is SoundPositionScalar && value.scalar == 1.0));
+      channel.setReverb(reverb);
+      expect(channel.reverb, equals(reverb.id));
+      channel.setReverb(null);
+      expect(channel.reverb, isNull);
       final sound = channel.playSound(
           AssetReference('testing.wav', AssetType.file),
           keepAlive: true);
@@ -141,6 +145,14 @@ void main() {
                 value is SetSoundChannelPosition &&
                 value.id == channel.id &&
                 value.position == channel.position),
+            predicate((value) =>
+                value is SetSoundChannelReverb &&
+                value.id == channel.id &&
+                value.reverb == reverb.id),
+            predicate((value) =>
+                value is SetSoundChannelReverb &&
+                value.id == channel.id &&
+                value.reverb == null),
             equals(sound),
             predicate((value) => value is PauseSound && value.id == sound.id),
             predicate((value) => value is UnpauseSound && value.id == sound.id),

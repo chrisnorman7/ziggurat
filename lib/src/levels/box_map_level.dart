@@ -142,8 +142,9 @@ class BoxMapLevel extends Level {
   /// If [bearing] is `null`, then [heading] will be used.
   void move(double distance, {double? bearing}) {
     bearing ??= heading;
+    final oldCoordinates = coordinates;
     final newCoordinates =
-        coordinatesInDirection(coordinates, bearing, distance);
+        coordinatesInDirection(oldCoordinates, bearing, distance);
     final newBox = tileAt(newCoordinates.x.floor(), newCoordinates.y.floor());
     if (newBox == null) {
       // Should probably do something more interesting.
