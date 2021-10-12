@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.22.1]
+
+Added
+
+* You can now set (or clear) reverbs for sound channels.
+
 ## [0.22.0]
 
 ### Changed
