@@ -16,7 +16,12 @@ class ActivateException implements Exception {
 /// A custom tile.
 class CustomTile extends Box {
   /// Create an instance.
-  CustomTile() : super('Custom Tile', Point(0, 0), Point(5, 5), Surface());
+  CustomTile()
+      : super(
+            name: 'Custom Tile',
+            start: Point(0, 0),
+            end: Point(5, 5),
+            type: Surface());
 
   /// Throw an error when this tile is activated.
   @override
@@ -28,7 +33,11 @@ class CustomTile extends Box {
 void main() {
   group('boxes tests', () {
     test('Initialisation', () {
-      final t = Box('Test tile', Point(0, 0), Point(5, 5), Surface());
+      final t = Box(
+          name: 'Test tile',
+          start: Point(0, 0),
+          end: Point(5, 5),
+          type: Surface());
       expect(t.name, equals('Test tile'));
       expect(t.start, equals(Point<int>(0, 0)));
       expect(t.end, equals(Point<int>(5, 5)));

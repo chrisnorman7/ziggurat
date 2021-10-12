@@ -12,9 +12,13 @@ void main() {
       events.clear();
     });
     test('Initialisation', () {
-      final map = BoxMap(
-          name: 'Test Map',
-          boxes: [Box('Only box', Point(0, 0), Point(9, 9), Surface())]);
+      final map = BoxMap(name: 'Test Map', boxes: [
+        Box(
+            name: 'Only box',
+            start: Point(0, 0),
+            end: Point(9, 9),
+            type: Surface())
+      ]);
       final level = BoxMapLevel(game, map);
       expect(level.boxMap, equals(map));
       expect(level.coordinates, equals(map.initialCoordinates));
@@ -25,12 +29,21 @@ void main() {
       expect(level.tileAtPoint(map.boxes.last.end), equals(map.boxes.first));
     });
     test('Multiple boxes', () {
-      final westField =
-          Box('West Field', Point(0, 0), Point(10, 20), Surface());
-      final path = Box('Path', westField.cornerSe + Point(1, 0),
-          westField.end + Point(5, 0), Surface());
-      final eastField = Box('West Field', path.cornerSe + Point(1, 0),
-          path.end + Point(westField.width, 0), Surface());
+      final westField = Box(
+          name: 'West Field',
+          start: Point(0, 0),
+          end: Point(10, 20),
+          type: Surface());
+      final path = Box(
+          name: 'Path',
+          start: westField.cornerSe + Point(1, 0),
+          end: westField.end + Point(5, 0),
+          type: Surface());
+      final eastField = Box(
+          name: 'West Field',
+          start: path.cornerSe + Point(1, 0),
+          end: path.end + Point(westField.width, 0),
+          type: Surface());
       final map =
           BoxMap(name: 'Multiple boxes', boxes: [westField, path, eastField]);
       final level = BoxMapLevel(game, map);
@@ -78,11 +91,18 @@ void main() {
       expect(event.z2, equals(1));
     });
     test('.tileAt', () {
-      final box1 = Box('Box 1', Point(0, 0), Point(3, 3), Surface());
-      final box2 = Box('Box 2', box1.cornerSe + Point(1, 0),
-          box1.end + Point(1, 0), Surface());
-      final box3 = Box('Box 3', box2.cornerSe + Point(2, 0),
-          box2.end + Point(4, 0), Surface());
+      final box1 = Box(
+          name: 'Box 1', start: Point(0, 0), end: Point(3, 3), type: Surface());
+      final box2 = Box(
+          name: 'Box 2',
+          start: box1.cornerSe + Point(1, 0),
+          end: box1.end + Point(1, 0),
+          type: Surface());
+      final box3 = Box(
+          name: 'Box 3',
+          start: box2.cornerSe + Point(2, 0),
+          end: box2.end + Point(4, 0),
+          type: Surface());
       final boxMap =
           BoxMap(name: 'BoxMapLevel.tileAt', boxes: [box1, box2, box3]);
       final level = BoxMapLevel(game, boxMap);

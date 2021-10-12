@@ -13,8 +13,17 @@ import 'box_types/wall.dart';
 /// A box on a map.
 class Box<T extends BoxType> {
   /// Create a box.
-  Box(this.name, Point<int> start, Point<int> end, this.type, {this.sound})
-      : _start = start,
+  ///
+  /// This box will run from [start] until [end].
+  Box(
+      {required this.name,
+      required Point<int> start,
+      required Point<int> end,
+      required this.type,
+      this.sound})
+      : assert(start.x <= end.x, '`start.x` must be <= `end.x`.'),
+        assert(start.y <= end.y, '`start.y` must be <= `end.y`.'),
+        _start = start,
         _end = end {
     onAfterMove();
   }

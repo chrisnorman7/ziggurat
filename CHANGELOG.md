@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.22.0]
+
+### Changed
+
+* Changed the signature for the `Box` constructor.
+
 ## [0.21.4]
 
 ### Added
