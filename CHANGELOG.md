@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.22.3]
+
+### Changed
+
+* Changing the reverb changes the reverb ID again.
+
 ## [0.22.2]
 
 ### Changed

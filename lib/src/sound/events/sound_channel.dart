@@ -49,8 +49,11 @@ class SoundChannel extends SoundEvent {
   ///
   /// The responsibility for setting this value therefore, falls to the sound
   /// subsystem.
-  void setReverb(CreateReverb? createdReverb) =>
-      game.queueSoundEvent(SetSoundChannelReverb(id!, createdReverb?.id));
+  void setReverb(CreateReverb? createdReverb) {
+    final reverbId = createdReverb?.id;
+    reverb = reverbId;
+    game.queueSoundEvent(SetSoundChannelReverb(id!, reverbId));
+  }
 
   double _gain;
 
