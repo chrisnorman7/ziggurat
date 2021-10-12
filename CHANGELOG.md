@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.21.4]
+
+### Added
+
+* Added the `BoxMapLevel` class.
+
 ## [0.21.3]
 
 ### Added
