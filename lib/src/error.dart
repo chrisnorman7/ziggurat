@@ -1,5 +1,6 @@
 /// Provides various error types.
 import 'dart:io';
+import 'dart:math';
 
 import 'box_map/box.dart';
 import 'sound/events/events_base.dart';
@@ -74,4 +75,15 @@ class PositionMismatchError extends ZigguratError {
 
   @override
   String toString() => 'Cannot set position of $channel to $position.';
+}
+
+/// The player is not on a box.
+class NoBoxError extends ZigguratError {
+  /// Create an instance.
+  NoBoxError(this.coordinates);
+
+  /// The coordinates where no box was found.
+  final Point<double> coordinates;
+  @override
+  String toString() => 'There is no box at $coordinates.';
 }

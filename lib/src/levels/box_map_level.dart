@@ -1,10 +1,14 @@
 /// Provides the [BoxMapLevel] class.
 import 'dart:math';
 
+import 'package:dart_sdl/dart_sdl.dart';
+
 import '../box_map/box.dart';
 import '../box_map/box_map.dart';
+import '../box_map/box_types/surface.dart';
 import '../error.dart';
 import '../game.dart';
+import '../math.dart';
 import '../sound/ambiance.dart';
 import '../sound/random_sound.dart';
 import 'level.dart';
@@ -13,8 +17,15 @@ import 'level.dart';
 class BoxMapLevel extends Level {
   /// Create an instance.
   BoxMapLevel(Game game, this.boxMap,
-      {List<Ambiance>? ambiances, List<RandomSound>? randomSounds})
-      : super(game, ambiances: ambiances, randomSounds: randomSounds) {
+      {this.activateScanCode = ScanCode.SCANCODE_RETURN,
+      this.activateButton = GameControllerButton.rightshoulder,
+      this.moveAxis = GameControllerAxis.righty,
+      this.turnAxis = GameControllerAxis.leftx,
+      List<Ambiance>? ambiances,
+      List<RandomSound>? randomSounds})
+      : lastTurn = 0,
+        lastMove = 0,
+        super(game, ambiances: ambiances, randomSounds: randomSounds) {
     _coordinates = boxMap.initialCoordinates;
     _heading = boxMap.initialHeading;
     var sizeX = 0;
@@ -47,6 +58,18 @@ class BoxMapLevel extends Level {
   /// The box map to render.
   final BoxMap boxMap;
 
+  /// The scancode that will be used to activate the current box.
+  final ScanCode activateScanCode;
+
+  /// The controller button that will activate the current box.
+  final GameControllerButton activateButton;
+
+  /// The axis that will be used to move the player forward or backwards.
+  final GameControllerAxis moveAxis;
+
+  /// The axis that will be used to turn the player.
+  final GameControllerAxis turnAxis;
+
   /// The coordinates of the player.
   late Point<double> _coordinates;
 
@@ -59,6 +82,18 @@ class BoxMapLevel extends Level {
   set coordinates(Point<double> value) {
     _coordinates = value;
     game.setListenerPosition(value.x, value.y, 0.0);
+  }
+
+  /// Get the current box.
+  ///
+  /// If the player is not on a box, the behaviour is undefined.
+  Box get currentBox {
+    final c = coordinates;
+    final box = tileAt(c.x.floor(), c.y.floor());
+    if (box == null) {
+      throw NoBoxError(c);
+    }
+    return box;
   }
 
   /// The direction the player is facing.
@@ -87,7 +122,72 @@ class BoxMapLevel extends Level {
   /// Get the tile at the given coordinates.
   Box? tileAt(int x, int y) => _tiles[x][y];
 
+  /// The time the player last moved.
+  int lastTurn;
+
+  /// The time the player last moved.
+  int lastMove;
+
   /// Get the tile at the given point.
   Box? tileAtPoint(Point<int> coordinates) =>
       tileAt(coordinates.x, coordinates.y);
+
+  /// Turn the specified [amount].
+  void turn(double amount) {
+    heading = normaliseAngle(heading + amount);
+  }
+
+  /// Move the given [distance] on the given [bearing].
+  ///
+  /// If [bearing] is `null`, then [heading] will be used.
+  void move(double distance, {double? bearing}) {
+    bearing ??= heading;
+    final newCoordinates =
+        coordinatesInDirection(coordinates, bearing, distance);
+    final newBox = tileAt(newCoordinates.x.floor(), newCoordinates.y.floor());
+    if (newBox == null) {
+      // Should probably do something more interesting.
+      return;
+    }
+    coordinates = newCoordinates;
+  }
+
+  @override
+  void handleSdlEvent(Event event) {
+    if ((event is ControllerButtonEvent &&
+            event.button == activateButton &&
+            event.state == PressedState.pressed) ||
+        (event is KeyboardEvent &&
+            event.state == PressedState.pressed &&
+            event.repeat == false &&
+            event.key.modifiers.isEmpty &&
+            event.key.scancode == activateScanCode)) {
+      final onActivate = currentBox.onActivate;
+      if (onActivate != null) {
+        onActivate();
+      }
+    } else if (event is ControllerAxisEvent) {
+      if (event.axis == turnAxis) {
+        final surface = currentBox.type;
+        if (surface is! Surface) {
+          return;
+        }
+        final now = DateTime.now().millisecondsSinceEpoch;
+        if ((now - lastTurn) >= (surface.minTurnInterval / event.value)) {
+          turn(surface.turnAmount);
+          lastTurn = now;
+        }
+      } else if (event.axis == moveAxis) {
+        final surface = currentBox.type;
+        if (surface is! Surface) {
+          return;
+        }
+        final now = DateTime.now().millisecondsSinceEpoch;
+        if ((now - lastMove) >= (surface.minMoveInterval / event.value)) {
+          move(surface.footstepSize);
+          lastMove = now;
+        }
+      }
+    }
+  }
 }

@@ -5,6 +5,10 @@
 ### Changed
 
 * Changed the signature for the `Box` constructor.
+* The `Box.onActivate` callback is now an instance variable, rather than a class method.
+* Renamed `Surface.moveInterval` to `maxMoveInterval`.
+* Make `Box.sound` a `List`.
+* Rename `Box.sound` to `sounds`.
 
 ## [0.21.4]
 

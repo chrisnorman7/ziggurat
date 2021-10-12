@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:meta/meta.dart';
 
 import '../json/asset_reference.dart';
+import 'box_collision.dart';
 import 'box_types/agents/agent.dart';
 import 'box_types/base.dart';
 import 'box_types/door.dart';
@@ -20,11 +21,15 @@ class Box<T extends BoxType> {
       required Point<int> start,
       required Point<int> end,
       required this.type,
-      this.sound})
+      this.sounds,
+      this.collision,
+      this.onActivate})
       : assert(start.x <= end.x, '`start.x` must be <= `end.x`.'),
         assert(start.y <= end.y, '`start.y` must be <= `end.y`.'),
         _start = start,
         _end = end {
+    assert(collision == null || collision!.distance >= 0,
+        '`collision.distance` must be >= 0.');
     onAfterMove();
   }
 
@@ -83,14 +88,23 @@ class Box<T extends BoxType> {
   /// The type of this box.
   final T type;
 
-  /// The sound of this box.
+  /// The possible sounds for this box.
   ///
-  /// If this box is a [Wall], this sound will be heard when a player walks
-  /// into it.
+  /// If this box is a [Wall], one of these sounds will be heard when a player
+  /// walks into it.
   ///
-  /// If this box is a [Surface], this sound will be heard when walking on
-  /// it.
-  final AssetReference? sound;
+  /// If this box is a [Surface], one of these sounds will be heard when walking
+  /// on it.
+  ///
+  /// We use a list, so that different sounds can play depending on how fast the
+  /// player is walking.
+  final List<AssetReference>? sounds;
+
+  /// What should happen when a player collides with this instance.
+  final BoxCollision? collision;
+
+  /// What happens when this box is "activated".
+  final void Function()? onActivate;
 
   /// Move this tile to a new set of coordinates.
   ///
@@ -118,12 +132,6 @@ class Box<T extends BoxType> {
     _cornerSe = Point<int>(_end.x, _start.y);
     _centre = Point<double>(_start.x + _halfWidth, _start.y + _halfHeight);
   }
-
-  /// What happens when this box is "activated".
-  ///
-  /// Exactly when a box is activated is left up to the programmer, but maybe
-  /// when the enter key is pressed.
-  void onActivate() {}
 
   /// What happens when [agent] enters this box.
   @mustCallSuper

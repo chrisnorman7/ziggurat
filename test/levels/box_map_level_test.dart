@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:dart_sdl/dart_sdl.dart';
 import 'package:test/test.dart';
 import 'package:ziggurat/ziggurat.dart';
 
@@ -27,6 +28,11 @@ void main() {
       expect(level.height, equals(map.boxes.first.height));
       expect(level.tileAt(0, 0), equals(map.boxes.first));
       expect(level.tileAtPoint(map.boxes.last.end), equals(map.boxes.first));
+      expect(level.currentBox, equals(map.boxes.first));
+      expect(level.activateScanCode, equals(ScanCode.SCANCODE_RETURN));
+      expect(level.activateButton, equals(GameControllerButton.rightshoulder));
+      expect(level.moveAxis, equals(GameControllerAxis.righty));
+      expect(level.turnAxis, equals(GameControllerAxis.leftx));
     });
     test('Multiple boxes', () {
       final westField = Box(

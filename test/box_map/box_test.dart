@@ -4,7 +4,7 @@ import 'dart:math';
 import 'package:test/test.dart';
 import 'package:ziggurat/ziggurat.dart';
 
-/// The error which should be thrown by [CustomTile.onActivate].
+/// The error which should be thrown when a [CustomTile] instance is activated.
 class ActivateException implements Exception {
   /// Create an exception.
   ActivateException(this.message);
@@ -21,13 +21,8 @@ class CustomTile extends Box {
             name: 'Custom Tile',
             start: Point(0, 0),
             end: Point(5, 5),
-            type: Surface());
-
-  /// Throw an error when this tile is activated.
-  @override
-  void onActivate() {
-    throw ActivateException('Activate');
-  }
+            type: Surface(),
+            onActivate: () => throw ActivateException('Activate'));
 }
 
 void main() {
@@ -42,7 +37,7 @@ void main() {
       expect(t.start, equals(Point<int>(0, 0)));
       expect(t.end, equals(Point<int>(5, 5)));
       expect(t.type is Surface, isTrue);
-      expect(t.type.moveInterval, equals(500));
+      expect(t.type.minMoveInterval, equals(500));
     });
 
     test('Custom tile tests', () {
