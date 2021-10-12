@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.22.2]
+
+### Changed
+
+* Changing channel reverb no longer changes the stored reverb ID.
+
 ## [0.22.1]
 
 Added

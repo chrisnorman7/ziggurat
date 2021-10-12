@@ -79,7 +79,7 @@ void main() {
           predicate(
               (value) => value is SoundPositionScalar && value.scalar == 1.0));
       channel.setReverb(reverb);
-      expect(channel.reverb, equals(reverb.id));
+      expect(channel.reverb, isNull);
       channel.setReverb(null);
       expect(channel.reverb, isNull);
       final sound = channel.playSound(

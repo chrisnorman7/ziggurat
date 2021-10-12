@@ -43,11 +43,14 @@ class SoundChannel extends SoundEvent {
   /// The given [createdReverb] must have been created by [Game.createReverb].
   ///
   /// If [createdReverb] is `null`, then the reverb will be cleared.
-  void setReverb(CreateReverb? createdReverb) {
-    final reverbId = createdReverb?.id;
-    reverb = reverbId;
-    game.queueSoundEvent(SetSoundChannelReverb(id!, reverbId));
-  }
+  ///
+  /// This method does not set the current [reverb], as this value will be
+  /// needed by the sound subsystem.
+  ///
+  /// The responsibility for setting this value therefore, falls to the sound
+  /// subsystem.
+  void setReverb(CreateReverb? createdReverb) =>
+      game.queueSoundEvent(SetSoundChannelReverb(id!, createdReverb?.id));
 
   double _gain;
 
