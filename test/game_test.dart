@@ -20,12 +20,10 @@ void main() {
       expect(game.currentLevel, equals(level2));
     });
     test('One-off Task Test', () {
-      final sdl = Sdl()..init();
+      final sdl = Sdl();
       final game = Game('Test Game');
       var i = 0;
-      var task = game.registerTask(3, () {
-        i++;
-      });
+      var task = game.registerTask(3, () => i++);
       expect(game.tasks.contains(task), isTrue);
       expect(task.runWhen, equals(3));
       expect(i, isZero);
@@ -43,17 +41,14 @@ void main() {
       game.time = 0;
       task = game.registerTask(5, () => 0, timeOffset: now);
       expect(task.runWhen, equals(now + 5));
-      sdl.quit();
     });
     test('Repeating Task Test', () {
-      final sdl = Sdl()..init();
+      final sdl = Sdl();
       final game = Game('Test Game');
       var i = 0;
-      final task = game.registerTask(3, () {
-        i++;
-      }, interval: 2);
+      final task = game.registerTask(3, () => i++, interval: 2);
       expect(task.interval, equals(2));
-      expect(game.tasks.contains(task), isTrue);
+      expect(game.tasks, contains(task));
       expect(task.runWhen, equals(3));
       expect(i, isZero);
       while (game.time < task.runWhen) {
@@ -76,10 +71,9 @@ void main() {
         ..tick(sdl, 1);
       expect(i, equals(2));
       expect(game.tasks.length, equals(1));
-      sdl.quit();
     });
     test('Tasks adding tasks', () {
-      final sdl = Sdl()..init();
+      final sdl = Sdl();
       final game = Game('Tasks that add tasks');
       expect(game.tasks, isEmpty);
       game.registerTask(0, () => game.registerTask(0, game.stop));
@@ -87,7 +81,6 @@ void main() {
       game.tick(sdl, 0);
       expect(game.tasks.length, equals(1));
       expect(game.tasks.first.func, equals(game.stop));
-      sdl.quit();
     });
     test('.unregisterTask', () {
       final game = Game('unregisterTask');

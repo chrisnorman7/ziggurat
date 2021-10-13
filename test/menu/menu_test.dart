@@ -2,6 +2,8 @@ import 'package:dart_sdl/dart_sdl.dart';
 import 'package:test/test.dart';
 import 'package:ziggurat/ziggurat.dart';
 
+import '../helpers.dart';
+
 void main() {
   group('Menu Tests', () {
     final game = Game('Menu Testing Game');
@@ -86,8 +88,7 @@ void main() {
       expect(cancel, equals(1));
     });
     test('.handleSdlEvent', () {
-      final sdl = Sdl()..init();
-      final timestamp = DateTime.now().millisecondsSinceEpoch;
+      final sdl = Sdl();
       var cancel = 0;
       var activate = 0;
       final menu = Menu(
@@ -97,77 +98,32 @@ void main() {
         ..addButton(() => activate++);
       expect(cancel, isZero);
       expect(activate, isZero);
-      menu.handleSdlEvent(KeyboardEvent(
-          sdl,
-          timestamp,
-          0,
-          PressedState.released,
-          false,
-          KeyboardKey(
-              scancode: ScanCode.SCANCODE_ESCAPE,
-              keycode: KeyCode.keycode_ESCAPE,
-              modifiers: [])));
+      menu.handleSdlEvent(
+          makeKeyboardEvent(sdl, menu.cancelScanCode, KeyCode.keycode_ESCAPE));
       expect(cancel, isZero);
       expect(menu.currentMenuItem, isNull);
-      final downEvent = KeyboardEvent(
-          sdl,
-          timestamp,
-          0,
-          PressedState.pressed,
-          false,
-          KeyboardKey(
-              scancode: ScanCode.SCANCODE_DOWN,
-              keycode: KeyCode.keycode_DOWN,
-              modifiers: []));
+      final downEvent = makeKeyboardEvent(
+          sdl, ScanCode.SCANCODE_DOWN, KeyCode.keycode_DOWN,
+          state: PressedState.pressed);
       menu.handleSdlEvent(downEvent);
       expect(menu.currentMenuItem, equals(menu.menuItems.first));
-      menu.handleSdlEvent(KeyboardEvent(
-          sdl,
-          timestamp,
-          0,
-          PressedState.pressed,
-          false,
-          KeyboardKey(
-              scancode: ScanCode.SCANCODE_UP,
-              keycode: KeyCode.keycode_UP,
-              modifiers: [])));
+      menu.handleSdlEvent(makeKeyboardEvent(
+          sdl, ScanCode.SCANCODE_UP, KeyCode.keycode_UP,
+          state: PressedState.pressed));
       expect(menu.currentMenuItem, isNull);
       menu
         ..handleSdlEvent(downEvent)
-        ..handleSdlEvent(KeyboardEvent(
-            sdl,
-            timestamp,
-            0,
-            PressedState.pressed,
-            false,
-            KeyboardKey(
-                scancode: ScanCode.SCANCODE_ESCAPE,
-                keycode: KeyCode.keycode_ESCAPE,
-                modifiers: [])));
+        ..handleSdlEvent(makeKeyboardEvent(
+            sdl, ScanCode.SCANCODE_ESCAPE, KeyCode.keycode_ESCAPE,
+            state: PressedState.pressed));
       expect(cancel, equals(1));
-      menu.handleSdlEvent(KeyboardEvent(
-          sdl,
-          timestamp,
-          0,
-          PressedState.released,
-          false,
-          KeyboardKey(
-              scancode: ScanCode.SCANCODE_SPACE,
-              keycode: KeyCode.keycode_SPACE,
-              modifiers: [])));
+      menu.handleSdlEvent(makeKeyboardEvent(
+          sdl, ScanCode.SCANCODE_SPACE, KeyCode.keycode_SPACE));
       expect(activate, isZero);
-      menu.handleSdlEvent(KeyboardEvent(
-          sdl,
-          timestamp,
-          0,
-          PressedState.pressed,
-          false,
-          KeyboardKey(
-              scancode: ScanCode.SCANCODE_SPACE,
-              keycode: KeyCode.keycode_SPACE,
-              modifiers: [])));
+      menu.handleSdlEvent(makeKeyboardEvent(
+          sdl, ScanCode.SCANCODE_SPACE, KeyCode.keycode_SPACE,
+          state: PressedState.pressed));
       expect(activate, equals(1));
-      sdl.quit();
     });
     test('ListButton', () {
       var newValue = '';

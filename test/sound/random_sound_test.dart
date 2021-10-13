@@ -23,7 +23,7 @@ void main() {
       expect(r.nextPlay, isNull);
     });
     test('play', () async {
-      final sdl = Sdl()..init();
+      final sdl = Sdl();
       final game = Game('Play Random Sounds');
       final randomSound1 = RandomSound(AssetReference.file('sound1.wav'),
           Point(1.0, 2.0), Point(5.0, 6.0), 1000, 1000);
@@ -78,7 +78,6 @@ void main() {
           inOpenClosedRange(
               randomSound2.minCoordinates.y, randomSound2.maxCoordinates.y));
       expect(position.z, isZero);
-      sdl.quit();
     });
   });
 }
