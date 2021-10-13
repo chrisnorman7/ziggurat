@@ -1,6 +1,5 @@
 /// Provides the [SoundChannelFilter] class and subclasses.
 import 'events_base.dart';
-import 'sound_channel.dart';
 
 /// An event for filtering [SoundChannel] instances.
 class SoundChannelFilter extends SoundEvent {

@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.22.4]
+
+### Added
+
+* Added the `SoundChannelGroup` class.
+
 ## [0.22.3]
 
 ### Changed

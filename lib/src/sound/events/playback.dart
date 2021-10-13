@@ -2,7 +2,6 @@
 import '../../error.dart';
 import '../../game.dart';
 import '../../json/asset_reference.dart';
-import 'automation_fade.dart';
 import 'events_base.dart';
 
 /// An event which means a sound should be played.
