@@ -21,6 +21,7 @@ class SceneLevel extends Level {
       this.duration,
       this.skipScanCode,
       this.skipControllerButton,
+      this.soundChannel,
       List<Ambiance>? ambiances,
       List<RandomSound>? randomSounds})
       : assert(
@@ -40,6 +41,11 @@ class SceneLevel extends Level {
   ///
   /// The [Message.keepAlive] property must be `true`.
   final Message message;
+
+  /// The sound channel to play the [message] sound through.
+  ///
+  /// If this value is `null`, then [Game.interfaceSounds] will be used.
+  final SoundChannel? soundChannel;
 
   /// The number of milliseconds to run this scene for.
   ///
@@ -63,10 +69,13 @@ class SceneLevel extends Level {
   /// The playing sound (if any).
   PlaySound? _sound;
 
+  /// The currently-playing sound.
+  PlaySound? get sound => _sound;
+
   @override
   void onPush() {
     super.onPush();
-    _sound = game.outputMessage(message);
+    _sound = game.outputMessage(message, soundChannel: soundChannel);
     if (duration != null) {
       game.registerTask(duration!, onDone);
     }

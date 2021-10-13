@@ -130,5 +130,26 @@ void main() {
       expect(done, equals(1));
       expect(game.currentLevel, isNull);
     });
+    test('.onPush', () {
+      final game = Game('SceneLevel.onPush');
+      const message =
+          Message(keepAlive: true, sound: AssetReference.file('test.wav'));
+      var sceneLevel = SceneLevel(
+          game: game, message: message, onDone: () {}, duration: 1234);
+      game.pushLevel(sceneLevel);
+      var sound = sceneLevel.sound!;
+      expect(sound.channel, equals(game.interfaceSounds.id));
+      expect(sound.sound, equals(message.sound));
+      final soundChannel = game.createSoundChannel();
+      sceneLevel = SceneLevel(
+          game: game,
+          message: message,
+          onDone: () {},
+          duration: 1234,
+          soundChannel: soundChannel);
+      game.pushLevel(sceneLevel);
+      sound = sceneLevel.sound!;
+      expect(sound.channel, equals(soundChannel.id));
+    });
   });
 }
