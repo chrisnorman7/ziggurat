@@ -26,6 +26,7 @@ export 'src/json/trigger_map.dart';
 export 'src/levels/box_map_level.dart';
 export 'src/levels/editor.dart';
 export 'src/levels/level.dart';
+export 'src/levels/scene_level.dart';
 export 'src/math.dart';
 export 'src/menu/menu_base.dart';
 export 'src/menu/widgets/widgets_base.dart';

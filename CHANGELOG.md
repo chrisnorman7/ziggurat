@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.22.5]
+
+### Added
+
+* Added the `SceneLevel` class.
+
 ## [0.22.4]
 
 ### Added
