@@ -1,4 +1,5 @@
 /// Provides the [SoundPosition] class subclasses.
+import 'sound_channel.dart';
 
 /// The default sound position.
 ///
@@ -9,6 +10,9 @@ class SoundPosition {
 }
 
 /// An unpanned sound.
+///
+/// For the sake of optimisation, this value should be used whenever you have a
+/// [SoundChannel] instance that should be unpanned.
 const unpanned = SoundPosition();
 
 /// A sound which should be panned.

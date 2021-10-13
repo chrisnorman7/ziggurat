@@ -28,6 +28,7 @@
     "Lowpass",
     "negatable",
     "npc",
+    "num",
     "perc",
     "posix",
     "rect",

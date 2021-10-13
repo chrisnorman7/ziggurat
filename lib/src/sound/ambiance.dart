@@ -9,7 +9,7 @@ import 'events/sound_channel.dart';
 /// This class represents a playing ambiance.
 class AmbiancePlayback {
   /// Create an instance.
-  AmbiancePlayback(this.channel, this.sound);
+  const AmbiancePlayback(this.channel, this.sound);
 
   /// The channel that [sound] is playing through.
   final SoundChannel channel;

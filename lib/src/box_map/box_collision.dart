@@ -6,7 +6,7 @@ import 'box.dart';
 /// instance on a [BoxMapLevel].
 class BoxCollision {
   /// Make an instance.
-  BoxCollision(this.distance, this.onCollide);
+  const BoxCollision(this.distance, this.onCollide);
 
   /// The distance the player must be from this [Box] before [onCollide] is
   /// called.

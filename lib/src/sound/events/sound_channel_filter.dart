@@ -5,13 +5,13 @@ import 'sound_channel.dart';
 /// An event for filtering [SoundChannel] instances.
 class SoundChannelFilter extends SoundEvent {
   /// Create an event.
-  SoundChannelFilter(int id) : super(id: id);
+  const SoundChannelFilter(int id) : super(id: id);
 }
 
 /// An event for applying a lowpass to a [SoundChannel] instance.
 class SoundChannelLowpass extends SoundChannelFilter {
   /// Create an instance.
-  SoundChannelLowpass(int id, this.frequency, this.q) : super(id);
+  const SoundChannelLowpass(int id, this.frequency, this.q) : super(id);
 
   /// The frequency of the low pass.
   final double frequency;
@@ -23,14 +23,14 @@ class SoundChannelLowpass extends SoundChannelFilter {
 /// An event for applying a highpass to a [SoundChannel] instance.
 class SoundChannelHighpass extends SoundChannelLowpass {
   /// Create an instance.
-  SoundChannelHighpass(int id, double frequency, double q)
+  const SoundChannelHighpass(int id, double frequency, double q)
       : super(id, frequency, q);
 }
 
 /// An event for applying a bandpass to a [SoundChannel] instance.
 class SoundChannelBandpass extends SoundChannelFilter {
   /// Create an instance.
-  SoundChannelBandpass(
+  const SoundChannelBandpass(
       {required int id, required this.frequency, required this.bandwidth})
       : super(id);
 

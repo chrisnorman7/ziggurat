@@ -5,7 +5,7 @@ import 'base.dart';
 /// A simple surface that can be walked on.
 class Surface extends BoxType {
   /// Create a surface.
-  Surface(
+  const Surface(
       {this.minMoveInterval = 500,
       this.footstepSize = 1.0,
       this.minTurnInterval = 100,

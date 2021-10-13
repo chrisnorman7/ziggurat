@@ -8,7 +8,7 @@ export 'sound_position.dart';
 /// The base class for all sound events.
 class SoundEvent {
   /// Create an event.
-  SoundEvent({this.id});
+  const SoundEvent({this.id});
 
   /// The ID of this event.
   final int? id;

@@ -12,8 +12,11 @@ import '../sound/random_sound.dart';
 /// A level in a [Game] instance.
 class Level {
   /// Create a level.
-  Level(this.game, {List<Ambiance>? ambiances, List<RandomSound>? randomSounds})
-      : commands = {},
+  Level(this.game,
+      {Map<String, Command>? commands,
+      List<Ambiance>? ambiances,
+      List<RandomSound>? randomSounds})
+      : commands = commands ?? {},
         ambiances = ambiances ?? [],
         randomSounds = randomSounds ?? [];
 

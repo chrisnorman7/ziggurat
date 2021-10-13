@@ -103,20 +103,20 @@ class SoundChannel extends SoundEvent {
 /// Destroy a [SoundChannel] instance.
 class DestroySoundChannel extends SoundEvent {
   /// Create an event.
-  DestroySoundChannel(int id) : super(id: id);
+  const DestroySoundChannel(int id) : super(id: id);
 }
 
 /// Set the gain for a [SoundChannel].
 class SetSoundChannelGain extends SetSoundGain {
   /// Create an event.
-  SetSoundChannelGain({required int id, required double gain})
+  const SetSoundChannelGain({required int id, required double gain})
       : super(id: id, gain: gain);
 }
 
 /// Set the position for a [SoundChannel].
 class SetSoundChannelPosition extends SoundEvent {
   /// Create an instance.
-  SetSoundChannelPosition(int id, this.position) : super(id: id);
+  const SetSoundChannelPosition(int id, this.position) : super(id: id);
 
   /// The new position.
   final SoundPosition position;
@@ -128,7 +128,7 @@ class SetSoundChannelReverb extends SoundEvent {
   ///
   /// The given [id] should be the ID of the [SoundChannel] to set the reverb
   /// for.
-  SetSoundChannelReverb(int id, this.reverb) : super(id: id);
+  const SetSoundChannelReverb(int id, this.reverb) : super(id: id);
 
   /// The reverb preset to use.
   ///

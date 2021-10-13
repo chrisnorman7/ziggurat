@@ -8,4 +8,7 @@ import 'player.dart';
 /// This class should be subclassed whenever something that moves is required.
 ///
 /// The most obvious subclasses are [Player] and [NonPlayerCharacter].
-class Agent extends BoxType {}
+class Agent extends BoxType {
+  /// Make it possible for subclasses to be constant.
+  const Agent();
+}

@@ -38,7 +38,7 @@ class CommandKeyboardKey {
 @JsonSerializable()
 class CommandTrigger {
   /// Create an instance.
-  CommandTrigger(
+  const CommandTrigger(
       {required this.name,
       required this.description,
       this.keyboardKey,
