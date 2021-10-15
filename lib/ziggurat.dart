@@ -24,6 +24,7 @@ export 'src/json/message.dart';
 export 'src/json/runner_settings.dart';
 export 'src/json/trigger_map.dart';
 export 'src/levels/box_map_level.dart';
+export 'src/levels/dialogue_level.dart';
 export 'src/levels/editor.dart';
 export 'src/levels/level.dart';
 export 'src/levels/scene_level.dart';
