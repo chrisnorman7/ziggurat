@@ -75,7 +75,8 @@ class SceneLevel extends Level {
   @override
   void onPush() {
     super.onPush();
-    _sound = game.outputMessage(message, soundChannel: soundChannel);
+    _sound = game.outputMessage(message,
+        soundChannel: soundChannel, oldSound: _sound);
     if (duration != null) {
       game.registerTask(duration!, onDone);
     }
