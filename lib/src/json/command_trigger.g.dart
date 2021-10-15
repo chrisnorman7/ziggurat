@@ -8,7 +8,7 @@ part of 'command_trigger.dart';
 
 CommandKeyboardKey _$CommandKeyboardKeyFromJson(Map<String, dynamic> json) =>
     CommandKeyboardKey(
-      _$enumDecode(_$ScanCodeEnumMap, json['scanCode']),
+      $enumDecode(_$ScanCodeEnumMap, json['scanCode']),
       shiftKey: json['shiftKey'] as bool? ?? false,
       controlKey: json['controlKey'] as bool? ?? false,
       altKey: json['altKey'] as bool? ?? false,
@@ -21,32 +21,6 @@ Map<String, dynamic> _$CommandKeyboardKeyToJson(CommandKeyboardKey instance) =>
       'controlKey': instance.controlKey,
       'altKey': instance.altKey,
     };
-
-K _$enumDecode<K, V>(
-  Map<K, V> enumValues,
-  Object? source, {
-  K? unknownValue,
-}) {
-  if (source == null) {
-    throw ArgumentError(
-      'A value must be provided. Supported values: '
-      '${enumValues.values.join(', ')}',
-    );
-  }
-
-  return enumValues.entries.singleWhere(
-    (e) => e.value == source,
-    orElse: () {
-      if (unknownValue == null) {
-        throw ArgumentError(
-          '`$source` is not one of the supported values: '
-          '${enumValues.values.join(', ')}',
-        );
-      }
-      return MapEntry(unknownValue, enumValues.values.first);
-    },
-  ).key;
-}
 
 const _$ScanCodeEnumMap = {
   ScanCode.SCANCODE_UNKNOWN: 'SCANCODE_UNKNOWN',
@@ -304,7 +278,7 @@ CommandTrigger _$CommandTriggerFromJson(Map<String, dynamic> json) =>
           : CommandKeyboardKey.fromJson(
               json['keyboardKey'] as Map<String, dynamic>),
       button:
-          _$enumDecodeNullable(_$GameControllerButtonEnumMap, json['button']),
+          $enumDecodeNullable(_$GameControllerButtonEnumMap, json['button']),
     );
 
 Map<String, dynamic> _$CommandTriggerToJson(CommandTrigger instance) =>
@@ -314,17 +288,6 @@ Map<String, dynamic> _$CommandTriggerToJson(CommandTrigger instance) =>
       'keyboardKey': instance.keyboardKey,
       'button': _$GameControllerButtonEnumMap[instance.button],
     };
-
-K? _$enumDecodeNullable<K, V>(
-  Map<K, V> enumValues,
-  dynamic source, {
-  K? unknownValue,
-}) {
-  if (source == null) {
-    return null;
-  }
-  return _$enumDecode<K, V>(enumValues, source, unknownValue: unknownValue);
-}
 
 const _$GameControllerButtonEnumMap = {
   GameControllerButton.invalid: 'invalid',
