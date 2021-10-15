@@ -235,7 +235,7 @@ class Editor extends Level {
     if (event is TextInputEvent) {
       appendText(event.text);
     } else if (event is KeyboardEvent &&
-        event.state == PressedState.released &&
+        event.state == PressedState.pressed &&
         event.key.modifiers.isEmpty) {
       final scanCode = event.key.scancode;
       if (scanCode == doneScanCode) {
