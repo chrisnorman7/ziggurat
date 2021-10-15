@@ -64,7 +64,6 @@ void main() {
       expect(game.tasks.length, equals(1));
       expect(game.tasks.first.func, equals(sceneLevel.onDone));
       expect(game.tasks.first.runWhen, equals(sceneLevel.duration));
-      expect(done, isZero);
       sceneLevel.skip();
       expect(done, equals(1));
       expect(game.currentLevel, isNull);
@@ -72,7 +71,7 @@ void main() {
     });
     test('.handleSdlValue', () {
       final sdl = Sdl();
-      final game = Game('SceneLevel.skip');
+      final game = Game('SceneLevel.handleSdlValue');
       var done = 0;
       const message = Message(keepAlive: true);
       final sceneLevel = SceneLevel(
@@ -92,13 +91,13 @@ void main() {
           state: PressedState.pressed));
       expect(done, equals(1));
       expect(game.currentLevel, equals(sceneLevel));
-      sceneLevel.handleSdlEvent(makeControllerButtonEvent(
-          sdl, sceneLevel.skipControllerButton!,
-          state: PressedState.released));
-      expect(done, equals(1));
-      expect(game.currentLevel, equals(sceneLevel));
       sceneLevel.handleSdlEvent(
           makeControllerButtonEvent(sdl, sceneLevel.skipControllerButton!));
+      expect(done, equals(1));
+      expect(game.currentLevel, equals(sceneLevel));
+      sceneLevel.handleSdlEvent(makeControllerButtonEvent(
+          sdl, sceneLevel.skipControllerButton!,
+          state: PressedState.pressed));
       expect(done, equals(2));
       expect(game.currentLevel, equals(sceneLevel));
     });

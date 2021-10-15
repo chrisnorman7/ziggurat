@@ -31,7 +31,7 @@ TextInputEvent makeTextInputEvent(Sdl sdl, String text) =>
 /// Make a controller button event.
 ControllerButtonEvent makeControllerButtonEvent(
         Sdl sdl, GameControllerButton button,
-        {PressedState state = PressedState.pressed}) =>
+        {PressedState state = PressedState.released}) =>
     ControllerButtonEvent(
         sdl: sdl,
         timestamp: DateTime.now().millisecondsSinceEpoch,
