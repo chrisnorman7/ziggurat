@@ -5,6 +5,7 @@
 ### Added
 
 * Added the `SceneLevel` class.
+* Added the `DialogueLevel` class.
 
 ## [0.22.4]
 
