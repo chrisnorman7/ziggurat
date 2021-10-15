@@ -8,6 +8,8 @@
       "name": "ziggurat",
       "request": "launch",
       "type": "dart",
+      "console": "debugConsole",
+      "program": "../../flutter/bin/dart.bat"
     }
   ]
 }

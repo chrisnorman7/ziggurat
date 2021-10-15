@@ -6,6 +6,7 @@
 
 * Added the `SceneLevel` class.
 * Added the `DialogueLevel` class.
+* Added the `TileMapLevel` class.
 
 ## [0.22.4]
 
