@@ -28,9 +28,15 @@ class TileMapLevel extends Level {
       this.turnAmount = 5.0,
       this.movementSettings =
           const AxisSetting(GameControllerAxis.righty, 0.5, 500),
+      this.forwardScanCode = ScanCode.SCANCODE_W,
+      this.backwardScanCode = ScanCode.SCANCODE_S,
       this.sidestepSettings =
           const AxisSetting(GameControllerAxis.rightx, 0.5, 600),
+      this.sidestepLeftScanCode = ScanCode.SCANCODE_A,
+      this.sidestepRightScanCode = ScanCode.SCANCODE_D,
       this.turnSettings = const AxisSetting(GameControllerAxis.leftx, 0.5, 300),
+      this.turnLeftScanCode = ScanCode.SCANCODE_LEFT,
+      this.turnRightScanCode = ScanCode.SCANCODE_RIGHT,
       List<Ambiance>? ambiances,
       List<RandomSound>? randomSounds})
       : lastMove = 0,
@@ -109,11 +115,29 @@ class TileMapLevel extends Level {
   /// Configure how the player will move forward and backward.
   final AxisSetting movementSettings;
 
+  /// The key to move forward.
+  final ScanCode forwardScanCode;
+
+  /// The key to move backwards.
+  final ScanCode backwardScanCode;
+
   /// Configure how the player will sidestep.
   final AxisSetting sidestepSettings;
 
+  /// The key to sidestep left.
+  final ScanCode sidestepLeftScanCode;
+
+  /// The key to move backwards.
+  final ScanCode sidestepRightScanCode;
+
   /// Configure how the player will turn.
   final AxisSetting turnSettings;
+
+  /// The key to turn left.
+  final ScanCode turnLeftScanCode;
+
+  /// The key to turn right.
+  final ScanCode turnRightScanCode;
 
   /// The direction the player is moving in.
   MovementDirections? movementDirection;
@@ -181,6 +205,31 @@ class TileMapLevel extends Level {
           }
         } else {
           turnDirection = null;
+        }
+      }
+    } else if (event is KeyboardEvent) {
+      if (event.repeat == false && event.key.modifiers.isEmpty) {
+        final scanCode = event.key.scancode;
+        final state = event.state;
+        if (scanCode == forwardScanCode) {
+          movementDirection =
+              state == PressedState.pressed ? MovementDirections.forward : null;
+        } else if (scanCode == backwardScanCode) {
+          movementDirection = state == PressedState.pressed
+              ? MovementDirections.backward
+              : null;
+        } else if (scanCode == sidestepLeftScanCode) {
+          sidestepDirection =
+              state == PressedState.pressed ? TurnDirections.left : null;
+        } else if (scanCode == sidestepRightScanCode) {
+          sidestepDirection =
+              state == PressedState.pressed ? TurnDirections.right : null;
+        } else if (scanCode == turnLeftScanCode) {
+          turnDirection =
+              state == PressedState.pressed ? TurnDirections.left : null;
+        } else if (scanCode == turnRightScanCode) {
+          turnDirection =
+              state == PressedState.pressed ? TurnDirections.right : null;
         }
       }
     }
