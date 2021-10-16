@@ -9,6 +9,11 @@
 * Added the `TileMapLevel` class.
 * Added the `AxisSetting` class.
 * Added the `Level.tick` method.
+* Added some direction enums for use with `TileMapLevel`.
+
+### Changed
+
+* Renamed `Directions` to `CardinalDirections`.
 
 ## [0.22.4]
 
