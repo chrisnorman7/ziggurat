@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.22.6]
+
+### Added
+
+* Reminders to call super methods on the `TileMapLevel` class.
+
 ## [0.22.5]
 
 ### Added

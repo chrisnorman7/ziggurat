@@ -2,6 +2,7 @@
 import 'dart:math';
 
 import 'package:dart_sdl/dart_sdl.dart';
+import 'package:meta/meta.dart';
 
 import '../directions.dart';
 import '../extensions.dart';
@@ -161,6 +162,7 @@ class TileMapLevel extends Level {
   }
 
   @override
+  @mustCallSuper
   void onPush() {
     super.onPush();
     game
@@ -169,6 +171,7 @@ class TileMapLevel extends Level {
   }
 
   @override
+  @mustCallSuper
   void handleSdlEvent(Event event) {
     if (event is ControllerAxisEvent) {
       final axis = event.axis;
@@ -240,6 +243,7 @@ class TileMapLevel extends Level {
   }
 
   @override
+  @mustCallSuper
   void tick(Sdl sdl, int timeDelta) {
     if (turnDirection != null &&
         (game.time - lastMove) >= turnSettings.interval) {
