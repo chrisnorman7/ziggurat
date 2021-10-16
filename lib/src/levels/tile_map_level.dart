@@ -41,6 +41,7 @@ class TileMapLevel extends Level {
       List<Ambiance>? ambiances,
       List<RandomSound>? randomSounds})
       : lastMove = 0,
+        lastTurn = 0,
         _tiles = List.generate(
             tileMap.width, (index) => List.filled(tileMap.height, null)),
         _coordinates = coordinates ??
@@ -152,6 +153,9 @@ class TileMapLevel extends Level {
   /// How many milliseconds since the last move.
   int lastMove;
 
+  /// How many seconds since the last turn.
+  int lastTurn;
+
   /// Get the tile at the given [point].
   Tile? tileAt(Point<int> point) {
     try {
@@ -246,8 +250,8 @@ class TileMapLevel extends Level {
   @mustCallSuper
   void tick(Sdl sdl, int timeDelta) {
     if (turnDirection != null &&
-        (game.time - lastMove) >= turnSettings.interval) {
-      lastMove = game.time;
+        (game.time - lastTurn) >= turnSettings.interval) {
+      lastTurn = game.time;
       turn();
     }
     if (movementDirection != null &&

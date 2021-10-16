@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.22.7]
+
+### Changed
+
+* You can now turn and move simultaneously with `TileMapLevel` instances.
+
 ## [0.22.6]
 
 ### Added
