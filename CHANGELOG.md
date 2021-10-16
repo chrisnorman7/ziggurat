@@ -8,6 +8,7 @@
 * Added the `DialogueLevel` class.
 * Added the `TileMapLevel` class.
 * Added the `AxisSetting` class.
+* Added the `Level.tick` method.
 
 ## [0.22.4]
 
