@@ -259,5 +259,114 @@ void main() {
       expect(level.movementDirection, isNull);
       expect(level.sidestepDirection, isNull);
     });
+    test('.handleSdlValue (Axis Events)', () {
+      const minValue = -32768;
+      const maxValue = 32767;
+      final sdl = Sdl();
+      final level = TileMapLevel(
+          game: game, tileMap: TileMap(tiles: [], width: 10, height: 10));
+      expect(level.turnDirection, isNull);
+      expect(level.movementDirection, isNull);
+      expect(level.sidestepDirection, isNull);
+      var axis = level.turnSettings.axis;
+      level
+        ..movementDirection = MovementDirections.forward
+        ..sidestepDirection = TurnDirections.right
+        ..turnDirection = TurnDirections.right
+        ..handleSdlEvent(makeControllerAxisEvent(sdl, axis, minValue));
+      expect(level.turnDirection, equals(TurnDirections.left));
+      expect(level.movementDirection, equals(MovementDirections.forward));
+      expect(level.sidestepDirection, equals(TurnDirections.right));
+      level
+        ..movementDirection = MovementDirections.forward
+        ..sidestepDirection = TurnDirections.right
+        ..turnDirection = TurnDirections.right
+        ..handleSdlEvent(makeControllerAxisEvent(sdl, axis, 0));
+      expect(level.turnDirection, isNull);
+      expect(level.movementDirection, equals(MovementDirections.forward));
+      expect(level.sidestepDirection, equals(TurnDirections.right));
+      level
+        ..movementDirection = MovementDirections.forward
+        ..sidestepDirection = TurnDirections.left
+        ..turnDirection = TurnDirections.left
+        ..handleSdlEvent(makeControllerAxisEvent(sdl, axis, maxValue));
+      expect(level.turnDirection, equals(TurnDirections.right));
+      expect(level.movementDirection, equals(MovementDirections.forward));
+      expect(level.sidestepDirection, equals(TurnDirections.left));
+      level
+        ..movementDirection = MovementDirections.forward
+        ..sidestepDirection = TurnDirections.right
+        ..turnDirection = TurnDirections.left
+        ..handleSdlEvent(makeControllerAxisEvent(sdl, axis, 0));
+      expect(level.turnDirection, isNull);
+      expect(level.movementDirection, equals(MovementDirections.forward));
+      expect(level.sidestepDirection, equals(TurnDirections.right));
+      axis = level.movementSettings.axis;
+      level
+        ..movementDirection = MovementDirections.forward
+        ..sidestepDirection = TurnDirections.right
+        ..turnDirection = TurnDirections.left
+        ..handleSdlEvent(makeControllerAxisEvent(sdl, axis, maxValue));
+      expect(level.turnDirection, equals(TurnDirections.left));
+      expect(level.movementDirection, equals(MovementDirections.backward));
+      expect(level.sidestepDirection, isNull);
+      level
+        ..movementDirection = MovementDirections.forward
+        ..sidestepDirection = TurnDirections.right
+        ..turnDirection = TurnDirections.left
+        ..handleSdlEvent(makeControllerAxisEvent(sdl, axis, 0));
+      expect(level.turnDirection, equals(TurnDirections.left));
+      expect(level.movementDirection, isNull);
+      expect(level.sidestepDirection, equals(TurnDirections.right));
+      level
+        ..movementDirection = MovementDirections.backward
+        ..sidestepDirection = TurnDirections.right
+        ..turnDirection = TurnDirections.left
+        ..handleSdlEvent(makeControllerAxisEvent(sdl, axis, minValue));
+      expect(level.turnDirection, TurnDirections.left);
+      expect(level.movementDirection, equals(MovementDirections.forward));
+      expect(level.sidestepDirection, isNull);
+      level
+        ..movementDirection = MovementDirections.backward
+        ..sidestepDirection = TurnDirections.right
+        ..turnDirection = TurnDirections.left
+        ..handleSdlEvent(makeControllerAxisEvent(sdl, axis, 0));
+      expect(level.turnDirection, TurnDirections.left);
+      expect(level.movementDirection, isNull);
+      expect(level.sidestepDirection, equals(TurnDirections.right));
+      axis = level.sidestepSettings.axis;
+      level
+        ..movementDirection = MovementDirections.backward
+        ..sidestepDirection = TurnDirections.right
+        ..turnDirection = TurnDirections.left
+        ..handleSdlEvent(makeControllerAxisEvent(sdl, axis, minValue));
+      expect(level.sidestepDirection, equals(TurnDirections.left));
+      expect(level.movementDirection, isNull);
+      expect(level.turnDirection, TurnDirections.left);
+      level
+        ..movementDirection = MovementDirections.backward
+        ..sidestepDirection = TurnDirections.right
+        ..turnDirection = TurnDirections.left
+        ..handleSdlEvent(makeControllerAxisEvent(sdl, axis, 0));
+      expect(level.sidestepDirection, isNull);
+      expect(level.movementDirection, equals(MovementDirections.backward));
+      expect(level.turnDirection, TurnDirections.left);
+      level
+        ..movementDirection = MovementDirections.backward
+        ..sidestepDirection = TurnDirections.left
+        ..turnDirection = TurnDirections.left
+        ..handleSdlEvent(makeControllerAxisEvent(sdl, axis, maxValue));
+      expect(level.sidestepDirection, equals(TurnDirections.right));
+      expect(level.movementDirection, isNull);
+      expect(level.turnDirection, TurnDirections.left);
+      level
+        ..movementDirection = MovementDirections.backward
+        ..sidestepDirection = TurnDirections.right
+        ..turnDirection = TurnDirections.left
+        ..handleSdlEvent(makeControllerAxisEvent(sdl, axis, 0));
+      expect(level.sidestepDirection, isNull);
+      expect(level.movementDirection, equals(MovementDirections.backward));
+      expect(level.turnDirection, TurnDirections.left);
+    });
   });
 }
