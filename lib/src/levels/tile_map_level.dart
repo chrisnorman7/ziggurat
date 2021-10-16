@@ -3,8 +3,10 @@ import 'dart:math';
 
 import 'package:dart_sdl/dart_sdl.dart';
 
+import '../directions.dart';
 import '../extensions.dart';
 import '../game.dart';
+import '../json/axis_setting.dart';
 import '../math.dart';
 import '../sound/ambiance.dart';
 import '../sound/random_sound.dart';
@@ -20,24 +22,23 @@ class TileMapLevel extends Level {
       required this.tileMap,
       Point<double>? coordinates,
       double heading = 0.0,
-      this.axisSensitivity = 0.5,
-      this.axisInterval = 200,
-      this.forwardMoveAxis = GameControllerAxis.righty,
-      this.lateralMoveAxis = GameControllerAxis.rightx,
       this.forwardMoveDistance = 1.0,
       this.backwardMoveDistance = 0.5,
       this.lateralMoveDistance = 0.7,
-      this.turnAxis = GameControllerAxis.leftx,
       this.turnAmount = 5.0,
+      this.movementSettings =
+          const AxisSetting(GameControllerAxis.righty, 0.5, 500),
+      this.sidestepSettings =
+          const AxisSetting(GameControllerAxis.rightx, 0.5, 600),
+      this.turnSettings = const AxisSetting(GameControllerAxis.leftx, 0.5, 300),
       List<Ambiance>? ambiances,
       List<RandomSound>? randomSounds})
-      : _tiles = List.generate(
+      : lastMove = 0,
+        _tiles = List.generate(
             tileMap.width, (index) => List.filled(tileMap.height, null)),
         _coordinates = coordinates ??
             Point(tileMap.start.x.toDouble(), tileMap.start.y.toDouble()),
         _heading = heading,
-        _turningValue = 0,
-        _movingValue = 0,
         super(game,
             ambiances: (ambiances ?? []) +
                 [
@@ -89,19 +90,6 @@ class TileMapLevel extends Level {
     game.setListenerOrientation(value);
   }
 
-  /// the sensitivity of controller axes.
-  final double axisSensitivity;
-
-  /// How regularly axes moving will affect player movement.
-  final int axisInterval;
-
-  /// The controller axis that should be used to move the player forwards and
-  /// backwards.
-  final GameControllerAxis forwardMoveAxis;
-
-  /// The controller axis that should be used to move the player left and right.
-  final GameControllerAxis lateralMoveAxis;
-
   /// The distance to move the player.
   ///
   /// This value will be used by the [move] method.
@@ -113,19 +101,31 @@ class TileMapLevel extends Level {
   /// The size of the player's footsteps when moving laterally.
   double lateralMoveDistance;
 
-  /// The controller axis that can be used to turn the player.
-  final GameControllerAxis turnAxis;
-
   /// How far to turn the player.
   ///
   /// This value will be used by the [turn] method.
   final double turnAmount;
 
-  /// Whether the player is turning.
-  double _turningValue;
+  /// Configure how the player will move forward and backward.
+  final AxisSetting movementSettings;
 
-  /// Whether the player is moving.
-  double _movingValue;
+  /// Configure how the player will sidestep.
+  final AxisSetting sidestepSettings;
+
+  /// Configure how the player will turn.
+  final AxisSetting turnSettings;
+
+  /// The direction the player is moving in.
+  MovementDirections? movementDirection;
+
+  /// The direction the player is turning.
+  TurnDirections? turnDirection;
+
+  /// The direction the player is sidestepping in.
+  TurnDirections? sidestepDirection;
+
+  /// How many milliseconds since the last move.
+  int lastMove;
 
   /// Get the tile at the given [point].
   Tile? tileAt(Point<int> point) {
@@ -148,40 +148,73 @@ class TileMapLevel extends Level {
   void handleSdlEvent(Event event) {
     if (event is ControllerAxisEvent) {
       final axis = event.axis;
-      var value = event.smallValue;
-      if (axis == turnAxis) {
-        if (value.abs() > axisSensitivity) {
-          if (_turningValue < axisSensitivity) {
-            game.registerTask(0, turn, interval: axisInterval);
+      final value = event.smallValue;
+      if (axis == movementSettings.axis) {
+        if (value.abs() >= movementSettings.sensitivity) {
+          // The right stick provides positive values when it is pulled back.
+          sidestepDirection = null;
+          if (value < 0) {
+            movementDirection = MovementDirections.forward;
+          } else {
+            movementDirection = MovementDirections.backward;
           }
-          _turningValue = value;
         } else {
-          game.unregisterTask(turn);
+          movementDirection = null;
         }
-      } else if (axis == forwardMoveAxis) {
-        value *= -1;
-        if (value.abs() >= axisSensitivity) {
-          if (_movingValue.abs() < axisSensitivity) {
-            game.registerTask(0, move, interval: axisInterval);
+      } else if (axis == sidestepSettings.axis) {
+        if (value.abs() >= sidestepSettings.sensitivity) {
+          movementDirection = null;
+          if (value < 0) {
+            sidestepDirection = TurnDirections.left;
+          } else {
+            sidestepDirection = TurnDirections.right;
           }
-          _movingValue = value;
         } else {
-          game.unregisterTask(move);
+          sidestepDirection = null;
+        }
+      } else if (axis == turnSettings.axis) {
+        if (value.abs() >= turnSettings.sensitivity) {
+          if (value < 0) {
+            turnDirection = TurnDirections.left;
+          } else {
+            turnDirection = TurnDirections.right;
+          }
+        } else {
+          turnDirection = null;
         }
       }
     }
   }
 
+  @override
+  void tick(Sdl sdl, int timeDelta) {
+    if (turnDirection != null &&
+        (game.time - lastMove) >= turnSettings.interval) {
+      lastMove = game.time;
+      turn();
+    }
+    if (movementDirection != null &&
+        (game.time - lastMove) >= movementSettings.interval) {
+      lastMove = game.time;
+      move();
+    }
+    if (sidestepDirection != null &&
+        (game.time - lastMove) >= sidestepSettings.interval) {
+      lastMove = game.time;
+      sidestep();
+    }
+  }
+
   /// Move the player.
-  void move() {
-    var direction = _heading;
-    var distance = _movingValue;
-    if (distance < 0) {
-      direction = normaliseAngle(direction + 180);
-      distance *= -1;
-      distance *= backwardMoveDistance;
-    } else {
-      distance *= forwardMoveDistance;
+  void move({double? direction, double? distance}) {
+    if (direction == null || distance == null) {
+      if (movementDirection == MovementDirections.forward) {
+        direction ??= _heading;
+        distance ??= forwardMoveDistance;
+      } else {
+        direction ??= normaliseAngle(_heading + 180);
+        distance ??= backwardMoveDistance;
+      }
     }
     final newCoordinates =
         coordinatesInDirection(_coordinates, direction, distance);
@@ -208,9 +241,18 @@ class TileMapLevel extends Level {
     }
   }
 
+  /// Move the player sideways.
+  void sidestep() => move(
+      direction: normaliseAngle(sidestepDirection == TurnDirections.left
+          ? _heading - 90
+          : _heading + 90));
+
   /// Turn the player.
-  void turn() {
-    heading = normaliseAngle(heading + (_turningValue * turnAmount));
+  void turn({double? angle}) {
+    heading = angle ??
+        normaliseAngle(turnDirection == TurnDirections.right
+            ? heading + turnAmount
+            : heading - turnAmount);
     game.outputSound(sound: tileMap.turnSound);
   }
 }

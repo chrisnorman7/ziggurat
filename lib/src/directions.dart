@@ -1,10 +1,7 @@
-/// Provides the [Directions] class.
+/// Provides various movement constants.
 
 /// A class which contains direction constants.
-///
-/// We should be using an enum here, but Dart is currently stupid in that
-/// regard.
-abstract class Directions {
+abstract class CardinalDirections {
   /// North.
   static const north = 0.0;
 
@@ -28,4 +25,22 @@ abstract class Directions {
 
   /// Northwest.
   static const northwest = 315.0;
+}
+
+/// Walking directions.
+enum MovementDirections {
+  /// Forwards.
+  forward,
+
+  /// Backwards.
+  backward,
+}
+
+/// Turning directions.
+enum TurnDirections {
+  /// Left.
+  left,
+
+  /// Right.
+  right,
 }
