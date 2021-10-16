@@ -1,7 +1,10 @@
 import 'dart:math';
 
+import 'package:dart_sdl/dart_sdl.dart';
 import 'package:test/test.dart';
 import 'package:ziggurat/ziggurat.dart';
+
+import '../helpers.dart';
 
 void main() {
   group('TileMapLevel', () {
@@ -138,6 +141,123 @@ void main() {
       expect(listenerOrientation.y2, equals(orientation.y2));
       expect(listenerOrientation.z1, equals(orientation.z1));
       expect(listenerOrientation.z2, equals(orientation.z2));
+    });
+    test('.handleSdlValue (Keyboard Events)', () {
+      const keyCode = KeyCode.keycode_ESCAPE;
+      final sdl = Sdl();
+      final level = TileMapLevel(
+          game: game, tileMap: TileMap(tiles: [], width: 10, height: 10));
+      expect(level.turnDirection, isNull);
+      expect(level.movementDirection, isNull);
+      expect(level.sidestepDirection, isNull);
+      var scanCode = level.turnLeftScanCode;
+      level
+        ..turnDirection = TurnDirections.right
+        ..movementDirection = MovementDirections.forward
+        ..sidestepDirection = TurnDirections.right
+        ..handleSdlEvent(makeKeyboardEvent(sdl, scanCode, keyCode,
+            state: PressedState.pressed));
+      expect(level.turnDirection, equals(TurnDirections.left));
+      expect(level.movementDirection, equals(MovementDirections.forward));
+      expect(level.sidestepDirection, equals(TurnDirections.right));
+      level
+        ..turnDirection = TurnDirections.right
+        ..movementDirection = MovementDirections.forward
+        ..sidestepDirection = TurnDirections.right
+        ..handleSdlEvent(makeKeyboardEvent(sdl, scanCode, keyCode));
+      expect(level.turnDirection, isNull);
+      expect(level.movementDirection, equals(MovementDirections.forward));
+      expect(level.sidestepDirection, equals(TurnDirections.right));
+      scanCode = level.turnRightScanCode;
+      level
+        ..turnDirection = TurnDirections.left
+        ..movementDirection = MovementDirections.forward
+        ..sidestepDirection = TurnDirections.right
+        ..handleSdlEvent(makeKeyboardEvent(sdl, scanCode, keyCode,
+            state: PressedState.pressed));
+      expect(level.turnDirection, equals(TurnDirections.right));
+      expect(level.movementDirection, equals(MovementDirections.forward));
+      expect(level.sidestepDirection, equals(TurnDirections.right));
+      level
+        ..turnDirection = TurnDirections.left
+        ..movementDirection = MovementDirections.forward
+        ..sidestepDirection = TurnDirections.right
+        ..handleSdlEvent(makeKeyboardEvent(sdl, scanCode, keyCode));
+      expect(level.turnDirection, isNull);
+      expect(level.movementDirection, equals(MovementDirections.forward));
+      expect(level.sidestepDirection, equals(TurnDirections.right));
+      scanCode = level.sidestepLeftScanCode;
+      level
+        ..turnDirection = TurnDirections.left
+        ..movementDirection = MovementDirections.forward
+        ..sidestepDirection = TurnDirections.right
+        ..handleSdlEvent(makeKeyboardEvent(sdl, scanCode, keyCode,
+            state: PressedState.pressed));
+      expect(level.sidestepDirection, equals(TurnDirections.left));
+      expect(level.turnDirection, equals(TurnDirections.left));
+      expect(level.movementDirection, isNull);
+      level
+        ..turnDirection = TurnDirections.left
+        ..movementDirection = MovementDirections.forward
+        ..sidestepDirection = TurnDirections.right
+        ..handleSdlEvent(makeKeyboardEvent(sdl, scanCode, keyCode));
+      expect(level.turnDirection, equals(TurnDirections.left));
+      expect(level.movementDirection, isNull);
+      expect(level.sidestepDirection, isNull);
+      scanCode = level.sidestepRightScanCode;
+      level
+        ..turnDirection = TurnDirections.left
+        ..movementDirection = MovementDirections.forward
+        ..sidestepDirection = TurnDirections.left
+        ..handleSdlEvent(makeKeyboardEvent(sdl, scanCode, keyCode,
+            state: PressedState.pressed));
+      expect(level.sidestepDirection, equals(TurnDirections.right));
+      expect(level.turnDirection, equals(TurnDirections.left));
+      expect(level.movementDirection, isNull);
+      level
+        ..turnDirection = TurnDirections.left
+        ..movementDirection = MovementDirections.forward
+        ..sidestepDirection = TurnDirections.right
+        ..handleSdlEvent(makeKeyboardEvent(sdl, scanCode, keyCode));
+      expect(level.turnDirection, equals(TurnDirections.left));
+      expect(level.movementDirection, isNull);
+      expect(level.sidestepDirection, isNull);
+      scanCode = level.backwardScanCode;
+      level
+        ..turnDirection = TurnDirections.left
+        ..movementDirection = MovementDirections.forward
+        ..sidestepDirection = TurnDirections.left
+        ..handleSdlEvent(makeKeyboardEvent(sdl, scanCode, keyCode,
+            state: PressedState.pressed));
+      expect(level.movementDirection, equals(MovementDirections.backward));
+      expect(level.turnDirection, equals(TurnDirections.left));
+      expect(level.sidestepDirection, isNull);
+      level
+        ..turnDirection = TurnDirections.left
+        ..movementDirection = MovementDirections.forward
+        ..sidestepDirection = TurnDirections.right
+        ..handleSdlEvent(makeKeyboardEvent(sdl, scanCode, keyCode));
+      expect(level.turnDirection, equals(TurnDirections.left));
+      expect(level.movementDirection, isNull);
+      expect(level.sidestepDirection, isNull);
+      scanCode = level.forwardScanCode;
+      level
+        ..turnDirection = TurnDirections.left
+        ..movementDirection = MovementDirections.backward
+        ..sidestepDirection = TurnDirections.right
+        ..handleSdlEvent(makeKeyboardEvent(sdl, scanCode, keyCode,
+            state: PressedState.pressed));
+      expect(level.movementDirection, equals(MovementDirections.forward));
+      expect(level.turnDirection, equals(TurnDirections.left));
+      expect(level.sidestepDirection, isNull);
+      level
+        ..turnDirection = TurnDirections.left
+        ..movementDirection = MovementDirections.forward
+        ..sidestepDirection = TurnDirections.right
+        ..handleSdlEvent(makeKeyboardEvent(sdl, scanCode, keyCode));
+      expect(level.turnDirection, equals(TurnDirections.left));
+      expect(level.movementDirection, isNull);
+      expect(level.sidestepDirection, isNull);
     });
   });
 }

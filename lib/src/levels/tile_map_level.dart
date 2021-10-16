@@ -212,16 +212,20 @@ class TileMapLevel extends Level {
         final scanCode = event.key.scancode;
         final state = event.state;
         if (scanCode == forwardScanCode) {
+          sidestepDirection = null;
           movementDirection =
               state == PressedState.pressed ? MovementDirections.forward : null;
         } else if (scanCode == backwardScanCode) {
+          sidestepDirection = null;
           movementDirection = state == PressedState.pressed
               ? MovementDirections.backward
               : null;
         } else if (scanCode == sidestepLeftScanCode) {
+          movementDirection = null;
           sidestepDirection =
               state == PressedState.pressed ? TurnDirections.left : null;
         } else if (scanCode == sidestepRightScanCode) {
+          movementDirection = null;
           sidestepDirection =
               state == PressedState.pressed ? TurnDirections.right : null;
         } else if (scanCode == turnLeftScanCode) {
