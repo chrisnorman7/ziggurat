@@ -138,4 +138,17 @@ class Level {
   ///This method will be called only if the event in question is not consumed
   ///by [game].
   void handleSdlEvent(Event event) {}
+
+  /// Let this level tick.
+  ///
+  /// This method will be called by [Game.tick].
+  ///
+  /// The [sdl] argument will be the SDL instance that is running the game.
+  ///
+  /// The [timeDelta] argument will be how long it has been since the game last
+  /// ticked.
+  ///
+  /// To prevent jank, this method should not take too long, although some time
+  /// correction is performed by the [Game.tick] method.
+  void tick(Sdl sdl, int timeDelta) {}
 }

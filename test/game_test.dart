@@ -2,6 +2,20 @@ import 'package:dart_sdl/dart_sdl.dart';
 import 'package:test/test.dart';
 import 'package:ziggurat/ziggurat.dart';
 
+class TestLevel extends Level {
+  /// Create.
+  TestLevel(Game game)
+      : lastTicked = 0,
+        super(game);
+
+  /// The number of milliseconds since the [game] ticked.
+  int lastTicked;
+  @override
+  void tick(Sdl sdl, int timeDelta) {
+    lastTicked = timeDelta;
+  }
+}
+
 void main() {
   group('Game tests', () {
     test('Initialization', () {
@@ -121,6 +135,21 @@ void main() {
           allOf(greaterThanOrEqualTo(now),
               lessThan(DateTime.now().millisecondsSinceEpoch)));
       sdl.quit();
+    });
+    test('.tick', () {
+      final sdl = Sdl();
+      final game = Game('Game.tick');
+      final level = TestLevel(game);
+      game.tick(sdl, 1);
+      expect(level.lastTicked, isZero);
+      game
+        ..pushLevel(level)
+        ..tick(sdl, 1234);
+      expect(level.lastTicked, equals(1234));
+      game
+        ..popLevel()
+        ..tick(sdl, 9876);
+      expect(level.lastTicked, equals(1234));
     });
   });
 }

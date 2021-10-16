@@ -304,6 +304,7 @@ class Game {
             ..playSound(sound.sound);
         }
       }
+      level.tick(sdl, timeDelta);
     }
     final completedTasks = <Task>[];
     // We must copy the `tasks` list to prevent Concurrent modification during
