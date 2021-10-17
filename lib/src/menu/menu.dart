@@ -160,6 +160,16 @@ class Menu extends Level {
   @override
   void onReveal(Level old) => showCurrentItem();
 
+  @override
+  void onPop(double? fadeLength) {
+    super.onPop(fadeLength);
+    final sound = oldSound;
+    if (sound != null && sound.keepAlive == true) {
+      sound.destroy();
+    }
+    oldSound = null;
+  }
+
   /// Activate the currently-focused menu item.
   void activate() {
     final item = currentMenuItem;

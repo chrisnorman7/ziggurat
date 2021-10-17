@@ -246,5 +246,33 @@ void main() {
       expect(item.label.sound, equals(selectSound));
       expect(item.widget, equals(menuItemLabel));
     });
+    test('.onPop', () {
+      final menu = Menu(game: game, title: Message(), items: [
+        MenuItem(
+            Message(sound: AssetReference.file('file1.wav')), menuItemLabel),
+        MenuItem(
+            Message(sound: AssetReference.file('file2.wav'), keepAlive: true),
+            menuItemLabel)
+      ]);
+      game.pushLevel(menu);
+      expect(game.currentLevel, equals(menu));
+      expect(menu.oldSound, isNull);
+      menu.down();
+      expect(menu.oldSound, isNotNull);
+      expect(menu.oldSound!.sound, equals(menu.menuItems.first.label.sound));
+      game.popLevel();
+      expect(game.currentLevel, isNull);
+      expect(menu.oldSound, isNull);
+      game.pushLevel(menu);
+      expect(game.currentLevel, equals(menu));
+      expect(menu.oldSound, isNotNull);
+      expect(menu.oldSound!.sound, equals(menu.menuItems.first.label.sound));
+      menu.down();
+      expect(menu.oldSound, isNotNull);
+      expect(menu.oldSound!.sound, equals(menu.menuItems.last.label.sound));
+      game.popLevel();
+      expect(game.currentLevel, isNull);
+      expect(menu.oldSound, isNull);
+    });
   });
 }

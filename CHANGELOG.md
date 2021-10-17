@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.22.8]
+
+### Fixed
+
+* Old menu sounds are now destroyed when menus are popped.
+
 ## [0.22.7]
 
 ### Changed
