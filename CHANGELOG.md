@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.22.9]
+
+### Changed
+
+* Swapped the default axes used for tile map movement.
+
 ## [0.22.8]
 
 ### Fixed

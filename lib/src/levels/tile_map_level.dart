@@ -28,14 +28,15 @@ class TileMapLevel extends Level {
       this.lateralMoveDistance = 0.7,
       this.turnAmount = 5.0,
       this.movementSettings =
-          const AxisSetting(GameControllerAxis.righty, 0.5, 500),
+          const AxisSetting(GameControllerAxis.lefty, 0.5, 500),
       this.forwardScanCode = ScanCode.SCANCODE_W,
       this.backwardScanCode = ScanCode.SCANCODE_S,
       this.sidestepSettings =
-          const AxisSetting(GameControllerAxis.rightx, 0.5, 600),
+          const AxisSetting(GameControllerAxis.leftx, 0.5, 600),
       this.sidestepLeftScanCode = ScanCode.SCANCODE_A,
       this.sidestepRightScanCode = ScanCode.SCANCODE_D,
-      this.turnSettings = const AxisSetting(GameControllerAxis.leftx, 0.5, 300),
+      this.turnSettings =
+          const AxisSetting(GameControllerAxis.rightx, 0.5, 300),
       this.turnLeftScanCode = ScanCode.SCANCODE_LEFT,
       this.turnRightScanCode = ScanCode.SCANCODE_RIGHT,
       List<Ambiance>? ambiances,
