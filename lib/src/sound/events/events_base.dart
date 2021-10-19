@@ -1,12 +1,4 @@
 /// Provides sound events and the [SoundEvent] class.
-export 'automation_fade.dart';
-export 'global.dart';
-export 'playback.dart';
-export 'reverb.dart';
-export 'sound_channel.dart';
-export 'sound_channel_filter.dart';
-export 'sound_channel_group.dart';
-export 'sound_position.dart';
 
 /// The base class for all sound events.
 class SoundEvent {

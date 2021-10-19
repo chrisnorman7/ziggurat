@@ -5,9 +5,6 @@ import '../../json/message.dart';
 import '../menu.dart';
 import '../menu_item.dart';
 
-export 'button.dart';
-export 'label.dart';
-
 /// The base class for all widgets.
 class Widget {
   /// Allow subclasses to be constant.

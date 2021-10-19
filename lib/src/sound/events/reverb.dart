@@ -2,6 +2,7 @@
 import '../../game.dart';
 import '../reverb_preset.dart';
 import 'events_base.dart';
+import 'playback.dart';
 
 /// Create a reverb.
 class CreateReverb extends SoundEvent {

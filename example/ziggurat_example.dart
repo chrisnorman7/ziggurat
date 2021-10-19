@@ -1,5 +1,7 @@
 /// A quick example.
 import 'package:dart_sdl/dart_sdl.dart';
+import 'package:ziggurat/levels.dart';
+import 'package:ziggurat/menus.dart';
 import 'package:ziggurat/ziggurat.dart';
 
 final quitCommandTrigger = CommandTrigger.basic(

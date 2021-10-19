@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:test/test.dart';
-import 'package:ziggurat/ziggurat.dart';
+import 'package:ziggurat/mapping.dart';
 
 void main() {
   group('Tile', () {

@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_print
 
 import 'package:dart_sdl/dart_sdl.dart';
+import 'package:ziggurat/levels.dart';
 import 'package:ziggurat/ziggurat.dart';
 
 Future<void> main() async {

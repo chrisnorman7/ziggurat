@@ -1,5 +1,6 @@
 /// Provides the [SoundChannelGroup] class.
-import 'events_base.dart';
+import 'reverb.dart';
+import 'sound_channel.dart';
 
 /// A class that allows you to group [SoundChannel] instances.
 class SoundChannelGroup {

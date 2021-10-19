@@ -11,6 +11,10 @@ import 'json/trigger_map.dart';
 import 'levels/level.dart';
 import 'sound/events/events_base.dart';
 import 'sound/events/global.dart';
+import 'sound/events/playback.dart';
+import 'sound/events/reverb.dart';
+import 'sound/events/sound_channel.dart';
+import 'sound/events/sound_position.dart';
 import 'sound/reverb_preset.dart';
 import 'task.dart';
 

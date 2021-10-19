@@ -7,4 +7,4 @@ general set of APIs for making audio games.
 
 ## Sounds
 
-Please note that to generate actual sounds, you will need to use the [ziggurat_sounds](https://pub.dev/packages/ziggurat_sounds), and this package will only generate sound events.
+Please note that Ziggurat only generates sound events. To play actual sounds, you will need to use the [ziggurat_sounds](https://pub.dev/packages/ziggurat_sounds) package.

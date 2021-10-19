@@ -2,6 +2,9 @@ import 'dart:math';
 
 import 'package:dart_sdl/dart_sdl.dart';
 import 'package:test/test.dart';
+import 'package:ziggurat/levels.dart';
+import 'package:ziggurat/mapping.dart';
+import 'package:ziggurat/sound.dart';
 import 'package:ziggurat/ziggurat.dart';
 
 import '../helpers.dart';

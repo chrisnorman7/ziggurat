@@ -3,6 +3,10 @@ import '../../error.dart';
 import '../../game.dart';
 import '../../json/asset_reference.dart';
 import 'events_base.dart';
+import 'playback.dart';
+import 'reverb.dart';
+import 'sound_channel_filter.dart';
+import 'sound_position.dart';
 
 /// A channel for playing sounds through.
 class SoundChannel extends SoundEvent {

@@ -1,4 +1,5 @@
 import 'package:test/test.dart';
+import 'package:ziggurat/sound.dart';
 import 'package:ziggurat/ziggurat.dart';
 
 void main() {

@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.23.0]
+
+### Added
+
+* Added the `MultiGridLevel`.
+
+### Changed
+
+* Split the package up a little bit.
+
 ## [0.22.9]
 
 ### Changed

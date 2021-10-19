@@ -2,7 +2,7 @@
 import 'dart:math';
 
 import 'package:test/test.dart';
-import 'package:ziggurat/ziggurat.dart';
+import 'package:ziggurat/mapping.dart';
 
 /// The error which should be thrown when a [CustomTile] instance is activated.
 class ActivateException implements Exception {

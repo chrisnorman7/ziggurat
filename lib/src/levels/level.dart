@@ -5,11 +5,14 @@ import 'package:meta/meta.dart';
 import '../command.dart';
 import '../game.dart';
 import '../sound/ambiance.dart';
-import '../sound/events/events_base.dart';
 import '../sound/events/sound_channel.dart';
+import '../sound/events/sound_position.dart';
 import '../sound/random_sound.dart';
 
-/// A level in a [Game] instance.
+/// The top-level level class.
+///
+/// Instances of this class are used to provide functionality to [Game]
+/// instances.
 class Level {
   /// Create a level.
   Level(this.game,

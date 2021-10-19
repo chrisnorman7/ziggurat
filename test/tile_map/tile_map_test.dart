@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:test/test.dart';
+import 'package:ziggurat/mapping.dart';
 import 'package:ziggurat/ziggurat.dart';
 
 void main() {

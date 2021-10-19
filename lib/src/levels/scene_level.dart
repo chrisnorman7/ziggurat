@@ -4,7 +4,8 @@ import 'package:dart_sdl/dart_sdl.dart';
 import '../game.dart';
 import '../json/message.dart';
 import '../sound/ambiance.dart';
-import '../sound/events/events_base.dart';
+import '../sound/events/playback.dart';
+import '../sound/events/sound_channel.dart';
 import '../sound/random_sound.dart';
 import 'level.dart';
 

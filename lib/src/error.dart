@@ -3,7 +3,9 @@ import 'dart:io';
 import 'dart:math';
 
 import 'box_map/box.dart';
-import 'sound/events/events_base.dart';
+import 'sound/events/playback.dart';
+import 'sound/events/sound_channel.dart';
+import 'sound/events/sound_position.dart';
 
 /// The base class for all ziggurat errors.
 class ZigguratError extends Error {}
