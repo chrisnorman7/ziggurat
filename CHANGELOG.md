@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.23.1]
+
+### Fixed
+
+* Fixed a crash when moving right in a multi grid level with a single item in a row.
+
 ## [0.23.0]
 
 ### Added

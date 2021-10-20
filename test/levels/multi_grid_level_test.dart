@@ -164,7 +164,7 @@ void main() {
           getNumberOfEntries: () => row2Messages.length,
           getEntryLabel: row2Messages.elementAt,
           onActivate: row1.onActivate);
-      final level = MultiGridLevel(
+      var level = MultiGridLevel(
           game: game, title: Message(text: 'Grid Level'), rows: [row1, row2]);
       expect(level.verticalPosition, isNull);
       game.messages.clear();
@@ -254,6 +254,15 @@ void main() {
       level.down();
       expect(level.verticalPosition, equals(1));
       expect(level.horizontalPosition, equals(2));
+      row1Messages.removeLast();
+      level = MultiGridLevel(game: game, title: level.title, rows: level.rows)
+        ..down()
+        ..right();
+      expect(level.verticalPosition, isZero);
+      expect(level.horizontalPosition, isZero);
+      level.right();
+      expect(level.verticalPosition, isZero);
+      expect(level.horizontalPosition, isZero);
     });
     test('.handleSdlValue (scancode)', () {
       final sdl = Sdl();

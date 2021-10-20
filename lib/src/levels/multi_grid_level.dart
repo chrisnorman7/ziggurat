@@ -231,12 +231,10 @@ class MultiGridLevel extends Level {
         if (numberOfEntries > 0) {
           _horizontalPositions[vp] = 0;
         }
-      } else if (positionInRow > 0) {
-        _horizontalPositions[vp] = min(positionInRow + 1, numberOfEntries - 1);
       } else if (positionInRow == -1) {
         _horizontalPositions[vp] = null;
       } else {
-        _horizontalPositions[vp] = positionInRow + 1;
+        _horizontalPositions[vp] = min(positionInRow + 1, numberOfEntries - 1);
       }
     }
     showCurrent();
