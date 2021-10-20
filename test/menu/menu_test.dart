@@ -276,5 +276,36 @@ void main() {
       expect(game.currentLevel, isNull);
       expect(menu.oldSound, isNull);
     });
+    test('Searching', () async {
+      final sdl = Sdl();
+      final menuItems = [
+        MenuItem(Message(text: 'First Item'), menuItemLabel),
+        MenuItem(Message(text: 'Second Item'), menuItemLabel)
+      ];
+      var menu = Menu(
+          game: game, title: Message(), items: menuItems, searchInterval: 20);
+      expect(menu.searchEnabled, isTrue);
+      expect(menu.searchInterval, equals(20));
+      expect(menu.searchString, isEmpty);
+      expect(menu.searchTime, isZero);
+      menu.handleSdlEvent(makeTextInputEvent(sdl, 'F'));
+      expect(menu.searchString, equals('f'));
+      expect(menu.currentMenuItem, equals(menuItems.first));
+      menu.handleSdlEvent(makeTextInputEvent(sdl, 'S'));
+      expect(menu.searchString, equals('fs'));
+      expect(menu.currentMenuItem, equals(menuItems.first));
+      await Future<void>.delayed(Duration(milliseconds: 25));
+      menu.handleSdlEvent(makeTextInputEvent(sdl, 's'));
+      expect(menu.searchString, equals('s'));
+      expect(menu.currentMenuItem, equals(menuItems.last));
+      menu = Menu(
+          game: game,
+          title: menu.title,
+          items: menuItems,
+          searchEnabled: false);
+      expect(menu.searchEnabled, isFalse);
+      menu.handleSdlEvent(makeTextInputEvent(sdl, 'asdf'));
+      expect(menu.searchString, isEmpty);
+    });
   });
 }

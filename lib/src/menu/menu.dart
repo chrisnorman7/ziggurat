@@ -60,7 +60,7 @@ class Menu extends Level {
     required Game game,
     required this.title,
     List<MenuItem>? items,
-    int? position,
+    this.position,
     this.onCancel,
     this.upScanCode = ScanCode.SCANCODE_UP,
     this.upButton = GameControllerButton.dpadUp,
@@ -75,10 +75,13 @@ class Menu extends Level {
     GameControllerAxis cancelAxis = GameControllerAxis.triggerleft,
     int controllerMovementSpeed = 500,
     double controllerAxisSensitivity = 0.5,
+    this.searchEnabled = true,
+    this.searchInterval = 500,
     List<Ambiance>? ambiances,
     List<RandomSound>? randomSounds,
   })  : menuItems = items ?? [],
-        _position = position,
+        searchString = '',
+        searchTime = 0,
         super(game, ambiances: ambiances, randomSounds: randomSounds) {
     controllerAxisDispatcher = ControllerAxisDispatcher({
       movementAxis: (double value) {
@@ -132,21 +135,33 @@ class Menu extends Level {
   final GameControllerButton cancelButton;
 
   //// The current position in this menu.
-  int? _position;
+  int? position;
 
   /// The axis dispatcher used for controller movements.
   late final ControllerAxisDispatcher controllerAxisDispatcher;
 
+  /// Whether or not it will be possible to search this menu.
+  final bool searchEnabled;
+
+  /// How many milliseconds must elapse before searches clear [searchString].
+  final int searchInterval;
+
   /// The last sound played by this menu.
   PlaySound? oldSound;
 
+  /// The most recent search string.
+  String searchString;
+
+  /// The last time a search was performed.
+  int searchTime;
+
   /// Show the current item.
   void showCurrentItem() {
-    final position = _position;
-    if (position == null) {
+    final pos = position;
+    if (pos == null) {
       oldSound = game.outputMessage(title, oldSound: oldSound);
     } else {
-      menuItems.elementAt(position).onFocus(this);
+      menuItems.elementAt(pos).onFocus(this);
     }
   }
 
@@ -202,35 +217,35 @@ class Menu extends Level {
 
   /// Get the currently focussed menu item.
   MenuItem? get currentMenuItem {
-    final position = _position;
-    if (position != null) {
-      return menuItems.elementAt(position);
+    final pos = position;
+    if (pos != null) {
+      return menuItems.elementAt(pos);
     }
   }
 
   /// Move up in this menu.
   void up() {
-    final position = _position;
-    if (position == null) {
+    final pos = position;
+    if (pos == null) {
       return;
-    } else if (position == 0) {
-      _position = null;
+    } else if (pos == 0) {
+      position = null;
     } else {
-      _position = position - 1;
+      position = pos - 1;
     }
     showCurrentItem();
   }
 
   /// Move down in this menu.
   void down() {
-    final position = _position;
-    if (position == null) {
-      _position = 0;
+    final pos = position;
+    if (pos == null) {
+      position = 0;
     } else {
-      if (position == (menuItems.length - 1)) {
+      if (pos == (menuItems.length - 1)) {
         return;
       }
-      _position = position + 1;
+      position = pos + 1;
     }
     showCurrentItem();
   }
@@ -285,6 +300,21 @@ class Menu extends Level {
       }
     } else if (event is ControllerAxisEvent) {
       controllerAxisDispatcher.handleAxisValue(event.axis, event.smallValue);
+    } else if (event is TextInputEvent && searchEnabled == true) {
+      if ((event.timestamp - searchTime) >= searchInterval) {
+        searchString = '';
+      }
+      searchString += event.text.toLowerCase();
+      searchTime = event.timestamp;
+      for (var i = 0; i < menuItems.length; i++) {
+        final item = menuItems.elementAt(i);
+        final text = item.label.text;
+        if (text != null && text.toLowerCase().startsWith(searchString)) {
+          position = i;
+          showCurrentItem();
+          break;
+        }
+      }
     }
   }
 }

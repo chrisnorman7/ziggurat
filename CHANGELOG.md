@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.23.2]
+
+### Added
+
+* Added the ability to search menus.
+* Expose the current position in a menu.
+
 ## [0.23.1]
 
 ### Fixed
