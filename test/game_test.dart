@@ -152,5 +152,60 @@ void main() {
         ..tick(sdl, 9876);
       expect(level.lastTicked, equals(1234));
     });
+    test('.pushLevel', () async {
+      final game = Game('Game.pushLevel');
+      final sdl = Sdl();
+      final level1 = Level(game);
+      final level2 = Level(game);
+      game.pushLevel(level1);
+      expect(game.currentLevel, equals(level1));
+      expect(game.tasks, isEmpty);
+      await game.tick(sdl, 0);
+      expect(game.currentLevel, equals(level1));
+      expect(game.tasks, isEmpty);
+      game.pushLevel(level2, after: 400);
+      expect(game.currentLevel, equals(level1));
+      expect(game.tasks.length, equals(1));
+      game.time = 399;
+      await game.tick(sdl, 0);
+      expect(game.currentLevel, equals(level1));
+      expect(game.tasks.length, equals(1));
+      game.time = 400;
+      await game.tick(sdl, 0);
+      expect(game.currentLevel, equals(level2));
+      expect(game.tasks, isEmpty);
+    });
+    test('.pushLevel (instantly)', () async {
+      final sdl = Sdl();
+      var game = Game('Game.pushLevel');
+      final level = Level(game);
+      game.pushLevel(level, after: 200);
+      expect(game.currentLevel, isNull);
+      expect(game.tasks.length, equals(1));
+      final now = DateTime.now().millisecondsSinceEpoch;
+      game
+        ..time = now
+        ..tick(sdl, 0);
+      expect(game.currentLevel, equals(level));
+      expect(game.tasks, isEmpty);
+      game = Game('Game.pushLevel', time: now);
+      expect(game.time, equals(now));
+      expect(game.currentLevel, isNull);
+      expect(game.tasks, isEmpty);
+      game.pushLevel(level, after: 400);
+      expect(game.currentLevel, isNull);
+      expect(game.tasks.length, equals(1));
+      await game.tick(sdl, 0);
+      expect(game.currentLevel, isNull);
+      expect(game.tasks.length, equals(1));
+      game.time = now + 399;
+      await game.tick(sdl, 0);
+      expect(game.currentLevel, isNull);
+      expect(game.tasks.length, equals(1));
+      game.time = now + 400;
+      await game.tick(sdl, 0);
+      expect(game.currentLevel, equals(level));
+      expect(game.tasks, isEmpty);
+    });
   });
 }

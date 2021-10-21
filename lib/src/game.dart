@@ -21,10 +21,9 @@ import 'task.dart';
 /// The main game object.
 class Game {
   /// Create an instance.
-  Game(this.title, {TriggerMap? triggerMap})
+  Game(this.title, {TriggerMap? triggerMap, this.time = 0})
       : _levels = [],
         triggerMap = triggerMap ?? TriggerMap([]),
-        time = 0,
         _started = 0,
         _isRunning = false,
         tasks = [],
@@ -162,12 +161,16 @@ class Game {
   }
 
   /// Push a level onto the stack.
-  void pushLevel(Level level) {
-    final cl = currentLevel;
-    level.onPush();
-    _levels.add(level);
-    if (cl != null) {
-      cl.onCover(level);
+  void pushLevel(Level level, {int? after}) {
+    if (after != null) {
+      registerTask(after, () => pushLevel(level));
+    } else {
+      final cl = currentLevel;
+      level.onPush();
+      _levels.add(level);
+      if (cl != null) {
+        cl.onCover(level);
+      }
     }
   }
 
@@ -186,11 +189,10 @@ class Game {
   /// Replace the current level with [level].
   void replaceLevel(Level level, {double? ambianceFadeTime}) {
     popLevel(ambianceFadeTime: ambianceFadeTime);
-    if (ambianceFadeTime != null) {
-      registerTask((ambianceFadeTime * 1000).round(), () => pushLevel(level));
-    } else {
-      pushLevel(level);
-    }
+    pushLevel(level,
+        after: ambianceFadeTime == null
+            ? null
+            : (ambianceFadeTime * 1000).round());
   }
 
   /// Handle SDL events.

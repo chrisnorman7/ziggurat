@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.23.4]
+
+### Added
+
+* Added a `after` argument to `Game.pushLevel`, so that levels can be pushed after a specified delay.
+
 ## [0.23.3]
 
 ### Added

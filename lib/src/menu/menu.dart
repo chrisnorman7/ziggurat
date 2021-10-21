@@ -1,7 +1,7 @@
 /// Provides the [Menu] class.
 import 'package:dart_sdl/dart_sdl.dart';
 
-import '../../ziggurat.dart';
+import '../controller_axis_dispatcher.dart';
 import '../game.dart';
 import '../json/asset_reference.dart';
 import '../json/message.dart';
