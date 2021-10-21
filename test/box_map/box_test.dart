@@ -36,7 +36,7 @@ void main() {
       expect(t.name, equals('Test tile'));
       expect(t.start, equals(Point<int>(0, 0)));
       expect(t.end, equals(Point<int>(5, 5)));
-      expect(t.type is Surface, isTrue);
+      expect(t.type, isA<Surface>());
       expect(t.type.minMoveInterval, equals(500));
     });
 

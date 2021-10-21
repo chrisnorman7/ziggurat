@@ -11,7 +11,7 @@ void main() {
           name: 'Wall', start: Point(0, 0), end: Point(5, 0), type: Wall());
       expect(w.start, equals(Point<int>(0, 0)));
       expect(w.end, equals(Point<int>(5, 0)));
-      expect(w.type is Wall, isTrue);
+      expect(w.type, isA<Wall>());
     });
   });
 }

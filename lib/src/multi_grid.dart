@@ -26,6 +26,17 @@ class MultiGridLevelRow {
       required this.onActivate,
       this.actions = const []});
 
+  /// Create an instance with a dictionary of [commands]:
+  factory MultiGridLevelRow.fromDict(
+          Message label, Map<Message, void Function(int index)> commands,
+          {List<MultiGridLevelRowAction>? actions}) =>
+      MultiGridLevelRow(
+          label: label,
+          getNumberOfEntries: () => commands.length,
+          getEntryLabel: (int value) => commands.keys.elementAt(value),
+          onActivate: (int index) => commands.values.elementAt(index)(index),
+          actions: actions ?? []);
+
   /// The label of this row.
   ///
   /// This value will be shown between the list of [actions], and the contents

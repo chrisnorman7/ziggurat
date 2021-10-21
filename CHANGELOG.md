@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.23.3]
+
+### Added
+
+* Added the `MultiGridLevelRow.fromDict` factory constructor.
+
 ## [0.23.2]
 
 ### Added
