@@ -45,7 +45,7 @@ class MultiGridLevel extends Level {
         _horizontalPositions = [],
         _verticalPosition = verticalPosition,
         super(game, ambiances: ambiances, randomSounds: randomSounds) {
-    if (verticalPosition != null && horizontalPosition != null) {
+    if (verticalPosition != null) {
       while (_horizontalPositions.length <= verticalPosition) {
         _horizontalPositions.add(null);
       }

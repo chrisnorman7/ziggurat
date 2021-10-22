@@ -675,5 +675,19 @@ void main() {
       expect(i, equals(6));
       expect(j, equals(6));
     });
+    test('defaultVerticalPosition', () {
+      final row1 = MultiGridLevelRow.fromDict(Message(), {});
+      final row2 = MultiGridLevelRow.fromDict(Message(), {});
+      final level = MultiGridLevel(
+          game: game,
+          title: Message(),
+          rows: [row1, row2],
+          verticalPosition: 1);
+      expect(level.currentRow, equals(row2));
+      game.messages.clear();
+      game.pushLevel(level);
+      expect(game.messages.length, equals(1));
+      expect(game.messages.first.message, equals(row2.label));
+    });
   });
 }

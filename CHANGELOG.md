@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.23.5]
+
+### Changed
+
+* Fixed a bug with the `MultiGridLevel` class.
+
 ## [0.23.4]
 
 ### Added
