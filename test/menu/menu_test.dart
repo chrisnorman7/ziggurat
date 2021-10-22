@@ -7,7 +7,7 @@ import 'package:ziggurat/ziggurat.dart';
 import '../helpers.dart';
 
 void main() {
-  group('Menu Tests', () {
+  group('Menu', () {
     final game = Game('Menu Testing Game');
     test('Initialisation', () {
       var menu = Menu(game: game, title: Message(text: 'Test Menu'));
@@ -306,6 +306,14 @@ void main() {
       expect(menu.searchEnabled, isFalse);
       menu.handleSdlEvent(makeTextInputEvent(sdl, 'asdf'));
       expect(menu.searchString, isEmpty);
+    });
+  });
+  group('MenuItem', () {
+    test('DynamicWidget', () {
+      final widget = DynamicWidget((menuItem) => Message(text: 'Test Widget'));
+      final menuItem = MenuItem(Message(), widget);
+      expect(widget.getLabel(menuItem), isNotNull);
+      expect(widget.getLabel(menuItem)?.text, equals('Test Widget'));
     });
   });
 }

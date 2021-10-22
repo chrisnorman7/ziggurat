@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.23.6]
+
+### Added
+
+* Added the `DynamicWidget` class.
+
 ## [0.23.5]
 
 ### Changed
