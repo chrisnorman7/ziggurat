@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.23.7]
+
+### Added
+
+* Added the `emptyMessage` constant.
+
+### Changed
+
+* Any widget can now specify an `onActivate` method.
+
 ## [0.23.6]
 
 ### Added

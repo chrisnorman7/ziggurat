@@ -7,13 +7,8 @@ import 'widgets_base.dart';
 /// A button that can be activated.
 class Button extends Widget {
   /// Create a button.
-  const Button(this.onActivate, {this.sound});
-
-  /// The function which will be called when this button is activated.
-  final void Function() onActivate;
-
-  /// The sound that should play when this widget is activated.
-  final AssetReference? sound;
+  const Button(void Function() onActivate, {AssetReference? activateSound})
+      : super(onActivate: onActivate, activateSound: activateSound);
 }
 
 /// A button which can toggle through a list of items.

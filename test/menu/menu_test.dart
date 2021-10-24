@@ -203,7 +203,7 @@ void main() {
       var number = 0;
       final button = Button(() {
         number++;
-      }, sound: AssetReference.file('something.wav'));
+      }, activateSound: AssetReference.file('something.wav'));
       final menu = Menu(
           game: game,
           title: Message(text: 'Test Menu'),
@@ -216,7 +216,7 @@ void main() {
       expect(menu.oldSound, isNull);
       menu.activate();
       expect(number, equals(1));
-      expect(menu.oldSound?.sound, equals(button.sound));
+      expect(menu.oldSound?.sound, equals(button.activateSound));
     });
     test('.addButton', () {
       final game = Game('Menu.addButton');
@@ -235,8 +235,8 @@ void main() {
       expect(item.label.sound, equals(selectSound));
       final widget = item.widget;
       expect(widget, isA<Button>());
-      expect(widget.sound, equals(activateSound));
-      widget.onActivate();
+      expect(widget.activateSound, equals(activateSound));
+      widget.onActivate!();
       expect(i, equals(1));
     });
     test('.addLabel', () {
@@ -314,6 +314,17 @@ void main() {
       final menuItem = MenuItem(Message(), widget);
       expect(widget.getLabel(menuItem), isNotNull);
       expect(widget.getLabel(menuItem)?.text, equals('Test Widget'));
+    });
+    test('Activate Dynamic Widgets', () {
+      final game = Game('Activate Dynamic Widgets');
+      final widget = DynamicWidget((menuItem) => emptyMessage);
+      final menu = Menu(
+          game: game,
+          title: emptyMessage,
+          items: [MenuItem(emptyMessage, widget)])
+        ..down();
+      expect(menu.currentMenuItem?.widget, equals(widget));
+      menu.activate();
     });
   });
 }

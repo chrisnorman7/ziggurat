@@ -31,3 +31,9 @@ class Message {
   /// Convert an instance to JSON.
   Map<String, dynamic> toJson() => _$MessageToJson(this);
 }
+
+/// An empty message.
+///
+/// This value should be used in those cases where a message is required, but
+/// not used.
+const emptyMessage = Message();

@@ -189,21 +189,10 @@ class Menu extends Level {
   void activate() {
     final item = currentMenuItem;
     final widget = item?.widget;
-    if (widget == null) {
+    if (item == null || widget == null) {
       return;
-    } else if (widget == menuItemLabel) {
-      return;
-    } else if (widget is Button) {
-      widget.onActivate();
-      final sound = widget.sound;
-      if (sound != null) {
-        oldSound =
-            game.outputMessage(Message(sound: sound), oldSound: oldSound);
-      }
-    } else if (widget is ListButton) {
-      widget.changeValue();
     } else {
-      throw Exception('Need to handle $widget widgets.');
+      widget.activate(this);
     }
   }
 
@@ -256,7 +245,7 @@ class Menu extends Level {
       AssetReference? selectSound,
       AssetReference? activateSound}) {
     final item = MenuItem(Message(sound: selectSound, text: label),
-        Button(onActivate, sound: activateSound));
+        Button(onActivate, activateSound: activateSound));
     menuItems.add(item);
     return item;
   }
