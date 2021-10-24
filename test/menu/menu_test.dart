@@ -128,6 +128,7 @@ void main() {
       expect(activate, equals(1));
     });
     test('ListButton', () {
+      final menu = Menu(game: Game('ListButton'), title: emptyMessage);
       var newValue = '';
       final listButton = ListButton(
           ['First', 'Second', 'Third'], (String value) => newValue = value);
@@ -136,19 +137,19 @@ void main() {
       var label = listButton.getLabel(menuItem);
       expect(label.text, equals('Button (First)'));
       expect(newValue, isEmpty);
-      listButton.changeValue();
+      listButton.activate(menu);
       expect(newValue, equals(listButton.items[1]));
       expect(listButton.index, equals(1));
       expect(listButton.value, equals(newValue));
       label = listButton.getLabel(menuItem);
       expect(label.text, equals('Button ($newValue)'));
-      listButton.changeValue();
+      listButton.activate(menu);
       expect(newValue, equals(listButton.value));
       expect(listButton.index, equals(2));
       expect(listButton.value, equals('Third'));
       label = listButton.getLabel(menuItem);
       expect(label.text, equals('Button ($newValue)'));
-      listButton.changeValue();
+      listButton.activate(menu);
       expect(listButton.index, isZero);
       expect(listButton.value, equals('First'));
       expect(newValue, equals(listButton.value));
@@ -156,6 +157,7 @@ void main() {
       expect(label.text, equals('Button ($newValue)'));
     });
     test('Checkbox', () {
+      final menu = Menu(game: Game('ListButton'), title: emptyMessage);
       bool? value;
       final checkbox = Checkbox((b) => value = b);
       expect(checkbox.value, isTrue);
@@ -163,17 +165,17 @@ void main() {
       final menuItem = MenuItem(Message(text: 'Checkbox'), checkbox);
       var label = checkbox.getLabel(menuItem);
       expect(label.text, equals('Checkbox (checked)'));
-      checkbox.changeValue();
+      checkbox.activate(menu);
       expect(value, isFalse);
       expect(checkbox.value, isFalse);
       label = checkbox.getLabel(menuItem);
       expect(label.text, equals('Checkbox (unchecked)'));
-      checkbox.changeValue();
+      checkbox.activate(menu);
       expect(value, isTrue);
       expect(checkbox.value, isTrue);
       label = checkbox.getLabel(menuItem);
       expect(label.text, equals('Checkbox (checked)'));
-      checkbox.changeValue();
+      checkbox.activate(menu);
       expect(value, isFalse);
       expect(checkbox.value, isFalse);
     });

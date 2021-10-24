@@ -1,6 +1,7 @@
 /// Provides the [Button] class.
 import '../../json/asset_reference.dart';
 import '../../json/message.dart';
+import '../menu.dart';
 import '../menu_item.dart';
 import 'widgets_base.dart';
 
@@ -16,26 +17,26 @@ class ListButton<T> extends Widget {
   /// Create an instance.
   ListButton(this.items, this.onChange, {this.index = 0});
 
-  /// The items that [changeValue] will cycle through.
+  /// The items that [activate] will cycle through.
   final List<T> items;
 
   /// The current position in [items].
   int index;
 
-  /// The function which will be called when [changeValue] changes value.
+  /// The function which will be called when [activate] changes value.
   final void Function(T)? onChange;
 
-  /// The function that will be called to select a new value from [items].
-  void changeValue() {
+  @override
+  void activate(Menu menu) {
     index++;
     if (index >= items.length) {
       index = 0;
     }
     final onChangeFunction = onChange;
-
     if (onChangeFunction != null) {
       onChangeFunction(value);
     }
+    super.activate(menu);
   }
 
   /// Get the currently-focused item.
