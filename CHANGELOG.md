@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.25.0]
+
+### Changed
+
+* Changed the way random sound playback is handled.
+
 ## [0.24.0]
 
 ### Added
