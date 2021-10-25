@@ -17,3 +17,4 @@ export 'src/sound/events/sound_channel_group.dart';
 export 'src/sound/events/sound_position.dart';
 export 'src/sound/random_sound.dart';
 export 'src/sound/reverb_preset.dart';
+export 'src/sound/sound_playback.dart';

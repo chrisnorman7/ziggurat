@@ -3,20 +3,7 @@ import 'dart:math';
 
 import '../game.dart';
 import '../json/asset_reference.dart';
-import '../sound/events/playback.dart';
-import 'events/sound_channel.dart';
-
-/// This class represents a playing ambiance.
-class AmbiancePlayback {
-  /// Create an instance.
-  const AmbiancePlayback(this.channel, this.sound);
-
-  /// The channel that [sound] is playing through.
-  final SoundChannel channel;
-
-  /// The sound that is playing through [channel].
-  final PlaySound sound;
-}
+import 'sound_playback.dart';
 
 /// A constantly playing sound on a map.
 class Ambiance {
@@ -44,5 +31,5 @@ class Ambiance {
   /// Holds information about how this ambiance is playing.
   ///
   /// If this value is `null`, then this ambiance is not playing.
-  AmbiancePlayback? playback;
+  SoundPlayback? playback;
 }

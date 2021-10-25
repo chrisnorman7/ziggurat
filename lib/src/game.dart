@@ -16,6 +16,7 @@ import 'sound/events/reverb.dart';
 import 'sound/events/sound_channel.dart';
 import 'sound/events/sound_position.dart';
 import 'sound/reverb_preset.dart';
+import 'sound/sound_playback.dart';
 import 'task.dart';
 
 /// The main game object.
@@ -287,6 +288,14 @@ class Game {
           }
           sound.nextPlay = time + (sound.minInterval + offset);
         } else if (time >= nextPlay) {
+          final playback = sound.playback;
+          SoundChannel? c;
+          if (playback != null) {
+            playback.sound.destroy();
+            c = playback.channel;
+          } else {
+            c = null;
+          }
           final minX = sound.minCoordinates.x;
           final maxX = sound.maxCoordinates.x;
           final minY = sound.minCoordinates.y;
@@ -295,19 +304,21 @@ class Game {
           final yDifference = maxY - minY;
           final x = minX + (xDifference * random.nextDouble());
           final y = minY + (yDifference * random.nextDouble());
-          var c = sound.channel;
+          final position = SoundPosition3d(x: x, y: y);
           if (c == null) {
-            c = createSoundChannel(position: SoundPosition3d(x: x, y: y));
-            sound.channel = c;
+            c = createSoundChannel(position: position);
           } else {
-            c.position = SoundPosition3d(x: x, y: y);
+            c.position = position;
           }
-          c
-            ..gain = sound.minGain == sound.maxGain
-                ? sound.minGain
-                : (sound.minGain +
-                    ((sound.maxGain - sound.minGain) * random.nextDouble()))
-            ..playSound(sound.sound);
+          sound.playback = SoundPlayback(
+              c,
+              c.playSound(sound.sound,
+                  keepAlive: true,
+                  gain: sound.minGain == sound.maxGain
+                      ? sound.minGain
+                      : (sound.minGain +
+                          ((sound.maxGain - sound.minGain) *
+                              random.nextDouble()))));
         }
       }
       level.tick(sdl, timeDelta);

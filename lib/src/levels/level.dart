@@ -8,6 +8,7 @@ import '../sound/ambiance.dart';
 import '../sound/events/sound_channel.dart';
 import '../sound/events/sound_position.dart';
 import '../sound/random_sound.dart';
+import '../sound/sound_playback.dart';
 
 /// The top-level level class.
 ///
@@ -49,15 +50,15 @@ class Level {
       }
       final sound = channel.playSound(ambiance.sound,
           gain: ambiance.gain, keepAlive: true, looping: true);
-      ambiance.playback = AmbiancePlayback(channel, sound);
+      ambiance.playback = SoundPlayback(channel, sound);
     }
   }
 
   /// Stop [playback].
   ///
-  /// If [AmbiancePlayback.channel] is not [Game.ambianceSounds], then the
+  /// If [SoundPlayback.channel] is not [Game.ambianceSounds], then the
   /// channel will be destroyed.
-  void stopAmbiance(AmbiancePlayback playback) {
+  void stopPlayback(SoundPlayback playback) {
     playback.sound.destroy();
     if (playback.channel != game.ambianceSounds) {
       playback.channel.destroy();
@@ -75,19 +76,21 @@ class Level {
       if (fadeLength != null) {
         playback.sound.fade(length: fadeLength);
         game.registerTask(
-            (fadeLength * 1000).round(), () => stopAmbiance(playback));
+            (fadeLength * 1000).round(), () => stopPlayback(playback));
       } else {
-        stopAmbiance(playback);
+        stopPlayback(playback);
       }
     }
     for (final sound in randomSounds) {
-      final channel = sound.channel;
-      sound.channel = null;
-      if (channel != null) {
+      final playback = sound.playback;
+      if (playback != null) {
+        sound.playback = null;
         if (fadeLength != null) {
-          game.registerTask((fadeLength * 1000).round(), channel.destroy);
+          playback.sound.fade(length: fadeLength);
+          game.registerTask(
+              (fadeLength * 1000).round(), () => stopPlayback(playback));
         } else {
-          channel.destroy();
+          stopPlayback(playback);
         }
       }
     }
