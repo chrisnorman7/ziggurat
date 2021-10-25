@@ -266,6 +266,10 @@ void main() {
           inOpenClosedRange(
               randomSound2.minCoordinates.y, randomSound2.maxCoordinates.y));
       expect(position.z, isZero);
+      expect(
+          randomSound2.nextPlay,
+          inOpenClosedRange(game.time + randomSound2.minInterval,
+              game.time + randomSound2.maxInterval));
     });
   });
 }

@@ -15,6 +15,7 @@ import 'sound/events/playback.dart';
 import 'sound/events/reverb.dart';
 import 'sound/events/sound_channel.dart';
 import 'sound/events/sound_position.dart';
+import 'sound/random_sound.dart';
 import 'sound/reverb_preset.dart';
 import 'sound/sound_playback.dart';
 import 'task.dart';
@@ -253,6 +254,17 @@ class Game {
     }
   }
 
+  /// Schedule a random [sound] to play.
+  void scheduleRandomSound(RandomSound sound) {
+    final int offset;
+    if (sound.minInterval == sound.maxInterval) {
+      offset = 0;
+    } else {
+      offset = random.nextInt(sound.maxInterval - sound.minInterval);
+    }
+    sound.nextPlay = time + (sound.minInterval + offset);
+  }
+
   /// Tick this game.
   ///
   /// The [timeDelta] argument will be the number of milliseconds since the last
@@ -280,13 +292,7 @@ class Game {
       for (final sound in level.randomSounds) {
         final nextPlay = sound.nextPlay;
         if (nextPlay == null) {
-          final int offset;
-          if (sound.minInterval == sound.maxInterval) {
-            offset = 0;
-          } else {
-            offset = random.nextInt(sound.maxInterval - sound.minInterval);
-          }
-          sound.nextPlay = time + (sound.minInterval + offset);
+          scheduleRandomSound(sound);
         } else if (time >= nextPlay) {
           final playback = sound.playback;
           SoundChannel? c;
@@ -319,6 +325,7 @@ class Game {
                       : (sound.minGain +
                           ((sound.maxGain - sound.minGain) *
                               random.nextDouble()))));
+          scheduleRandomSound(sound);
         }
       }
       level.tick(sdl, timeDelta);

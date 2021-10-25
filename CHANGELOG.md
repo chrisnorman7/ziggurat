@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.25.1]
+
+### Fixed
+
+* Random sounds now get rescheduled after playing for the first time.
+
 ## [0.25.0]
 
 ### Changed
