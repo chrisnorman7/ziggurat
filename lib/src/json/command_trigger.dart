@@ -32,6 +32,31 @@ class CommandKeyboardKey {
 
   /// Convert an instance to JSON.
   Map<String, dynamic> toJson() => _$CommandKeyboardKeyToJson(this);
+
+  /// Return a printable string of this key.
+  String toPrintableString(
+      {String controlKeyName = 'CTRL',
+      String shiftKeyName = 'SHIFT',
+      String altKeyName = 'ALT',
+      String Function(ScanCode scanCode)? getScanCodeString,
+      String separator = '+'}) {
+    final keys = <String>[];
+    if (controlKey) {
+      keys.add(controlKeyName);
+    }
+    if (shiftKey) {
+      keys.add(shiftKeyName);
+    }
+    if (altKey) {
+      keys.add(altKeyName);
+    }
+    if (getScanCodeString == null) {
+      keys.add(scanCode.toString().split('_').last);
+    } else {
+      keys.add(getScanCodeString(scanCode));
+    }
+    return keys.join(separator);
+  }
 }
 
 /// A trigger which can fire a [Command].

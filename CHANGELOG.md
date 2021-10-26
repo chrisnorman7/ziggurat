@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.25.2]
+
+### Added
+
+* Instances of `CommandKeyboardKey` are now printable.
+
 ## [0.25.1]
 
 ### Fixed

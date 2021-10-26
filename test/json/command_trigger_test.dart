@@ -1,4 +1,3 @@
-/// Test the various JSON components.
 import 'package:dart_sdl/dart_sdl.dart';
 import 'package:test/test.dart';
 import 'package:ziggurat/ziggurat.dart';
@@ -27,16 +26,13 @@ void main() {
       expect(trigger.keyboardKey?.scanCode, equals(ScanCode.SCANCODE_1));
     });
   });
-  group('AssetReference', () {
-    test('.file', () {
-      final sound = AssetReference.file('test.wav');
-      expect(sound.name, equals('test.wav'));
-      expect(sound.type, equals(AssetType.file));
-    });
-    test('.collection', () {
-      final sound = AssetReference.collection('testing');
-      expect(sound.name, equals('testing'));
-      expect(sound.type, equals(AssetType.collection));
+  group('CommandKeyboardKey', () {
+    test('./toPrintableString', () {
+      var key = CommandKeyboardKey(ScanCode.SCANCODE_0);
+      expect(key.toPrintableString(), equals('0'));
+      key = CommandKeyboardKey(ScanCode.SCANCODE_SPACE,
+          controlKey: true, shiftKey: true, altKey: true);
+      expect(key.toPrintableString(), equals('CTRL+SHIFT+ALT+SPACE'));
     });
   });
 }
