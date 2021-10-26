@@ -57,6 +57,9 @@ class CommandKeyboardKey {
     }
     return keys.join(separator);
   }
+
+  @override
+  String toString() => '<$runtimeType ${toPrintableString()}>';
 }
 
 /// A trigger which can fire a [Command].

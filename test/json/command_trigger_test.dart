@@ -34,5 +34,9 @@ void main() {
           controlKey: true, shiftKey: true, altKey: true);
       expect(key.toPrintableString(), equals('CTRL+SHIFT+ALT+SPACE'));
     });
+    test('.toString', () {
+      final key = CommandKeyboardKey(ScanCode.SCANCODE_1, shiftKey: true);
+      expect(key.toString(), equals('<CommandKeyboardKey SHIFT+1>'));
+    });
   });
 }
