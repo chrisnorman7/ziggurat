@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.25.3]
+
+### Added
+
+* Added the `FilePickerMenu` class.
+
 ## [0.25.2]
 
 ### Added

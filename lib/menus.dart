@@ -1,6 +1,7 @@
 /// Provides exports relating to menus.
 library menus;
 
+export 'src/menu/file_picker_menu.dart';
 export 'src/menu/menu.dart';
 export 'src/menu/menu_item.dart';
 export 'src/menu/widgets/button.dart';
