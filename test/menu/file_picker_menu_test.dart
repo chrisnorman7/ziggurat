@@ -29,8 +29,8 @@ void main() {
         ..position = menu.menuItems.length - 1
         ..activate();
       expect(thing, isA<File>());
-      expect(
-          thing!.path, equals(path.join(Directory.current.path, 'SDL2.dll')));
+      expect(thing!.path,
+          startsWith(path.join(Directory.current.path, 'SDL2.dll')));
     });
     test('Parent directory', () {
       final game = Game('FilePickerMenu Parent Directory');
