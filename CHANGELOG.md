@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.25.4]
+
+### Added
+
+* Added an `onStart` parameter to `Game.run`.
+
 ## [0.25.3]
 
 ### Added

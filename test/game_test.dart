@@ -129,15 +129,17 @@ void main() {
     });
     test('.started', () async {
       final sdl = Sdl()..init();
+      var i = 0;
       final game = Game('Game.started');
       expect(game.started, isZero);
       final now = DateTime.now().millisecondsSinceEpoch;
-      game.run(sdl);
+      game.run(sdl, onStart: () => i++);
       await Future<void>.delayed(Duration(milliseconds: 100));
       expect(
           game.started,
           allOf(greaterThanOrEqualTo(now),
               lessThan(DateTime.now().millisecondsSinceEpoch)));
+      expect(i, equals(1));
       sdl.quit();
     });
     test('.tick', () {

@@ -365,13 +365,31 @@ class Game {
   }
 
   /// Run this game.
+  ///
+  /// You can set the frames per second with the [framesPerSecond] parameter.
+  ///
+  /// Note: Once set, FPS cannot currently be changed.
+  ///
+  /// If you want to run some code when the game has started, but before the
+  /// main loop starts, use the [onStart] parameter.
+  ///
+  /// The `onStart` function will be called after the window has been created,
+  /// so it's perfectly fine to start pushing levels at that point.
+  ///
+  /// Before this parameter was introduced, it was necessary to use
+  /// [registerTask], which wasn't quite as reliable, due to how fast windows
+  /// are created on some machines.
   @mustCallSuper
-  Future<void> run(Sdl sdl, {int framesPerSecond = 60}) async {
+  Future<void> run(Sdl sdl,
+      {int framesPerSecond = 60, void Function()? onStart}) async {
     final int tickEvery = 1000 ~/ framesPerSecond;
     _window = sdl.createWindow(title);
     var lastTick = 0;
     _isRunning = true;
     _started = DateTime.now().millisecondsSinceEpoch;
+    if (onStart != null) {
+      onStart();
+    }
     while (_isRunning == true) {
       time = DateTime.now().millisecondsSinceEpoch;
       final int timeDelta;
