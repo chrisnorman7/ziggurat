@@ -290,6 +290,8 @@ void main() {
       expect(menu.searchInterval, equals(20));
       expect(menu.searchString, isEmpty);
       expect(menu.searchTime, isZero);
+      menu.handleSdlEvent(makeTextInputEvent(sdl, ''));
+      expect(menu.searchString, isEmpty);
       menu.handleSdlEvent(makeTextInputEvent(sdl, 'F'));
       expect(menu.searchString, equals('f'));
       expect(menu.currentMenuItem, equals(menuItems.first));

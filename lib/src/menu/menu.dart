@@ -289,7 +289,9 @@ class Menu extends Level {
       }
     } else if (event is ControllerAxisEvent) {
       controllerAxisDispatcher.handleAxisValue(event.axis, event.smallValue);
-    } else if (event is TextInputEvent && searchEnabled == true) {
+    } else if (event is TextInputEvent &&
+        searchEnabled == true &&
+        event.text.isNotEmpty) {
       if ((event.timestamp - searchTime) >= searchInterval) {
         searchString = '';
       }

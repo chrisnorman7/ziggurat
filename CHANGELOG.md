@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.25.5]
+
+### Fixed
+
+* Fixed a bug where empty text input events were used for menu searches.
+
 ## [0.25.4]
 
 ### Added
