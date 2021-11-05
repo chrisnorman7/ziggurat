@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.25.6]
+
+### Added
+
+* Added the `SimpleMenuItem` class.
+
 ## [0.25.5]
 
 ### Fixed

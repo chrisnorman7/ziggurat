@@ -331,4 +331,28 @@ void main() {
       menu.activate();
     });
   });
+  group('SimpleMenuItem', () {
+    const label = 'Test Label';
+    // ignore: prefer_function_declarations_over_variables
+    final onActivate = () {};
+    const selectSound = AssetReference.file('select.wav');
+    const activateSound = AssetReference.file('activate.wav');
+    test('Initialise', () {
+      final menuItem = SimpleMenuItem(label, onActivate,
+          activateSound: activateSound, selectSound: selectSound);
+      expect(
+          menuItem.label,
+          predicate((value) =>
+              value is Message &&
+              value.keepAlive == true &&
+              value.sound == selectSound &&
+              value.text == label));
+      expect(
+          menuItem.widget,
+          predicate((value) =>
+              value is Button &&
+              value.activateSound == activateSound &&
+              value.onActivate == onActivate));
+    });
+  });
 }
