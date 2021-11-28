@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.25.7]
+
+### Added
+
+* Added the `LevelStub` class.
+* Added the `Level.fromStub` constructor.
+
+### Removed
+
+* Removed random sound and ambiance playback storage to the `Level` class.
+
 ## [0.25.6]
 
 ### Added
