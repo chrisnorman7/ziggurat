@@ -2,6 +2,7 @@
 import 'package:dart_sdl/dart_sdl.dart';
 import 'package:meta/meta.dart';
 
+import '../../levels.dart';
 import '../command.dart';
 import '../game.dart';
 import '../sound/ambiance.dart';
@@ -22,7 +23,19 @@ class Level {
       List<RandomSound>? randomSounds})
       : commands = commands ?? {},
         ambiances = ambiances ?? [],
-        randomSounds = randomSounds ?? [];
+        randomSounds = randomSounds ?? [],
+        ambiancePlaybacks = {},
+        randomSoundPlaybacks = {},
+        randomSoundNextPlays = {};
+
+  /// Create an instance from a level stub.
+  Level.fromStub(this.game, LevelStub stub, {Map<String, Command>? commands})
+      : commands = commands ?? {},
+        ambiances = stub.ambiances,
+        randomSounds = stub.randomSounds,
+        ambiancePlaybacks = {},
+        randomSoundPlaybacks = {},
+        randomSoundNextPlays = {};
 
   /// The game this level is part of.
   final Game game;
@@ -33,8 +46,19 @@ class Level {
   /// A list of ambiances for this level.
   final List<Ambiance> ambiances;
 
+  /// The playback settings for the list of [ambiances].
+  ///
+  /// This value is used by [onPush] and [onPop].
+  final Map<Ambiance, SoundPlayback> ambiancePlaybacks;
+
   /// All the random sounds on this level.
   final List<RandomSound> randomSounds;
+
+  /// The playback settings for the list of [randomSounds].
+  final Map<RandomSound, SoundPlayback> randomSoundPlaybacks;
+
+  /// The times that [randomSounds] should play next.
+  final Map<RandomSound, int> randomSoundNextPlays;
 
   /// What should happen when this game is pushed into a level stack.
   @mustCallSuper
@@ -50,7 +74,7 @@ class Level {
       }
       final sound = channel.playSound(ambiance.sound,
           gain: ambiance.gain, keepAlive: true, looping: true);
-      ambiance.playback = SoundPlayback(channel, sound);
+      ambiancePlaybacks[ambiance] = SoundPlayback(channel, sound);
     }
   }
 
@@ -69,7 +93,7 @@ class Level {
   @mustCallSuper
   void onPop(double? fadeLength) {
     for (final ambiance in ambiances) {
-      final playback = ambiance.playback;
+      final playback = ambiancePlaybacks.remove(ambiance);
       if (playback == null) {
         continue;
       }
@@ -82,9 +106,9 @@ class Level {
       }
     }
     for (final sound in randomSounds) {
-      final playback = sound.playback;
+      randomSoundNextPlays.remove(sound);
+      final playback = randomSoundPlaybacks.remove(sound);
       if (playback != null) {
-        sound.playback = null;
         if (fadeLength != null) {
           playback.sound.fade(length: fadeLength);
           game.registerTask(

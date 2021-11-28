@@ -255,14 +255,14 @@ class Game {
   }
 
   /// Schedule a random [sound] to play.
-  void scheduleRandomSound(RandomSound sound) {
+  void scheduleRandomSound(Level level, RandomSound sound) {
     final int offset;
     if (sound.minInterval == sound.maxInterval) {
       offset = 0;
     } else {
       offset = random.nextInt(sound.maxInterval - sound.minInterval);
     }
-    sound.nextPlay = time + (sound.minInterval + offset);
+    level.randomSoundNextPlays[sound] = time + (sound.minInterval + offset);
   }
 
   /// Tick this game.
@@ -290,11 +290,11 @@ class Game {
         }
       }
       for (final sound in level.randomSounds) {
-        final nextPlay = sound.nextPlay;
+        final nextPlay = level.randomSoundNextPlays[sound];
         if (nextPlay == null) {
-          scheduleRandomSound(sound);
+          scheduleRandomSound(level, sound);
         } else if (time >= nextPlay) {
-          final playback = sound.playback;
+          final playback = level.randomSoundPlaybacks[sound];
           SoundChannel? c;
           if (playback != null) {
             playback.sound.destroy();
@@ -316,7 +316,7 @@ class Game {
           } else {
             c.position = position;
           }
-          sound.playback = SoundPlayback(
+          level.randomSoundPlaybacks[sound] = SoundPlayback(
               c,
               c.playSound(sound.sound,
                   keepAlive: true,
@@ -325,7 +325,7 @@ class Game {
                       : (sound.minGain +
                           ((sound.maxGain - sound.minGain) *
                               random.nextDouble()))));
-          scheduleRandomSound(sound);
+          scheduleRandomSound(level, sound);
         }
       }
       level.tick(sdl, timeDelta);

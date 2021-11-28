@@ -13,8 +13,10 @@ void main() {
       final menu = FilePickerMenu(game, (entity) => thing = entity);
       expect(menu.allowDirectories, isFalse);
       expect(menu.showFiles, isTrue);
-      expect(menu.menuItems.length,
-          equals(Directory.current.listSync().length + 1));
+      expect(
+          menu.menuItems.length,
+          inInclusiveRange(Directory.current.listSync().length + 1,
+              Directory.current.listSync().length + 2));
       expect(menu.menuItems.first.label.text, equals('..'));
       expect(menu.currentDirectory.path, equals(Directory.current.path));
       expect(thing, isNull);

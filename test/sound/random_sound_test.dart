@@ -20,7 +20,6 @@ void main() {
       expect(r.maxInterval, equals(30));
       expect(r.minGain, equals(0.1));
       expect(r.maxGain, equals(1.0));
-      expect(r.nextPlay, isNull);
     });
   });
 }

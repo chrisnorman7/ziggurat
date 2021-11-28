@@ -222,11 +222,11 @@ void main() {
           Ambiance(sound: reference2, position: Point(4.0, 5.0), gain: 0.5);
       final level = Level(game, ambiances: <Ambiance>[ambiance1, ambiance2]);
       game.pushLevel(level);
-      final playback1 = ambiance1.playback!;
+      final playback1 = level.ambiancePlaybacks[ambiance1]!;
       expect(playback1.channel, equals(game.ambianceSounds));
       expect(playback1.sound.gain, equals(ambiance1.gain));
       expect(playback1.sound.sound, equals(reference1));
-      final playback2 = ambiance2.playback!;
+      final playback2 = level.ambiancePlaybacks[ambiance2]!;
       expect(playback2.sound.gain, equals(ambiance2.gain));
       expect(playback2.sound.sound, equals(reference2));
       expect(playback2.channel, isNot(game.ambianceSounds));
@@ -237,11 +237,11 @@ void main() {
       game
         ..popLevel()
         ..pushLevel(level);
-      final playback3 = ambiance1.playback!;
+      final playback3 = level.ambiancePlaybacks[ambiance1]!;
       expect(playback3.channel, equals(game.ambianceSounds));
       expect(playback3.sound.sound, equals(reference1));
       expect(playback3.sound.gain, equals(ambiance1.gain));
-      final playback4 = ambiance2.playback!;
+      final playback4 = level.ambiancePlaybacks[ambiance2]!;
       expect(playback4.channel, isNot(game.ambianceSounds));
       expect(playback4.channel.position, isA<SoundPosition3d>());
       position = playback4.channel.position as SoundPosition3d;

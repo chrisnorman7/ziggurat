@@ -177,26 +177,28 @@ void main() {
           position: Point(5.0, 6.0));
       final level = Level(game, ambiances: [ambiance1, ambiance2]);
       game.pushLevel(level);
-      expect(ambiance1.playback, isNotNull);
-      expect(ambiance2.playback, isNotNull);
+      final ambiance1Playback = level.ambiancePlaybacks[ambiance1];
+      final ambiance2Playback = level.ambiancePlaybacks[ambiance2];
+      expect(ambiance1Playback, isNotNull);
+      expect(ambiance2Playback, isNotNull);
       expect(
-          ambiance1.playback?.sound,
+          ambiance1Playback?.sound,
           predicate((value) =>
               value is PlaySound &&
               value.sound == ambiance1.sound &&
               value.gain == ambiance1.gain &&
               value.keepAlive == true));
-      expect(ambiance1.playback?.channel, equals(game.ambianceSounds));
+      expect(ambiance1Playback?.channel, equals(game.ambianceSounds));
       expect(
-          ambiance2.playback?.channel,
+          ambiance2Playback?.channel,
           predicate((value) =>
               value is SoundChannel && value.position is SoundPosition3d));
-      final position = ambiance2.playback!.channel.position as SoundPosition3d;
+      final position = ambiance2Playback!.channel.position as SoundPosition3d;
       expect(position.x, equals(ambiance2.position!.x));
       expect(position.y, equals(ambiance2.position!.y));
       expect(position.z, isZero);
       expect(
-          ambiance2.playback?.sound,
+          ambiance2Playback.sound,
           predicate((value) =>
               value is PlaySound &&
               value.sound == ambiance2.sound &&

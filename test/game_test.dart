@@ -222,23 +222,23 @@ void main() {
           minGain: 0.1, maxGain: 1.0);
       final l = Level(game, randomSounds: [randomSound1, randomSound2]);
       game.pushLevel(l);
-      expect(randomSound1.playback, isNull);
-      expect(randomSound2.playback, isNull);
+      expect(l.randomSoundPlaybacks[randomSound1], isNull);
+      expect(l.randomSoundPlaybacks[randomSound2], isNull);
       game.time = DateTime.now().millisecondsSinceEpoch;
       await game.tick(sdl, 0);
-      expect(randomSound1.playback, isNull);
+      expect(l.randomSoundPlaybacks[randomSound1], isNull);
+      expect(l.randomSoundNextPlays[randomSound1],
+          equals(game.time + randomSound1.minInterval));
+      expect(l.randomSoundPlaybacks[randomSound2], isNull);
       expect(
-          randomSound1.nextPlay, equals(game.time + randomSound1.minInterval));
-      expect(randomSound2.playback, isNull);
-      expect(
-          randomSound2.nextPlay,
+          l.randomSoundNextPlays[randomSound2],
           inOpenClosedRange(game.time + randomSound2.minInterval,
               game.time + randomSound2.maxInterval));
-      game.time = randomSound1.nextPlay!;
+      game.time = l.randomSoundNextPlays[randomSound1]!;
       await game.tick(sdl, 0);
-      expect(randomSound1.playback, isNotNull);
-      expect(randomSound2.playback, isNull);
-      var playback = randomSound1.playback!;
+      expect(l.randomSoundPlaybacks[randomSound1], isNotNull);
+      expect(l.randomSoundPlaybacks[randomSound2], isNull);
+      var playback = l.randomSoundPlaybacks[randomSound1]!;
       expect(playback.sound.gain, equals(randomSound1.minGain));
       expect(playback.channel.position, isA<SoundPosition3d>());
       var position = playback.channel.position as SoundPosition3d;
@@ -251,10 +251,10 @@ void main() {
           inOpenClosedRange(
               randomSound1.minCoordinates.y, randomSound1.maxCoordinates.y));
       expect(position.z, isZero);
-      game.time = randomSound2.nextPlay!;
+      game.time = l.randomSoundNextPlays[randomSound2]!;
       await game.tick(sdl, 0);
-      expect(randomSound2.playback, isNotNull);
-      playback = randomSound2.playback!;
+      expect(l.randomSoundPlaybacks[randomSound2], isNotNull);
+      playback = l.randomSoundPlaybacks[randomSound2]!;
       expect(playback.sound.gain,
           inOpenClosedRange(randomSound2.minGain, randomSound2.maxGain));
       expect(playback.channel.position, isA<SoundPosition3d>());
@@ -269,7 +269,7 @@ void main() {
               randomSound2.minCoordinates.y, randomSound2.maxCoordinates.y));
       expect(position.z, isZero);
       expect(
-          randomSound2.nextPlay,
+          l.randomSoundNextPlays[randomSound2],
           inOpenClosedRange(game.time + randomSound2.minInterval,
               game.time + randomSound2.maxInterval));
     });

@@ -2,14 +2,13 @@
 import 'dart:math';
 
 import '../json/asset_reference.dart';
-import 'sound_playback.dart';
 
 /// A random sound.
 ///
 /// This sound will be played at a random point on a map, at a random interval.
 class RandomSound {
   /// Create an instance.
-  RandomSound(this.sound, this.minCoordinates, this.maxCoordinates,
+  const RandomSound(this.sound, this.minCoordinates, this.maxCoordinates,
       this.minInterval, this.maxInterval,
       {this.minGain = 0.75, this.maxGain = 0.75});
 
@@ -35,10 +34,4 @@ class RandomSound {
 
   /// The maximum gain.
   final double maxGain;
-
-  /// The time this sound will play next.
-  int? nextPlay;
-
-  /// Playback information for this sound.
-  SoundPlayback? playback;
 }
