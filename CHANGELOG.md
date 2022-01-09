@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.26.0]
+
+### Added
+
+* Made it possible to serialize many classes.
+
+### Changed
+
+* Changed the signatures for the `LevelStub` and `RandomSound` constructors.
+* Moved some files into the `json` directory.
+* Changed the relevant exports so that normal `package:ziggurat/xxx.dart` imports will work without changes.
+* Reformatted some code.
+
 ## [0.25.7]
 
 ### Added
