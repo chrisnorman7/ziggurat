@@ -215,11 +215,22 @@ void main() {
     test('Random sounds', () async {
       final sdl = Sdl();
       final game = Game('Play Random Sounds');
-      final randomSound1 = RandomSound(AssetReference.file('sound1.wav'),
-          Point(1.0, 2.0), Point(5.0, 6.0), 1000, 1000);
-      final randomSound2 = RandomSound(AssetReference.file('sound2.wav'),
-          Point(23.0, 24.0), Point(38.0, 39.0), 2000, 10000,
-          minGain: 0.1, maxGain: 1.0);
+      final randomSound1 = RandomSound(
+        sound: AssetReference.file('sound1.wav'),
+        minCoordinates: Point(1.0, 2.0),
+        maxCoordinates: Point(5.0, 6.0),
+        minInterval: 1000,
+        maxInterval: 1000,
+      );
+      final randomSound2 = RandomSound(
+        sound: AssetReference.file('sound2.wav'),
+        minCoordinates: Point(23.0, 24.0),
+        maxCoordinates: Point(38.0, 39.0),
+        minInterval: 2000,
+        maxInterval: 10000,
+        minGain: 0.1,
+        maxGain: 1.0,
+      );
       final l = Level(game, randomSounds: [randomSound1, randomSound2]);
       game.pushLevel(l);
       expect(l.randomSoundPlaybacks[randomSound1], isNull);
