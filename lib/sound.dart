@@ -5,7 +5,9 @@
 /// [ziggurat_sounds](https://pub.dev/packages/ziggurat_sounds).
 library sound;
 
-export 'src/sound/ambiance.dart';
+export 'src/json/ambiance.dart';
+export 'src/json/random_sound.dart';
+export 'src/json/reverb_preset.dart';
 export 'src/sound/events/automation_fade.dart';
 export 'src/sound/events/events_base.dart';
 export 'src/sound/events/global.dart';
@@ -15,6 +17,4 @@ export 'src/sound/events/sound_channel.dart';
 export 'src/sound/events/sound_channel_filter.dart';
 export 'src/sound/events/sound_channel_group.dart';
 export 'src/sound/events/sound_position.dart';
-export 'src/sound/random_sound.dart';
-export 'src/sound/reverb_preset.dart';
 export 'src/sound/sound_playback.dart';

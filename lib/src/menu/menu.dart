@@ -3,12 +3,12 @@ import 'package:dart_sdl/dart_sdl.dart';
 
 import '../controller_axis_dispatcher.dart';
 import '../game.dart';
+import '../json/ambiance.dart';
 import '../json/asset_reference.dart';
 import '../json/message.dart';
+import '../json/random_sound.dart';
 import '../levels/level.dart';
-import '../sound/ambiance.dart';
 import '../sound/events/playback.dart';
-import '../sound/random_sound.dart';
 import 'menu_item.dart';
 import 'widgets/button.dart';
 import 'widgets/label.dart';
@@ -210,6 +210,7 @@ class Menu extends Level {
     if (pos != null) {
       return menuItems.elementAt(pos);
     }
+    return null;
   }
 
   /// Move up in this menu.

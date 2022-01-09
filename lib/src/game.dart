@@ -7,6 +7,8 @@ import 'package:meta/meta.dart';
 
 import 'json/asset_reference.dart';
 import 'json/message.dart';
+import 'json/random_sound.dart';
+import 'json/reverb_preset.dart';
 import 'json/trigger_map.dart';
 import 'levels/level.dart';
 import 'sound/events/events_base.dart';
@@ -15,8 +17,6 @@ import 'sound/events/playback.dart';
 import 'sound/events/reverb.dart';
 import 'sound/events/sound_channel.dart';
 import 'sound/events/sound_position.dart';
-import 'sound/random_sound.dart';
-import 'sound/reverb_preset.dart';
 import 'sound/sound_playback.dart';
 import 'task.dart';
 
@@ -186,6 +186,7 @@ class Game {
       }
       return oldLevel;
     }
+    return null;
   }
 
   /// Replace the current level with [level].
@@ -429,6 +430,7 @@ class Game {
       soundChannel ??= interfaceSounds;
       return soundChannel.playSound(sound, gain: gain, keepAlive: keepAlive);
     }
+    return null;
   }
 
   /// Output a message.

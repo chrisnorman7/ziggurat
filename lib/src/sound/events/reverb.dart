@@ -1,6 +1,6 @@
 /// Provides events relating to reverb.
 import '../../game.dart';
-import '../reverb_preset.dart';
+import '../../json/reverb_preset.dart';
 import 'events_base.dart';
 import 'playback.dart';
 

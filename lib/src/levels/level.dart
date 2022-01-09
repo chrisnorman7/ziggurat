@@ -2,13 +2,13 @@
 import 'package:dart_sdl/dart_sdl.dart';
 import 'package:meta/meta.dart';
 
-import '../../levels.dart';
 import '../command.dart';
 import '../game.dart';
-import '../sound/ambiance.dart';
+import '../json/ambiance.dart';
+import '../json/level_stub.dart';
+import '../json/random_sound.dart';
 import '../sound/events/sound_channel.dart';
 import '../sound/events/sound_position.dart';
-import '../sound/random_sound.dart';
 import '../sound/sound_playback.dart';
 
 /// The top-level level class.

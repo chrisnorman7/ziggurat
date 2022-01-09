@@ -1,6 +1,6 @@
 /// Provides the [LevelStub] class.
-import '../sound/ambiance.dart';
-import '../sound/random_sound.dart';
+import 'ambiance.dart';
+import 'random_sound.dart';
 
 /// A stub which can be used to create a basic level.
 ///

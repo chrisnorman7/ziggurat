@@ -5,11 +5,11 @@ import 'package:dart_sdl/dart_sdl.dart';
 
 import '../controller_axis_dispatcher.dart';
 import '../game.dart';
+import '../json/ambiance.dart';
 import '../json/message.dart';
+import '../json/random_sound.dart';
 import '../multi_grid.dart';
-import '../sound/ambiance.dart';
 import '../sound/events/playback.dart';
-import '../sound/random_sound.dart';
 import 'level.dart';
 
 /// A level which presents a series of rows, each one containing different

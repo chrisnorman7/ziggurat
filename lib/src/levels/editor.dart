@@ -5,8 +5,8 @@ import 'package:dart_sdl/dart_sdl.dart';
 
 import '../controller_axis_dispatcher.dart';
 import '../game.dart';
-import '../sound/ambiance.dart';
-import '../sound/random_sound.dart';
+import '../json/ambiance.dart';
+import '../json/random_sound.dart';
 import 'level.dart';
 
 /// A level for editing text.

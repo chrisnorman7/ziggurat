@@ -2,7 +2,7 @@
 import 'dart:math';
 
 import '../../json/message.dart';
-import '../../sound/reverb_preset.dart';
+import '../../json/reverb_preset.dart';
 import '../box.dart';
 import 'agents/agent.dart';
 import 'wall.dart';

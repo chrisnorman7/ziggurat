@@ -8,9 +8,9 @@ import '../box_map/box_map.dart';
 import '../box_map/box_types/surface.dart';
 import '../error.dart';
 import '../game.dart';
+import '../json/ambiance.dart';
+import '../json/random_sound.dart';
 import '../math.dart';
-import '../sound/ambiance.dart';
-import '../sound/random_sound.dart';
 import 'level.dart';
 
 /// A level that can be used to play a [BoxMap] instance.

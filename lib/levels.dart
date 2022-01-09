@@ -18,11 +18,11 @@ import 'src/levels/level.dart';
 import 'src/levels/tile_map_level.dart';
 import 'src/menu/menu.dart';
 
+export 'src/json/level_stub.dart';
 export 'src/levels/box_map_level.dart';
 export 'src/levels/dialogue_level.dart';
 export 'src/levels/editor.dart';
 export 'src/levels/level.dart';
-export 'src/levels/level_stub.dart';
 export 'src/levels/multi_grid_level.dart';
 export 'src/levels/scene_level.dart';
 export 'src/levels/tile_map_level.dart';
