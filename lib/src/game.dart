@@ -146,13 +146,21 @@ class Game {
   /// If you are registering a task before calling [run], you can use the
   /// [timeOffset] argument to add the current time, rather than having the task
   /// executed immediately.
-  Task registerTask(int runAfter, void Function() func,
-      {int? interval, int? timeOffset}) {
+  Task registerTask({
+    required int runAfter,
+    required TaskFunction func,
+    int? interval,
+    int? timeOffset,
+  }) {
     var when = time + runAfter;
     if (timeOffset != null) {
       when += timeOffset;
     }
-    final task = Task(when, interval, func);
+    final task = Task(
+      runWhen: when,
+      interval: interval,
+      func: func,
+    );
     tasks.add(task);
     return task;
   }
@@ -165,7 +173,7 @@ class Game {
   /// Push a level onto the stack.
   void pushLevel(Level level, {int? after}) {
     if (after != null) {
-      registerTask(after, () => pushLevel(level));
+      registerTask(runAfter: after, func: () => pushLevel(level));
     } else {
       final cl = currentLevel;
       level.onPush();
@@ -206,11 +214,17 @@ class Game {
     if (event is QuitEvent) {
       stop();
     } else if (event is ControllerDeviceEvent) {
-      if (event.state == DeviceState.added) {
-        final controller = event.sdl.openGameController(event.joystickId);
-        gameControllers[event.joystickId] = controller;
-      } else {
-        gameControllers.remove(event.joystickId);
+      switch (event.state) {
+        case DeviceState.added:
+          final controller = event.sdl.openGameController(event.joystickId);
+          gameControllers[event.joystickId] = controller;
+          break;
+        case DeviceState.removed:
+          gameControllers.remove(event.joystickId);
+          break;
+        case DeviceState.remapped:
+          // Do nothing.
+          break;
       }
     } else {
       final level = currentLevel;
@@ -220,6 +234,7 @@ class Game {
           final key = commandTrigger.keyboardKey;
           final button = commandTrigger.button;
           if ((event is KeyboardEvent &&
+                  event.repeat == false &&
                   key != null &&
                   event.key.scancode == key.scanCode &&
                   (key.altKey == false ||
@@ -227,8 +242,7 @@ class Game {
                   (key.controlKey == false ||
                       event.key.modifiers.contains(KeyMod.ctrl)) &&
                   (key.shiftKey == false ||
-                      event.key.modifiers.contains(KeyMod.shift)) &&
-                  event.repeat == false) ||
+                      event.key.modifiers.contains(KeyMod.shift))) ||
               (event is ControllerButtonEvent &&
                   button != null &&
                   event.button == button)) {
@@ -381,8 +395,11 @@ class Game {
   /// [registerTask], which wasn't quite as reliable, due to how fast windows
   /// are created on some machines.
   @mustCallSuper
-  Future<void> run(Sdl sdl,
-      {int framesPerSecond = 60, void Function()? onStart}) async {
+  Future<void> run(
+    Sdl sdl, {
+    int framesPerSecond = 60,
+    TaskFunction? onStart,
+  }) async {
     final int tickEvery = 1000 ~/ framesPerSecond;
     _window = sdl.createWindow(title);
     var lastTick = 0;

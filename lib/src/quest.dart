@@ -1,6 +1,3 @@
-/// Provides the [Quest] class.
-import 'package:meta/meta.dart';
-
 import 'json/message.dart';
 
 /// A quest.
@@ -9,7 +6,6 @@ import 'json/message.dart';
 ///
 /// A quest has a type which is used for quest progress. This type should
 /// probably be an enum, but could be anything.
-@immutable
 class Quest<T> {
   /// Create a quest.
   const Quest(this.defaultState);

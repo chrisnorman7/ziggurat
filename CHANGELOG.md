@@ -8,10 +8,14 @@
 
 ### Changed
 
-* Changed the signatures for the `LevelStub` and `RandomSound` constructors.
+* Changed the signatures for A lot of functions to use named arguments.
 * Moved some files into the `json` directory.
 * Changed the relevant exports so that normal `package:ziggurat/xxx.dart` imports will work without changes.
 * Reformatted some code.
+
+### Fixed
+
+* Fixed an oversight in `game.handleSdlEvent` where controllers would get removed when `remap` event was received.
 
 ## [0.25.7]
 

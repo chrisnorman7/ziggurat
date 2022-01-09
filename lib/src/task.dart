@@ -7,7 +7,11 @@ typedef TaskFunction = void Function();
 /// A task which runs once on or after [runWhen].
 class Task {
   /// Create a task.
-  Task(this.runWhen, this.interval, this.func);
+  Task({
+    required this.runWhen,
+    required this.interval,
+    required this.func,
+  });
 
   /// When should this task run.
   int runWhen;

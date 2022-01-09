@@ -79,7 +79,7 @@ class SceneLevel extends Level {
     _sound = game.outputMessage(message,
         soundChannel: soundChannel, oldSound: _sound);
     if (duration != null) {
-      game.registerTask(duration!, onDone);
+      game.registerTask(runAfter: duration!, func: onDone);
     }
   }
 

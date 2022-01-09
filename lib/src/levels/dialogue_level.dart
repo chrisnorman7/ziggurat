@@ -86,7 +86,10 @@ class DialogueLevel extends Level {
       if (fadeLength == null) {
         sound.destroy();
       } else {
-        game.registerTask((fadeLength * 1000).round(), sound.destroy);
+        game.registerTask(
+          runAfter: (fadeLength * 1000).round(),
+          func: sound.destroy,
+        );
       }
     }
     _sound = null;

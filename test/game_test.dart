@@ -41,7 +41,7 @@ void main() {
       final sdl = Sdl();
       final game = Game('Test Game');
       var i = 0;
-      var task = game.registerTask(3, () => i++);
+      var task = game.registerTask(runAfter: 3, func: () => i++);
       expect(game.tasks.contains(task), isTrue);
       expect(task.runWhen, equals(3));
       expect(i, isZero);
@@ -57,14 +57,14 @@ void main() {
       expect(game.tasks, isEmpty);
       final now = DateTime.now().millisecondsSinceEpoch;
       game.time = 0;
-      task = game.registerTask(5, () => 0, timeOffset: now);
+      task = game.registerTask(runAfter: 5, func: () => 0, timeOffset: now);
       expect(task.runWhen, equals(now + 5));
     });
     test('Repeating Task Test', () {
       final sdl = Sdl();
       final game = Game('Test Game');
       var i = 0;
-      final task = game.registerTask(3, () => i++, interval: 2);
+      final task = game.registerTask(runAfter: 3, func: () => i++, interval: 2);
       expect(task.interval, equals(2));
       expect(game.tasks, contains(task));
       expect(task.runWhen, equals(3));
@@ -94,7 +94,9 @@ void main() {
       final sdl = Sdl();
       final game = Game('Tasks that add tasks');
       expect(game.tasks, isEmpty);
-      game.registerTask(0, () => game.registerTask(0, game.stop));
+      game.registerTask(
+          runAfter: 0,
+          func: () => game.registerTask(runAfter: 0, func: game.stop));
       expect(game.tasks.length, equals(1));
       game.tick(sdl, 0);
       expect(game.tasks.length, equals(1));
@@ -102,9 +104,10 @@ void main() {
     });
     test('.unregisterTask', () {
       final game = Game('unregisterTask');
-      game.registerTask(1234, game.stop);
+      game.registerTask(runAfter: 1234, func: game.stop);
       expect(game.tasks.length, equals(1));
-      game.unregisterTask(() => game.registerTask(200, game.stop));
+      game.unregisterTask(
+          () => game.registerTask(runAfter: 200, func: game.stop));
       expect(game.tasks.length, equals(1));
       game.unregisterTask(game.stop);
       expect(game.tasks, isEmpty);

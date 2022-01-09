@@ -17,11 +17,12 @@ import '../sound/sound_playback.dart';
 /// instances.
 class Level {
   /// Create a level.
-  Level(this.game,
-      {Map<String, Command>? commands,
-      List<Ambiance>? ambiances,
-      List<RandomSound>? randomSounds})
-      : commands = commands ?? {},
+  Level(
+    this.game, {
+    Map<String, Command>? commands,
+    List<Ambiance>? ambiances,
+    List<RandomSound>? randomSounds,
+  })  : commands = commands ?? {},
         ambiances = ambiances ?? [],
         randomSounds = randomSounds ?? [],
         ambiancePlaybacks = {},
@@ -100,7 +101,9 @@ class Level {
       if (fadeLength != null) {
         playback.sound.fade(length: fadeLength);
         game.registerTask(
-            (fadeLength * 1000).round(), () => stopPlayback(playback));
+          runAfter: (fadeLength * 1000).round(),
+          func: () => stopPlayback(playback),
+        );
       } else {
         stopPlayback(playback);
       }
@@ -112,7 +115,9 @@ class Level {
         if (fadeLength != null) {
           playback.sound.fade(length: fadeLength);
           game.registerTask(
-              (fadeLength * 1000).round(), () => stopPlayback(playback));
+            runAfter: (fadeLength * 1000).round(),
+            func: () => stopPlayback(playback),
+          );
         } else {
           stopPlayback(playback);
         }
