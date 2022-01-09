@@ -5,6 +5,7 @@
 ### Added
 
 * Made it possible to serialize many classes.
+* Added the `ParameterMenu` class.
 
 ### Changed
 
