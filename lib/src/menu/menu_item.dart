@@ -4,7 +4,7 @@ import 'menu.dart';
 import 'widgets/widgets_base.dart';
 
 /// An item in a [Menu].
-class MenuItem<T extends Widget> {
+class MenuItem {
   /// Create a menu item.
   const MenuItem(this.label, this.widget);
 
@@ -12,7 +12,7 @@ class MenuItem<T extends Widget> {
   final Message label;
 
   /// The widget associated with this item.
-  final T widget;
+  final Widget widget;
 
   /// What happens when this item is focused.
   void onFocus(Menu menu) {

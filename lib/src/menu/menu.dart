@@ -9,6 +9,7 @@ import '../json/message.dart';
 import '../json/random_sound.dart';
 import '../levels/level.dart';
 import '../sound/events/playback.dart';
+import '../task.dart';
 import 'menu_item.dart';
 import 'widgets/button.dart';
 import 'widgets/label.dart';
@@ -241,7 +242,7 @@ class Menu extends Level {
   }
 
   /// Add a button to this menu.
-  MenuItem<Button> addButton(void Function() onActivate,
+  MenuItem addButton(TaskFunction onActivate,
       {String? label,
       AssetReference? selectSound,
       AssetReference? activateSound}) {
