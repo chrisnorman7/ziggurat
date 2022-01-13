@@ -5,6 +5,7 @@
 ### Added
 
 * Added useful descriptions to sound events.
+* Added the `AssetReferenceMenu` class.
 
 ### Changed
 
