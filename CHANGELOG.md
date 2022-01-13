@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.27.1]
+
+### Changed
+
+*( Include the asset type in `PlaySound` descriptions`)
+
 ## [0.27.0]
 
 ### Added

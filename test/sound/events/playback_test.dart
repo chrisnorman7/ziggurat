@@ -21,7 +21,8 @@ void main() {
           );
           expect(
             event.toString(),
-            '<PlaySound id: ${event.id}, sound: test.wav (encrypted), '
+            '<PlaySound id: ${event.id}, sound: test.wav (encrypted '
+            'AssetType.file), '
             'channel: 5, keep alive: true, gain: 0.5, looping: true, '
             'pitch bend: 0.8>',
           );
@@ -32,7 +33,7 @@ void main() {
         () {
           final event = PlaySound(
             game: game,
-            sound: AssetReference.file('test.wav'),
+            sound: AssetReference.collection('test.wav'),
             channel: 5,
             keepAlive: true,
             looping: true,
@@ -41,7 +42,8 @@ void main() {
           );
           expect(
             event.toString(),
-            '<PlaySound id: ${event.id}, sound: test.wav (unencrypted), '
+            '<PlaySound id: ${event.id}, sound: test.wav (unencrypted '
+            'AssetType.collection), '
             'channel: 5, keep alive: true, gain: 0.5, looping: true, '
             'pitch bend: 0.8>',
           );

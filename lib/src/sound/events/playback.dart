@@ -97,7 +97,8 @@ class PlaySound extends SoundEvent {
   @override
   String toString() => '<$runtimeType id: $id, '
       'sound: ${sound.name} '
-      '(${sound.encryptionKey == null ? "unencrypted" : "encrypted"}), '
+      '(${sound.encryptionKey == null ? "unencrypted" : "encrypted"} '
+      '${sound.type}), '
       'channel: $channel, keep alive: $keepAlive, gain: $_gain, '
       'looping: $_looping, pitch bend: $_pitchBend>';
 
