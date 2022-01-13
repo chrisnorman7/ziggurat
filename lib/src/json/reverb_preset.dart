@@ -1,25 +1,36 @@
 /// Provides the [ReverbPreset] class.
+import 'package:json_annotation/json_annotation.dart';
+
 import '../box_map/box_types/surface.dart';
 import '../setting_defaults.dart';
+
+part 'reverb_preset.g.dart';
 
 /// A reverb preset.
 ///
 /// You can create as many presets as you need, and add them to [Surface]
 /// instances.
+@JsonSerializable()
 class ReverbPreset {
   /// Create a preset.
-  const ReverbPreset(this.name,
-      {this.meanFreePath = 0.1,
-      this.t60 = 0.3,
-      this.lateReflectionsLfRolloff = 1.0,
-      this.lateReflectionsLfReference = 200.0,
-      this.lateReflectionsHfRolloff = 0.5,
-      this.lateReflectionsHfReference = 500.0,
-      this.lateReflectionsDiffusion = 1.0,
-      this.lateReflectionsModulationDepth = 0.01,
-      this.lateReflectionsModulationFrequency = 0.5,
-      this.lateReflectionsDelay = 0.03,
-      this.gain = 0.5});
+  const ReverbPreset(
+    this.name, {
+    this.meanFreePath = 0.1,
+    this.t60 = 0.3,
+    this.lateReflectionsLfRolloff = 1.0,
+    this.lateReflectionsLfReference = 200.0,
+    this.lateReflectionsHfRolloff = 0.5,
+    this.lateReflectionsHfReference = 500.0,
+    this.lateReflectionsDiffusion = 1.0,
+    this.lateReflectionsModulationDepth = 0.01,
+    this.lateReflectionsModulationFrequency = 0.5,
+    this.lateReflectionsDelay = 0.03,
+    this.gain = 0.5,
+  });
+
+  /// Load an instance from json.
+  factory ReverbPreset.fromJson(Map<String, dynamic> json) =>
+      _$ReverbPresetFromJson(json);
 
   /// The name of this preset.
   final String name;
@@ -68,4 +79,7 @@ class ReverbPreset {
   /// The gain of the reverb.
   @SettingDefaults(1.0, 0.01, 1.0)
   final double gain;
+
+  /// Dump this instance to JSON.
+  Map<String, dynamic> toJson() => _$ReverbPresetToJson(this);
 }

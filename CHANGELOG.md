@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.28.0]
+
+### Changed
+
+* Made the `ReverbPreset` class serializable.
+
 ## [0.27.1]
 
 ### Changed
