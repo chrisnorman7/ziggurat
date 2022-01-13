@@ -16,6 +16,10 @@ class ListenerPositionEvent extends SoundEvent {
 
   /// The z coordinate.
   final double z;
+
+  /// Describe this object.
+  @override
+  String toString() => '<$runtimeType x: $x, y: $y, z: $z>';
 }
 
 /// Change the orientation of the listener.
@@ -47,6 +51,11 @@ class ListenerOrientationEvent extends SoundEvent {
 
   /// Z2.
   final double z2;
+
+  /// Describe this object.
+  @override
+  String toString() =>
+      '<$runtimeType x1: $x1, y1: $y1, z1: $z1, x2: $x2, y2: $y2, z2: $z2>';
 }
 
 /// Possible default panner strategies.
@@ -65,4 +74,8 @@ class SetDefaultPannerStrategy extends SoundEvent {
 
   /// The new strategy to use.
   final DefaultPannerStrategy strategy;
+
+  /// Describe this object.
+  @override
+  String toString() => '<$runtimeType strategy: $strategy>';
 }

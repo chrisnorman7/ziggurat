@@ -11,13 +11,13 @@ import 'sound_position.dart';
 /// A channel for playing sounds through.
 class SoundChannel extends SoundEvent {
   /// Create a channel.
-  SoundChannel(
-      {required this.game,
-      required int id,
-      SoundPosition position = unpanned,
-      this.reverb,
-      double gain = 0.7})
-      : _gain = gain,
+  SoundChannel({
+    required this.game,
+    required int id,
+    SoundPosition position = unpanned,
+    this.reverb,
+    double gain = 0.7,
+  })  : _gain = gain,
         _position = position,
         super(id: id);
 
@@ -101,12 +101,18 @@ class SoundChannel extends SoundEvent {
 
   /// Destroy this channel.
   void destroy() => game.queueSoundEvent(DestroySoundChannel(id!));
+
+  /// Describe this object.
+  @override
+  String toString() =>
+      '<$runtimeType id: $id, position: $_position, reverb: $reverb, '
+      'gain: $_gain>';
 }
 
 /// Destroy a [SoundChannel] instance.
-class DestroySoundChannel extends SoundEvent {
+class DestroySoundChannel extends DestroySound {
   /// Create an event.
-  const DestroySoundChannel(int id) : super(id: id);
+  const DestroySoundChannel(int id) : super(id);
 }
 
 /// Set the gain for a [SoundChannel].
@@ -123,6 +129,10 @@ class SetSoundChannelPosition extends SoundEvent {
 
   /// The new position.
   final SoundPosition position;
+
+  /// Describe this object.
+  @override
+  String toString() => '<$runtimeType id: $id, position: $position>';
 }
 
 /// Set the reverb for the channel with the given [id].
@@ -137,4 +147,8 @@ class SetSoundChannelReverb extends SoundEvent {
   ///
   /// The preset must have been created with [Game.createReverb].
   final int? reverb;
+
+  /// Describe this object.
+  @override
+  String toString() => '<$runtimeType id: $id, reverb: $reverb>';
 }

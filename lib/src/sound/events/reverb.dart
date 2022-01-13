@@ -19,6 +19,10 @@ class CreateReverb extends SoundEvent {
 
   /// Destroy this reverb.
   void destroy() => game.queueSoundEvent(DestroyReverb(id!));
+
+  /// Describe this object.
+  @override
+  String toString() => '<$runtimeType id: $id, reverb: ${reverb.name}>';
 }
 
 /// Destroy a pre-existing reverb.
@@ -29,4 +33,8 @@ class CreateReverb extends SoundEvent {
 class DestroyReverb extends SoundEvent {
   /// Create an event.
   const DestroyReverb(int id) : super(id: id);
+
+  /// Describe this object.
+  @override
+  String toString() => '<$runtimeType id: $id>';
 }

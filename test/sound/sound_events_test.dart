@@ -163,7 +163,7 @@ void main() {
                 value.id == sound.id &&
                 value.gain == sound.gain),
             predicate((value) =>
-                value is SetLoop &&
+                value is SetSoundLooping &&
                 value.looping == true &&
                 value.id == sound.id),
             predicate((value) =>

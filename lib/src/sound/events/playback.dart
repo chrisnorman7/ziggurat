@@ -60,7 +60,7 @@ class PlaySound extends SoundEvent {
   /// Set whether or not this sound should loop.
   set looping(bool value) {
     _looping = value;
-    game.queueSoundEvent(SetLoop(id: id!, looping: value));
+    game.queueSoundEvent(SetSoundLooping(id: id!, looping: value));
   }
 
   bool _paused;
@@ -93,16 +93,25 @@ class PlaySound extends SoundEvent {
     game.queueSoundEvent(SetSoundPitchBend(id: id!, pitchBend: value));
   }
 
+  /// Describe this object.
+  @override
+  String toString() => '<$runtimeType id: $id, '
+      'sound: ${sound.name} '
+      '(${sound.encryptionKey == null ? "unencrypted" : "encrypted"}), '
+      'channel: $channel, keep alive: $keepAlive, gain: $_gain, '
+      'looping: $_looping, pitch bend: $_pitchBend>';
+
   /// Fade this sound in or out.
   ///
   /// By default, only [length] is necessary. The [startGain] argument will
   /// default to [gain], and [endGain] to `0.0`, providing a fade out to
   /// complete silence.
-  AutomationFade fade(
-      {required double length,
-      double endGain = 0.0,
-      double? startGain,
-      double preFade = 0.0}) {
+  AutomationFade fade({
+    required double length,
+    double endGain = 0.0,
+    double? startGain,
+    double preFade = 0.0,
+  }) {
     if (keepAlive == false) {
       throw DeadSound(this);
     }
@@ -130,18 +139,30 @@ class PlaySound extends SoundEvent {
 class PauseSound extends SoundEvent {
   /// Create an event.
   const PauseSound(int id) : super(id: id);
+
+  /// Describe this object.
+  @override
+  String toString() => '<$runtimeType id: $id>';
 }
 
 /// Unpause a sound.
 class UnpauseSound extends PauseSound {
   /// Create an event.
   const UnpauseSound(int id) : super(id);
+
+  /// Describe this object.
+  @override
+  String toString() => '<$runtimeType id: $id>';
 }
 
 /// Destroy a sound.
 class DestroySound extends SoundEvent {
   /// Create an event.
   const DestroySound(int id) : super(id: id);
+
+  /// Describe this object.
+  @override
+  String toString() => '<$runtimeType id: $id>';
 }
 
 /// Set the gain for a sound.
@@ -151,15 +172,24 @@ class SetSoundGain extends SoundEvent {
 
   /// The new gain.
   final double gain;
+
+  /// Describe this object.
+  @override
+  String toString() => '<$runtimeType id: $id, gain: $gain>';
 }
 
 /// Set whether or not a sound should loop.
-class SetLoop extends SoundEvent {
+class SetSoundLooping extends SoundEvent {
   /// Create an event.
-  const SetLoop({required int id, required this.looping}) : super(id: id);
+  const SetSoundLooping({required int id, required this.looping})
+      : super(id: id);
 
   /// Whether or not the sound should loop.
   final bool looping;
+
+  /// Describe this object.
+  @override
+  String toString() => '<$runtimeType id: $id, looping: $looping>';
 }
 
 /// Set the pitch bend for a sound.
@@ -170,4 +200,8 @@ class SetSoundPitchBend extends SoundEvent {
 
   /// The new pitch bend.
   final double pitchBend;
+
+  /// Describe this object.
+  @override
+  String toString() => '<$runtimeType id: $id, pitch bend: $pitchBend>';
 }

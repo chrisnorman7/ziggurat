@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.27.0]
+
+### Added
+
+* Added useful descriptions to sound events.
+
+### Changed
+
+* Renamed `LoopSound` to `SetSoundLooping`.
+
 ## [0.26.1]
 
 ### Changed

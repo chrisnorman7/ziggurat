@@ -1,4 +1,4 @@
-/// Provides the [AutomationFade] class.
+/// Provides the [AutomationFade] and [CancelAutomationFade] classes.
 import '../../game.dart';
 import 'events_base.dart';
 
@@ -6,6 +6,10 @@ import 'events_base.dart';
 class CancelAutomationFade extends SoundEvent {
   /// Create an instance.
   const CancelAutomationFade(int? id) : super(id: id);
+
+  /// Describe this object.
+  @override
+  String toString() => '<$runtimeType id: $id>';
 }
 
 /// An event to fade a sound in or out.
@@ -37,4 +41,10 @@ class AutomationFade extends CancelAutomationFade {
 
   /// Cancel this fade.
   void cancel() => game.queueSoundEvent(CancelAutomationFade(id));
+
+  /// Describe this object.
+  @override
+  String toString() =>
+      '<$runtimeType id: $id, from: $startGain, pre fade: $preFade, length: '
+      '$fadeLength, end gain: $endGain>';
 }

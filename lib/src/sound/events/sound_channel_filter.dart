@@ -6,6 +6,10 @@ import 'sound_channel.dart';
 class SoundChannelFilter extends SoundEvent {
   /// Create an event.
   const SoundChannelFilter(int id) : super(id: id);
+
+  /// Describe this object.
+  @override
+  String toString() => '<$runtimeType id: $id>';
 }
 
 /// An event for applying a lowpass to a [SoundChannel] instance.
@@ -18,6 +22,10 @@ class SoundChannelLowpass extends SoundChannelFilter {
 
   /// The q value.
   final double q;
+
+  /// Describe this object.
+  @override
+  String toString() => '<$runtimeType id: $id, frequency: $frequency, q: $q>';
 }
 
 /// An event for applying a highpass to a [SoundChannel] instance.
@@ -39,4 +47,9 @@ class SoundChannelBandpass extends SoundChannelFilter {
 
   /// The bandwidth of the filter.
   final double bandwidth;
+
+  /// Describe this object.
+  @override
+  String toString() =>
+      '<$runtimeType id: $id, frequency: $frequency, bandwidth: $bandwidth>';
 }

@@ -7,6 +7,10 @@ import 'sound_channel.dart';
 class SoundPosition {
   /// Create a default position.
   const SoundPosition();
+
+  /// Describe this object.
+  @override
+  String toString() => '<$runtimeType unpanned>';
 }
 
 /// An unpanned sound.
@@ -24,6 +28,10 @@ class SoundPositionScalar extends SoundPosition {
 
   /// The left right balance of this sound.
   final double scalar;
+
+  /// Describe this object.
+  @override
+  String toString() => '<$runtimeType scalar: $scalar>';
 }
 
 /// A sound which should be panned.
@@ -39,6 +47,11 @@ class SoundPositionAngular extends SoundPosition {
 
   /// The elevation of this sound.
   final double elevation;
+
+  /// Describe this object.
+  @override
+  String toString() =>
+      '<$runtimeType azimuth: $azimuth, elevation: $elevation>';
 }
 
 /// A sound which should be positioned in 3d space.
@@ -54,4 +67,8 @@ class SoundPosition3d extends SoundPosition {
 
   /// The z coordinate.
   final double z;
+
+  /// Describe this object.
+  @override
+  String toString() => '<$runtimeType x: $x, y: $y, z: $z>';
 }

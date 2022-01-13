@@ -1,4 +1,4 @@
-/// Provides sound events and the [SoundEvent] class.
+/// Provides the [SoundEvent] class.
 
 /// The base class for all sound events.
 class SoundEvent {
