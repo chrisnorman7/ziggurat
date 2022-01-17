@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.28.1]
+
+### Fixed
+
+* Fixed a link in the readme.
+
+### Changed
+
+* Updated the package description to bring it more in line with what pub.dev expects.
+
 ## [0.28.0]
 
 ### Changed
