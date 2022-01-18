@@ -99,16 +99,22 @@ void main() {
       test(
         'PlayWave',
         () {
-          final event = PlayWave(game: game, waveType: WaveType.sine);
+          final event = PlayWave(
+            game: game,
+            channel: 4,
+            waveType: WaveType.sine,
+          );
           expect(event.frequency, a4);
           expect(event.gain, 0.7);
           expect(event.game, game);
+          expect(event.channel, 4);
           expect(event.partials, isZero);
           expect(event.waveType, WaveType.sine);
           expect(event.id, isNotNull);
           expect(
             event.toString(),
-            '<PlayWave id: ${event.id}, wave type: WaveType.sine, partials: 0>',
+            '<PlayWave id: ${event.id}, channel: 4, wave type: WaveType.sine, '
+            'partials: 0>',
           );
         },
       );
@@ -158,7 +164,8 @@ void main() {
       test(
         'PlayWave.automateFrequency',
         () {
-          final wave = PlayWave(game: game, waveType: WaveType.triangle);
+          final wave =
+              PlayWave(game: game, channel: 2, waveType: WaveType.triangle);
           final event = wave.automateFrequency(length: 3.0, endFrequency: c2);
           expect(event.endFrequency, c2);
           expect(event.length, 3.0);
@@ -190,7 +197,8 @@ void main() {
           game.sounds.listen(events.add);
           await Future<void>.delayed(Duration.zero);
           events.clear();
-          final wave = PlayWave(game: game, waveType: WaveType.triangle);
+          final wave =
+              PlayWave(game: game, channel: 8, waveType: WaveType.triangle);
           game.queueSoundEvent(wave);
           await Future<void>.delayed(Duration.zero);
           expect(events.length, 1);

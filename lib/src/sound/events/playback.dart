@@ -241,6 +241,7 @@ class PlayWave extends SoundEvent {
   /// Create an instance.
   PlayWave({
     required this.game,
+    required this.channel,
     required this.waveType,
     double frequency = a4,
     this.partials = 0,
@@ -252,6 +253,9 @@ class PlayWave extends SoundEvent {
 
   /// The game to use.
   final Game game;
+
+  /// The ID of the channel to play through.
+  final int channel;
 
   /// The type of the wave to play.
   final WaveType waveType;
@@ -347,7 +351,8 @@ class PlayWave extends SoundEvent {
   /// Describe this object.
   @override
   String toString() =>
-      '<$runtimeType id: $id, wave type: $waveType, partials: $partials>';
+      '<$runtimeType id: $id, channel: $channel, wave type: $waveType, '
+      'partials: $partials>';
 }
 
 /// Set the gain for a [PlayWave] instance.

@@ -1,4 +1,5 @@
 /// Provides the [SoundChannel] class.
+import '../../../wave_types.dart';
 import '../../error.dart';
 import '../../game.dart';
 import '../../json/asset_reference.dart';
@@ -70,8 +71,12 @@ class SoundChannel extends SoundEvent {
   }
 
   /// Play a sound through this channel.
-  PlaySound playSound(AssetReference sound,
-      {double gain = 0.7, bool looping = false, bool keepAlive = false}) {
+  PlaySound playSound(
+    AssetReference sound, {
+    double gain = 0.7,
+    bool looping = false,
+    bool keepAlive = false,
+  }) {
     final event = PlaySound(
         game: game,
         sound: sound,
@@ -82,6 +87,72 @@ class SoundChannel extends SoundEvent {
     game.queueSoundEvent(event);
     return event;
   }
+
+  /// Play a wave of the given [waveType] at the given [frequency] through this
+  /// channel.
+  PlayWave playWave({
+    required WaveType waveType,
+    required double frequency,
+    int partials = 0,
+    double gain = 0.7,
+  }) {
+    final wave = PlayWave(
+      game: game,
+      channel: id!,
+      waveType: waveType,
+      frequency: frequency,
+      partials: partials,
+      gain: gain,
+    );
+    game.queueSoundEvent(wave);
+    return wave;
+  }
+
+  /// Play a sine wave.
+  PlayWave playSine(double frequency, {double gain = 0.7}) => playWave(
+        waveType: WaveType.sine,
+        frequency: frequency,
+        gain: gain,
+      );
+
+  /// Play a triangle wave.
+  PlayWave playTriangle(
+    double frequency, {
+    int partials = 0,
+    double gain = 0.7,
+  }) =>
+      playWave(
+        waveType: WaveType.triangle,
+        frequency: frequency,
+        partials: partials,
+        gain: gain,
+      );
+
+  /// Play a square wave.
+  PlayWave playSquare(
+    double frequency, {
+    int partials = 0,
+    double gain = 0.7,
+  }) =>
+      playWave(
+        waveType: WaveType.square,
+        frequency: frequency,
+        partials: partials,
+        gain: gain,
+      );
+
+  /// Play a saw wave.
+  PlayWave playSaw(
+    double frequency, {
+    int partials = 0,
+    double gain = 0.7,
+  }) =>
+      playWave(
+        waveType: WaveType.saw,
+        frequency: frequency,
+        partials: partials,
+        gain: gain,
+      );
 
   /// Remove any filtering applied to this channel.
   void clearFilter() => game.queueSoundEvent(SoundChannelFilter(id!));

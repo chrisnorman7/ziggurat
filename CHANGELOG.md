@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.31.0]
+
+### Added
+
+* Added the `SoundChannel.playWave` method.
+* Added convenience methods on `SoundChannel` for playing waves.
+
+### Changed
+
+* Added a `channel` argument to the `PlayWave` constructor.
+
 ## [0.30.0]
 
 ### Added
