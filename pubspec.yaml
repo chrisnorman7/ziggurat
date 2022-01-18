@@ -1,5 +1,5 @@
 name: ziggurat
-version: 0.31.0
+version: 0.31.1
 description: >
   A library for making fully-featured audio games using Dart and SDL.
 repository: https://github.com/chrisnorman7/ziggurat

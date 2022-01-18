@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.31.1]
+
+### Fixed
+
+* Fixed links in changelog.
+
 ## [0.31.0]
 
 ### Added
@@ -393,7 +399,7 @@ Added
 ### Added
 
 * Added the ability to load files (and random files) via the `AssetReference.load` method.
-* Added the `AssetStore` class, which will be used by [ziggurat_utils]([URL](https://pub.dev/packages/ziggurat_utils)).
+* Added the `AssetStore` class, which will be used by [ziggurat_utils](https://pub.dev/packages/ziggurat_utils).
 * Added a load more tests.
 
 ### Changed
@@ -419,7 +425,7 @@ Added a `encryptionKey` field to the `SoundReference` class.
 
 ### Changed
 
-* Updated the API to reflect changes in [dart_synthizer]([URL](https://pub.dev/packages/dart_synthizer)).
+* Updated the API to reflect changes in [dart_synthizer](https://pub.dev/packages/dart_synthizer).
 
 ## [0.14.1]
 
