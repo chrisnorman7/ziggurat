@@ -197,8 +197,11 @@ void main() {
           game.sounds.listen(events.add);
           await Future<void>.delayed(Duration.zero);
           events.clear();
-          final wave =
-              PlayWave(game: game, channel: 8, waveType: WaveType.triangle);
+          final wave = PlayWave(
+            game: game,
+            channel: 8,
+            waveType: WaveType.triangle,
+          );
           game.queueSoundEvent(wave);
           await Future<void>.delayed(Duration.zero);
           expect(events.length, 1);
@@ -206,12 +209,16 @@ void main() {
           wave.pause();
           await Future<void>.delayed(Duration.zero);
           expect(events.length, 2);
+          expect(events.last, isA<PauseWave>());
+          expect(events.last is PauseSound, isFalse);
           final paused = events.last as PauseWave;
           expect(paused.id, wave.id);
           wave.unpause();
           await Future<void>.delayed(Duration.zero);
           expect(events.length, 3);
-          final unpaused = events.last as UnpauseEvent;
+          expect(events.last, isA<UnpauseWave>());
+          expect(events.last is UnpauseSound, isFalse);
+          final unpaused = events.last as UnpauseWave;
           expect(unpaused.id, wave.id);
           wave.automateFrequency(length: 3.0, endFrequency: c2);
           await Future<void>.delayed(Duration.zero);
