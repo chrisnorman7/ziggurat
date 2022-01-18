@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.30.0]
+
+### Added
+
+* Added the ability o pause and unpause waves.
+* Added more tests.
+
 ## [0.29.0]
 
 ### Added

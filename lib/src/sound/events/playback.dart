@@ -140,24 +140,36 @@ class PlaySound extends SoundEvent {
   }
 }
 
-/// Pause a sound.
-class PauseSound extends SoundEvent {
+/// Pause something.
+class PauseEvent extends SoundEvent {
   /// Create an event.
-  const PauseSound(int id) : super(id: id);
+  const PauseEvent(int id) : super(id: id);
 
   /// Describe this object.
   @override
   String toString() => '<$runtimeType id: $id>';
 }
 
-/// Unpause a sound.
-class UnpauseSound extends PauseSound {
+/// Pause a [PlaySound] event.
+class PauseSound extends PauseEvent {
+  /// Create an instance.
+  const PauseSound(int id) : super(id);
+}
+
+/// Unpause something.
+class UnpauseEvent extends PauseSound {
   /// Create an event.
-  const UnpauseSound(int id) : super(id);
+  const UnpauseEvent(int id) : super(id);
 
   /// Describe this object.
   @override
   String toString() => '<$runtimeType id: $id>';
+}
+
+/// Unpause a [PlaySound] instance.
+class UnpauseSound extends UnpauseEvent {
+  /// Create an instance.
+  const UnpauseSound(int id) : super(id);
 }
 
 /// Destroy something.
@@ -235,6 +247,7 @@ class PlayWave extends SoundEvent {
     double gain = 0.7,
   })  : _frequency = frequency,
         _gain = gain,
+        _paused = false,
         super(id: SoundEvent.nextId());
 
   /// The game to use.
@@ -242,17 +255,6 @@ class PlayWave extends SoundEvent {
 
   /// The type of the wave to play.
   final WaveType waveType;
-
-  double _gain;
-
-  /// Get the gain for this wave.
-  double get gain => _gain;
-
-  /// Set the gain for this wave.
-  set gain(double value) {
-    _gain = value;
-    game.queueSoundEvent(SetWaveGain(id: id!, gain: value));
-  }
 
   double _frequency;
 
@@ -265,10 +267,37 @@ class PlayWave extends SoundEvent {
     game.queueSoundEvent(SetWaveFrequency(id: id!, frequency: value));
   }
 
+  double _gain;
+
+  /// Get the gain for this wave.
+  double get gain => _gain;
+
+  /// Set the gain for this wave.
+  set gain(double value) {
+    _gain = value;
+    game.queueSoundEvent(SetWaveGain(id: id!, gain: value));
+  }
+
   /// The number of partials to use.
   ///
   /// This value is only valid with wave types other than [WaveType.sine].
   final int partials;
+  bool _paused;
+
+  /// Returns `true` if this wave is paused.
+  bool get paused => _paused;
+
+  /// Pause this sound.
+  void pause() {
+    _paused = true;
+    game.queueSoundEvent(PauseWave(id!));
+  }
+
+  /// Unpause this wave.
+  void unpause() {
+    _paused = false;
+    game.queueSoundEvent(UnpauseWave(id!));
+  }
 
   /// Fade this wave in or out.
   ///
@@ -371,4 +400,16 @@ class AutomateWaveFrequency extends SoundEvent {
   String toString() =>
       '<$runtimeType id: $id, start frequency: $startFrequency, '
       'length: $length, end frequency: $endFrequency>';
+}
+
+/// Pause a [PlayWave] instance.
+class PauseWave extends PauseEvent {
+  /// Create an instance.
+  const PauseWave(int id) : super(id);
+}
+
+/// Unpause a [PlayWave] instance.
+class UnpauseWave extends UnpauseEvent {
+  /// Create an instance.
+  const UnpauseWave(int id) : super(id);
 }

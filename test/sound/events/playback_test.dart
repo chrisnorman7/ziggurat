@@ -166,6 +166,78 @@ void main() {
           expect(event.id, wave.id);
         },
       );
+      test(
+        'PauseWave',
+        () {
+          final event = PauseWave(8);
+          expect(event.id, 8);
+          expect(event.toString(), '<PauseWave id: 8>');
+        },
+      );
+      test(
+        'UnpauseWave',
+        () {
+          final event = UnpauseWave(4);
+          expect(event.id, 4);
+          expect(event.toString(), '<UnpauseWave id: 4>');
+        },
+      );
+      test(
+        'PlayWave methods',
+        () async {
+          final game = Game('PlayWave.pause');
+          final events = <SoundEvent>[];
+          game.sounds.listen(events.add);
+          await Future<void>.delayed(Duration.zero);
+          events.clear();
+          final wave = PlayWave(game: game, waveType: WaveType.triangle);
+          game.queueSoundEvent(wave);
+          await Future<void>.delayed(Duration.zero);
+          expect(events.length, 1);
+          expect(events.single, wave);
+          wave.pause();
+          await Future<void>.delayed(Duration.zero);
+          expect(events.length, 2);
+          final paused = events.last as PauseWave;
+          expect(paused.id, wave.id);
+          wave.unpause();
+          await Future<void>.delayed(Duration.zero);
+          expect(events.length, 3);
+          final unpaused = events.last as UnpauseEvent;
+          expect(unpaused.id, wave.id);
+          wave.automateFrequency(length: 3.0, endFrequency: c2);
+          await Future<void>.delayed(Duration.zero);
+          expect(events.length, 4);
+          final automateFrequency = events.last as AutomateWaveFrequency;
+          expect(automateFrequency.id, wave.id);
+          expect(automateFrequency.endFrequency, c2);
+          expect(automateFrequency.length, 3.0);
+          expect(automateFrequency.startFrequency, wave.frequency);
+          expect(automateFrequency.id, wave.id);
+          final fade = wave.fade(length: 4.0);
+          await Future<void>.delayed(Duration.zero);
+          expect(events.length, 5);
+          expect(events.last, fade);
+          expect(fade.endGain, isZero);
+          expect(fade.fadeLength, 4.0);
+          expect(fade.game, game);
+          expect(fade.preFade, isZero);
+          expect(fade.startGain, wave.gain);
+          expect(fade.fadeType, FadeType.wave);
+          expect(fade.id, wave.id);
+          fade.cancel();
+          await Future<void>.delayed(Duration.zero);
+          expect(events.length, 6);
+          final cancelFade = events.last as CancelAutomationFade;
+          expect(cancelFade.fadeType, FadeType.wave);
+          expect(cancelFade.id, wave.id);
+          wave.destroy();
+          await Future<void>.delayed(Duration.zero);
+          expect(events.length, 7);
+          final destroyWave = events.last as DestroyWave;
+          expect(destroyWave.id, wave.id);
+        },
+      );
     },
   );
 }

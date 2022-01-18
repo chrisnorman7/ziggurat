@@ -30,10 +30,13 @@ void main() {
       test(
         'CancelAutomationFade',
         () {
-          const cancelFade = CancelAutomationFade(9);
+          const cancelFade = CancelAutomationFade(
+            id: 9,
+            fadeType: FadeType.sound,
+          );
           expect(
             cancelFade.toString(),
-            '<CancelAutomationFade id: 9>',
+            '<CancelAutomationFade id: 9, fade type: FadeType.sound>',
           );
         },
       );

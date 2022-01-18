@@ -15,11 +15,15 @@ enum FadeType {
 /// Cancel an automation fade.
 class CancelAutomationFade extends SoundEvent {
   /// Create an instance.
-  const CancelAutomationFade(int? id) : super(id: id);
+  const CancelAutomationFade({required int id, required this.fadeType})
+      : super(id: id);
+
+  /// The type of this fade.
+  final FadeType fadeType;
 
   /// Describe this object.
   @override
-  String toString() => '<$runtimeType id: $id>';
+  String toString() => '<$runtimeType id: $id, fade type: $fadeType>';
 }
 
 /// An event to fade a sound in or out.
@@ -28,18 +32,15 @@ class AutomationFade extends CancelAutomationFade {
   const AutomationFade({
     required this.game,
     required int id,
-    required this.fadeType,
+    required FadeType fadeType,
     required this.preFade,
     required this.fadeLength,
     required this.startGain,
     required this.endGain,
-  }) : super(id);
+  }) : super(id: id, fadeType: fadeType);
 
   /// The game this fade is associated with.
   final Game game;
-
-  /// The type of this fade.
-  final FadeType fadeType;
 
   /// The number of seconds to elapse before applying this fade.
   final double preFade;
@@ -54,7 +55,8 @@ class AutomationFade extends CancelAutomationFade {
   final double endGain;
 
   /// Cancel this fade.
-  void cancel() => game.queueSoundEvent(CancelAutomationFade(id));
+  void cancel() =>
+      game.queueSoundEvent(CancelAutomationFade(id: id!, fadeType: fadeType));
 
   /// Describe this object.
   @override
