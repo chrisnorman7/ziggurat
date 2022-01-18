@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.29.0]
+
+### Added
+
+* Added the ability to play waves.
+
 ## [0.28.1]
 
 ### Fixed

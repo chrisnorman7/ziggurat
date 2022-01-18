@@ -13,6 +13,7 @@ void main() {
           final fade = AutomationFade(
             game: game,
             id: 5,
+            fadeType: FadeType.sound,
             preFade: 0.2,
             fadeLength: 5.0,
             startGain: 1.0,
@@ -20,7 +21,8 @@ void main() {
           );
           expect(
             fade.toString(),
-            '<AutomationFade id: 5, from: 1.0, pre fade: 0.2, length: 5.0, '
+            '<AutomationFade id: 5 (FadeType.sound), from: 1.0, '
+            'pre fade: 0.2, length: 5.0, '
             'end gain: 0.0>',
           );
         },

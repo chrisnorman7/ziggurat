@@ -1,5 +1,7 @@
 import 'package:test/test.dart';
+import 'package:ziggurat/notes.dart';
 import 'package:ziggurat/sound.dart';
+import 'package:ziggurat/wave_types.dart';
 import 'package:ziggurat/ziggurat.dart';
 
 void main() {
@@ -92,6 +94,76 @@ void main() {
             event.toString(),
             '<SetSoundPitchBend id: 9, pitch bend: 0.5>',
           );
+        },
+      );
+      test(
+        'PlayWave',
+        () {
+          final event = PlayWave(game: game, waveType: WaveType.sine);
+          expect(event.frequency, a4);
+          expect(event.gain, 0.7);
+          expect(event.game, game);
+          expect(event.partials, isZero);
+          expect(event.waveType, WaveType.sine);
+          expect(event.id, isNotNull);
+          expect(
+            event.toString(),
+            '<PlayWave id: ${event.id}, wave type: WaveType.sine, partials: 0>',
+          );
+        },
+      );
+      test(
+        'SetWaveGain',
+        () {
+          final event = SetWaveGain(id: 45, gain: 0.3);
+          expect(
+            event.toString(),
+            '<SetWaveGain id: 45, gain: 0.3>',
+          );
+        },
+      );
+      test(
+        'SetWaveFrequency',
+        () {
+          final event = SetWaveFrequency(id: 3, frequency: c4);
+          expect(
+            event.toString(),
+            '<SetWaveFrequency id: 3, frequency: $c4>',
+          );
+        },
+      );
+      test(
+        'DestroyWave',
+        () {
+          final event = DestroyWave(4);
+          expect(event.toString(), '<DestroyWave id: 4>');
+        },
+      );
+      test(
+        'AutomateWaveFrequency',
+        () {
+          final event = AutomateWaveFrequency(
+            id: 8,
+            startFrequency: a4,
+            length: 2.0,
+            endFrequency: c3,
+          );
+          expect(
+            event.toString(),
+            '<AutomateWaveFrequency id: 8, start frequency: $a4, '
+            'length: 2.0, end frequency: $c3>',
+          );
+        },
+      );
+      test(
+        'PlayWave.automateFrequency',
+        () {
+          final wave = PlayWave(game: game, waveType: WaveType.triangle);
+          final event = wave.automateFrequency(length: 3.0, endFrequency: c2);
+          expect(event.endFrequency, c2);
+          expect(event.length, 3.0);
+          expect(event.startFrequency, wave.frequency);
+          expect(event.id, wave.id);
         },
       );
     },

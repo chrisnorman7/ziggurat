@@ -1,4 +1,6 @@
 /// Provides events relating to playing sounds.
+import '../../../notes.dart';
+import '../../../wave_types.dart';
 import '../../error.dart';
 import '../../game.dart';
 import '../../json/asset_reference.dart';
@@ -8,15 +10,15 @@ import 'events_base.dart';
 /// An event which means a sound should be played.
 class PlaySound extends SoundEvent {
   /// Create an event.
-  PlaySound(
-      {required this.game,
-      required this.sound,
-      required this.channel,
-      required this.keepAlive,
-      double gain = 0.7,
-      bool looping = false,
-      double pitchBend = 1.0})
-      : _gain = gain,
+  PlaySound({
+    required this.game,
+    required this.sound,
+    required this.channel,
+    required this.keepAlive,
+    double gain = 0.7,
+    bool looping = false,
+    double pitchBend = 1.0,
+  })  : _gain = gain,
         _paused = false,
         _looping = looping,
         _pitchBend = pitchBend,
@@ -117,12 +119,14 @@ class PlaySound extends SoundEvent {
       throw DeadSound(this);
     }
     final event = AutomationFade(
-        game: game,
-        id: id!,
-        preFade: preFade,
-        fadeLength: length,
-        startGain: startGain ?? _gain,
-        endGain: endGain);
+      game: game,
+      id: id!,
+      fadeType: FadeType.sound,
+      preFade: preFade,
+      fadeLength: length,
+      startGain: startGain ?? _gain,
+      endGain: endGain,
+    );
     game.queueSoundEvent(event);
     return event;
   }
@@ -156,20 +160,26 @@ class UnpauseSound extends PauseSound {
   String toString() => '<$runtimeType id: $id>';
 }
 
-/// Destroy a sound.
-class DestroySound extends SoundEvent {
+/// Destroy something.
+class DestroyEvent extends SoundEvent {
   /// Create an event.
-  const DestroySound(int id) : super(id: id);
+  const DestroyEvent(int id) : super(id: id);
 
   /// Describe this object.
   @override
   String toString() => '<$runtimeType id: $id>';
 }
 
-/// Set the gain for a sound.
-class SetSoundGain extends SoundEvent {
+/// Destroy a [PlaySound] instance.
+class DestroySound extends DestroyEvent {
+  /// Create an instance.
+  const DestroySound(int id) : super(id);
+}
+
+/// Set the gain for something.
+class GainEvent extends SoundEvent {
   /// Create the event.
-  const SetSoundGain({required int id, required this.gain}) : super(id: id);
+  const GainEvent({required int id, required this.gain}) : super(id: id);
 
   /// The new gain.
   final double gain;
@@ -177,6 +187,13 @@ class SetSoundGain extends SoundEvent {
   /// Describe this object.
   @override
   String toString() => '<$runtimeType id: $id, gain: $gain>';
+}
+
+/// Set the gain for a sound.
+class SetSoundGain extends GainEvent {
+  /// Create the instance.
+  const SetSoundGain({required int id, required double gain})
+      : super(id: id, gain: gain);
 }
 
 /// Set whether or not a sound should loop.
@@ -205,4 +222,153 @@ class SetSoundPitchBend extends SoundEvent {
   /// Describe this object.
   @override
   String toString() => '<$runtimeType id: $id, pitch bend: $pitchBend>';
+}
+
+/// Play a wave.
+class PlayWave extends SoundEvent {
+  /// Create an instance.
+  PlayWave({
+    required this.game,
+    required this.waveType,
+    double frequency = a4,
+    this.partials = 0,
+    double gain = 0.7,
+  })  : _frequency = frequency,
+        _gain = gain,
+        super(id: SoundEvent.nextId());
+
+  /// The game to use.
+  final Game game;
+
+  /// The type of the wave to play.
+  final WaveType waveType;
+
+  double _gain;
+
+  /// Get the gain for this wave.
+  double get gain => _gain;
+
+  /// Set the gain for this wave.
+  set gain(double value) {
+    _gain = value;
+    game.queueSoundEvent(SetWaveGain(id: id!, gain: value));
+  }
+
+  double _frequency;
+
+  /// Get the frequency to play at.
+  double get frequency => _frequency;
+
+  /// Set the frequency to play at.
+  set frequency(double value) {
+    _frequency = value;
+    game.queueSoundEvent(SetWaveFrequency(id: id!, frequency: value));
+  }
+
+  /// The number of partials to use.
+  ///
+  /// This value is only valid with wave types other than [WaveType.sine].
+  final int partials;
+
+  /// Fade this wave in or out.
+  ///
+  /// By default, only [length] is necessary. The [startGain] argument will
+  /// default to [gain], and [endGain] to `0.0`, providing a fade out to
+  /// complete silence.
+  AutomationFade fade({
+    required double length,
+    double endGain = 0.0,
+    double? startGain,
+    double preFade = 0.0,
+  }) {
+    final event = AutomationFade(
+      game: game,
+      id: id!,
+      fadeType: FadeType.wave,
+      preFade: preFade,
+      fadeLength: length,
+      startGain: startGain ?? _gain,
+      endGain: endGain,
+    );
+    game.queueSoundEvent(event);
+    return event;
+  }
+
+  /// Destroy this sound.
+  void destroy() {
+    game.queueSoundEvent(DestroyWave(id!));
+  }
+
+  /// Fade this wave.
+  AutomateWaveFrequency automateFrequency({
+    required double length,
+    required double endFrequency,
+    double? startFrequency,
+  }) {
+    final event = AutomateWaveFrequency(
+      id: id!,
+      startFrequency: startFrequency ?? _frequency,
+      length: length,
+      endFrequency: endFrequency,
+    );
+    game.queueSoundEvent(event);
+    return event;
+  }
+
+  /// Describe this object.
+  @override
+  String toString() =>
+      '<$runtimeType id: $id, wave type: $waveType, partials: $partials>';
+}
+
+/// Set the gain for a [PlayWave] instance.
+class SetWaveGain extends GainEvent {
+  /// Create an instance.
+  const SetWaveGain({required int id, required double gain})
+      : super(id: id, gain: gain);
+}
+
+/// Set the frequency for a [PlayWave] instance.
+class SetWaveFrequency extends SoundEvent {
+  /// Create an instance.
+  SetWaveFrequency({required int id, required this.frequency}) : super(id: id);
+
+  /// The new frequency.
+  final double frequency;
+
+  /// Describe this object.
+  @override
+  String toString() => '<$runtimeType id: $id, frequency: $frequency>';
+}
+
+/// Destroy a [PlayWave] instance.
+class DestroyWave extends DestroyEvent {
+  /// Create an instance.
+  const DestroyWave(int id) : super(id);
+}
+
+/// Automate the frequency for a [PlayWave] instance.
+class AutomateWaveFrequency extends SoundEvent {
+  /// Create an instance.
+  const AutomateWaveFrequency({
+    required int id,
+    required this.startFrequency,
+    required this.length,
+    required this.endFrequency,
+  }) : super(id: id);
+
+  /// The start frequency.
+  final double startFrequency;
+
+  /// The length of the automation.
+  final double length;
+
+  /// The end frequency.
+  final double endFrequency;
+
+  /// Describe this object.
+  @override
+  String toString() =>
+      '<$runtimeType id: $id, start frequency: $startFrequency, '
+      'length: $length, end frequency: $endFrequency>';
 }
