@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.32.0]
+
+### Changed
+
+* Changed a bunch of constructors to use keyword-only arguments.
+
 ## [0.31.1]
 
 ### Fixed
