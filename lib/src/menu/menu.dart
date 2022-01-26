@@ -83,7 +83,7 @@ class Menu extends Level {
   })  : menuItems = items ?? [],
         searchString = '',
         searchTime = 0,
-        super(game, ambiances: ambiances, randomSounds: randomSounds) {
+        super(game: game, ambiances: ambiances, randomSounds: randomSounds) {
     controllerAxisDispatcher = ControllerAxisDispatcher({
       movementAxis: (double value) {
         if (value < 0) {

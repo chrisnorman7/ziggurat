@@ -220,7 +220,8 @@ void main() {
       final ambiance1 = Ambiance(sound: reference1, gain: 0.4);
       final ambiance2 =
           Ambiance(sound: reference2, position: Point(4.0, 5.0), gain: 0.5);
-      final level = Level(game, ambiances: <Ambiance>[ambiance1, ambiance2]);
+      final level =
+          Level(game: game, ambiances: <Ambiance>[ambiance1, ambiance2]);
       game.pushLevel(level);
       final playback1 = level.ambiancePlaybacks[ambiance1]!;
       expect(playback1.channel, equals(game.ambianceSounds));

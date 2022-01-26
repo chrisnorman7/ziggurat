@@ -19,32 +19,32 @@ import 'level.dart';
 /// each entry in [rows], with actions to the left, and entries to the right.
 class MultiGridLevel extends Level {
   /// Create an instance.
-  MultiGridLevel(
-      {required Game game,
-      required this.title,
-      required this.rows,
-      this.onCancel,
-      int? verticalPosition,
-      int? horizontalPosition,
-      GameControllerAxis leftRightAxis = GameControllerAxis.leftx,
-      this.leftScanCode = ScanCode.SCANCODE_LEFT,
-      this.rightScanCode = ScanCode.SCANCODE_RIGHT,
-      GameControllerAxis upDownAxis = GameControllerAxis.lefty,
-      this.upScanCode = ScanCode.SCANCODE_UP,
-      this.downScanCode = ScanCode.SCANCODE_DOWN,
-      GameControllerAxis activateAxis = GameControllerAxis.triggerright,
-      this.activateScanCode = ScanCode.SCANCODE_SPACE,
-      GameControllerAxis cancelAxis = GameControllerAxis.triggerleft,
-      this.cancelScanCode = ScanCode.SCANCODE_ESCAPE,
-      double axisSensitivity = 0.5,
-      int axisInterval = 400,
-      List<Ambiance>? ambiances,
-      List<RandomSound>? randomSounds})
-      : axisDispatcher = ControllerAxisDispatcher({},
+  MultiGridLevel({
+    required Game game,
+    required this.title,
+    required this.rows,
+    this.onCancel,
+    int? verticalPosition,
+    int? horizontalPosition,
+    GameControllerAxis leftRightAxis = GameControllerAxis.leftx,
+    this.leftScanCode = ScanCode.SCANCODE_LEFT,
+    this.rightScanCode = ScanCode.SCANCODE_RIGHT,
+    GameControllerAxis upDownAxis = GameControllerAxis.lefty,
+    this.upScanCode = ScanCode.SCANCODE_UP,
+    this.downScanCode = ScanCode.SCANCODE_DOWN,
+    GameControllerAxis activateAxis = GameControllerAxis.triggerright,
+    this.activateScanCode = ScanCode.SCANCODE_SPACE,
+    GameControllerAxis cancelAxis = GameControllerAxis.triggerleft,
+    this.cancelScanCode = ScanCode.SCANCODE_ESCAPE,
+    double axisSensitivity = 0.5,
+    int axisInterval = 400,
+    List<Ambiance>? ambiances,
+    List<RandomSound>? randomSounds,
+  })  : axisDispatcher = ControllerAxisDispatcher({},
             axisSensitivity: axisSensitivity, functionInterval: axisInterval),
         _horizontalPositions = [],
         _verticalPosition = verticalPosition,
-        super(game, ambiances: ambiances, randomSounds: randomSounds) {
+        super(game: game, ambiances: ambiances, randomSounds: randomSounds) {
     if (verticalPosition != null) {
       while (_horizontalPositions.length <= verticalPosition) {
         _horizontalPositions.add(null);

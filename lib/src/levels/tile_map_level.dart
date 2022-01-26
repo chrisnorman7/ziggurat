@@ -18,47 +18,48 @@ import 'level.dart';
 /// A level that will render a [TileMap] instance.
 class TileMapLevel extends Level {
   /// Create an instance.
-  TileMapLevel(
-      {required Game game,
-      required this.tileMap,
-      Point<double>? coordinates,
-      double heading = 0.0,
-      this.forwardMoveDistance = 1.0,
-      this.backwardMoveDistance = 0.5,
-      this.lateralMoveDistance = 0.7,
-      this.turnAmount = 5.0,
-      this.movementSettings =
-          const AxisSetting(GameControllerAxis.lefty, 0.5, 500),
-      this.forwardScanCode = ScanCode.SCANCODE_W,
-      this.backwardScanCode = ScanCode.SCANCODE_S,
-      this.sidestepSettings =
-          const AxisSetting(GameControllerAxis.leftx, 0.5, 600),
-      this.sidestepLeftScanCode = ScanCode.SCANCODE_A,
-      this.sidestepRightScanCode = ScanCode.SCANCODE_D,
-      this.turnSettings =
-          const AxisSetting(GameControllerAxis.rightx, 0.5, 300),
-      this.turnLeftScanCode = ScanCode.SCANCODE_LEFT,
-      this.turnRightScanCode = ScanCode.SCANCODE_RIGHT,
-      List<Ambiance>? ambiances,
-      List<RandomSound>? randomSounds})
-      : lastMove = 0,
+  TileMapLevel({
+    required Game game,
+    required this.tileMap,
+    Point<double>? coordinates,
+    double heading = 0.0,
+    this.forwardMoveDistance = 1.0,
+    this.backwardMoveDistance = 0.5,
+    this.lateralMoveDistance = 0.7,
+    this.turnAmount = 5.0,
+    this.movementSettings =
+        const AxisSetting(GameControllerAxis.lefty, 0.5, 500),
+    this.forwardScanCode = ScanCode.SCANCODE_W,
+    this.backwardScanCode = ScanCode.SCANCODE_S,
+    this.sidestepSettings =
+        const AxisSetting(GameControllerAxis.leftx, 0.5, 600),
+    this.sidestepLeftScanCode = ScanCode.SCANCODE_A,
+    this.sidestepRightScanCode = ScanCode.SCANCODE_D,
+    this.turnSettings = const AxisSetting(GameControllerAxis.rightx, 0.5, 300),
+    this.turnLeftScanCode = ScanCode.SCANCODE_LEFT,
+    this.turnRightScanCode = ScanCode.SCANCODE_RIGHT,
+    List<Ambiance>? ambiances,
+    List<RandomSound>? randomSounds,
+  })  : lastMove = 0,
         lastTurn = 0,
         _tiles = List.generate(
             tileMap.width, (index) => List.filled(tileMap.height, null)),
         _coordinates = coordinates ??
             Point(tileMap.start.x.toDouble(), tileMap.start.y.toDouble()),
         _heading = heading,
-        super(game,
-            ambiances: (ambiances ?? []) +
-                [
-                  for (final tile in tileMap.tiles)
-                    if (tile.ambiance != null)
-                      Ambiance(
-                          sound: tile.ambiance!,
-                          gain: tile.ambianceGain,
-                          position: tile.coordinates.toDouble())
-                ],
-            randomSounds: randomSounds) {
+        super(
+          game: game,
+          ambiances: (ambiances ?? []) +
+              [
+                for (final tile in tileMap.tiles)
+                  if (tile.ambiance != null)
+                    Ambiance(
+                        sound: tile.ambiance!,
+                        gain: tile.ambianceGain,
+                        position: tile.coordinates.toDouble())
+              ],
+          randomSounds: randomSounds,
+        ) {
     for (final tile in tileMap.tiles) {
       _tiles[tile.coordinates.x][tile.coordinates.y] = tile;
     }

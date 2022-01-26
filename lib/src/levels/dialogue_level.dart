@@ -13,23 +13,23 @@ import 'level.dart';
 /// them to skip between them.
 class DialogueLevel extends Level {
   /// Create an instance.
-  DialogueLevel(
-      {required Game game,
-      required this.messages,
-      required this.onDone,
-      this.progressScanCode,
-      this.progressControllerButton,
-      this.position = 0,
-      this.soundChannel,
-      List<Ambiance>? ambiances,
-      List<RandomSound>? randomSounds})
-      : assert(
+  DialogueLevel({
+    required Game game,
+    required this.messages,
+    required this.onDone,
+    this.progressScanCode,
+    this.progressControllerButton,
+    this.position = 0,
+    this.soundChannel,
+    List<Ambiance>? ambiances,
+    List<RandomSound>? randomSounds,
+  })  : assert(
             progressScanCode != null || progressControllerButton != null,
             'Both `ProgressControllerButton` and `progressScanCode` cannot be '
             '`null`.'),
         assert(messages.where((element) => element.keepAlive == false).isEmpty,
             'All messages must have their `keepAlive` value set to `true`.'),
-        super(game, ambiances: ambiances, randomSounds: randomSounds);
+        super(game: game, ambiances: ambiances, randomSounds: randomSounds);
 
   /// The list of messages to progress through.
   final List<Message> messages;

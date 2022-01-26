@@ -12,7 +12,7 @@ void main() {
   group('Editor', () {
     test('Initialisation', () {
       String? text;
-      final editor = Editor(game, (String value) => text = value);
+      final editor = Editor(game: game, onDone: (String value) => text = value);
       expect(text, isNull);
       expect(editor.text, isEmpty);
       expect(editor.onCancel, isNull);
@@ -21,7 +21,7 @@ void main() {
     });
     test('Handle text', () {
       final sdl = Sdl();
-      final editor = Editor(game, print)
+      final editor = Editor(game: game, onDone: print)
         ..handleSdlEvent(
             makeKeyboardEvent(sdl, ScanCode.SCANCODE_0, KeyCode.keycode_0));
       expect(editor.text, isEmpty);
@@ -36,9 +36,11 @@ void main() {
     test('.onDone', () {
       final sdl = Sdl();
       String? text;
-      final editor = Editor(game, (value) {
-        text = value;
-      })
+      final editor = Editor(
+          game: game,
+          onDone: (value) {
+            text = value;
+          })
         ..handleSdlEvent(makeTextInputEvent(sdl, 'Testing things.'));
       expect(text, isNull);
       editor.handleSdlEvent(makeKeyboardEvent(
@@ -55,13 +57,13 @@ void main() {
     });
     test('.onCancel', () {
       final sdl = Sdl();
-      var editor = Editor(game, print);
+      var editor = Editor(game: game, onDone: print);
       final escapeEvent = makeKeyboardEvent(
           sdl, ScanCode.SCANCODE_ESCAPE, KeyCode.keycode_ESCAPE,
           state: PressedState.pressed);
       editor.handleSdlEvent(escapeEvent);
       var cancelled = 0;
-      editor = Editor(game, print, onCancel: () => cancelled++)
+      editor = Editor(game: game, onDone: print, onCancel: () => cancelled++)
         ..handleSdlEvent(makeKeyboardEvent(
             sdl, escapeEvent.key.scancode, escapeEvent.key.keycode));
       expect(cancelled, isZero);
@@ -73,7 +75,7 @@ void main() {
     });
     test('.backspace', () {
       final sdl = Sdl();
-      final editor = Editor(game, print);
+      final editor = Editor(game: game, onDone: print);
       final backspaceEvent = makeKeyboardEvent(
           sdl, ScanCode.SCANCODE_BACKSPACE, KeyCode.keycode_BACKSPACE,
           state: PressedState.pressed);
@@ -92,7 +94,8 @@ void main() {
       final sdl = Sdl();
       const minValue = -32768;
       const maxValue = 32767;
-      final editor = Editor(game, print, controllerMovementSpeed: 0);
+      final editor =
+          Editor(game: game, onDone: print, controllerMovementSpeed: 0);
       expect(editor.controllerAxisDispatcher.axisSensitivity, equals(0.5));
       expect(editor.controllerAxisDispatcher.functionInterval, isZero);
       editor.handleSdlEvent(makeControllerAxisEvent(
@@ -129,7 +132,7 @@ void main() {
     });
     test('Shift key', () {
       final sdl = Sdl();
-      final editor = Editor(game, print);
+      final editor = Editor(game: game, onDone: print);
       editor
         ..handleSdlEvent(makeControllerButtonEvent(sdl, editor.shiftButton,
             state: PressedState.pressed))

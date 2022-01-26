@@ -9,8 +9,12 @@ part 'message.g.dart';
 @JsonSerializable()
 class Message {
   /// Create an instance.
-  const Message(
-      {this.text, this.sound, this.gain = 0.7, this.keepAlive = false});
+  const Message({
+    this.text,
+    this.sound,
+    this.gain = 0.7,
+    this.keepAlive = false,
+  });
 
   /// Create an instance from a JSON object.
   factory Message.fromJson(Map<String, dynamic> json) =>

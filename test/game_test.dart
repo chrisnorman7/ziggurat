@@ -10,7 +10,7 @@ class TestLevel extends Level {
   /// Create.
   TestLevel(Game game)
       : lastTicked = 0,
-        super(game);
+        super(game: game);
 
   /// The number of milliseconds since the [game] ticked.
   int lastTicked;
@@ -30,10 +30,10 @@ void main() {
     });
     test('Current Level', () {
       final game = Game('Test Game');
-      final level1 = Level(game);
+      final level1 = Level(game: game);
       game.pushLevel(level1);
       expect(game.currentLevel, equals(level1));
-      final level2 = Level(game);
+      final level2 = Level(game: game);
       game.pushLevel(level2);
       expect(game.currentLevel, equals(level2));
     });
@@ -114,8 +114,8 @@ void main() {
     });
     test('replaceLevel', () {
       final game = Game('Replace Level');
-      final level1 = Level(game);
-      final level2 = Level(game);
+      final level1 = Level(game: game);
+      final level2 = Level(game: game);
       game
         ..pushLevel(level1)
         ..replaceLevel(level2);
@@ -163,8 +163,8 @@ void main() {
     test('.pushLevel', () async {
       final game = Game('Game.pushLevel');
       final sdl = Sdl();
-      final level1 = Level(game);
-      final level2 = Level(game);
+      final level1 = Level(game: game);
+      final level2 = Level(game: game);
       game.pushLevel(level1);
       expect(game.currentLevel, equals(level1));
       expect(game.tasks, isEmpty);
@@ -186,7 +186,7 @@ void main() {
     test('.pushLevel (instantly)', () async {
       final sdl = Sdl();
       var game = Game('Game.pushLevel');
-      final level = Level(game);
+      final level = Level(game: game);
       game.pushLevel(level, after: 200);
       expect(game.currentLevel, isNull);
       expect(game.tasks.length, equals(1));
@@ -234,7 +234,7 @@ void main() {
         minGain: 0.1,
         maxGain: 1.0,
       );
-      final l = Level(game, randomSounds: [randomSound1, randomSound2]);
+      final l = Level(game: game, randomSounds: [randomSound1, randomSound2]);
       game.pushLevel(l);
       expect(l.randomSoundPlaybacks[randomSound1], isNull);
       expect(l.randomSoundPlaybacks[randomSound2], isNull);

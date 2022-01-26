@@ -17,8 +17,8 @@ import '../sound/sound_playback.dart';
 /// instances.
 class Level {
   /// Create a level.
-  Level(
-    this.game, {
+  Level({
+    required this.game,
     Map<String, Command>? commands,
     List<Ambiance>? ambiances,
     List<RandomSound>? randomSounds,

@@ -35,7 +35,7 @@ class ExcitingLevel extends Level {
   /// Create the level.
   ExcitingLevel(Game game)
       : coordinate = 0,
-        super(game) {
+        super(game: game) {
     registerCommand(quitCommandTrigger.name,
         Command(onStart: () => game.replaceLevel(MainMenu(game))));
     registerCommand(

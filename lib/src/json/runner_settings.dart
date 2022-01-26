@@ -12,24 +12,25 @@ part 'runner_settings.g.dart';
 @JsonSerializable()
 class RunnerSettings {
   /// Create an instance.
-  RunnerSettings(
-      {this.wallEchoEnabled = true,
-      this.maxWallFilter = 500.0,
-      this.wallEchoMaxDistance = 5,
-      this.wallEchoMinDelay = 0.05,
-      this.wallEchoDistanceOffset = 0.01,
-      this.wallEchoGain = 0.5,
-      this.wallEchoGainRolloff = 0.2,
-      this.wallEchoFilterFrequency = 12000,
-      this.directionalRadarEnabled = true,
-      this.directionalRadarGain = 0.7,
-      this.directionalRadarDistance = 10,
-      this.directionalRadarEmptySpaceSound,
-      this.directionalRadarDoorSound,
-      this.directionalRadarWallSound,
-      this.directionalRadarDirections = const [0, 90, 270],
-      this.directionalRadarResetOnTurn = true,
-      this.directionalRadarAlertOnChange = true});
+  RunnerSettings({
+    this.wallEchoEnabled = true,
+    this.maxWallFilter = 500.0,
+    this.wallEchoMaxDistance = 5,
+    this.wallEchoMinDelay = 0.05,
+    this.wallEchoDistanceOffset = 0.01,
+    this.wallEchoGain = 0.5,
+    this.wallEchoGainRolloff = 0.2,
+    this.wallEchoFilterFrequency = 12000,
+    this.directionalRadarEnabled = true,
+    this.directionalRadarGain = 0.7,
+    this.directionalRadarDistance = 10,
+    this.directionalRadarEmptySpaceSound,
+    this.directionalRadarDoorSound,
+    this.directionalRadarWallSound,
+    this.directionalRadarDirections = const [0, 90, 270],
+    this.directionalRadarResetOnTurn = true,
+    this.directionalRadarAlertOnChange = true,
+  });
 
   /// Create an instance from a JSON object.
   factory RunnerSettings.fromJson(Map<String, dynamic> json) =>

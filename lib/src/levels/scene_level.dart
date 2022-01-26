@@ -15,23 +15,23 @@ class SceneLevel extends Level {
   ///
   /// Both [ambiances] and [randomSounds] will be passed to the [Level]
   /// constructor.
-  SceneLevel(
-      {required Game game,
-      required this.message,
-      required this.onDone,
-      this.duration,
-      this.skipScanCode,
-      this.skipControllerButton,
-      this.soundChannel,
-      List<Ambiance>? ambiances,
-      List<RandomSound>? randomSounds})
-      : assert(
+  SceneLevel({
+    required Game game,
+    required this.message,
+    required this.onDone,
+    this.duration,
+    this.skipScanCode,
+    this.skipControllerButton,
+    this.soundChannel,
+    List<Ambiance>? ambiances,
+    List<RandomSound>? randomSounds,
+  })  : assert(
             duration != null ||
                 skipControllerButton != null ||
                 skipScanCode != null,
             'At least one of `duration`, `skipControllerButton`, or '
             '`skipScanCode` must not be null.'),
-        super(game, ambiances: ambiances, randomSounds: randomSounds) {
+        super(game: game, ambiances: ambiances, randomSounds: randomSounds) {
     assert(
         message.keepAlive == true,
         'If `keepAlive` is not `true`, then `onPop` will not function '

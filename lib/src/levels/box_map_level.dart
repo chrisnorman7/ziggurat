@@ -16,18 +16,20 @@ import 'level.dart';
 /// A level that can be used to play a [BoxMap] instance.
 class BoxMapLevel extends Level {
   /// Create an instance.
-  BoxMapLevel(Game game, this.boxMap,
-      {this.activateScanCode = ScanCode.SCANCODE_RETURN,
-      this.activateButton = GameControllerButton.rightshoulder,
-      this.moveAxis = GameControllerAxis.righty,
-      this.turnAxis = GameControllerAxis.leftx,
-      List<Ambiance>? ambiances,
-      List<RandomSound>? randomSounds})
-      : lastTurn = 0,
+  BoxMapLevel({
+    required Game game,
+    required this.boxMap,
+    this.activateScanCode = ScanCode.SCANCODE_RETURN,
+    this.activateButton = GameControllerButton.rightshoulder,
+    this.moveAxis = GameControllerAxis.righty,
+    this.turnAxis = GameControllerAxis.leftx,
+    List<Ambiance>? ambiances,
+    List<RandomSound>? randomSounds,
+  })  : lastTurn = 0,
         lastMove = 0,
-        super(game, ambiances: ambiances, randomSounds: randomSounds) {
-    _coordinates = boxMap.initialCoordinates;
-    _heading = boxMap.initialHeading;
+        _coordinates = boxMap.initialCoordinates,
+        _heading = boxMap.initialHeading,
+        super(game: game, ambiances: ambiances, randomSounds: randomSounds) {
     var sizeX = 0;
     var sizeY = 0;
     for (final box in boxMap.boxes) {

@@ -10,7 +10,8 @@ void main() {
     test('Initialise', () {
       FileSystemEntity? thing;
       final game = Game('File Picker Menu');
-      final menu = FilePickerMenu(game, (entity) => thing = entity);
+      final menu =
+          FilePickerMenu(game: game, onDone: (entity) => thing = entity);
       expect(menu.allowDirectories, isFalse);
       expect(menu.showFiles, isTrue);
       expect(
@@ -24,7 +25,8 @@ void main() {
     test('.onDone', () {
       FileSystemEntity? thing;
       final game = Game('FilePickerMenu.onDone');
-      final menu = FilePickerMenu(game, (entity) => thing = entity);
+      final menu =
+          FilePickerMenu(game: game, onDone: (entity) => thing = entity);
       game.pushLevel(menu);
       expect(thing, isNull);
       menu
@@ -36,7 +38,7 @@ void main() {
     });
     test('Parent directory', () {
       final game = Game('FilePickerMenu Parent Directory');
-      final menu = FilePickerMenu(game, print);
+      final menu = FilePickerMenu(game: game, onDone: print);
       game.pushLevel(menu);
       menu.down();
       expect(menu.currentMenuItem?.label.text, equals('..'));

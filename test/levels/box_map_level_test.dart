@@ -23,7 +23,7 @@ void main() {
             end: Point(9, 9),
             type: Surface())
       ]);
-      final level = BoxMapLevel(game, map);
+      final level = BoxMapLevel(game: game, boxMap: map);
       expect(level.boxMap, equals(map));
       expect(level.coordinates, equals(map.initialCoordinates));
       expect(level.heading, equals(map.initialHeading));
@@ -55,12 +55,13 @@ void main() {
           type: Surface());
       final map =
           BoxMap(name: 'Multiple boxes', boxes: [westField, path, eastField]);
-      final level = BoxMapLevel(game, map);
+      final level = BoxMapLevel(game: game, boxMap: map);
       expect(level.tileAt(0, 0), equals(westField));
       expect(level.tileAtPoint(eastField.end), equals(eastField));
     });
     test('.coordinates', () async {
-      final level = BoxMapLevel(game, BoxMap(name: game.title, boxes: []));
+      final level =
+          BoxMapLevel(game: game, boxMap: BoxMap(name: game.title, boxes: []));
       expect(level.coordinates, equals(level.boxMap.initialCoordinates));
       await Future<void>.delayed(Duration(milliseconds: 1));
       events.clear();
@@ -84,8 +85,8 @@ void main() {
       expect(event.id, isNull);
     });
     test('.heading', () async {
-      final level =
-          BoxMapLevel(game, BoxMap(name: 'BoxMap.heading', boxes: []));
+      final level = BoxMapLevel(
+          game: game, boxMap: BoxMap(name: 'BoxMap.heading', boxes: []));
       expect(level.heading, equals(level.boxMap.initialHeading));
       level.heading = 45.0;
       expect(level.heading, equals(45));
@@ -114,7 +115,7 @@ void main() {
           type: Surface());
       final boxMap =
           BoxMap(name: 'BoxMapLevel.tileAt', boxes: [box1, box2, box3]);
-      final level = BoxMapLevel(game, boxMap);
+      final level = BoxMapLevel(game: game, boxMap: boxMap);
       expect(level.tileAt(box1.start.x, box1.start.y), equals(box1));
       expect(level.tileAt(box1.centre.x.floor(), box1.centre.y.floor()),
           equals(box1));

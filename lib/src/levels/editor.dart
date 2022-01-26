@@ -32,9 +32,9 @@ class Editor extends Level {
   ///
   /// The [ambiances] and [randomSounds] lists are passed directly to the
   /// [Level] constructor.
-  Editor(
-    Game game,
-    this.onDone, {
+  Editor({
+    required Game game,
+    required this.onDone,
     this.text = '',
     this.onCancel,
     this.controllerAlphabet = 'abcdefghijklmnopqrstuvwxyz,.'
@@ -64,7 +64,7 @@ class Editor extends Level {
     List<RandomSound>? randomSounds,
   })  : _shiftPressed = false,
         _currentPosition = 0,
-        super(game, ambiances: ambiances, randomSounds: randomSounds) {
+        super(game: game, ambiances: ambiances, randomSounds: randomSounds) {
     controllerAxisDispatcher = ControllerAxisDispatcher({
       upDownAxis: (double value) {
         if (value > 0) {

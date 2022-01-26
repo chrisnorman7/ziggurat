@@ -12,21 +12,25 @@ import 'widgets/button.dart';
 /// A level for picking a file.
 class FilePickerMenu extends Menu {
   /// Create an instance.
-  FilePickerMenu(Game game, this.onDone,
-      {Directory? start,
-      this.caption = 'Open',
-      this.getEntityMessage,
-      this.allowDirectories = false,
-      this.showFiles = true,
-      void Function()? onCancel})
-      : currentDirectory = start ?? _lastUsed,
+  FilePickerMenu({
+    required Game game,
+    required this.onDone,
+    Directory? start,
+    this.caption = 'Open',
+    this.getEntityMessage,
+    this.allowDirectories = false,
+    this.showFiles = true,
+    void Function()? onCancel,
+  })  : currentDirectory = start ?? _lastUsed,
         super(
             game: game,
             title: Message(text: '$caption (${(start ?? _lastUsed).path})'),
             onCancel: onCancel) {
     _lastUsed = currentDirectory;
     addButton(
-        () => game.replaceLevel(FilePickerMenu(game, onDone,
+        () => game.replaceLevel(FilePickerMenu(
+            game: game,
+            onDone: onDone,
             allowDirectories: allowDirectories,
             getEntityMessage: getEntityMessage,
             onCancel: onCancel,
@@ -49,7 +53,9 @@ class FilePickerMenu extends Menu {
     for (final directory in directories) {
       menuItems.add(MenuItem(
           getLabel(directory),
-          Button(() => game.replaceLevel(FilePickerMenu(game, onDone,
+          Button(() => game.replaceLevel(FilePickerMenu(
+              game: game,
+              onDone: onDone,
               allowDirectories: allowDirectories,
               caption: caption,
               getEntityMessage: getEntityMessage,
@@ -103,7 +109,9 @@ class FilePickerMenu extends Menu {
         event.key.modifiers.isEmpty &&
         event.repeat == false &&
         event.state == PressedState.pressed) {
-      game.replaceLevel(FilePickerMenu(game, onDone,
+      game.replaceLevel(FilePickerMenu(
+          game: game,
+          onDone: onDone,
           allowDirectories: allowDirectories,
           caption: caption,
           getEntityMessage: getEntityMessage,

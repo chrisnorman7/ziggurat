@@ -8,7 +8,7 @@ import 'package:ziggurat/ziggurat.dart';
 /// Custom level.
 class CustomLevel extends Level {
   /// Create a custom level.
-  CustomLevel(Game game) : super(game);
+  CustomLevel(Game game) : super(game: game);
 
   /// Whether or not this level has been pushed.
   bool wasPushed = false;
@@ -55,7 +55,7 @@ class CommandLevel extends Level {
   CommandLevel(Game game)
       : started = false,
         stopped = false,
-        super(game) {
+        super(game: game) {
     registerCommand('testCommand',
         Command(onStart: () => started = true, onStop: () => stopped = true));
   }
@@ -72,7 +72,7 @@ class IncrementLevel extends Level {
   /// Create a level.
   IncrementLevel(Game game)
       : counter = 0,
-        super(game) {
+        super(game: game) {
     registerCommand(
         'increment', Command(onStart: () => counter++, interval: 500));
   }
@@ -85,13 +85,13 @@ void main() {
   group('Level Tests', () {
     test('Test Initialisation', () {
       final game = Game('Test Game');
-      final level = Level(game);
+      final level = Level(game: game);
       expect(level.game, equals(game));
       expect(level.commands, equals(<String, Command>{}));
     });
     test('Register Commands', () {
       final game = Game('Test Game');
-      final level = Level(game);
+      final level = Level(game: game);
       final command = Command();
       level.registerCommand('testing', command);
       expect(level.commands, equals({'testing': command}));
@@ -175,7 +175,7 @@ void main() {
           sound: AssetReference.collection('sound2'),
           gain: 0.2,
           position: Point(5.0, 6.0));
-      final level = Level(game, ambiances: [ambiance1, ambiance2]);
+      final level = Level(game: game, ambiances: [ambiance1, ambiance2]);
       game.pushLevel(level);
       final ambiance1Playback = level.ambiancePlaybacks[ambiance1];
       final ambiance2Playback = level.ambiancePlaybacks[ambiance2];
