@@ -69,7 +69,7 @@ void main() {
         ..setDefaultPannerStrategy(DefaultPannerStrategy.hrtf)
         ..setListenerOrientation(180)
         ..setListenerPosition(3.0, 4.0, 5.0);
-      final reverb = game.createReverb(ReverbPreset('Test Reverb'));
+      final reverb = game.createReverb(ReverbPreset(name: 'Test Reverb'));
       final channel = game.createSoundChannel(position: SoundPositionScalar());
       expect(channel.position, isA<SoundPositionScalar>());
       channel

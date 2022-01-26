@@ -7,7 +7,7 @@ part of 'reverb_preset.dart';
 // **************************************************************************
 
 ReverbPreset _$ReverbPresetFromJson(Map<String, dynamic> json) => ReverbPreset(
-      json['name'] as String,
+      name: json['name'] as String,
       meanFreePath: (json['meanFreePath'] as num?)?.toDouble() ?? 0.1,
       t60: (json['t60'] as num?)?.toDouble() ?? 0.3,
       lateReflectionsLfRolloff:

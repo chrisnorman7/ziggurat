@@ -10,7 +10,7 @@ void main() {
       test(
         'CreateReverb',
         () {
-          final reverb = ReverbPreset('Test Reverb');
+          final reverb = ReverbPreset(name: 'Test Reverb');
           final event = CreateReverb(
             game: game,
             id: 5,

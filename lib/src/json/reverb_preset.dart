@@ -13,8 +13,8 @@ part 'reverb_preset.g.dart';
 @JsonSerializable()
 class ReverbPreset {
   /// Create a preset.
-  const ReverbPreset(
-    this.name, {
+  const ReverbPreset({
+    required this.name,
     this.meanFreePath = 0.1,
     this.t60 = 0.3,
     this.lateReflectionsLfRolloff = 1.0,

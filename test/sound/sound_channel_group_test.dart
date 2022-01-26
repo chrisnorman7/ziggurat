@@ -16,7 +16,7 @@ void main() {
       final game = Game('SoundChannelGroup.setReverb');
       final channelGroup =
           SoundChannelGroup([game.interfaceSounds, game.ambianceSounds]);
-      final reverb = game.createReverb(ReverbPreset('Test Reverb'));
+      final reverb = game.createReverb(ReverbPreset(name: 'Test Reverb'));
       channelGroup.reverb = reverb;
       expect(game.interfaceSounds.reverb, equals(reverb.id));
       expect(game.ambianceSounds.reverb, equals(reverb.id));
