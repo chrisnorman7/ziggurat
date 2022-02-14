@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.33.0]
+
+### Changed
+
+* Fixed a bug where it became impossible to navigate with the arrow keys in menus with number lock on.
+
 ## [0.32.0]
 
 ### Changed
