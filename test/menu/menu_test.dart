@@ -127,6 +127,35 @@ void main() {
           state: PressedState.pressed));
       expect(activate, equals(1));
     });
+    test('Moving with number lock on', () {
+      final sdl = Sdl();
+      final menu = Menu(
+        game: game,
+        title: Message(text: 'Testing With Number Lock'),
+        items: [MenuItem(Message(text: 'First Item'), menuItemLabel)],
+      );
+      expect(menu.currentMenuItem, isNull);
+      menu.handleSdlEvent(
+        makeKeyboardEvent(
+          sdl,
+          ScanCode.SCANCODE_DOWN,
+          KeyCode.keycode_DOWN,
+          modifiers: [KeyMod.num],
+          state: PressedState.pressed,
+        ),
+      );
+      expect(menu.currentMenuItem, menu.menuItems.first);
+      menu.handleSdlEvent(
+        makeKeyboardEvent(
+          sdl,
+          ScanCode.SCANCODE_UP,
+          KeyCode.keycode_UP,
+          modifiers: [KeyMod.num],
+          state: PressedState.pressed,
+        ),
+      );
+      expect(menu.currentMenuItem, isNull);
+    });
     test('ListButton', () {
       final menu = Menu(game: Game('ListButton'), title: emptyMessage);
       var newValue = '';

@@ -266,7 +266,9 @@ class Menu extends Level {
     if (event is KeyboardEvent &&
         event.repeat == false &&
         event.state == PressedState.pressed &&
-        event.key.modifiers.isEmpty) {
+        (event.key.modifiers.isEmpty ||
+            (event.key.modifiers.length == 1 &&
+                event.key.modifiers.contains(KeyMod.num)))) {
       final scanCode = event.key.scancode;
       if (scanCode == upScanCode) {
         up();
