@@ -61,6 +61,23 @@ void main() {
             isA<PlaySound>(),
           ]));
     });
+    test('PlaySound with a custom ID', () {
+      final game = Game('PlaySound');
+      final sound1 = PlaySound(
+        game: game,
+        sound: AssetReference('something.mp3', AssetType.collection),
+        channel: 45,
+        keepAlive: false,
+      );
+      final sound2 = PlaySound(
+        game: sound1.game,
+        sound: sound1.sound,
+        channel: sound1.channel,
+        keepAlive: sound1.keepAlive,
+        id: sound1.id,
+      );
+      expect(sound2.id, sound1.id);
+    });
   });
   group('Sounds stream tests', () {
     final game = Game('Test Sounds');

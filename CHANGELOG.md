@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.34.0]
+
+### Added
+
+* There is now the ability to set custom IDs on `PlaySound` instances.
+
 ## [0.33.0]
 
 ### Changed

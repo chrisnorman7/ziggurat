@@ -18,11 +18,12 @@ class PlaySound extends SoundEvent {
     double gain = 0.7,
     bool looping = false,
     double pitchBend = 1.0,
+    int? id,
   })  : _gain = gain,
         _paused = false,
         _looping = looping,
         _pitchBend = pitchBend,
-        super(id: SoundEvent.nextId());
+        super(id: id ?? SoundEvent.nextId());
 
   /// The game to use.
   final Game game;
