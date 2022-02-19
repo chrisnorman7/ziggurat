@@ -97,9 +97,9 @@ void main() {
           channel.position,
           predicate(
               (value) => value is SoundPositionScalar && value.scalar == 1.0));
-      channel.setReverb(reverb);
+      channel.reverb = reverb.id;
       expect(channel.reverb, equals(reverb.id));
-      channel.setReverb(null);
+      channel.reverb = null;
       expect(channel.reverb, isNull);
       final sound = channel.playSound(
           AssetReference('testing.wav', AssetType.file),

@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.35.0]
+
+### Changed
+
+* Make `SoundChannel.reverb` a property.
+
 ## [0.34.0]
 
 ### Added

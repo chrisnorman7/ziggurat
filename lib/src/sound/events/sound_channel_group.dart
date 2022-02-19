@@ -13,7 +13,7 @@ class SoundChannelGroup {
   /// Set the reverb for this group.
   set reverb(CreateReverb? createdReverb) {
     for (final element in channels) {
-      element.setReverb(createdReverb);
+      element.reverb = createdReverb?.id;
     }
   }
 
