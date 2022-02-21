@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.36.0]
+
+### Fixed
+
+* Stop handling commands after the first one.
+
+### Changed
+
+* The `level.startCommand` and `level.stopCommand` methods now return boolean values.
+
 ## [0.35.0]
 
 ### Changed
