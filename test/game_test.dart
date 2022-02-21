@@ -6,6 +6,8 @@ import 'package:ziggurat/levels.dart';
 import 'package:ziggurat/sound.dart';
 import 'package:ziggurat/ziggurat.dart';
 
+import 'helpers.dart';
+
 class TestLevel extends Level {
   /// Create.
   TestLevel(Game game)
@@ -287,5 +289,89 @@ void main() {
           inOpenClosedRange(game.time + randomSound2.minInterval,
               game.time + randomSound2.maxInterval));
     });
+    test('Commands returning', () {
+      final trigger1 = CommandTrigger(
+        name: 'command1',
+        description: 'First command',
+      );
+      final trigger2 = CommandTrigger(
+        name: 'command2',
+        description: 'Second command',
+      );
+      final game = Game(
+        'Commands',
+        triggerMap: TriggerMap(
+          [trigger1, trigger2],
+        ),
+      );
+      final level = Level(
+        game: game,
+        commands: {trigger1.name: Command(), trigger2.name: Command()},
+      );
+      expect(level.startCommand(trigger1.name), isTrue);
+      expect(level.startCommand(trigger2.name), isTrue);
+      expect(level.stopCommand(trigger1.name), isTrue);
+      expect(level.stopCommand(trigger2.name), isTrue);
+      expect(level.startCommand('testing'), isFalse);
+      expect(level.stopCommand('testing'), isFalse);
+    });
+    test(
+      'Shadowed commands',
+      () {
+        final trigger1 = CommandTrigger(
+          name: 'command1',
+          description: 'First command',
+          keyboardKey:
+              CommandKeyboardKey(ScanCode.SCANCODE_RIGHT, altKey: true),
+        );
+        final trigger2 = CommandTrigger(
+          name: 'command2',
+          description: 'Second command',
+          keyboardKey: CommandKeyboardKey(trigger1.keyboardKey!.scanCode),
+        );
+        final game = Game(
+          'Testing',
+          triggerMap: TriggerMap(
+            [trigger1, trigger2],
+          ),
+        );
+        final list = <int>[];
+        final level = Level(
+          game: game,
+          commands: {
+            trigger1.name: Command(
+              onStart: () => list.add(1),
+            ),
+            trigger2.name: Command(
+              onStart: () => list.add(2),
+            ),
+          },
+        );
+        game.pushLevel(level);
+        expect(list, isEmpty);
+        final sdl = Sdl();
+        game.handleSdlEvent(
+          makeKeyboardEvent(
+            sdl,
+            trigger1.keyboardKey!.scanCode,
+            KeyCode.keycode_0,
+            modifiers: [KeyMod.alt],
+            state: PressedState.pressed,
+          ),
+        );
+        expect(list.length, 1);
+        expect(list.first, 1);
+        game.handleSdlEvent(
+          makeKeyboardEvent(
+            sdl,
+            trigger1.keyboardKey!.scanCode,
+            KeyCode.keycode_0,
+            state: PressedState.pressed,
+          ),
+        );
+        expect(list.length, 2);
+        expect(list, [1, 2]);
+      },
+    );
   });
 }

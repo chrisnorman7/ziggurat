@@ -254,13 +254,17 @@ class Game {
             } else {
               throw Exception('Internal error.');
             }
+            final bool value;
             switch (state) {
               case PressedState.pressed:
-                level.startCommand(name);
+                value = level.startCommand(name);
                 break;
               case PressedState.released:
-                level.stopCommand(name);
+                value = level.stopCommand(name);
                 break;
+            }
+            if (value == true) {
+              return;
             }
           }
         }

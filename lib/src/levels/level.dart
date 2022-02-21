@@ -137,8 +137,10 @@ class Level {
       commands[name] = command;
 
   /// Start the command with the given [name].
+  ///
+  /// Returns `true` if the command was handled.
   @mustCallSuper
-  void startCommand(String name) {
+  bool startCommand(String name) {
     final command = commands[name];
     if (command != null) {
       command.isRunning = true;
@@ -152,12 +154,16 @@ class Level {
           }
         }
       }
+      return true;
     }
+    return false;
   }
 
   /// Stop the command with the given [name].
+  ///
+  /// Returns `true` if the command was handled.
   @mustCallSuper
-  void stopCommand(String name) {
+  bool stopCommand(String name) {
     final command = commands[name];
     if (command != null) {
       command.isRunning = false;
@@ -165,7 +171,9 @@ class Level {
       if (onStop != null) {
         onStop();
       }
+      return true;
     }
+    return false;
   }
 
   /// Handle an SDL event.
