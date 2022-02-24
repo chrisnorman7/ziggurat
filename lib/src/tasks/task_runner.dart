@@ -1,29 +1,20 @@
-/// Provides the [TaskRunner] class.
-import '../game.dart';
+import '../next_run.dart';
 import 'task.dart';
 
-/// A class for holding information about a running [task].
-class TaskRunner {
+/// A class for holding information about a running [value].
+class TaskRunner extends NextRun<Task> {
   /// Create an instance.
-  TaskRunner(this.task)
-      : timeWaited = 0,
-        numberOfRuns = 0;
+  TaskRunner(Task value)
+      : numberOfRuns = 0,
+        super(value);
 
-  /// The task that is to be run.
-  final Task task;
-
-  /// The time since this runner was created, or since the [task] was last ran.
-  ///
-  /// This value will be incremented by [Game.tick].
-  int timeWaited;
-
-  /// The number of times that [task] has run so far.
+  /// The number of times that [value] has run so far.
   int numberOfRuns;
 
-  /// Run [task], and update [numberOfRuns] and [timeWaited].
+  /// Run [value], and update [numberOfRuns] and [runAfter].
   void run() {
-    task.func();
+    value.func();
     numberOfRuns++;
-    timeWaited = 0;
+    runAfter = 0;
   }
 }

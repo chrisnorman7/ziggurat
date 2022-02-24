@@ -49,15 +49,15 @@ void main() {
       expect(game.tasks.length, 1);
       final runner = game.tasks.first;
       expect(runner.numberOfRuns, isZero);
-      expect(runner.task, task);
-      expect(runner.timeWaited, isZero);
+      expect(runner.value, task);
+      expect(runner.runAfter, isZero);
       expect(task.runAfter, equals(3));
       expect(i, isZero);
       for (var j = 1; j < task.runAfter; j++) {
         await game.tick(sdl, 1);
         expect(i, isZero);
         expect(runner.numberOfRuns, isZero);
-        expect(runner.timeWaited, j);
+        expect(runner.runAfter, j);
       }
       game.tick(sdl, 1);
       expect(i, equals(1));
@@ -75,12 +75,12 @@ void main() {
       expect(i, isZero);
       final runner = game.tasks.first;
       expect(runner.numberOfRuns, isZero);
-      expect(runner.task, task);
-      expect(runner.timeWaited, isZero);
+      expect(runner.value, task);
+      expect(runner.runAfter, isZero);
       for (var j = 1; j < task.runAfter; j++) {
         await game.tick(sdl, 1);
         expect(i, equals(0));
-        expect(runner.timeWaited, j);
+        expect(runner.runAfter, j);
       }
       await game.tick(sdl, 1);
       expect(i, equals(1));
@@ -106,7 +106,7 @@ void main() {
       expect(game.tasks.length, equals(1));
       game.tick(sdl, 0);
       expect(game.tasks.length, equals(1));
-      expect(game.tasks.first.task.func, equals(game.stop));
+      expect(game.tasks.first.value.func, equals(game.stop));
     });
     test(
       '.callAfter',
@@ -119,19 +119,19 @@ void main() {
         expect(task.runAfter, 15);
         expect(game.tasks.length, 1);
         var runner = game.tasks.first;
-        expect(runner.task, task);
+        expect(runner.value, task);
         final sdl = Sdl();
         game.tick(sdl, 14);
         expect(game.tasks.length, 1);
         runner = game.tasks.first;
         expect(runner.numberOfRuns, isZero);
-        expect(runner.task, task);
-        expect(runner.timeWaited, 14);
+        expect(runner.value, task);
+        expect(runner.runAfter, 14);
         game.tick(sdl, 1);
         expect(game.tasks, isEmpty);
         expect(runner.numberOfRuns, 1);
-        expect(runner.task, task);
-        expect(runner.timeWaited, isZero);
+        expect(runner.value, task);
+        expect(runner.runAfter, isZero);
       },
     );
     test('.unregisterTask', () {
@@ -165,7 +165,7 @@ void main() {
       expect(game.currentLevel, isNull);
       expect(game.tasks.length, equals(1));
       final runner = game.tasks.first;
-      expect(runner.task.runAfter, equals(2000));
+      expect(runner.value.runAfter, equals(2000));
     });
     test('.tick', () {
       final sdl = Sdl();
@@ -212,11 +212,11 @@ void main() {
       expect(game.tasks.length, equals(1));
       var runner = game.tasks.first;
       expect(runner.numberOfRuns, isZero);
-      expect(runner.timeWaited, isZero);
+      expect(runner.runAfter, isZero);
       await game.tick(sdl, 200);
       expect(game.currentLevel, equals(level));
       expect(runner.numberOfRuns, 1);
-      expect(runner.timeWaited, isZero);
+      expect(runner.runAfter, isZero);
       expect(game.tasks, isEmpty);
       game.popLevel();
       expect(game.currentLevel, isNull);
@@ -225,25 +225,25 @@ void main() {
       expect(game.tasks.length, equals(1));
       runner = game.tasks.first;
       expect(runner.numberOfRuns, isZero);
-      expect(runner.task.runAfter, 400);
-      expect(runner.timeWaited, isZero);
+      expect(runner.value.runAfter, 400);
+      expect(runner.runAfter, isZero);
       await game.tick(sdl, 0);
       expect(game.currentLevel, isNull);
       expect(game.tasks.length, equals(1));
       expect(game.tasks, contains(runner));
       expect(runner.numberOfRuns, isZero);
-      expect(runner.timeWaited, isZero);
+      expect(runner.runAfter, isZero);
       await game.tick(sdl, 399);
       expect(game.currentLevel, isNull);
       expect(game.tasks.length, equals(1));
       expect(game.tasks, contains(runner));
       expect(runner.numberOfRuns, isZero);
-      expect(runner.timeWaited, 399);
+      expect(runner.runAfter, 399);
       await game.tick(sdl, 1);
       expect(game.currentLevel, equals(level));
       expect(game.tasks, isEmpty);
       expect(runner.numberOfRuns, 1);
-      expect(runner.timeWaited, isZero);
+      expect(runner.runAfter, isZero);
     });
     test('Random sounds', () async {
       final sdl = Sdl();

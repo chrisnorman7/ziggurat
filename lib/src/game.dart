@@ -136,7 +136,7 @@ class Game {
 
   /// Unregister a task.
   void unregisterTask(Task task) =>
-      tasks.removeWhere((element) => element.task == task);
+      tasks.removeWhere((element) => element.value == task);
 
   /// Push a level onto the stack.
   void pushLevel(Level level, {int? after}) {
@@ -263,9 +263,9 @@ class Game {
     // We must copy the `tasks` list to prevent Concurrent modification during
     // iteration.
     for (final runner in List<TaskRunner>.from(tasks, growable: false)) {
-      final task = runner.task;
+      final task = runner.value;
       final interval = task.interval;
-      final timeSinceRun = runner.timeWaited + timeDelta;
+      final timeSinceRun = runner.runAfter + timeDelta;
       if ((runner.numberOfRuns == 0 && timeSinceRun >= task.runAfter) ||
           (runner.numberOfRuns >= 1 &&
               interval != null &&
@@ -275,7 +275,7 @@ class Game {
           completedTasks.add(runner);
         }
       } else {
-        runner.timeWaited += timeDelta;
+        runner.runAfter += timeDelta;
       }
     }
     tasks.removeWhere(completedTasks.contains);

@@ -64,8 +64,8 @@ void main() {
       expect(done, isZero);
       game.pushLevel(sceneLevel);
       expect(game.tasks.length, equals(1));
-      expect(game.tasks.first.task.func, equals(sceneLevel.onDone));
-      expect(game.tasks.first.task.runAfter, equals(sceneLevel.duration));
+      expect(game.tasks.first.value.func, equals(sceneLevel.onDone));
+      expect(game.tasks.first.value.runAfter, equals(sceneLevel.duration));
       sceneLevel.skip();
       expect(done, equals(1));
       expect(game.currentLevel, isNull);
@@ -125,10 +125,10 @@ void main() {
       expect(done, isZero);
       expect(game.tasks.length, 1);
       final runner = game.tasks.first;
-      expect(runner.task, sceneLevel.onDoneTask);
-      expect(runner.task.runAfter, duration);
+      expect(runner.value, sceneLevel.onDoneTask);
+      expect(runner.value.runAfter, duration);
       expect(runner.numberOfRuns, isZero);
-      expect(runner.timeWaited, isZero);
+      expect(runner.runAfter, isZero);
       for (var i = 1; i < duration; i++) {
         await game.tick(sdl, 1);
         expect(done, isZero, reason: 'Done increments after $i');
@@ -136,12 +136,12 @@ void main() {
         expect(game.tasks, contains(runner));
         expect(game.currentLevel, equals(sceneLevel));
         expect(runner.numberOfRuns, isZero);
-        expect(runner.timeWaited, i);
+        expect(runner.runAfter, i);
       }
-      expect(runner.timeWaited, duration - 1);
+      expect(runner.runAfter, duration - 1);
       await game.tick(sdl, 1);
       expect(runner.numberOfRuns, 1);
-      expect(runner.timeWaited, isZero);
+      expect(runner.runAfter, isZero);
       expect(game.tasks, isEmpty);
       expect(done, equals(1));
       expect(game.currentLevel, isNull);
