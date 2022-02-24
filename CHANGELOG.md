@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.37.0]
+
+### Changed
+
+* Use faster SDL-based timestamps.
+* Start using relative timings for tasks.
+* Rip out unmaintained and under-tested mapping code.
+* Moved a load of functions into their proper places.
+
 ## [0.36.0]
 
 ### Fixed

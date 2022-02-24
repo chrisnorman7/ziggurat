@@ -1,7 +1,7 @@
 /// Provides the [DynamicWidget] class.
 import '../../json/asset_reference.dart';
 import '../../json/message.dart';
-import '../../task.dart';
+import '../../tasks/task.dart';
 import '../menu_item.dart';
 import 'widgets_base.dart';
 

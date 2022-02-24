@@ -1,9 +1,13 @@
 import 'dart:math';
 
+import 'package:dart_sdl/dart_sdl.dart';
+import 'package:dart_sdl/src/sdl.dart';
 import 'package:test/test.dart';
 import 'package:ziggurat/levels.dart';
 import 'package:ziggurat/sound.dart';
 import 'package:ziggurat/ziggurat.dart';
+
+const incrementCommandName = 'increment';
 
 /// Custom level.
 class CustomLevel extends Level {
@@ -74,7 +78,9 @@ class IncrementLevel extends Level {
       : counter = 0,
         super(game: game) {
     registerCommand(
-        'increment', Command(onStart: () => counter++, interval: 500));
+      incrementCommandName,
+      Command(onStart: () => counter++, interval: 500),
+    );
   }
 
   /// The number of increments.
@@ -149,23 +155,45 @@ void main() {
       expect(level.started, isTrue);
       expect(level.stopped, isTrue);
     });
-    test('Start Command Tests', () {
+    test('Start Command Tests', () async {
       final game = Game('Test Game');
       final level = IncrementLevel(game);
-      final command = level.commands['increment'];
+      game.pushLevel(level);
+      final command = level.commands[incrementCommandName]!;
       expect(command, isA<Command>());
-      expect(level.counter, equals(0));
-      game.time = DateTime.now().millisecondsSinceEpoch;
+      expect(command.interval, 500);
+      expect(
+        level.commandNextRuns.where(
+          (element) => element.value == command,
+        ),
+        isEmpty,
+      );
+      expect(level.counter, isZero);
+      level.startCommand(incrementCommandName);
+      expect(
+        level.commandNextRuns.where(
+          (element) => element.value == command,
+        ),
+        isNotEmpty,
+      );
+      final nextRun = level.getCommandNextRun(command);
+      expect(nextRun.runAfter, isZero);
+      expect(level.counter, 1);
+      level.startCommand(incrementCommandName);
+      expect(level.counter, 1);
+      expect(level.getCommandNextRun(command).runAfter, isZero);
       level.startCommand('increment');
-      expect(level.counter, equals(1));
-      expect(command!.nextRun, equals(game.time + 500));
-      level.startCommand('increment');
-      expect(level.counter, equals(1));
-      expect(command.nextRun, equals(game.time + 500));
-      game.time += 500;
-      level.startCommand('increment');
-      expect(level.counter, equals(2));
-      expect(command.nextRun, equals(game.time + 500));
+      expect(level.counter, 1);
+      expect(level.getCommandNextRun(command).runAfter, 0);
+      final sdl = Sdl();
+      await game.tick(sdl, 1);
+      expect(level.getCommandNextRun(command).runAfter, 1);
+      await game.tick(sdl, 499);
+      expect(level.counter, 1);
+      expect(level.getCommandNextRun(command).runAfter, 500);
+      await game.tick(sdl, 1);
+      expect(level.counter, 2);
+      expect(level.getCommandNextRun(command).runAfter, isZero);
     });
     test('Ambiances', () {
       final game = Game('Level Ambiances');

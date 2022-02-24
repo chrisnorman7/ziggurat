@@ -53,18 +53,19 @@ void main() {
       var done = 0;
       const message = Message(keepAlive: true);
       final sceneLevel = SceneLevel(
-          game: game,
-          message: message,
-          onDone: () {
-            done++;
-            game.popLevel();
-          },
-          duration: 54321);
+        game: game,
+        message: message,
+        onDone: () {
+          done++;
+          game.popLevel();
+        },
+        duration: 54321,
+      );
       expect(done, isZero);
       game.pushLevel(sceneLevel);
       expect(game.tasks.length, equals(1));
-      expect(game.tasks.first.func, equals(sceneLevel.onDone));
-      expect(game.tasks.first.runWhen, equals(sceneLevel.duration));
+      expect(game.tasks.first.task.func, equals(sceneLevel.onDone));
+      expect(game.tasks.first.task.runAfter, equals(sceneLevel.duration));
       sceneLevel.skip();
       expect(done, equals(1));
       expect(game.currentLevel, isNull);
@@ -76,20 +77,23 @@ void main() {
       var done = 0;
       const message = Message(keepAlive: true);
       final sceneLevel = SceneLevel(
-          game: game,
-          message: message,
-          onDone: () => done++,
-          skipScanCode: ScanCode.SCANCODE_RETURN,
-          skipControllerButton: GameControllerButton.a);
+        game: game,
+        message: message,
+        onDone: () => done++,
+        skipScanCode: ScanCode.SCANCODE_RETURN,
+        skipControllerButton: GameControllerButton.a,
+      );
       expect(done, isZero);
       game.pushLevel(sceneLevel);
+      expect(sceneLevel.onDoneTask, isNull);
       sceneLevel.handleSdlEvent(makeKeyboardEvent(
           sdl, sceneLevel.skipScanCode!, KeyCode.keycode_RETURN));
       expect(done, isZero);
       expect(game.currentLevel, equals(sceneLevel));
-      sceneLevel.handleSdlEvent(makeKeyboardEvent(
-          sdl, sceneLevel.skipScanCode!, KeyCode.keycode_RETURN,
-          state: PressedState.pressed));
+      sceneLevel.handleSdlEvent(
+        makeKeyboardEvent(sdl, sceneLevel.skipScanCode!, KeyCode.keycode_RETURN,
+            state: PressedState.pressed),
+      );
       expect(done, equals(1));
       expect(game.currentLevel, equals(sceneLevel));
       sceneLevel.handleSdlEvent(
@@ -102,30 +106,42 @@ void main() {
       expect(done, equals(2));
       expect(game.currentLevel, equals(sceneLevel));
     });
-    test('.duration', () {
+    test('.duration', () async {
       final sdl = Sdl();
       final game = Game('SceneLevel.duration');
       var done = 0;
+      const duration = 3;
       final sceneLevel = SceneLevel(
-          game: game,
-          message: Message(keepAlive: true),
-          onDone: () {
-            done++;
-            game.popLevel();
-          },
-          duration: 3);
+        game: game,
+        message: Message(keepAlive: true),
+        onDone: () {
+          done++;
+          game.popLevel();
+        },
+        duration: duration,
+      );
+      expect(sceneLevel.duration, duration);
       game.pushLevel(sceneLevel);
       expect(done, isZero);
-      for (var i = 0; i <= sceneLevel.duration!; i++) {
-        game
-          ..tick(sdl, 1)
-          ..time = i;
+      expect(game.tasks.length, 1);
+      final runner = game.tasks.first;
+      expect(runner.task, sceneLevel.onDoneTask);
+      expect(runner.task.runAfter, duration);
+      expect(runner.numberOfRuns, isZero);
+      expect(runner.timeWaited, isZero);
+      for (var i = 1; i < duration; i++) {
+        await game.tick(sdl, 1);
         expect(done, isZero, reason: 'Done increments after $i');
         expect(game.tasks.length, equals(1));
+        expect(game.tasks, contains(runner));
         expect(game.currentLevel, equals(sceneLevel));
+        expect(runner.numberOfRuns, isZero);
+        expect(runner.timeWaited, i);
       }
-      game.time++;
-      game.tick(sdl, 1);
+      expect(runner.timeWaited, duration - 1);
+      await game.tick(sdl, 1);
+      expect(runner.numberOfRuns, 1);
+      expect(runner.timeWaited, isZero);
       expect(game.tasks, isEmpty);
       expect(done, equals(1));
       expect(game.currentLevel, isNull);

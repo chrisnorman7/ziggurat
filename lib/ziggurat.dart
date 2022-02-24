@@ -17,4 +17,5 @@ export 'src/math.dart';
 export 'src/multi_grid.dart';
 export 'src/quest.dart';
 export 'src/setting_defaults.dart';
-export 'src/task.dart';
+export 'src/tasks/task.dart';
+export 'src/tasks/task_runner.dart';

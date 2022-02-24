@@ -6,7 +6,7 @@ import '../game.dart';
 import '../json/ambiance.dart';
 import '../json/message.dart';
 import '../json/random_sound.dart';
-import '../task.dart';
+import '../tasks/task.dart';
 
 /// The default message for [ParameterMenuParameter].
 const _defaultMessage = Message(text: "If you can see this, there's a bug.");

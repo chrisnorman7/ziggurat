@@ -7,6 +7,7 @@ import '../game.dart';
 import '../json/ambiance.dart';
 import '../json/level_stub.dart';
 import '../json/random_sound.dart';
+import '../next_run.dart';
 import '../sound/events/sound_channel.dart';
 import '../sound/events/sound_position.dart';
 import '../sound/sound_playback.dart';
@@ -23,26 +24,31 @@ class Level {
     List<Ambiance>? ambiances,
     List<RandomSound>? randomSounds,
   })  : commands = commands ?? {},
+        commandNextRuns = [],
         ambiances = ambiances ?? [],
         randomSounds = randomSounds ?? [],
         ambiancePlaybacks = {},
         randomSoundPlaybacks = {},
-        randomSoundNextPlays = {};
+        randomSoundNextPlays = [];
 
   /// Create an instance from a level stub.
   Level.fromStub(this.game, LevelStub stub, {Map<String, Command>? commands})
       : commands = commands ?? {},
+        commandNextRuns = [],
         ambiances = stub.ambiances,
         randomSounds = stub.randomSounds,
         ambiancePlaybacks = {},
         randomSoundPlaybacks = {},
-        randomSoundNextPlays = {};
+        randomSoundNextPlays = [];
 
   /// The game this level is part of.
   final Game game;
 
   /// The commands this level recognises.
   final Map<String, Command> commands;
+
+  /// The times before commands should run next.
+  final List<NextRun<Command>> commandNextRuns;
 
   /// A list of ambiances for this level.
   final List<Ambiance> ambiances;
@@ -59,7 +65,10 @@ class Level {
   final Map<RandomSound, SoundPlayback> randomSoundPlaybacks;
 
   /// The times that [randomSounds] should play next.
-  final Map<RandomSound, int> randomSoundNextPlays;
+  ///
+  /// The map values are the number of milliseconds before the sound keys
+  /// should play again.
+  final List<NextRun<RandomSound>> randomSoundNextPlays;
 
   /// What should happen when this game is pushed into a level stack.
   @mustCallSuper
@@ -77,6 +86,7 @@ class Level {
           gain: ambiance.gain, keepAlive: true, looping: true);
       ambiancePlaybacks[ambiance] = SoundPlayback(channel, sound);
     }
+    randomSounds.forEach(scheduleRandomSound);
   }
 
   /// Stop [playback].
@@ -100,7 +110,7 @@ class Level {
       }
       if (fadeLength != null) {
         playback.sound.fade(length: fadeLength);
-        game.registerTask(
+        game.callAfter(
           runAfter: (fadeLength * 1000).round(),
           func: () => stopPlayback(playback),
         );
@@ -109,12 +119,12 @@ class Level {
       }
     }
     for (final sound in randomSounds) {
-      randomSoundNextPlays.remove(sound);
+      randomSoundNextPlays.removeWhere((element) => element.value == sound);
       final playback = randomSoundPlaybacks.remove(sound);
       if (playback != null) {
         if (fadeLength != null) {
           playback.sound.fade(length: fadeLength);
-          game.registerTask(
+          game.callAfter(
             runAfter: (fadeLength * 1000).round(),
             func: () => stopPlayback(playback),
           );
@@ -136,6 +146,39 @@ class Level {
   void registerCommand(String name, Command command) =>
       commands[name] = command;
 
+  /// Get the next run for the given [randomSound].
+  NextRun<RandomSound> getRandomSoundNextPlay(RandomSound randomSound) =>
+      randomSoundNextPlays.firstWhere(
+        (element) => element.value == randomSound,
+        orElse: () {
+          final nextRun = NextRun(randomSound);
+          randomSoundNextPlays.add(nextRun);
+          return nextRun;
+        },
+      );
+
+  /// Schedule a random [sound] to play.
+  void scheduleRandomSound(RandomSound sound) {
+    final int offset;
+    if (sound.minInterval == sound.maxInterval) {
+      offset = 0;
+    } else {
+      offset = game.random.nextInt(sound.maxInterval - sound.minInterval);
+    }
+    getRandomSoundNextPlay(sound).runAfter = sound.minInterval + offset;
+  }
+
+  /// Get the next run value for the given [command].
+  NextRun<Command> getCommandNextRun(Command command) =>
+      commandNextRuns.firstWhere(
+        (element) => element.value == command,
+        orElse: () {
+          final nextRun = NextRun(command, runAfter: command.interval ?? 0);
+          commandNextRuns.add(nextRun);
+          return nextRun;
+        },
+      );
+
   /// Start the command with the given [name].
   ///
   /// Returns `true` if the command was handled.
@@ -143,20 +186,26 @@ class Level {
   bool startCommand(String name) {
     final command = commands[name];
     if (command != null) {
-      command.isRunning = true;
-      final onStart = command.onStart;
       final interval = command.interval;
-      if (onStart != null) {
-        if (interval == null || game.time >= command.nextRun) {
-          onStart();
-          if (interval != null) {
-            command.nextRun = game.time + interval;
-          }
-        }
+      final runAfter = getCommandNextRun(command);
+      if (interval == null || runAfter.runAfter >= interval) {
+        runCommand(command);
       }
       return true;
     }
     return false;
+  }
+
+  /// Run the given [command].
+  void runCommand(Command command) {
+    final interval = command.interval;
+    final onStart = command.onStart;
+    if (onStart != null) {
+      onStart();
+      if (interval != null) {
+        getCommandNextRun(command).runAfter = 0;
+      }
+    }
   }
 
   /// Stop the command with the given [name].
@@ -166,7 +215,7 @@ class Level {
   bool stopCommand(String name) {
     final command = commands[name];
     if (command != null) {
-      command.isRunning = false;
+      commandNextRuns.removeWhere((element) => element.value == command);
       final onStop = command.onStop;
       if (onStop != null) {
         onStop();
@@ -193,5 +242,60 @@ class Level {
   ///
   /// To prevent jank, this method should not take too long, although some time
   /// correction is performed by the [Game.tick] method.
-  void tick(Sdl sdl, int timeDelta) {}
+  @mustCallSuper
+  void tick(Sdl sdl, int timeDelta) {
+    for (final command in commands.values) {
+      final interval = command.interval;
+      if (interval != null) {
+        final runAfter = getCommandNextRun(command);
+        if (runAfter.runAfter >= interval) {
+          runCommand(command);
+        } else {
+          runAfter.runAfter = runAfter.runAfter + timeDelta;
+        }
+      }
+    }
+    for (final sound in randomSounds) {
+      final playNext = getRandomSoundNextPlay(sound);
+      if (playNext.runAfter <= 0) {
+        final playback = randomSoundPlaybacks[sound];
+        SoundChannel? c;
+        if (playback != null) {
+          playback.sound.destroy();
+          c = playback.channel;
+        } else {
+          c = null;
+        }
+        final minX = sound.minCoordinates.x;
+        final maxX = sound.maxCoordinates.x;
+        final minY = sound.minCoordinates.y;
+        final maxY = sound.maxCoordinates.y;
+        final xDifference = maxX - minX;
+        final yDifference = maxY - minY;
+        final x = minX + (xDifference * game.random.nextDouble());
+        final y = minY + (yDifference * game.random.nextDouble());
+        final position = SoundPosition3d(x: x, y: y);
+        if (c == null) {
+          c = game.createSoundChannel(position: position);
+        } else {
+          c.position = position;
+        }
+        randomSoundPlaybacks[sound] = SoundPlayback(
+          c,
+          c.playSound(
+            sound.sound,
+            keepAlive: true,
+            gain: sound.minGain == sound.maxGain
+                ? sound.minGain
+                : (sound.minGain +
+                    ((sound.maxGain - sound.minGain) *
+                        game.random.nextDouble())),
+          ),
+        );
+        scheduleRandomSound(sound);
+      } else {
+        playNext.runAfter -= timeDelta;
+      }
+    }
+  }
 }

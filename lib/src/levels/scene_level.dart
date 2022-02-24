@@ -7,6 +7,7 @@ import '../json/message.dart';
 import '../json/random_sound.dart';
 import '../sound/events/playback.dart';
 import '../sound/events/sound_channel.dart';
+import '../tasks/task.dart';
 import 'level.dart';
 
 /// A level that plays a cutscene.
@@ -73,13 +74,20 @@ class SceneLevel extends Level {
   /// The currently-playing sound.
   PlaySound? get sound => _sound;
 
+  /// The task which will call [onDone].
+  Task? onDoneTask;
+
   @override
   void onPush() {
     super.onPush();
-    _sound = game.outputMessage(message,
-        soundChannel: soundChannel, oldSound: _sound);
-    if (duration != null) {
-      game.registerTask(runAfter: duration!, func: onDone);
+    _sound = game.outputMessage(
+      message,
+      soundChannel: soundChannel,
+      oldSound: _sound,
+    );
+    final d = duration;
+    if (d != null) {
+      onDoneTask = game.callAfter(runAfter: d, func: onDone);
     }
   }
 
@@ -91,7 +99,10 @@ class SceneLevel extends Level {
 
   /// Skip this scene.
   void skip() {
-    game.unregisterTask(onDone);
+    final task = onDoneTask;
+    if (task != null) {
+      game.unregisterTask(task);
+    }
     onDone();
   }
 

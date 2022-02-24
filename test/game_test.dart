@@ -19,6 +19,7 @@ class TestLevel extends Level {
   @override
   void tick(Sdl sdl, int timeDelta) {
     lastTicked = timeDelta;
+    super.tick(sdl, timeDelta);
   }
 }
 
@@ -39,79 +40,113 @@ void main() {
       game.pushLevel(level2);
       expect(game.currentLevel, equals(level2));
     });
-    test('One-off Task Test', () {
+    test('One-off Task Test', () async {
       final sdl = Sdl();
       final game = Game('Test Game');
       var i = 0;
-      var task = game.registerTask(runAfter: 3, func: () => i++);
-      expect(game.tasks.contains(task), isTrue);
-      expect(task.runWhen, equals(3));
+      final task = Task(runAfter: 3, func: () => i++);
+      game.registerTask(task);
+      expect(game.tasks.length, 1);
+      final runner = game.tasks.first;
+      expect(runner.numberOfRuns, isZero);
+      expect(runner.task, task);
+      expect(runner.timeWaited, isZero);
+      expect(task.runAfter, equals(3));
       expect(i, isZero);
-      while (game.time < task.runWhen) {
-        game.tick(sdl, 1);
-        expect(
-            game.time, allOf(greaterThanOrEqualTo(0), lessThan(task.runWhen)));
-        expect(i, equals(0));
-        game.time++;
+      for (var j = 1; j < task.runAfter; j++) {
+        await game.tick(sdl, 1);
+        expect(i, isZero);
+        expect(runner.numberOfRuns, isZero);
+        expect(runner.timeWaited, j);
       }
       game.tick(sdl, 1);
       expect(i, equals(1));
       expect(game.tasks, isEmpty);
-      final now = DateTime.now().millisecondsSinceEpoch;
-      game.time = 0;
-      task = game.registerTask(runAfter: 5, func: () => 0, timeOffset: now);
-      expect(task.runWhen, equals(now + 5));
     });
-    test('Repeating Task Test', () {
+    test('Repeating Task Test', () async {
       final sdl = Sdl();
       final game = Game('Test Game');
       var i = 0;
-      final task = game.registerTask(runAfter: 3, func: () => i++, interval: 2);
+      final task = Task(runAfter: 3, func: () => i++, interval: 2);
       expect(task.interval, equals(2));
-      expect(game.tasks, contains(task));
-      expect(task.runWhen, equals(3));
+      expect(task.runAfter, equals(3));
+      game.registerTask(task);
+      expect(game.tasks.length, 1);
       expect(i, isZero);
-      while (game.time < task.runWhen) {
-        game.tick(sdl, 1);
-        expect(
-            game.time, allOf(greaterThanOrEqualTo(0), lessThan(task.runWhen)));
+      final runner = game.tasks.first;
+      expect(runner.numberOfRuns, isZero);
+      expect(runner.task, task);
+      expect(runner.timeWaited, isZero);
+      for (var j = 1; j < task.runAfter; j++) {
+        await game.tick(sdl, 1);
         expect(i, equals(0));
-        game.time++;
+        expect(runner.timeWaited, j);
       }
-      game.tick(sdl, 1);
+      await game.tick(sdl, 1);
       expect(i, equals(1));
       expect(game.tasks, isNotEmpty);
-      expect(game.tasks.first, equals(task));
-      game
-        ..time += 1
-        ..tick(sdl, 1);
+      expect(game.tasks.first, runner);
+      await game.tick(sdl, 1);
       expect(i, equals(1));
-      game
-        ..time += 1
-        ..tick(sdl, 1);
+      await game.tick(sdl, 1);
       expect(i, equals(2));
       expect(game.tasks.length, equals(1));
+      expect(game.tasks.first, runner);
     });
-    test('Tasks adding tasks', () {
+    test('.registerTask', () {
       final sdl = Sdl();
       final game = Game('Tasks that add tasks');
       expect(game.tasks, isEmpty);
       game.registerTask(
+        Task(
           runAfter: 0,
-          func: () => game.registerTask(runAfter: 0, func: game.stop));
+          func: () => game.callAfter(runAfter: 0, func: game.stop),
+        ),
+      );
       expect(game.tasks.length, equals(1));
       game.tick(sdl, 0);
       expect(game.tasks.length, equals(1));
-      expect(game.tasks.first.func, equals(game.stop));
+      expect(game.tasks.first.task.func, equals(game.stop));
     });
+    test(
+      '.callAfter',
+      () {
+        final game = Game('Test callAfter');
+        var i = 0;
+        final task = game.callAfter(func: () => i++, runAfter: 15);
+        expect(task, isA<Task>());
+        expect(task.interval, isNull);
+        expect(task.runAfter, 15);
+        expect(game.tasks.length, 1);
+        var runner = game.tasks.first;
+        expect(runner.task, task);
+        final sdl = Sdl();
+        game.tick(sdl, 14);
+        expect(game.tasks.length, 1);
+        runner = game.tasks.first;
+        expect(runner.numberOfRuns, isZero);
+        expect(runner.task, task);
+        expect(runner.timeWaited, 14);
+        game.tick(sdl, 1);
+        expect(game.tasks, isEmpty);
+        expect(runner.numberOfRuns, 1);
+        expect(runner.task, task);
+        expect(runner.timeWaited, isZero);
+      },
+    );
     test('.unregisterTask', () {
       final game = Game('unregisterTask');
-      game.registerTask(runAfter: 1234, func: game.stop);
+      final task = Task(runAfter: 1234, func: game.stop);
+      game.registerTask(task);
       expect(game.tasks.length, equals(1));
       game.unregisterTask(
-          () => game.registerTask(runAfter: 200, func: game.stop));
+        Task(
+          func: () => game.callAfter(runAfter: 200, func: game.stop),
+          runAfter: task.runAfter,
+        ),
+      );
       expect(game.tasks.length, equals(1));
-      game.unregisterTask(game.stop);
+      game.unregisterTask(task);
       expect(game.tasks, isEmpty);
     });
     test('replaceLevel', () {
@@ -129,23 +164,8 @@ void main() {
         ..replaceLevel(level2, ambianceFadeTime: 2.0);
       expect(game.currentLevel, isNull);
       expect(game.tasks.length, equals(1));
-      final task = game.tasks.first;
-      expect(task.runWhen, equals(2000));
-    });
-    test('.started', () async {
-      final sdl = Sdl()..init();
-      var i = 0;
-      final game = Game('Game.started');
-      expect(game.started, isZero);
-      final now = DateTime.now().millisecondsSinceEpoch;
-      game.run(sdl, onStart: () => i++);
-      await Future<void>.delayed(Duration(milliseconds: 100));
-      expect(
-          game.started,
-          allOf(greaterThanOrEqualTo(now),
-              lessThan(DateTime.now().millisecondsSinceEpoch)));
-      expect(i, equals(1));
-      sdl.quit();
+      final runner = game.tasks.first;
+      expect(runner.task.runAfter, equals(2000));
     });
     test('.tick', () {
       final sdl = Sdl();
@@ -170,52 +190,60 @@ void main() {
       game.pushLevel(level1);
       expect(game.currentLevel, equals(level1));
       expect(game.tasks, isEmpty);
-      await game.tick(sdl, 0);
+      await game.tick(sdl, 1);
       expect(game.currentLevel, equals(level1));
       expect(game.tasks, isEmpty);
       game.pushLevel(level2, after: 400);
       expect(game.currentLevel, equals(level1));
       expect(game.tasks.length, equals(1));
-      game.time = 399;
-      await game.tick(sdl, 0);
+      await game.tick(sdl, 399);
       expect(game.currentLevel, equals(level1));
       expect(game.tasks.length, equals(1));
-      game.time = 400;
-      await game.tick(sdl, 0);
+      await game.tick(sdl, 1);
       expect(game.currentLevel, equals(level2));
       expect(game.tasks, isEmpty);
     });
-    test('.pushLevel (instantly)', () async {
+    test('.pushLevel with `after`', () async {
       final sdl = Sdl();
-      var game = Game('Game.pushLevel');
+      final game = Game('Game.pushLevel');
       final level = Level(game: game);
       game.pushLevel(level, after: 200);
       expect(game.currentLevel, isNull);
       expect(game.tasks.length, equals(1));
-      final now = DateTime.now().millisecondsSinceEpoch;
-      game
-        ..time = now
-        ..tick(sdl, 0);
+      var runner = game.tasks.first;
+      expect(runner.numberOfRuns, isZero);
+      expect(runner.timeWaited, isZero);
+      await game.tick(sdl, 200);
       expect(game.currentLevel, equals(level));
+      expect(runner.numberOfRuns, 1);
+      expect(runner.timeWaited, isZero);
       expect(game.tasks, isEmpty);
-      game = Game('Game.pushLevel', time: now);
-      expect(game.time, equals(now));
+      game.popLevel();
       expect(game.currentLevel, isNull);
-      expect(game.tasks, isEmpty);
       game.pushLevel(level, after: 400);
       expect(game.currentLevel, isNull);
       expect(game.tasks.length, equals(1));
+      runner = game.tasks.first;
+      expect(runner.numberOfRuns, isZero);
+      expect(runner.task.runAfter, 400);
+      expect(runner.timeWaited, isZero);
       await game.tick(sdl, 0);
       expect(game.currentLevel, isNull);
       expect(game.tasks.length, equals(1));
-      game.time = now + 399;
-      await game.tick(sdl, 0);
+      expect(game.tasks, contains(runner));
+      expect(runner.numberOfRuns, isZero);
+      expect(runner.timeWaited, isZero);
+      await game.tick(sdl, 399);
       expect(game.currentLevel, isNull);
       expect(game.tasks.length, equals(1));
-      game.time = now + 400;
-      await game.tick(sdl, 0);
+      expect(game.tasks, contains(runner));
+      expect(runner.numberOfRuns, isZero);
+      expect(runner.timeWaited, 399);
+      await game.tick(sdl, 1);
       expect(game.currentLevel, equals(level));
       expect(game.tasks, isEmpty);
+      expect(runner.numberOfRuns, 1);
+      expect(runner.timeWaited, isZero);
     });
     test('Random sounds', () async {
       final sdl = Sdl();
@@ -240,18 +268,26 @@ void main() {
       game.pushLevel(l);
       expect(l.randomSoundPlaybacks[randomSound1], isNull);
       expect(l.randomSoundPlaybacks[randomSound2], isNull);
-      game.time = DateTime.now().millisecondsSinceEpoch;
-      await game.tick(sdl, 0);
-      expect(l.randomSoundPlaybacks[randomSound1], isNull);
-      expect(l.randomSoundNextPlays[randomSound1],
-          equals(game.time + randomSound1.minInterval));
-      expect(l.randomSoundPlaybacks[randomSound2], isNull);
+      expect(l.getRandomSoundNextPlay(randomSound1).runAfter,
+          randomSound1.minInterval);
       expect(
-          l.randomSoundNextPlays[randomSound2],
-          inOpenClosedRange(game.time + randomSound2.minInterval,
-              game.time + randomSound2.maxInterval));
-      game.time = l.randomSoundNextPlays[randomSound1]!;
+        l.getRandomSoundNextPlay(randomSound2).runAfter,
+        inOpenClosedRange(randomSound2.minInterval, randomSound2.maxInterval),
+      );
       await game.tick(sdl, 0);
+      final randomSound1NextPlay = l.getRandomSoundNextPlay(randomSound1);
+      expect(randomSound1NextPlay.runAfter, randomSound1.minInterval);
+      final randomSound2NextPlay = l.getRandomSoundNextPlay(randomSound2);
+      expect(
+        randomSound2NextPlay.runAfter,
+        inOpenClosedRange(randomSound2.minInterval, randomSound2.maxInterval),
+      );
+      await game.tick(sdl, randomSound1NextPlay.runAfter);
+      expect(randomSound1NextPlay.runAfter, isZero);
+      expect(randomSound2NextPlay.runAfter, greaterThan(0));
+      await game.tick(sdl, 1);
+      expect(randomSound1NextPlay.runAfter, randomSound1.minInterval);
+      expect(l.randomSoundPlaybacks.length, 1);
       expect(l.randomSoundPlaybacks[randomSound1], isNotNull);
       expect(l.randomSoundPlaybacks[randomSound2], isNull);
       var playback = l.randomSoundPlaybacks[randomSound1]!;
@@ -259,16 +295,27 @@ void main() {
       expect(playback.channel.position, isA<SoundPosition3d>());
       var position = playback.channel.position as SoundPosition3d;
       expect(
-          position.x,
-          inOpenClosedRange(
-              randomSound1.minCoordinates.x, randomSound1.maxCoordinates.x));
+        position.x,
+        inOpenClosedRange(
+          randomSound1.minCoordinates.x,
+          randomSound1.maxCoordinates.x,
+        ),
+      );
       expect(
-          position.y,
-          inOpenClosedRange(
-              randomSound1.minCoordinates.y, randomSound1.maxCoordinates.y));
+        position.y,
+        inOpenClosedRange(
+          randomSound1.minCoordinates.y,
+          randomSound1.maxCoordinates.y,
+        ),
+      );
       expect(position.z, isZero);
-      game.time = l.randomSoundNextPlays[randomSound2]!;
-      await game.tick(sdl, 0);
+      await game.tick(sdl, randomSound2NextPlay.runAfter);
+      expect(randomSound2NextPlay.runAfter, isZero);
+      await game.tick(sdl, 1);
+      expect(
+        randomSound2NextPlay.runAfter,
+        inOpenClosedRange(randomSound2.minInterval, randomSound2.maxInterval),
+      );
       expect(l.randomSoundPlaybacks[randomSound2], isNotNull);
       playback = l.randomSoundPlaybacks[randomSound2]!;
       expect(playback.sound.gain,
@@ -285,9 +332,9 @@ void main() {
               randomSound2.minCoordinates.y, randomSound2.maxCoordinates.y));
       expect(position.z, isZero);
       expect(
-          l.randomSoundNextPlays[randomSound2],
-          inOpenClosedRange(game.time + randomSound2.minInterval,
-              game.time + randomSound2.maxInterval));
+        l.getRandomSoundNextPlay(randomSound2).runAfter,
+        inOpenClosedRange(randomSound2.minInterval, randomSound2.maxInterval),
+      );
     });
     test('Commands returning', () {
       final trigger1 = CommandTrigger(

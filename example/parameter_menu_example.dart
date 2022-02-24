@@ -17,7 +17,7 @@ Future<void> main() async {
       onCancel: () => game
         ..outputText('Quitting.')
         ..popLevel(ambianceFadeTime: 1.0)
-        ..registerTask(runAfter: 1000, func: game.stop));
+        ..callAfter(runAfter: 1000, func: game.stop));
   final powerMenuItem = ParameterMenuParameter(
     getLabel: () => Message(text: 'Power ${power ? "on" : "off"}'),
     increaseValue: () {

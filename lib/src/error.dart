@@ -2,7 +2,6 @@
 import 'dart:io';
 import 'dart:math';
 
-import 'box_map/box.dart';
 import 'sound/events/playback.dart';
 import 'sound/events/sound_channel.dart';
 import 'sound/events/sound_position.dart';
@@ -35,20 +34,6 @@ class InvalidEntityError extends ZigguratError {
   /// Explain the error.
   @override
   String toString() => 'Unknown entity $entity (${entity.runtimeType}).';
-}
-
-/// The start coordinates of [box] contains a negative number.
-class NegativeCoordinatesError extends ZigguratError {
-  /// Create the error.
-  NegativeCoordinatesError(this.box);
-
-  /// The box with the invalid coordinates.
-  final Box box;
-
-  /// Return a string.
-  @override
-  String toString() =>
-      'Negative coordinates for box ${box.name}: ${box.start}.';
 }
 
 /// The [sound] had its [PlaySound.keepAlive] value set to `false`.

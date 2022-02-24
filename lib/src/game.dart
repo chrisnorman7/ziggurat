@@ -7,7 +7,6 @@ import 'package:meta/meta.dart';
 
 import 'json/asset_reference.dart';
 import 'json/message.dart';
-import 'json/random_sound.dart';
 import 'json/reverb_preset.dart';
 import 'json/trigger_map.dart';
 import 'levels/level.dart';
@@ -17,16 +16,17 @@ import 'sound/events/playback.dart';
 import 'sound/events/reverb.dart';
 import 'sound/events/sound_channel.dart';
 import 'sound/events/sound_position.dart';
-import 'sound/sound_playback.dart';
-import 'task.dart';
+import 'tasks/task.dart';
+import 'tasks/task_runner.dart';
 
 /// The main game object.
 class Game {
   /// Create an instance.
-  Game(this.title, {TriggerMap? triggerMap, this.time = 0})
-      : _levels = [],
+  Game(
+    this.title, {
+    TriggerMap? triggerMap,
+  })  : _levels = [],
         triggerMap = triggerMap ?? TriggerMap([]),
-        _started = 0,
         _isRunning = false,
         tasks = [],
         _queuedSoundEvents = [],
@@ -60,31 +60,13 @@ class Game {
   /// The sdl window that will be shown when the [run] method is called.
   Window? get window => _window;
 
-  /// Game time.
-  ///
-  /// This value is given in milliseconds since the epoch.
-  int time;
-
-  int _started;
-
-  /// The time when [run] was first called.
-  ///
-  /// If this value is 0, you can be assured that [run] has never been called.
-  int get started => _started;
-
-  /// The number of milliseconds this game has been running for.
-  int get runDurationMilliseconds => time - _started;
-
-  /// The number of seconds this game has been running for.
-  double get runDurationSeconds => runDurationMilliseconds / 1000;
-
   bool _isRunning;
 
   /// Whether or not this game is running.
   bool get isRunning => _isRunning;
 
   /// The tasks which have been registered using [registerTask].
-  final List<Task> tasks;
+  final List<TaskRunner> tasks;
 
   /// The stream controller for dispatching sound events.
   ///
@@ -135,45 +117,31 @@ class Game {
     }
   }
 
-  /// Register a new task.
+  /// Register a new [task].
+  void registerTask(Task task) => tasks.add(TaskRunner(task));
+
+  /// Call the given [func] after the specified time.
   ///
-  /// This method is shorthand for:
+  /// This is equivalent to:
   ///
   /// ```
-  /// task = Task(game.time + runAfter, func);
+  /// const task = Task(func: f, runAfter: 15);
+  /// game.registerTask(task);
   /// ```
-  ///
-  /// If you are registering a task before calling [run], you can use the
-  /// [timeOffset] argument to add the current time, rather than having the task
-  /// executed immediately.
-  Task registerTask({
-    required int runAfter,
-    required TaskFunction func,
-    int? interval,
-    int? timeOffset,
-  }) {
-    var when = time + runAfter;
-    if (timeOffset != null) {
-      when += timeOffset;
-    }
-    final task = Task(
-      runWhen: when,
-      interval: interval,
-      func: func,
-    );
-    tasks.add(task);
+  Task callAfter({required TaskFunction func, required int runAfter}) {
+    final task = Task(func: func, runAfter: runAfter);
+    registerTask(task);
     return task;
   }
 
   /// Unregister a task.
-  void unregisterTask(TaskFunction func) {
-    tasks.removeWhere((element) => element.func == func);
-  }
+  void unregisterTask(Task task) =>
+      tasks.removeWhere((element) => element.task == task);
 
   /// Push a level onto the stack.
   void pushLevel(Level level, {int? after}) {
     if (after != null) {
-      registerTask(runAfter: after, func: () => pushLevel(level));
+      callAfter(func: () => pushLevel(level), runAfter: after);
     } else {
       final cl = currentLevel;
       level.onPush();
@@ -200,10 +168,11 @@ class Game {
   /// Replace the current level with [level].
   void replaceLevel(Level level, {double? ambianceFadeTime}) {
     popLevel(ambianceFadeTime: ambianceFadeTime);
-    pushLevel(level,
-        after: ambianceFadeTime == null
-            ? null
-            : (ambianceFadeTime * 1000).round());
+    pushLevel(
+      level,
+      after:
+          ambianceFadeTime == null ? null : (ambianceFadeTime * 1000).round(),
+    );
   }
 
   /// Handle SDL events.
@@ -273,17 +242,6 @@ class Game {
     }
   }
 
-  /// Schedule a random [sound] to play.
-  void scheduleRandomSound(Level level, RandomSound sound) {
-    final int offset;
-    if (sound.minInterval == sound.maxInterval) {
-      offset = 0;
-    } else {
-      offset = random.nextInt(sound.maxInterval - sound.minInterval);
-    }
-    level.randomSoundNextPlays[sound] = time + (sound.minInterval + offset);
-  }
-
   /// Tick this game.
   ///
   /// The [timeDelta] argument will be the number of milliseconds since the last
@@ -299,68 +257,25 @@ class Game {
     } while (event != null);
     final level = currentLevel;
     if (level != null) {
-      for (final entry in level.commands.entries) {
-        final name = entry.key;
-        final command = entry.value;
-        if (command.isRunning &&
-            command.nextRun != 0 &&
-            time > command.nextRun) {
-          level.startCommand(name);
-        }
-      }
-      for (final sound in level.randomSounds) {
-        final nextPlay = level.randomSoundNextPlays[sound];
-        if (nextPlay == null) {
-          scheduleRandomSound(level, sound);
-        } else if (time >= nextPlay) {
-          final playback = level.randomSoundPlaybacks[sound];
-          SoundChannel? c;
-          if (playback != null) {
-            playback.sound.destroy();
-            c = playback.channel;
-          } else {
-            c = null;
-          }
-          final minX = sound.minCoordinates.x;
-          final maxX = sound.maxCoordinates.x;
-          final minY = sound.minCoordinates.y;
-          final maxY = sound.maxCoordinates.y;
-          final xDifference = maxX - minX;
-          final yDifference = maxY - minY;
-          final x = minX + (xDifference * random.nextDouble());
-          final y = minY + (yDifference * random.nextDouble());
-          final position = SoundPosition3d(x: x, y: y);
-          if (c == null) {
-            c = createSoundChannel(position: position);
-          } else {
-            c.position = position;
-          }
-          level.randomSoundPlaybacks[sound] = SoundPlayback(
-              c,
-              c.playSound(sound.sound,
-                  keepAlive: true,
-                  gain: sound.minGain == sound.maxGain
-                      ? sound.minGain
-                      : (sound.minGain +
-                          ((sound.maxGain - sound.minGain) *
-                              random.nextDouble()))));
-          scheduleRandomSound(level, sound);
-        }
-      }
       level.tick(sdl, timeDelta);
     }
-    final completedTasks = <Task>[];
+    final completedTasks = <TaskRunner>[];
     // We must copy the `tasks` list to prevent Concurrent modification during
     // iteration.
-    for (final task in List<Task>.from(tasks, growable: false)) {
-      if (time >= task.runWhen) {
-        task.func();
-        final interval = task.interval;
+    for (final runner in List<TaskRunner>.from(tasks, growable: false)) {
+      final task = runner.task;
+      final interval = task.interval;
+      final timeSinceRun = runner.timeWaited + timeDelta;
+      if ((runner.numberOfRuns == 0 && timeSinceRun >= task.runAfter) ||
+          (runner.numberOfRuns >= 1 &&
+              interval != null &&
+              timeSinceRun >= interval)) {
+        runner.run();
         if (interval == null) {
-          completedTasks.add(task);
-        } else {
-          task.runWhen = time + interval;
+          completedTasks.add(runner);
         }
+      } else {
+        runner.timeWaited += timeDelta;
       }
     }
     tasks.removeWhere(completedTasks.contains);
@@ -408,22 +323,21 @@ class Game {
     _window = sdl.createWindow(title);
     var lastTick = 0;
     _isRunning = true;
-    _started = sdl.ticks;
     if (onStart != null) {
       onStart();
     }
     while (_isRunning == true) {
-      time = sdl.ticks;
       final int timeDelta;
+      final ticks = sdl.ticks;
       if (lastTick == 0) {
         timeDelta = 0;
-        lastTick = time;
+        lastTick = 0;
       } else {
-        timeDelta = time - lastTick;
+        timeDelta = ticks - lastTick;
       }
       await tick(sdl, timeDelta);
       lastTick = sdl.ticks;
-      final tickTime = lastTick - time;
+      final tickTime = lastTick - ticks;
       if (tickEvery > tickTime) {
         await Future<void>.delayed(
           Duration(milliseconds: tickEvery - tickTime),

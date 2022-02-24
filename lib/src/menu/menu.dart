@@ -9,7 +9,7 @@ import '../json/message.dart';
 import '../json/random_sound.dart';
 import '../levels/level.dart';
 import '../sound/events/playback.dart';
-import '../task.dart';
+import '../tasks/task.dart';
 import 'menu_item.dart';
 import 'widgets/button.dart';
 import 'widgets/label.dart';

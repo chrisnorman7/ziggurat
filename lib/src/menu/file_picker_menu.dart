@@ -23,12 +23,14 @@ class FilePickerMenu extends Menu {
     void Function()? onCancel,
   })  : currentDirectory = start ?? _lastUsed,
         super(
-            game: game,
-            title: Message(text: '$caption (${(start ?? _lastUsed).path})'),
-            onCancel: onCancel) {
+          game: game,
+          title: Message(text: '$caption (${(start ?? _lastUsed).path})'),
+          onCancel: onCancel,
+        ) {
     _lastUsed = currentDirectory;
     addButton(
-        () => game.replaceLevel(FilePickerMenu(
+      () => game.replaceLevel(
+        FilePickerMenu(
             game: game,
             onDone: onDone,
             allowDirectories: allowDirectories,
@@ -36,10 +38,15 @@ class FilePickerMenu extends Menu {
             onCancel: onCancel,
             showFiles: showFiles,
             start: currentDirectory.parent,
-            caption: caption)),
-        label: '..');
+            caption: caption),
+      ),
+      label: '..',
+    );
     if (allowDirectories) {
-      addButton(() => onDone(currentDirectory), label: 'Select This Directory');
+      addButton(
+        () => onDone(currentDirectory),
+        label: 'Select This Directory',
+      );
     }
     final directories = <Directory>[];
     final files = <File>[];
@@ -51,21 +58,36 @@ class FilePickerMenu extends Menu {
       }
     }
     for (final directory in directories) {
-      menuItems.add(MenuItem(
+      menuItems.add(
+        MenuItem(
           getLabel(directory),
-          Button(() => game.replaceLevel(FilePickerMenu(
-              game: game,
-              onDone: onDone,
-              allowDirectories: allowDirectories,
-              caption: caption,
-              getEntityMessage: getEntityMessage,
-              onCancel: onCancel,
-              showFiles: showFiles,
-              start: directory)))));
+          Button(
+            () => game.replaceLevel(
+              FilePickerMenu(
+                game: game,
+                onDone: onDone,
+                allowDirectories: allowDirectories,
+                caption: caption,
+                getEntityMessage: getEntityMessage,
+                onCancel: onCancel,
+                showFiles: showFiles,
+                start: directory,
+              ),
+            ),
+          ),
+        ),
+      );
     }
     if (showFiles == true) {
       for (final file in files) {
-        menuItems.add(MenuItem(getLabel(file), Button(() => onDone(file))));
+        menuItems.add(
+          MenuItem(
+            getLabel(file),
+            Button(
+              () => onDone(file),
+            ),
+          ),
+        );
       }
     }
   }

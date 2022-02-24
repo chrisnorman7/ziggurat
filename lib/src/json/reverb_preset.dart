@@ -1,15 +1,11 @@
 /// Provides the [ReverbPreset] class.
 import 'package:json_annotation/json_annotation.dart';
 
-import '../box_map/box_types/surface.dart';
 import '../setting_defaults.dart';
 
 part 'reverb_preset.g.dart';
 
 /// A reverb preset.
-///
-/// You can create as many presets as you need, and add them to [Surface]
-/// instances.
 @JsonSerializable()
 class ReverbPreset {
   /// Create a preset.
