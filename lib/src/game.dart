@@ -408,12 +408,12 @@ class Game {
     _window = sdl.createWindow(title);
     var lastTick = 0;
     _isRunning = true;
-    _started = DateTime.now().millisecondsSinceEpoch;
+    _started = sdl.ticks;
     if (onStart != null) {
       onStart();
     }
     while (_isRunning == true) {
-      time = DateTime.now().millisecondsSinceEpoch;
+      time = sdl.ticks;
       final int timeDelta;
       if (lastTick == 0) {
         timeDelta = 0;
@@ -422,11 +422,12 @@ class Game {
         timeDelta = time - lastTick;
       }
       await tick(sdl, timeDelta);
-      lastTick = DateTime.now().millisecondsSinceEpoch;
+      lastTick = sdl.ticks;
       final tickTime = lastTick - time;
       if (tickEvery > tickTime) {
         await Future<void>.delayed(
-            Duration(milliseconds: tickEvery - tickTime));
+          Duration(milliseconds: tickEvery - tickTime),
+        );
       }
     }
     destroy();
