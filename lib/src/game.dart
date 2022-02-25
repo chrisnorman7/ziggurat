@@ -262,7 +262,12 @@ class Game {
     final completedTasks = <TaskRunner>[];
     // We must copy the `tasks` list to prevent Concurrent modification during
     // iteration.
-    for (final runner in List<TaskRunner>.from(tasks, growable: false)) {
+    for (final runner in List<TaskRunner>.from(tasks.where(
+      (element) {
+        final taskLevel = element.value.level;
+        return taskLevel == null || taskLevel == level;
+      },
+    ), growable: false)) {
       final task = runner.value;
       final interval = task.interval;
       final timeSinceRun = runner.runAfter + timeDelta;

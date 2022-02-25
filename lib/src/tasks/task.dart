@@ -1,3 +1,6 @@
+/// Provides the [Task] class.
+import '../../levels.dart';
+
 /// The signature for task functions.
 typedef TaskFunction = void Function();
 
@@ -8,6 +11,7 @@ class Task {
     required this.func,
     required this.runAfter,
     this.interval,
+    this.level,
   });
 
   /// How many milliseconds should elapse before [func] is called.
@@ -22,4 +26,11 @@ class Task {
 
   /// The function which this task will run.
   final TaskFunction func;
+
+  /// The level this task is bound to.
+  ///
+  /// If [level] is `null`, the task will run and be scheduled regardless of
+  /// what level is currently on top of the levels stack. Otherwise, the game
+  /// will skip over this task if the top-most level is not [level].
+  final Level? level;
 }
