@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.38.0]
+
+### Added
+
+* Tasks can now be bound to levels.
+
 ## [0.37.0]
 
 ### Changed
