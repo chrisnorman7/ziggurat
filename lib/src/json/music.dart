@@ -11,7 +11,7 @@ class Music {
   /// Create an instance.
   const Music({
     required this.sound,
-    required this.gain,
+    this.gain = 0.5,
   });
 
   /// Create an instance from a JSON object.
