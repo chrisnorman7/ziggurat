@@ -7,9 +7,11 @@ part of 'music.dart';
 // **************************************************************************
 
 Music _$MusicFromJson(Map<String, dynamic> json) => Music(
-      AssetReference.fromJson(json['sound'] as Map<String, dynamic>),
+      sound: AssetReference.fromJson(json['sound'] as Map<String, dynamic>),
+      gain: (json['gain'] as num).toDouble(),
     );
 
 Map<String, dynamic> _$MusicToJson(Music instance) => <String, dynamic>{
       'sound': instance.sound,
+      'gain': instance.gain,
     };

@@ -16,9 +16,9 @@ class Ambiance extends Music {
   /// Create an instance.
   const Ambiance({
     required AssetReference sound,
+    double gain = 0.5,
     this.position,
-    this.gain = 0.75,
-  }) : super(sound);
+  }) : super(sound: sound, gain: gain);
 
   /// Create an instance from JSON.
   factory Ambiance.fromJson(Map<String, dynamic> json) =>
@@ -30,9 +30,6 @@ class Ambiance extends Music {
   /// will play through [Game.ambianceSounds].
   @JsonKey(fromJson: stringToPointDoubleNullable, toJson: pointDoubleToString)
   final Point<double>? position;
-
-  /// The gain of the sound.
-  final double gain;
 
   /// Convert an instance to JSON.
   @override

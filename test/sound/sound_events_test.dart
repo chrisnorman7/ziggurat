@@ -249,7 +249,6 @@ void main() {
       final ambiance2 = Ambiance(
         sound: reference2,
         position: Point(4.0, 5.0),
-        gain: 0.5,
       );
       final level = Level(
         game: game,
