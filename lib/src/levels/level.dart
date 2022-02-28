@@ -6,6 +6,7 @@ import '../command.dart';
 import '../game.dart';
 import '../json/ambiance.dart';
 import '../json/level_stub.dart';
+import '../json/music.dart';
 import '../json/random_sound.dart';
 import '../next_run.dart';
 import '../sound/events/sound_channel.dart';
@@ -21,6 +22,7 @@ class Level {
   Level({
     required this.game,
     Map<String, Command>? commands,
+    this.music,
     List<Ambiance>? ambiances,
     List<RandomSound>? randomSounds,
   })  : commands = commands ?? {},
@@ -35,6 +37,7 @@ class Level {
   Level.fromStub(this.game, LevelStub stub, {Map<String, Command>? commands})
       : commands = commands ?? {},
         commandNextRuns = [],
+        music = stub.music,
         ambiances = stub.ambiances,
         randomSounds = stub.randomSounds,
         ambiancePlaybacks = {},
@@ -49,6 +52,9 @@ class Level {
 
   /// The times before commands should run next.
   final List<NextRun<Command>> commandNextRuns;
+
+  /// The music for this level.
+  final Music? music;
 
   /// A list of ambiances for this level.
   final List<Ambiance> ambiances;

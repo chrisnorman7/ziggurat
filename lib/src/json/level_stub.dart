@@ -2,6 +2,7 @@
 import 'package:json_annotation/json_annotation.dart';
 
 import 'ambiance.dart';
+import 'music.dart';
 import 'random_sound.dart';
 
 part 'level_stub.g.dart';
@@ -15,6 +16,7 @@ part 'level_stub.g.dart';
 class LevelStub {
   /// Create an instance.
   const LevelStub({
+    this.music,
     this.ambiances = const [],
     this.randomSounds = const [],
   });
@@ -22,6 +24,9 @@ class LevelStub {
   /// Create an instance from JSON.
   factory LevelStub.fromJson(Map<String, dynamic> json) =>
       _$LevelStubFromJson(json);
+
+  /// The music for this stub.
+  final Music? music;
 
   /// The ambiances for this stub.
   final List<Ambiance> ambiances;
