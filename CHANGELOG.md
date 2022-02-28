@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.39.1]
+
+### Fixed
+
+* Export the `Music` class.
+
 ## [0.39.0]
 
 ### Added

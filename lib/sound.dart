@@ -6,6 +6,7 @@
 library sound;
 
 export 'src/json/ambiance.dart';
+export 'src/json/music.dart';
 export 'src/json/random_sound.dart';
 export 'src/json/reverb_preset.dart';
 export 'src/sound/events/automation_fade.dart';
