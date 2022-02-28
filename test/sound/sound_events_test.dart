@@ -15,29 +15,29 @@ void main() {
       final subscription = game.sounds.listen(events.add);
       expect(game.soundsController.hasListener, isTrue);
       await Future<void>.delayed(Duration.zero);
-      expect(events.length, equals(2));
+      expect(events.length, 3);
       game.queueSoundEvent(SoundEvent(id: SoundEvent.nextId()));
       await Future<void>.delayed(Duration.zero);
-      expect(events.length, equals(3));
+      expect(events.length, 4);
       events.clear();
       subscription.pause();
       game.queueSoundEvent(SoundEvent(id: SoundEvent.nextId()));
       expect(events.isEmpty, isTrue);
       subscription.resume();
       await Future<void>.delayed(Duration.zero);
-      expect(events.length, equals(1));
+      expect(events.length, 1);
       subscription.cancel();
     });
     test('Default sound channels', () {
       final game = Game('Sound Channels');
-      expect(game.interfaceSounds.id, equals(SoundEvent.maxEventId - 1));
+      expect(game.interfaceSounds.id, SoundEvent.maxEventId - 2);
       expect(game.ambianceSounds.id, equals(game.interfaceSounds.id! + 1));
     });
     test('Event ID increment', () {
       final game = Game('Sound Channel');
-      expect(SoundEvent.maxEventId, equals(game.ambianceSounds.id));
+      expect(SoundEvent.maxEventId, game.ambianceSounds.id! + 1);
       final channel = game.createSoundChannel();
-      expect(channel.id, equals(game.ambianceSounds.id! + 1));
+      expect(channel.id, game.ambianceSounds.id! + 2);
       expect(SoundEvent.maxEventId, equals(channel.id));
       final sound =
           channel.playSound(AssetReference('testing', AssetType.file));
@@ -52,14 +52,18 @@ void main() {
       sound = game.interfaceSounds.playSound(reference);
       expect(sound.destroy, throwsA(isA<DeadSound>()));
       expect(
-          game.sounds,
-          emitsInOrder(<Matcher>[
-            isA<SoundChannel>(),
-            isA<SoundChannel>(),
+        game.sounds,
+        emitsInOrder(
+          <Matcher>[
+            equals(game.interfaceSounds),
+            equals(game.ambianceSounds),
+            equals(game.musicSounds),
             isA<PlaySound>(),
             isA<DestroySound>(),
             isA<PlaySound>(),
-          ]));
+          ],
+        ),
+      );
     });
     test('PlaySound with a custom ID', () {
       final game = Game('PlaySound');
@@ -94,16 +98,19 @@ void main() {
         ..position = SoundPositionScalar(scalar: 1.0);
       expect(channel.gain, equals(1.0));
       expect(
-          channel.position,
-          predicate(
-              (value) => value is SoundPositionScalar && value.scalar == 1.0));
+        channel.position,
+        predicate(
+          (value) => value is SoundPositionScalar && value.scalar == 1.0,
+        ),
+      );
       channel.reverb = reverb.id;
       expect(channel.reverb, equals(reverb.id));
       channel.reverb = null;
       expect(channel.reverb, isNull);
       final sound = channel.playSound(
-          AssetReference('testing.wav', AssetType.file),
-          keepAlive: true);
+        AssetReference('testing.wav', AssetType.file),
+        keepAlive: true,
+      );
       expect(sound.keepAlive, isTrue);
       sound.paused = true;
       expect(sound.paused, isTrue);
@@ -128,10 +135,12 @@ void main() {
       sound.destroy();
       reverb.destroy();
       expect(
-          game.sounds,
-          emitsInOrder(<Matcher>[
+        game.sounds,
+        emitsInOrder(
+          <Matcher>[
             equals(game.interfaceSounds),
             equals(game.ambianceSounds),
+            equals(game.musicSounds),
             predicate(
                 (value) =>
                     value is SetDefaultPannerStrategy &&
@@ -219,7 +228,9 @@ void main() {
             predicate((value) => value is DestroySound && value.id == sound.id),
             predicate(
                 (value) => value is DestroyReverb && value.id == reverb.id)
-          ]));
+          ],
+        ),
+      );
     });
     test('SoundChannel.playSound', () {
       final sound = game.ambianceSounds
@@ -235,10 +246,15 @@ void main() {
       final reference1 = AssetReference.file('ambiance1.wav');
       final reference2 = AssetReference.file('ambiance2.wav');
       final ambiance1 = Ambiance(sound: reference1, gain: 0.4);
-      final ambiance2 =
-          Ambiance(sound: reference2, position: Point(4.0, 5.0), gain: 0.5);
-      final level =
-          Level(game: game, ambiances: <Ambiance>[ambiance1, ambiance2]);
+      final ambiance2 = Ambiance(
+        sound: reference2,
+        position: Point(4.0, 5.0),
+        gain: 0.5,
+      );
+      final level = Level(
+        game: game,
+        ambiances: <Ambiance>[ambiance1, ambiance2],
+      );
       game.pushLevel(level);
       final playback1 = level.ambiancePlaybacks[ambiance1]!;
       expect(playback1.channel, equals(game.ambianceSounds));
@@ -269,42 +285,51 @@ void main() {
       game.popLevel(ambianceFadeTime: 2.0);
       expect(game.tasks.length, equals(2));
       expect(
-          game.sounds,
-          emitsInOrder(<Matcher>[
+        game.sounds,
+        emitsInOrder(
+          <Matcher>[
             equals(game.interfaceSounds),
             equals(game.ambianceSounds),
+            equals(game.musicSounds),
             equals(playback1.sound),
             equals(playback2.channel),
             equals(playback2.sound),
             predicate(
-                (value) =>
-                    value is DestroySound && value.id == playback1.sound.id,
-                'Destroys ambiance1'),
+              (value) =>
+                  value is DestroySound && value.id == playback1.sound.id,
+              'Destroys ambiance1',
+            ),
             predicate(
-                (value) =>
-                    value is DestroySound && value.id == playback2.sound.id,
-                'Destroys ambiance2'),
+              (value) =>
+                  value is DestroySound && value.id == playback2.sound.id,
+              'Destroys ambiance2',
+            ),
             predicate(
-                (value) =>
-                    value is DestroySoundChannel &&
-                    value.id == playback2.channel.id,
-                'destroys ambiance2 channel'),
+              (value) =>
+                  value is DestroySoundChannel &&
+                  value.id == playback2.channel.id,
+              'destroys ambiance2 channel',
+            ),
             equals(playback3.sound),
             equals(playback4.channel),
             equals(playback4.sound),
             predicate(
-                (value) =>
-                    value is AutomationFade &&
-                    value.id == playback3.sound.id &&
-                    value.fadeLength == 2.0,
-                'Fades ambiance1'),
+              (value) =>
+                  value is AutomationFade &&
+                  value.id == playback3.sound.id &&
+                  value.fadeLength == 2.0,
+              'Fades ambiance1',
+            ),
             predicate(
-                (value) =>
-                    value is AutomationFade &&
-                    value.id == playback4.sound.id &&
-                    value.fadeLength == 2.0,
-                'Fades ambiance2'),
-          ]));
+              (value) =>
+                  value is AutomationFade &&
+                  value.id == playback4.sound.id &&
+                  value.fadeLength == 2.0,
+              'Fades ambiance2',
+            ),
+          ],
+        ),
+      );
     });
     test('Sound positions', () {
       final game = Game('Sound positions');

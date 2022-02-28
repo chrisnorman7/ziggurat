@@ -24,18 +24,20 @@ class Game {
   /// Create an instance.
   Game(
     this.title, {
-    TriggerMap? triggerMap,
+    this.triggerMap = const TriggerMap([]),
   })  : _levels = [],
-        triggerMap = triggerMap ?? TriggerMap([]),
         _isRunning = false,
         tasks = [],
         _queuedSoundEvents = [],
         gameControllers = {},
         random = Random() {
     soundsController = StreamController(
-        onListen: _addAllSoundEvents, onResume: _addAllSoundEvents);
+      onListen: _addAllSoundEvents,
+      onResume: _addAllSoundEvents,
+    );
     interfaceSounds = createSoundChannel();
     ambianceSounds = createSoundChannel();
+    musicSounds = createSoundChannel();
   }
 
   /// The title of this game.
@@ -93,6 +95,9 @@ class Game {
 
   /// The sound channel to play ambiance sounds through.
   late final SoundChannel ambianceSounds;
+
+  /// The sound channel for [Level] music.
+  late final SoundChannel musicSounds;
 
   /// Queue a sound event.
   ///
@@ -398,16 +403,18 @@ class Game {
   }
 
   /// Create a sound channel.
-  SoundChannel createSoundChannel(
-      {SoundPosition position = unpanned,
-      double gain = 0.7,
-      CreateReverb? reverb}) {
+  SoundChannel createSoundChannel({
+    SoundPosition position = unpanned,
+    double gain = 0.7,
+    CreateReverb? reverb,
+  }) {
     final event = SoundChannel(
-        game: this,
-        id: SoundEvent.nextId(),
-        reverb: reverb?.id,
-        gain: gain,
-        position: position);
+      game: this,
+      id: SoundEvent.nextId(),
+      reverb: reverb?.id,
+      gain: gain,
+      position: position,
+    );
     queueSoundEvent(event);
     return event;
   }
