@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.40.2]
+
+### Fixed
+
+* Handle level music properly.
+
 ## [0.40.1]
 
 ### Fixed
