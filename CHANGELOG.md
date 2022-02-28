@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.40.0]
+
+### Changed
+
+* Added a `gain` property to the `music` class.
+
 ## [0.39.1]
 
 ### Fixed
