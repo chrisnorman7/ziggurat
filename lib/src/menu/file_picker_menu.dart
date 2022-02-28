@@ -4,7 +4,10 @@ import 'package:dart_sdl/dart_sdl.dart';
 import 'package:path/path.dart' as path;
 
 import '../game.dart';
+import '../json/ambiance.dart';
 import '../json/message.dart';
+import '../json/music.dart';
+import '../json/random_sound.dart';
 import 'menu.dart';
 import 'menu_item.dart';
 import 'widgets/button.dart';
@@ -21,11 +24,17 @@ class FilePickerMenu extends Menu {
     this.allowDirectories = false,
     this.showFiles = true,
     void Function()? onCancel,
+    Music? music,
+    List<Ambiance>? ambiances,
+    List<RandomSound>? randomSounds,
   })  : currentDirectory = start ?? _lastUsed,
         super(
           game: game,
           title: Message(text: '$caption (${(start ?? _lastUsed).path})'),
           onCancel: onCancel,
+          music: music,
+          ambiances: ambiances,
+          randomSounds: randomSounds,
         ) {
     _lastUsed = currentDirectory;
     addButton(

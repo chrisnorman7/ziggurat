@@ -5,6 +5,7 @@ import '../../menus.dart';
 import '../game.dart';
 import '../json/ambiance.dart';
 import '../json/message.dart';
+import '../json/music.dart';
 import '../json/random_sound.dart';
 import '../tasks/task.dart';
 
@@ -50,12 +51,14 @@ class ParameterMenu extends Menu {
     this.increaseValueButton = GameControllerButton.dpadRight,
     this.increaseValueScanCode = ScanCode.SCANCODE_RIGHT,
     TaskFunction? onCancel,
+    Music? music,
     List<Ambiance>? ambiances,
     List<RandomSound>? randomSounds,
   }) : super(
           game: game,
           title: title,
           items: parameters,
+          music: music,
           ambiances: ambiances,
           randomSounds: randomSounds,
           onCancel: onCancel,

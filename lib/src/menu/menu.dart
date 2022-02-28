@@ -6,6 +6,7 @@ import '../game.dart';
 import '../json/ambiance.dart';
 import '../json/asset_reference.dart';
 import '../json/message.dart';
+import '../json/music.dart';
 import '../json/random_sound.dart';
 import '../levels/level.dart';
 import '../sound/events/playback.dart';
@@ -78,12 +79,18 @@ class Menu extends Level {
     double controllerAxisSensitivity = 0.5,
     this.searchEnabled = true,
     this.searchInterval = 500,
+    Music? music,
     List<Ambiance>? ambiances,
     List<RandomSound>? randomSounds,
   })  : menuItems = items ?? [],
         searchString = '',
         searchTime = 0,
-        super(game: game, ambiances: ambiances, randomSounds: randomSounds) {
+        super(
+          game: game,
+          music: music,
+          ambiances: ambiances,
+          randomSounds: randomSounds,
+        ) {
     controllerAxisDispatcher = ControllerAxisDispatcher({
       movementAxis: (double value) {
         if (value < 0) {

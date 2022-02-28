@@ -6,6 +6,7 @@ import 'package:dart_sdl/dart_sdl.dart';
 import '../controller_axis_dispatcher.dart';
 import '../game.dart';
 import '../json/ambiance.dart';
+import '../json/music.dart';
 import '../json/random_sound.dart';
 import 'level.dart';
 
@@ -60,11 +61,17 @@ class Editor extends Level {
     GameControllerAxis backspaceAxis = GameControllerAxis.triggerleft,
     int controllerMovementSpeed = 400,
     double controllerAxisSensitivity = 0.5,
+    Music? music,
     List<Ambiance>? ambiances,
     List<RandomSound>? randomSounds,
   })  : _shiftPressed = false,
         _currentPosition = 0,
-        super(game: game, ambiances: ambiances, randomSounds: randomSounds) {
+        super(
+          game: game,
+          music: music,
+          ambiances: ambiances,
+          randomSounds: randomSounds,
+        ) {
     controllerAxisDispatcher = ControllerAxisDispatcher({
       upDownAxis: (double value) {
         if (value > 0) {

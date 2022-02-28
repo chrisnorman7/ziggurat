@@ -4,6 +4,7 @@ import 'package:dart_sdl/dart_sdl.dart';
 import '../game.dart';
 import '../json/ambiance.dart';
 import '../json/message.dart';
+import '../json/music.dart';
 import '../json/random_sound.dart';
 import '../sound/events/playback.dart';
 import '../sound/events/sound_channel.dart';
@@ -24,15 +25,22 @@ class SceneLevel extends Level {
     this.skipScanCode,
     this.skipControllerButton,
     this.soundChannel,
+    Music? music,
     List<Ambiance>? ambiances,
     List<RandomSound>? randomSounds,
   })  : assert(
-            duration != null ||
-                skipControllerButton != null ||
-                skipScanCode != null,
-            'At least one of `duration`, `skipControllerButton`, or '
-            '`skipScanCode` must not be null.'),
-        super(game: game, ambiances: ambiances, randomSounds: randomSounds) {
+          duration != null ||
+              skipControllerButton != null ||
+              skipScanCode != null,
+          'At least one of `duration`, `skipControllerButton`, or '
+          '`skipScanCode` must not be null.',
+        ),
+        super(
+          game: game,
+          music: music,
+          ambiances: ambiances,
+          randomSounds: randomSounds,
+        ) {
     assert(
         message.keepAlive == true,
         'If `keepAlive` is not `true`, then `onPop` will not function '

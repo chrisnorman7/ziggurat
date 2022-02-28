@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.39.0]
+
+### Added
+
+* Added the `Music` class.
+* Added a `music` field to the `Level` class.
+* Added `music` arguments to the constructors of all `Level` subclasses.
+
+### Fixed
+
+* Added `music`, `ambiances`, and `randomSounds` arguments to the constructors of the `FilePickerMenu` class.
+
+### Changed
+
+* Updated the minimum Dart version.
+
 ## [0.38.1]
 
 ### Changed

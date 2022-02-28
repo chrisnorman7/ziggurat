@@ -7,6 +7,7 @@ import '../controller_axis_dispatcher.dart';
 import '../game.dart';
 import '../json/ambiance.dart';
 import '../json/message.dart';
+import '../json/music.dart';
 import '../json/random_sound.dart';
 import '../multi_grid.dart';
 import '../sound/events/playback.dart';
@@ -38,13 +39,22 @@ class MultiGridLevel extends Level {
     this.cancelScanCode = ScanCode.SCANCODE_ESCAPE,
     double axisSensitivity = 0.5,
     int axisInterval = 400,
+    Music? music,
     List<Ambiance>? ambiances,
     List<RandomSound>? randomSounds,
-  })  : axisDispatcher = ControllerAxisDispatcher({},
-            axisSensitivity: axisSensitivity, functionInterval: axisInterval),
+  })  : axisDispatcher = ControllerAxisDispatcher(
+          {},
+          axisSensitivity: axisSensitivity,
+          functionInterval: axisInterval,
+        ),
         _horizontalPositions = [],
         _verticalPosition = verticalPosition,
-        super(game: game, ambiances: ambiances, randomSounds: randomSounds) {
+        super(
+          game: game,
+          music: music,
+          ambiances: ambiances,
+          randomSounds: randomSounds,
+        ) {
     if (verticalPosition != null) {
       while (_horizontalPositions.length <= verticalPosition) {
         _horizontalPositions.add(null);

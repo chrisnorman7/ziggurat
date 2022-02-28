@@ -4,6 +4,7 @@ import 'package:dart_sdl/dart_sdl.dart';
 import '../game.dart';
 import '../json/ambiance.dart';
 import '../json/message.dart';
+import '../json/music.dart';
 import '../json/random_sound.dart';
 import '../sound/events/playback.dart';
 import '../sound/events/sound_channel.dart';
@@ -21,15 +22,24 @@ class DialogueLevel extends Level {
     this.progressControllerButton,
     this.position = 0,
     this.soundChannel,
+    Music? music,
     List<Ambiance>? ambiances,
     List<RandomSound>? randomSounds,
   })  : assert(
-            progressScanCode != null || progressControllerButton != null,
-            'Both `ProgressControllerButton` and `progressScanCode` cannot be '
-            '`null`.'),
-        assert(messages.where((element) => element.keepAlive == false).isEmpty,
-            'All messages must have their `keepAlive` value set to `true`.'),
-        super(game: game, ambiances: ambiances, randomSounds: randomSounds);
+          progressScanCode != null || progressControllerButton != null,
+          'Both `ProgressControllerButton` and `progressScanCode` cannot be '
+          '`null`.',
+        ),
+        assert(
+          messages.where((element) => element.keepAlive == false).isEmpty,
+          'All messages must have their `keepAlive` value set to `true`.',
+        ),
+        super(
+          game: game,
+          music: music,
+          ambiances: ambiances,
+          randomSounds: randomSounds,
+        );
 
   /// The list of messages to progress through.
   final List<Message> messages;

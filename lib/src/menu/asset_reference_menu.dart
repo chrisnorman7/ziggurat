@@ -4,6 +4,7 @@ import '../game.dart';
 import '../json/ambiance.dart';
 import '../json/asset_reference.dart';
 import '../json/message.dart';
+import '../json/music.dart';
 import '../json/random_sound.dart';
 
 /// A menu for showing [AssetReference] instances.
@@ -20,6 +21,7 @@ class AssetReferenceMenu extends Menu {
     required Game game,
     required Message title,
     required Map<String, AssetReference> assetReferences,
+    Music? music,
     List<Ambiance>? ambiances,
     List<RandomSound>? randomSounds,
   }) : super(
@@ -35,6 +37,7 @@ class AssetReferenceMenu extends Menu {
                   ),
                   menuItemLabel)
           ],
+          music: music,
           ambiances: ambiances,
           randomSounds: randomSounds,
         );
