@@ -57,7 +57,7 @@ class ParameterMenu extends Menu {
   }) : super(
           game: game,
           title: title,
-          items: parameters,
+          items: List<MenuItem>.from(parameters),
           music: music,
           ambiances: ambiances,
           randomSounds: randomSounds,

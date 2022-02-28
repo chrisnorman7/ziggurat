@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.40.1]
+
+### Fixed
+
+* The `ParameterMenu` class no longer inadvertently changes the type of its `.menuItems` property.
+
 ## [0.40.0]
 
 ### Changed

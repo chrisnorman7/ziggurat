@@ -220,6 +220,30 @@ void main() {
           expect(i, 10);
         },
       );
+      test(
+        'Mixed Menu',
+        () {
+          final menu = ParameterMenu(
+            game: game,
+            title: Message(),
+            parameters: [
+              ParameterMenuParameter(
+                getLabel: () => emptyMessage,
+                increaseValue: () {},
+                decreaseValue: () {},
+              )
+            ],
+          )..menuItems.add(MenuItem(emptyMessage, menuItemLabel));
+          expect(menu.menuItems.length, 2);
+          expect(menu.menuItems.first, isA<ParameterMenuParameter>());
+          expect(
+            menu.menuItems.last,
+            predicate(
+              (value) => value is MenuItem && value is! ParameterMenuParameter,
+            ),
+          );
+        },
+      );
     },
   );
 }
