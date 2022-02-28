@@ -233,5 +233,27 @@ void main() {
               value.gain == ambiance2.gain &&
               value.keepAlive == true));
     });
+    test('music', () {
+      final game = Game('Music Test');
+      final music = Music(
+        sound: AssetReference.file('music.mp3'),
+        gain: 1.0,
+      );
+      final level = Level(
+        game: game,
+        music: music,
+      );
+      expect(level.musicSound, isNull);
+      game.pushLevel(level);
+      final sound = level.musicSound!;
+      expect(sound.channel, game.musicSounds.id);
+      expect(sound.gain, music.gain);
+      expect(sound.game, game);
+      expect(sound.keepAlive, isTrue);
+      expect(sound.looping, isTrue);
+      expect(sound.sound, music.sound);
+      game.popLevel();
+      expect(level.musicSound, isNull);
+    });
   });
 }

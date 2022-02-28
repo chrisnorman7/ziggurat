@@ -2,16 +2,11 @@
 import 'package:dart_sdl/dart_sdl.dart';
 import 'package:meta/meta.dart';
 
+import '../../sound.dart';
 import '../command.dart';
 import '../game.dart';
-import '../json/ambiance.dart';
 import '../json/level_stub.dart';
-import '../json/music.dart';
-import '../json/random_sound.dart';
 import '../next_run.dart';
-import '../sound/events/sound_channel.dart';
-import '../sound/events/sound_position.dart';
-import '../sound/sound_playback.dart';
 
 /// The top-level level class.
 ///
@@ -56,6 +51,9 @@ class Level {
   /// The music for this level.
   final Music? music;
 
+  /// The playing [music].
+  PlaySound? musicSound;
+
   /// A list of ambiances for this level.
   final List<Ambiance> ambiances;
 
@@ -79,6 +77,15 @@ class Level {
   /// What should happen when this game is pushed into a level stack.
   @mustCallSuper
   void onPush() {
+    final sound = music;
+    if (sound != null) {
+      musicSound = game.musicSounds.playSound(
+        sound.sound,
+        gain: sound.gain,
+        keepAlive: true,
+        looping: true,
+      );
+    }
     for (final ambiance in ambiances) {
       final SoundChannel channel;
       final position = ambiance.position;
@@ -109,6 +116,19 @@ class Level {
   /// What should happen when this level is popped from a level stack.
   @mustCallSuper
   void onPop(double? fadeLength) {
+    final sound = musicSound;
+    musicSound = null;
+    if (sound != null) {
+      if (fadeLength == null) {
+        sound.destroy();
+      } else {
+        sound.fade(length: fadeLength);
+        game.callAfter(
+          func: sound.destroy,
+          runAfter: (fadeLength * 1000).floor(),
+        );
+      }
+    }
     for (final ambiance in ambiances) {
       final playback = ambiancePlaybacks.remove(ambiance);
       if (playback == null) {
