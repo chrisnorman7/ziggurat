@@ -153,6 +153,8 @@ class Menu extends Level {
   final int searchInterval;
 
   /// The sound channel to play sounds through.
+  ///
+  /// This value is used by the [showCurrentItem] method.
   final SoundChannel? soundChannel;
 
   /// The last sound played by this menu.

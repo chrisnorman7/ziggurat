@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.41.0]
+
+### Added
+
+* Added a `soundChannel` property to the `Menu` class.
+
 ## [0.40.2]
 
 ### Fixed
