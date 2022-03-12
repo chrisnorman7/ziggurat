@@ -1,15 +1,12 @@
 /// Provides the [Menu] class.
 import 'package:dart_sdl/dart_sdl.dart';
 
+import '../../sound.dart';
 import '../controller_axis_dispatcher.dart';
 import '../game.dart';
-import '../json/ambiance.dart';
 import '../json/asset_reference.dart';
 import '../json/message.dart';
-import '../json/music.dart';
-import '../json/random_sound.dart';
 import '../levels/level.dart';
-import '../sound/events/playback.dart';
 import '../tasks/task.dart';
 import 'menu_item.dart';
 import 'widgets/button.dart';
@@ -79,6 +76,7 @@ class Menu extends Level {
     double controllerAxisSensitivity = 0.5,
     this.searchEnabled = true,
     this.searchInterval = 500,
+    this.soundChannel,
     Music? music,
     List<Ambiance>? ambiances,
     List<RandomSound>? randomSounds,
@@ -154,6 +152,9 @@ class Menu extends Level {
   /// How many milliseconds must elapse before searches clear [searchString].
   final int searchInterval;
 
+  /// The sound channel to play sounds through.
+  final SoundChannel? soundChannel;
+
   /// The last sound played by this menu.
   PlaySound? oldSound;
 
@@ -167,7 +168,11 @@ class Menu extends Level {
   void showCurrentItem() {
     final pos = position;
     if (pos == null) {
-      oldSound = game.outputMessage(title, oldSound: oldSound);
+      oldSound = game.outputMessage(
+        title,
+        oldSound: oldSound,
+        soundChannel: soundChannel,
+      );
     } else {
       menuItems.elementAt(pos).onFocus(this);
     }

@@ -17,6 +17,10 @@ class MenuItem {
   /// What happens when this item is focused.
   void onFocus(Menu menu) {
     final message = widget.getLabel(this) ?? label;
-    menu.oldSound = menu.game.outputMessage(message, oldSound: menu.oldSound);
+    menu.oldSound = menu.game.outputMessage(
+      message,
+      oldSound: menu.oldSound,
+      soundChannel: menu.soundChannel,
+    );
   }
 }
