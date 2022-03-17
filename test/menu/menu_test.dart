@@ -340,6 +340,13 @@ void main() {
       menu.handleSdlEvent(makeTextInputEvent(sdl, 'asdf'));
       expect(menu.searchString, isEmpty);
     });
+    test('Moving in an empty menu', () {
+      final menu = Menu(game: game, title: Message());
+      expect(menu.menuItems, isEmpty);
+      expect(menu.currentMenuItem, isNull);
+      menu.down();
+      expect(menu.currentMenuItem, isNull);
+    });
   });
   group('MenuItem', () {
     test('DynamicWidget', () {

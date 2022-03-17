@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.41.1]
+
+### Fixed
+
+* Fixed a menu crash when there are no menu items.
+
 ## [0.41.0]
 
 ### Added

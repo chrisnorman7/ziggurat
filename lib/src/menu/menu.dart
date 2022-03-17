@@ -245,7 +245,9 @@ class Menu extends Level {
   void down() {
     final pos = position;
     if (pos == null) {
-      position = 0;
+      if (menuItems.isNotEmpty) {
+        position = 0;
+      }
     } else {
       if (pos == (menuItems.length - 1)) {
         return;
