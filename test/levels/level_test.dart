@@ -102,19 +102,6 @@ void main() {
       level.registerCommand('testing', command);
       expect(level.commands, equals({'testing': command}));
     });
-  });
-  group('Custom Levels', () {
-    test('Initialisation', () {
-      final game = Game('Test game');
-      final level = CustomLevel(game);
-      expect(level.game, equals(game));
-      expect(level.wasPushed, isFalse);
-      expect(level.wasPopped, isFalse);
-      expect(level.wasCovered, isNull);
-      expect(level.wasRevealed, isNull);
-    });
-  });
-  group('Level Tests', () {
     test('Push Level', () {
       final game = Game('Test Game');
       final level1 = CustomLevel(game);
@@ -189,9 +176,9 @@ void main() {
       final sdl = Sdl();
       await game.tick(sdl, 1);
       expect(level.getCommandNextRun(command)?.runAfter, 1);
-      await game.tick(sdl, 499);
+      await game.tick(sdl, 498);
       expect(level.counter, 1);
-      expect(level.getCommandNextRun(command)?.runAfter, 500);
+      expect(level.getCommandNextRun(command)?.runAfter, 499);
       await game.tick(sdl, 1);
       expect(level.counter, 2);
       expect(level.getCommandNextRun(command)?.runAfter, isZero);
@@ -255,6 +242,67 @@ void main() {
       expect(sound.sound, music.sound);
       game.popLevel();
       expect(level.musicSound, isNull);
+    });
+    test('.stoppedCommands', () async {
+      final sdl = Sdl();
+      final commandTrigger = CommandTrigger.basic(
+        name: 'increase',
+        description: 'Increase `i`',
+      );
+      final game = Game(
+        'Level.stoppedCommands',
+        triggerMap: TriggerMap([commandTrigger]),
+      );
+      final level = Level(game: game);
+      expect(level.stoppedCommands, isEmpty);
+      var i = 0;
+      const interval = 200;
+      final command = Command(
+        onStart: () => i += 1,
+        interval: interval,
+      );
+      level.registerCommand(commandTrigger.name, command);
+      game.pushLevel(level);
+      expect(i, isZero);
+      expect(level.commandNextRuns, isEmpty);
+      expect(level.stoppedCommands, isEmpty);
+      level.startCommand(commandTrigger.name);
+      expect(i, 1);
+      expect(level.commandNextRuns.length, 1);
+      final nextRun = level.commandNextRuns.first;
+      expect(nextRun.value, command);
+      expect(nextRun.value.interval, interval);
+      expect(level.getCommandNextRun(command), nextRun);
+      await game.tick(sdl, interval - 1);
+      expect(nextRun.runAfter, interval - 1);
+      await game.tick(sdl, 2);
+      expect(i, 2);
+      expect(nextRun.runAfter, 1);
+      level.stopCommand(commandTrigger.name);
+      expect(i, 2);
+      expect(level.commandNextRuns, isEmpty);
+      expect(level.stoppedCommands.length, 1);
+      expect(identical(level.stoppedCommands.first, nextRun), isTrue);
+      expect(nextRun.runAfter, 1);
+      await game.tick(sdl, 40);
+      expect(i, 2);
+      expect(level.stoppedCommands.length, 1);
+      expect(level.stoppedCommands.first, nextRun);
+      expect(nextRun.runAfter, 41);
+      await game.tick(sdl, command.interval!);
+      expect(level.stoppedCommands, isEmpty);
+      expect(level.commandNextRuns, isEmpty);
+    });
+  });
+  group('Custom Levels', () {
+    test('Initialisation', () {
+      final game = Game('Test game');
+      final level = CustomLevel(game);
+      expect(level.game, equals(game));
+      expect(level.wasPushed, isFalse);
+      expect(level.wasPopped, isFalse);
+      expect(level.wasCovered, isNull);
+      expect(level.wasRevealed, isNull);
     });
   });
 }

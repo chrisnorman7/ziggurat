@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.42.0]
+
+### Fixed
+
+* Fixed some bugs around command scheduling.
+
+### Changed
+
+* Updated dart_sdl.
+
 ## [0.41.1]
 
 ### Fixed

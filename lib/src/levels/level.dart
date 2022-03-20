@@ -1,4 +1,3 @@
-/// Provides the base [Level] class.
 import 'package:dart_sdl/dart_sdl.dart';
 import 'package:meta/meta.dart';
 
@@ -244,16 +243,16 @@ class Level {
 
   /// Run the given [command].
   void runCommand(Command command) {
-    final interval = command.interval;
     final onStart = command.onStart;
     if (onStart != null) {
       onStart();
+      final interval = command.interval;
       if (interval != null) {
         final nextRun = getCommandNextRun(command);
         if (nextRun == null) {
           commandNextRuns.add(NextRun(command));
         } else {
-          nextRun.runAfter = 0;
+          nextRun.runAfter -= interval;
         }
       }
     }
@@ -300,12 +299,11 @@ class Level {
   @mustCallSuper
   void tick(Sdl sdl, int timeDelta) {
     for (final nextRun in commandNextRuns) {
+      nextRun.runAfter += timeDelta;
       final command = nextRun.value;
       final interval = command.interval!;
       if (nextRun.runAfter >= interval) {
         runCommand(command);
-      } else {
-        nextRun.runAfter += timeDelta;
       }
     }
     final toStop = <Command>{};
