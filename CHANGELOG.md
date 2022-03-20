@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.42.1]
+
+### Added
+
+* Automatically open joysticks.
+
 ## [0.42.0]
 
 ### Fixed
