@@ -30,6 +30,7 @@ class Game {
         tasks = [],
         _queuedSoundEvents = [],
         gameControllers = {},
+        joysticks = {},
         random = Random() {
     soundsController = StreamController(
       onListen: _addAllSoundEvents,
@@ -81,6 +82,9 @@ class Game {
 
   /// The game controllers that are currently open.
   final Map<int, GameController> gameControllers;
+
+  /// The loaded joysticks.
+  final Map<int, Joystick> joysticks;
 
   /// The random number generator to use.
   final Random random;
@@ -185,16 +189,31 @@ class Game {
   ///This method will be passed one event at a time.
   @mustCallSuper
   void handleSdlEvent(Event event) {
+    final sdl = event.sdl;
     if (event is QuitEvent) {
       stop();
     } else if (event is ControllerDeviceEvent) {
       switch (event.state) {
         case DeviceState.added:
-          final controller = event.sdl.openGameController(event.joystickId);
+          final controller = sdl.openGameController(event.joystickId);
           gameControllers[event.joystickId] = controller;
           break;
         case DeviceState.removed:
           gameControllers.remove(event.joystickId);
+          break;
+        case DeviceState.remapped:
+          // Do nothing.
+          break;
+      }
+    } else if (event is JoyDeviceEvent) {
+      final id = event.joystickId;
+      switch (event.state) {
+        case DeviceState.added:
+          final joystick = sdl.openJoystick(id);
+          joysticks[id] = joystick;
+          break;
+        case DeviceState.removed:
+          joysticks.remove(id);
           break;
         case DeviceState.remapped:
           // Do nothing.
