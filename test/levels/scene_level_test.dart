@@ -11,7 +11,7 @@ void main() {
       var done = 0;
       final game = Game('SceneLevel');
       const message = Message(text: 'Done.', keepAlive: true);
-      const skipScanCode = ScanCode.SCANCODE_RETURN;
+      const skipScanCode = ScanCode.return_;
       const skipControllerButton = GameControllerButton.a;
       var sceneLevel = SceneLevel(
           game: game,
@@ -80,18 +80,18 @@ void main() {
         game: game,
         message: message,
         onDone: () => done++,
-        skipScanCode: ScanCode.SCANCODE_RETURN,
+        skipScanCode: ScanCode.return_,
         skipControllerButton: GameControllerButton.a,
       );
       expect(done, isZero);
       game.pushLevel(sceneLevel);
       expect(sceneLevel.onDoneTask, isNull);
-      sceneLevel.handleSdlEvent(makeKeyboardEvent(
-          sdl, sceneLevel.skipScanCode!, KeyCode.keycode_RETURN));
+      sceneLevel.handleSdlEvent(
+          makeKeyboardEvent(sdl, sceneLevel.skipScanCode!, KeyCode.return_));
       expect(done, isZero);
       expect(game.currentLevel, equals(sceneLevel));
       sceneLevel.handleSdlEvent(
-        makeKeyboardEvent(sdl, sceneLevel.skipScanCode!, KeyCode.keycode_RETURN,
+        makeKeyboardEvent(sdl, sceneLevel.skipScanCode!, KeyCode.return_,
             state: PressedState.pressed),
       );
       expect(done, equals(1));

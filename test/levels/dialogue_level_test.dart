@@ -18,7 +18,7 @@ void main() {
                   'Both `ProgressControllerButton` and `progressScanCode` '
                       'cannot be `null`.')));
       const progressControllerButton = GameControllerButton.a;
-      const progressScanCode = ScanCode.SCANCODE_RETURN;
+      const progressScanCode = ScanCode.return_;
       final dialogueLevel = DialogueLevel(
           game: game,
           messages: [],
@@ -28,7 +28,7 @@ void main() {
       expect(dialogueLevel.messages, isEmpty);
       expect(dialogueLevel.progressControllerButton,
           equals(GameControllerButton.a));
-      expect(dialogueLevel.progressScanCode, equals(ScanCode.SCANCODE_RETURN));
+      expect(dialogueLevel.progressScanCode, equals(ScanCode.return_));
       expect(dialogueLevel.position, isZero);
     });
     test('.progress', () {
@@ -70,7 +70,7 @@ void main() {
           game: game,
           messages: [message1, message2, message3],
           onDone: () => done++,
-          progressScanCode: ScanCode.SCANCODE_RETURN,
+          progressScanCode: ScanCode.return_,
           progressControllerButton: GameControllerButton.a);
       expect(done, isZero);
       expect(dialogueLevel.sound, isNull);
@@ -78,7 +78,7 @@ void main() {
       game.pushLevel(dialogueLevel);
       // Shouldn't work because we require `PressedState.pressed`.
       dialogueLevel.handleSdlEvent(makeKeyboardEvent(
-          sdl, dialogueLevel.progressScanCode!, KeyCode.keycode_RETURN));
+          sdl, dialogueLevel.progressScanCode!, KeyCode.return_));
       expect(done, isZero);
       expect(dialogueLevel.position, equals(1));
       var sound = dialogueLevel.sound!;
@@ -86,7 +86,7 @@ void main() {
       expect(sound.channel, equals(game.interfaceSounds.id));
       // Works because `state == PressedState.pressed`.
       dialogueLevel.handleSdlEvent(makeKeyboardEvent(
-          sdl, dialogueLevel.progressScanCode!, KeyCode.keycode_RETURN,
+          sdl, dialogueLevel.progressScanCode!, KeyCode.return_,
           state: PressedState.pressed));
       expect(done, isZero);
       expect(game.currentLevel, equals(dialogueLevel));

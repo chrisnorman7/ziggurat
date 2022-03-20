@@ -101,29 +101,25 @@ void main() {
       expect(cancel, isZero);
       expect(activate, isZero);
       menu.handleSdlEvent(
-          makeKeyboardEvent(sdl, menu.cancelScanCode, KeyCode.keycode_ESCAPE));
+          makeKeyboardEvent(sdl, menu.cancelScanCode, KeyCode.escape));
       expect(cancel, isZero);
       expect(menu.currentMenuItem, isNull);
-      final downEvent = makeKeyboardEvent(
-          sdl, ScanCode.SCANCODE_DOWN, KeyCode.keycode_DOWN,
+      final downEvent = makeKeyboardEvent(sdl, ScanCode.down, KeyCode.down,
           state: PressedState.pressed);
       menu.handleSdlEvent(downEvent);
       expect(menu.currentMenuItem, equals(menu.menuItems.first));
-      menu.handleSdlEvent(makeKeyboardEvent(
-          sdl, ScanCode.SCANCODE_UP, KeyCode.keycode_UP,
+      menu.handleSdlEvent(makeKeyboardEvent(sdl, ScanCode.up, KeyCode.up,
           state: PressedState.pressed));
       expect(menu.currentMenuItem, isNull);
       menu
         ..handleSdlEvent(downEvent)
-        ..handleSdlEvent(makeKeyboardEvent(
-            sdl, ScanCode.SCANCODE_ESCAPE, KeyCode.keycode_ESCAPE,
+        ..handleSdlEvent(makeKeyboardEvent(sdl, ScanCode.escape, KeyCode.escape,
             state: PressedState.pressed));
       expect(cancel, equals(1));
-      menu.handleSdlEvent(makeKeyboardEvent(
-          sdl, ScanCode.SCANCODE_SPACE, KeyCode.keycode_SPACE));
+      menu.handleSdlEvent(
+          makeKeyboardEvent(sdl, ScanCode.space, KeyCode.space));
       expect(activate, isZero);
-      menu.handleSdlEvent(makeKeyboardEvent(
-          sdl, ScanCode.SCANCODE_SPACE, KeyCode.keycode_SPACE,
+      menu.handleSdlEvent(makeKeyboardEvent(sdl, ScanCode.space, KeyCode.space,
           state: PressedState.pressed));
       expect(activate, equals(1));
     });
@@ -138,9 +134,9 @@ void main() {
       menu.handleSdlEvent(
         makeKeyboardEvent(
           sdl,
-          ScanCode.SCANCODE_DOWN,
-          KeyCode.keycode_DOWN,
-          modifiers: [KeyMod.num],
+          ScanCode.down,
+          KeyCode.down,
+          modifiers: {KeyMod.num},
           state: PressedState.pressed,
         ),
       );
@@ -148,9 +144,9 @@ void main() {
       menu.handleSdlEvent(
         makeKeyboardEvent(
           sdl,
-          ScanCode.SCANCODE_UP,
-          KeyCode.keycode_UP,
-          modifiers: [KeyMod.num],
+          ScanCode.up,
+          KeyCode.up,
+          modifiers: {KeyMod.num},
           state: PressedState.pressed,
         ),
       );

@@ -38,9 +38,9 @@ void main() {
           expect(menu.menuItems, [bParameter, iParameter]);
           expect(menu.currentMenuItem, isNull);
           expect(menu.decreaseValueButton, GameControllerButton.dpadLeft);
-          expect(menu.decreaseValueScanCode, ScanCode.SCANCODE_LEFT);
+          expect(menu.decreaseValueScanCode, ScanCode.left);
           expect(menu.increaseValueButton, GameControllerButton.dpadRight);
-          expect(menu.increaseValueScanCode, ScanCode.SCANCODE_RIGHT);
+          expect(menu.increaseValueScanCode, ScanCode.right);
         },
       );
       test(
@@ -51,7 +51,7 @@ void main() {
             makeKeyboardEvent(
               sdl,
               menu.downScanCode,
-              KeyCode.keycode_DOWN,
+              KeyCode.down,
               state: PressedState.pressed,
             ),
           );
@@ -60,7 +60,7 @@ void main() {
             makeKeyboardEvent(
               sdl,
               menu.downScanCode,
-              KeyCode.keycode_DOWN,
+              KeyCode.down,
               state: PressedState.pressed,
             ),
           );
@@ -69,7 +69,7 @@ void main() {
             makeKeyboardEvent(
               sdl,
               menu.downScanCode,
-              KeyCode.keycode_DOWN,
+              KeyCode.down,
               state: PressedState.pressed,
             ),
           );
@@ -86,7 +86,7 @@ void main() {
             makeKeyboardEvent(
               sdl,
               menu.upScanCode,
-              KeyCode.keycode_UP,
+              KeyCode.up,
               state: PressedState.pressed,
             ),
           );
@@ -95,7 +95,7 @@ void main() {
             makeKeyboardEvent(
               sdl,
               menu.upScanCode,
-              KeyCode.keycode_UP,
+              KeyCode.up,
               state: PressedState.pressed,
             ),
           );
@@ -104,7 +104,7 @@ void main() {
             makeKeyboardEvent(
               sdl,
               menu.upScanCode,
-              KeyCode.keycode_UP,
+              KeyCode.up,
               state: PressedState.pressed,
             ),
           );
@@ -180,7 +180,7 @@ void main() {
             makeKeyboardEvent(
               sdl,
               menu.decreaseValueScanCode,
-              KeyCode.keycode_LEFT,
+              KeyCode.left,
               state: PressedState.pressed,
             ),
           );
@@ -205,7 +205,7 @@ void main() {
             makeKeyboardEvent(
               sdl,
               menu.increaseValueScanCode,
-              KeyCode.keycode_RIGHT,
+              KeyCode.right,
               state: PressedState.pressed,
             ),
           );

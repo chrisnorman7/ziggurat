@@ -56,19 +56,19 @@ void main() {
     test('Initialise', () {
       var level = MultiGridLevel(
           game: game, title: Message(text: 'Test Level'), rows: []);
-      expect(level.activateScanCode, equals(ScanCode.SCANCODE_SPACE));
+      expect(level.activateScanCode, equals(ScanCode.space));
       expect(level.axisDispatcher, isA<ControllerAxisDispatcher>());
-      expect(level.cancelScanCode, equals(ScanCode.SCANCODE_ESCAPE));
+      expect(level.cancelScanCode, equals(ScanCode.escape));
       expect(level.currentRow, isNull);
-      expect(level.downScanCode, equals(ScanCode.SCANCODE_DOWN));
+      expect(level.downScanCode, equals(ScanCode.down));
       expect(level.horizontalPosition, isNull);
-      expect(level.leftScanCode, equals(ScanCode.SCANCODE_LEFT));
+      expect(level.leftScanCode, equals(ScanCode.left));
       expect(level.onCancel, isNull);
-      expect(level.rightScanCode, equals(ScanCode.SCANCODE_RIGHT));
+      expect(level.rightScanCode, equals(ScanCode.right));
       expect(level.rows, isEmpty);
       expect(level.title,
           predicate((value) => value is Message && value.text == 'Test Level'));
-      expect(level.upScanCode, equals(ScanCode.SCANCODE_UP));
+      expect(level.upScanCode, equals(ScanCode.up));
       expect(level.verticalPosition, isNull);
       level = MultiGridLevel(
           game: game,
@@ -266,7 +266,7 @@ void main() {
     });
     test('.handleSdlValue (scancode)', () {
       final sdl = Sdl();
-      const keyCode = KeyCode.keycode_0;
+      const keyCode = KeyCode.digit0;
       var cancelled = 0;
       final row1Messages = [Message(text: '1.0'), Message(text: '1.1')];
       final row2Messages = [
@@ -565,7 +565,7 @@ void main() {
       level.handleSdlEvent(cancelEvent);
       expect(cancelled, equals(2));
       final cancelKeyboardEvent = makeKeyboardEvent(
-          sdl, level.cancelScanCode, KeyCode.keycode_0,
+          sdl, level.cancelScanCode, KeyCode.digit0,
           state: PressedState.pressed);
       level.handleSdlEvent(cancelKeyboardEvent);
       expect(cancelled, equals(3));
@@ -603,7 +603,7 @@ void main() {
           rows: [row1, row2],
           axisInterval: 0);
       final activateKeyboardEvent = makeKeyboardEvent(
-          sdl, level.activateScanCode, KeyCode.keycode_0,
+          sdl, level.activateScanCode, KeyCode.digit0,
           state: PressedState.pressed);
       expect(i, isZero);
       expect(j, isZero);

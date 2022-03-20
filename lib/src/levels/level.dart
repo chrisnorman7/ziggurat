@@ -22,6 +22,7 @@ class Level {
     List<RandomSound>? randomSounds,
   })  : commands = commands ?? {},
         commandNextRuns = [],
+        stoppedCommands = [],
         ambiances = ambiances ?? [],
         randomSounds = randomSounds ?? [],
         ambiancePlaybacks = {},
@@ -29,9 +30,13 @@ class Level {
         randomSoundNextPlays = [];
 
   /// Create an instance from a level stub.
-  Level.fromStub(this.game, LevelStub stub, {Map<String, Command>? commands})
-      : commands = commands ?? {},
+  Level.fromStub(
+    this.game,
+    LevelStub stub, {
+    Map<String, Command>? commands,
+  })  : commands = commands ?? {},
         commandNextRuns = [],
+        stoppedCommands = [],
         music = stub.music,
         ambiances = stub.ambiances,
         randomSounds = stub.randomSounds,
@@ -47,6 +52,12 @@ class Level {
 
   /// The times before commands should run next.
   final List<NextRun<Command>> commandNextRuns;
+
+  /// The old command next runs.
+  ///
+  /// This list gets added to by [stopCommand], and removed from by
+  /// [startCommand].
+  final List<NextRun<Command>> stoppedCommands;
 
   /// The music for this level.
   final Music? music;
@@ -195,15 +206,14 @@ class Level {
   }
 
   /// Get the next run value for the given [command].
-  NextRun<Command> getCommandNextRun(Command command) =>
-      commandNextRuns.firstWhere(
-        (element) => element.value == command,
-        orElse: () {
-          final nextRun = NextRun(command, runAfter: command.interval ?? 0);
-          commandNextRuns.add(nextRun);
-          return nextRun;
-        },
-      );
+  NextRun<Command>? getCommandNextRun(Command command) {
+    for (final nextRun in commandNextRuns) {
+      if (nextRun.value == command) {
+        return nextRun;
+      }
+    }
+    return null;
+  }
 
   /// Start the command with the given [name].
   ///
@@ -213,8 +223,18 @@ class Level {
     final command = commands[name];
     if (command != null) {
       final interval = command.interval;
-      final runAfter = getCommandNextRun(command);
-      if (interval == null || runAfter.runAfter >= interval) {
+      NextRun<Command>? nextRun;
+      for (var i = 0; i < stoppedCommands.length; i++) {
+        nextRun = stoppedCommands[i];
+        if (nextRun.value == command) {
+          stoppedCommands.removeAt(i);
+          commandNextRuns.add(nextRun);
+          break;
+        }
+      }
+      nextRun ??= getCommandNextRun(command);
+      final runAfter = nextRun?.runAfter ?? command.interval;
+      if (interval == null || (runAfter != null && runAfter >= interval)) {
         runCommand(command);
       }
       return true;
@@ -229,7 +249,12 @@ class Level {
     if (onStart != null) {
       onStart();
       if (interval != null) {
-        getCommandNextRun(command).runAfter = 0;
+        final nextRun = getCommandNextRun(command);
+        if (nextRun == null) {
+          commandNextRuns.add(NextRun(command));
+        } else {
+          nextRun.runAfter = 0;
+        }
       }
     }
   }
@@ -241,7 +266,11 @@ class Level {
   bool stopCommand(String name) {
     final command = commands[name];
     if (command != null) {
-      commandNextRuns.removeWhere((element) => element.value == command);
+      final nextRun = getCommandNextRun(command);
+      if (nextRun != null) {
+        commandNextRuns.removeWhere((element) => element.value == command);
+        stoppedCommands.add(nextRun);
+      }
       final onStop = command.onStop;
       if (onStop != null) {
         onStop();
@@ -270,16 +299,25 @@ class Level {
   /// correction is performed by the [Game.tick] method.
   @mustCallSuper
   void tick(Sdl sdl, int timeDelta) {
-    for (final command in commands.values) {
-      final interval = command.interval;
-      if (interval != null) {
-        final runAfter = getCommandNextRun(command);
-        if (runAfter.runAfter >= interval) {
-          runCommand(command);
-        } else {
-          runAfter.runAfter = runAfter.runAfter + timeDelta;
-        }
+    for (final nextRun in commandNextRuns) {
+      final command = nextRun.value;
+      final interval = command.interval!;
+      if (nextRun.runAfter >= interval) {
+        runCommand(command);
+      } else {
+        nextRun.runAfter += timeDelta;
       }
+    }
+    final toStop = <Command>{};
+    for (final nextRun in stoppedCommands) {
+      final command = nextRun.value;
+      nextRun.runAfter += timeDelta;
+      if (nextRun.runAfter >= command.interval!) {
+        toStop.add(command);
+      }
+    }
+    for (final command in toStop) {
+      stoppedCommands.removeWhere((element) => element.value == command);
     }
     for (final sound in randomSounds) {
       final playNext = getRandomSoundNextPlay(sound);

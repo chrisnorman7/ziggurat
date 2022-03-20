@@ -12,7 +12,7 @@ void main() {
             name: 'first',
             description: 'The first command',
             button: GameControllerButton.a,
-            scanCode: ScanCode.SCANCODE_A)
+            scanCode: ScanCode.a)
       ]);
       expect(triggerMap.triggers.length, equals(1));
     });
@@ -21,22 +21,22 @@ void main() {
           name: 'trigger',
           description: 'This is a test command trigger',
           button: GameControllerButton.b,
-          scanCode: ScanCode.SCANCODE_1);
+          scanCode: ScanCode.digit1);
       expect(trigger.button, equals(GameControllerButton.b));
-      expect(trigger.keyboardKey?.scanCode, equals(ScanCode.SCANCODE_1));
+      expect(trigger.keyboardKey?.scanCode, equals(ScanCode.digit1));
     });
   });
   group('CommandKeyboardKey', () {
     test('./toPrintableString', () {
-      var key = CommandKeyboardKey(ScanCode.SCANCODE_0);
-      expect(key.toPrintableString(), equals('0'));
-      key = CommandKeyboardKey(ScanCode.SCANCODE_SPACE,
+      var key = CommandKeyboardKey(ScanCode.digit0);
+      expect(key.toPrintableString(), equals('digit0'));
+      key = CommandKeyboardKey(ScanCode.space,
           controlKey: true, shiftKey: true, altKey: true);
-      expect(key.toPrintableString(), equals('CTRL+SHIFT+ALT+SPACE'));
+      expect(key.toPrintableString(), equals('ctrl+shift+alt+space'));
     });
     test('.toString', () {
-      final key = CommandKeyboardKey(ScanCode.SCANCODE_1, shiftKey: true);
-      expect(key.toString(), equals('<CommandKeyboardKey SHIFT+1>'));
+      final key = CommandKeyboardKey(ScanCode.digit1, shiftKey: true);
+      expect(key.toString(), equals('<CommandKeyboardKey shift+digit1>'));
     });
   });
 }

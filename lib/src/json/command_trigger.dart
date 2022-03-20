@@ -38,12 +38,13 @@ class CommandKeyboardKey {
   Map<String, dynamic> toJson() => _$CommandKeyboardKeyToJson(this);
 
   /// Return a printable string of this key.
-  String toPrintableString(
-      {String controlKeyName = 'CTRL',
-      String shiftKeyName = 'SHIFT',
-      String altKeyName = 'ALT',
-      String Function(ScanCode scanCode)? getScanCodeString,
-      String separator = '+'}) {
+  String toPrintableString({
+    String controlKeyName = 'ctrl',
+    String shiftKeyName = 'shift',
+    String altKeyName = 'alt',
+    String Function(ScanCode scanCode)? getScanCodeString,
+    String separator = '+',
+  }) {
     final keys = <String>[];
     if (controlKey) {
       keys.add(controlKeyName);
@@ -55,7 +56,7 @@ class CommandKeyboardKey {
       keys.add(altKeyName);
     }
     if (getScanCodeString == null) {
-      keys.add(scanCode.toString().split('_').last);
+      keys.add(scanCode.name);
     } else {
       keys.add(getScanCodeString(scanCode));
     }

@@ -13,8 +13,7 @@ ControllerAxisEvent makeControllerAxisEvent(
 
 /// Get a keyboard event.
 KeyboardEvent makeKeyboardEvent(Sdl sdl, ScanCode scanCode, KeyCode keyCode,
-        {PressedState state = PressedState.released,
-        List<KeyMod>? modifiers}) =>
+        {PressedState state = PressedState.released, Set<KeyMod>? modifiers}) =>
     KeyboardEvent(
         sdl,
         DateTime.now().millisecondsSinceEpoch,
@@ -22,7 +21,7 @@ KeyboardEvent makeKeyboardEvent(Sdl sdl, ScanCode scanCode, KeyCode keyCode,
         state,
         false,
         KeyboardKey(
-            scancode: scanCode, keycode: keyCode, modifiers: modifiers ?? []));
+            scancode: scanCode, keycode: keyCode, modifiers: modifiers ?? {}));
 
 /// Make a text input event.
 TextInputEvent makeTextInputEvent(Sdl sdl, String text) =>

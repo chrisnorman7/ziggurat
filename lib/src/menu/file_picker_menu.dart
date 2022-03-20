@@ -136,7 +136,7 @@ class FilePickerMenu extends Menu {
   @override
   void handleSdlEvent(Event event) {
     if (event is KeyboardEvent &&
-        event.key.scancode == ScanCode.SCANCODE_BACKSPACE &&
+        event.key.scancode == ScanCode.backspace &&
         event.key.modifiers.isEmpty &&
         event.repeat == false &&
         event.state == PressedState.pressed) {

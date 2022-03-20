@@ -427,8 +427,7 @@ void main() {
         final trigger1 = CommandTrigger(
           name: 'command1',
           description: 'First command',
-          keyboardKey:
-              CommandKeyboardKey(ScanCode.SCANCODE_RIGHT, altKey: true),
+          keyboardKey: CommandKeyboardKey(ScanCode.right, altKey: true),
         );
         final trigger2 = CommandTrigger(
           name: 'command2',
@@ -460,8 +459,8 @@ void main() {
           makeKeyboardEvent(
             sdl,
             trigger1.keyboardKey!.scanCode,
-            KeyCode.keycode_0,
-            modifiers: [KeyMod.alt],
+            KeyCode.digit0,
+            modifiers: {KeyMod.alt},
             state: PressedState.pressed,
           ),
         );
@@ -471,7 +470,7 @@ void main() {
           makeKeyboardEvent(
             sdl,
             trigger1.keyboardKey!.scanCode,
-            KeyCode.keycode_0,
+            KeyCode.digit0,
             state: PressedState.pressed,
           ),
         );

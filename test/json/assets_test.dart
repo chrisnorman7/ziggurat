@@ -42,7 +42,7 @@ void main() {
       final iv = IV.fromLength(16);
       final encrypter = Encrypter(AES(key));
       final encrypted = encrypter.encryptBytes(data, iv: iv);
-      final encryptedFile = File(ar.name + '.encrypted')
+      final encryptedFile = File('${ar.name}.encrypted')
         ..writeAsBytesSync(encrypted.bytes);
       final encryptedAssetReference =
           AssetReference.file(encryptedFile.path, encryptionKey: encryptionKey);

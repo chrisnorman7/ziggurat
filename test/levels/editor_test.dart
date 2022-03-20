@@ -23,7 +23,7 @@ void main() {
       final sdl = Sdl();
       final editor = Editor(game: game, onDone: print)
         ..handleSdlEvent(
-            makeKeyboardEvent(sdl, ScanCode.SCANCODE_0, KeyCode.keycode_0));
+            makeKeyboardEvent(sdl, ScanCode.digit0, KeyCode.digit0));
       expect(editor.text, isEmpty);
       editor.handleSdlEvent(makeTextInputEvent(sdl, 'hello'));
       expect(editor.text, equals('hello'));
@@ -43,11 +43,11 @@ void main() {
           })
         ..handleSdlEvent(makeTextInputEvent(sdl, 'Testing things.'));
       expect(text, isNull);
-      editor.handleSdlEvent(makeKeyboardEvent(
-          sdl, ScanCode.SCANCODE_RETURN, KeyCode.keycode_RETURN));
+      editor.handleSdlEvent(
+          makeKeyboardEvent(sdl, ScanCode.return_, KeyCode.return_));
       expect(text, isNull);
       editor.handleSdlEvent(makeKeyboardEvent(
-          sdl, ScanCode.SCANCODE_RETURN, KeyCode.keycode_RETURN,
+          sdl, ScanCode.return_, KeyCode.return_,
           state: PressedState.pressed));
       expect(text, equals(editor.text));
       text = '';
@@ -59,7 +59,7 @@ void main() {
       final sdl = Sdl();
       var editor = Editor(game: game, onDone: print);
       final escapeEvent = makeKeyboardEvent(
-          sdl, ScanCode.SCANCODE_ESCAPE, KeyCode.keycode_ESCAPE,
+          sdl, ScanCode.escape, KeyCode.escape,
           state: PressedState.pressed);
       editor.handleSdlEvent(escapeEvent);
       var cancelled = 0;
@@ -77,7 +77,7 @@ void main() {
       final sdl = Sdl();
       final editor = Editor(game: game, onDone: print);
       final backspaceEvent = makeKeyboardEvent(
-          sdl, ScanCode.SCANCODE_BACKSPACE, KeyCode.keycode_BACKSPACE,
+          sdl, ScanCode.backspace, KeyCode.backspace,
           state: PressedState.pressed);
       editor.handleSdlEvent(backspaceEvent);
       expect(editor.text, isEmpty);

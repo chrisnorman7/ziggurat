@@ -168,6 +168,7 @@ void main() {
         ),
         isEmpty,
       );
+      expect(level.getCommandNextRun(command), isNull);
       expect(level.counter, isZero);
       level.startCommand(incrementCommandName);
       expect(
@@ -176,24 +177,24 @@ void main() {
         ),
         isNotEmpty,
       );
-      final nextRun = level.getCommandNextRun(command);
+      final nextRun = level.getCommandNextRun(command)!;
       expect(nextRun.runAfter, isZero);
       expect(level.counter, 1);
       level.startCommand(incrementCommandName);
       expect(level.counter, 1);
-      expect(level.getCommandNextRun(command).runAfter, isZero);
+      expect(level.getCommandNextRun(command)?.runAfter, isZero);
       level.startCommand('increment');
       expect(level.counter, 1);
-      expect(level.getCommandNextRun(command).runAfter, 0);
+      expect(level.getCommandNextRun(command)?.runAfter, 0);
       final sdl = Sdl();
       await game.tick(sdl, 1);
-      expect(level.getCommandNextRun(command).runAfter, 1);
+      expect(level.getCommandNextRun(command)?.runAfter, 1);
       await game.tick(sdl, 499);
       expect(level.counter, 1);
-      expect(level.getCommandNextRun(command).runAfter, 500);
+      expect(level.getCommandNextRun(command)?.runAfter, 500);
       await game.tick(sdl, 1);
       expect(level.counter, 2);
-      expect(level.getCommandNextRun(command).runAfter, isZero);
+      expect(level.getCommandNextRun(command)?.runAfter, isZero);
     });
     test('Ambiances', () {
       final game = Game('Level Ambiances');
