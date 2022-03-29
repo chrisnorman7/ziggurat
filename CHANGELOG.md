@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.42.2]
+
+### Changed
+
+* Downgraded lints.
+* Upgraded dart_sdl.
+
 ## [0.42.1]
 
 ### Added
