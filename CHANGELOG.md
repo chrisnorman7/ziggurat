@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.43.0]
+
+### Changed
+
+* `Editor.toggleShift` is now a `shiftPressed` property.
+
 ## [0.42.2]
 
 ### Changed
