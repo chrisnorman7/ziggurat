@@ -25,7 +25,7 @@ class ReverbPreset {
   });
 
   /// Load an instance from json.
-  factory ReverbPreset.fromJson(Map<String, dynamic> json) =>
+  factory ReverbPreset.fromJson(final Map<String, dynamic> json) =>
       _$ReverbPresetFromJson(json);
 
   /// The name of this preset.

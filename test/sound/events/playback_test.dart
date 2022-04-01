@@ -14,7 +14,8 @@ void main() {
         () {
           final event = PlaySound(
             game: game,
-            sound: AssetReference.file('test.wav', encryptionKey: 'asdf123'),
+            sound:
+                const AssetReference.file('test.wav', encryptionKey: 'asdf123'),
             channel: 5,
             keepAlive: true,
             looping: true,
@@ -35,7 +36,7 @@ void main() {
         () {
           final event = PlaySound(
             game: game,
-            sound: AssetReference.collection('test.wav'),
+            sound: const AssetReference.collection('test.wav'),
             channel: 5,
             keepAlive: true,
             looping: true,
@@ -121,7 +122,7 @@ void main() {
       test(
         'SetWaveGain',
         () {
-          final event = SetWaveGain(id: 45, gain: 0.3);
+          const event = SetWaveGain(id: 45, gain: 0.3);
           expect(
             event.toString(),
             '<SetWaveGain id: 45, gain: 0.3>',
@@ -141,14 +142,14 @@ void main() {
       test(
         'DestroyWave',
         () {
-          final event = DestroyWave(4);
+          const event = DestroyWave(4);
           expect(event.toString(), '<DestroyWave id: 4>');
         },
       );
       test(
         'AutomateWaveFrequency',
         () {
-          final event = AutomateWaveFrequency(
+          const event = AutomateWaveFrequency(
             id: 8,
             startFrequency: a4,
             length: 2.0,
@@ -176,7 +177,7 @@ void main() {
       test(
         'PauseWave',
         () {
-          final event = PauseWave(8);
+          const event = PauseWave(8);
           expect(event.id, 8);
           expect(event.toString(), '<PauseWave id: 8>');
         },
@@ -184,7 +185,7 @@ void main() {
       test(
         'UnpauseWave',
         () {
-          final event = UnpauseWave(4);
+          const event = UnpauseWave(4);
           expect(event.id, 4);
           expect(event.toString(), '<UnpauseWave id: 4>');
         },

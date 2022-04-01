@@ -12,7 +12,7 @@ const incrementCommandName = 'increment';
 /// Custom level.
 class CustomLevel extends Level {
   /// Create a custom level.
-  CustomLevel(Game game) : super(game: game);
+  CustomLevel(final Game game) : super(game: game);
 
   /// Whether or not this level has been pushed.
   bool wasPushed = false;
@@ -35,20 +35,20 @@ class CustomLevel extends Level {
 
   /// This level was popped.
   @override
-  void onPop(double? ambianceFadeLength) {
+  void onPop(final double? ambianceFadeLength) {
     super.onPop(ambianceFadeLength);
     wasPopped = true;
   }
 
   /// This level was covered.
   @override
-  void onCover(Level newLevel) {
+  void onCover(final Level newLevel) {
     wasCovered = newLevel;
   }
 
   /// This level was revealed.
   @override
-  void onReveal(Level revealingLevel) {
+  void onReveal(final Level revealingLevel) {
     wasRevealed = revealingLevel;
   }
 }
@@ -56,12 +56,14 @@ class CustomLevel extends Level {
 /// A level with commands.
 class CommandLevel extends Level {
   /// Create a level.
-  CommandLevel(Game game)
+  CommandLevel(final Game game)
       : started = false,
         stopped = false,
         super(game: game) {
-    registerCommand('testCommand',
-        Command(onStart: () => started = true, onStop: () => stopped = true));
+    registerCommand(
+      'testCommand',
+      Command(onStart: () => started = true, onStop: () => stopped = true),
+    );
   }
 
   /// The command was started.
@@ -74,7 +76,7 @@ class CommandLevel extends Level {
 /// A level with an increment command.
 class IncrementLevel extends Level {
   /// Create a level.
-  IncrementLevel(Game game)
+  IncrementLevel(final Game game)
       : counter = 0,
         super(game: game) {
     registerCommand(
@@ -98,7 +100,7 @@ void main() {
     test('Register Commands', () {
       final game = Game('Test Game');
       final level = Level(game: game);
-      final command = Command();
+      const command = Command();
       level.registerCommand('testing', command);
       expect(level.commands, equals({'testing': command}));
     });
@@ -151,7 +153,7 @@ void main() {
       expect(command.interval, 500);
       expect(
         level.commandNextRuns.where(
-          (element) => element.value == command,
+          (final element) => element.value == command,
         ),
         isEmpty,
       );
@@ -160,7 +162,7 @@ void main() {
       level.startCommand(incrementCommandName);
       expect(
         level.commandNextRuns.where(
-          (element) => element.value == command,
+          (final element) => element.value == command,
         ),
         isNotEmpty,
       );
@@ -185,12 +187,13 @@ void main() {
     });
     test('Ambiances', () {
       final game = Game('Level Ambiances');
-      final ambiance1 =
+      const ambiance1 =
           Ambiance(sound: AssetReference.file('sound1'), gain: 0.1);
-      final ambiance2 = Ambiance(
-          sound: AssetReference.collection('sound2'),
-          gain: 0.2,
-          position: Point(5.0, 6.0));
+      const ambiance2 = Ambiance(
+        sound: AssetReference.collection('sound2'),
+        gain: 0.2,
+        position: Point(5.0, 6.0),
+      );
       final level = Level(game: game, ambiances: [ambiance1, ambiance2]);
       game.pushLevel(level);
       final ambiance1Playback = level.ambiancePlaybacks[ambiance1];
@@ -198,32 +201,41 @@ void main() {
       expect(ambiance1Playback, isNotNull);
       expect(ambiance2Playback, isNotNull);
       expect(
-          ambiance1Playback?.sound,
-          predicate((value) =>
+        ambiance1Playback?.sound,
+        predicate(
+          (final value) =>
               value is PlaySound &&
               value.sound == ambiance1.sound &&
               value.gain == ambiance1.gain &&
-              value.keepAlive == true));
+              value.keepAlive == true,
+        ),
+      );
       expect(ambiance1Playback?.channel, equals(game.ambianceSounds));
       expect(
-          ambiance2Playback?.channel,
-          predicate((value) =>
-              value is SoundChannel && value.position is SoundPosition3d));
+        ambiance2Playback?.channel,
+        predicate(
+          (final value) =>
+              value is SoundChannel && value.position is SoundPosition3d,
+        ),
+      );
       final position = ambiance2Playback!.channel.position as SoundPosition3d;
       expect(position.x, equals(ambiance2.position!.x));
       expect(position.y, equals(ambiance2.position!.y));
       expect(position.z, isZero);
       expect(
-          ambiance2Playback.sound,
-          predicate((value) =>
+        ambiance2Playback.sound,
+        predicate(
+          (final value) =>
               value is PlaySound &&
               value.sound == ambiance2.sound &&
               value.gain == ambiance2.gain &&
-              value.keepAlive == true));
+              value.keepAlive == true,
+        ),
+      );
     });
     test('music', () {
       final game = Game('Music Test');
-      final music = Music(
+      const music = Music(
         sound: AssetReference.file('music.mp3'),
         gain: 1.0,
       );

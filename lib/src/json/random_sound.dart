@@ -25,7 +25,7 @@ class RandomSound {
   });
 
   /// Return an instance from JSON.
-  factory RandomSound.fromJson(Map<String, dynamic> json) =>
+  factory RandomSound.fromJson(final Map<String, dynamic> json) =>
       _$RandomSoundFromJson(json);
 
   /// The sound to play.

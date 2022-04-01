@@ -56,9 +56,9 @@ class Menu extends Level {
   /// The [movementAxis] value is the axis which can be used to move within this
   /// menu.
   Menu({
-    required Game game,
+    required final Game game,
     required this.title,
-    List<MenuItem>? items,
+    final List<MenuItem>? items,
     this.position,
     this.onCancel,
     this.upScanCode = ScanCode.up,
@@ -69,17 +69,17 @@ class Menu extends Level {
     this.activateButton = GameControllerButton.dpadRight,
     this.cancelScanCode = ScanCode.escape,
     this.cancelButton = GameControllerButton.dpadLeft,
-    GameControllerAxis movementAxis = GameControllerAxis.lefty,
-    GameControllerAxis activateAxis = GameControllerAxis.triggerright,
-    GameControllerAxis cancelAxis = GameControllerAxis.triggerleft,
-    int controllerMovementSpeed = 500,
-    double controllerAxisSensitivity = 0.5,
+    final GameControllerAxis movementAxis = GameControllerAxis.lefty,
+    final GameControllerAxis activateAxis = GameControllerAxis.triggerright,
+    final GameControllerAxis cancelAxis = GameControllerAxis.triggerleft,
+    final int controllerMovementSpeed = 500,
+    final double controllerAxisSensitivity = 0.5,
     this.searchEnabled = true,
     this.searchInterval = 500,
     this.soundChannel,
-    Music? music,
-    List<Ambiance>? ambiances,
-    List<RandomSound>? randomSounds,
+    final Music? music,
+    final List<Ambiance>? ambiances,
+    final List<RandomSound>? randomSounds,
   })  : menuItems = items ?? [],
         searchString = '',
         searchTime = 0,
@@ -89,19 +89,21 @@ class Menu extends Level {
           ambiances: ambiances,
           randomSounds: randomSounds,
         ) {
-    controllerAxisDispatcher = ControllerAxisDispatcher({
-      movementAxis: (double value) {
-        if (value < 0) {
-          up();
-        } else {
-          down();
-        }
+    controllerAxisDispatcher = ControllerAxisDispatcher(
+      {
+        movementAxis: (final value) {
+          if (value < 0) {
+            up();
+          } else {
+            down();
+          }
+        },
+        activateAxis: (final value) => activate(),
+        cancelAxis: (final value) => cancel()
       },
-      activateAxis: (double value) => activate(),
-      cancelAxis: (double value) => cancel()
-    },
-        axisSensitivity: controllerAxisSensitivity,
-        functionInterval: controllerMovementSpeed);
+      axisSensitivity: controllerAxisSensitivity,
+      functionInterval: controllerMovementSpeed,
+    );
   }
 
   /// The title of this menu.
@@ -188,10 +190,10 @@ class Menu extends Level {
   }
 
   @override
-  void onReveal(Level old) => showCurrentItem();
+  void onReveal(final Level old) => showCurrentItem();
 
   @override
-  void onPop(double? fadeLength) {
+  void onPop(final double? fadeLength) {
     super.onPop(fadeLength);
     final sound = oldSound;
     if (sound != null && sound.keepAlive == true) {
@@ -258,18 +260,22 @@ class Menu extends Level {
   }
 
   /// Add a button to this menu.
-  MenuItem addButton(TaskFunction onActivate,
-      {String? label,
-      AssetReference? selectSound,
-      AssetReference? activateSound}) {
-    final item = MenuItem(Message(sound: selectSound, text: label),
-        Button(onActivate, activateSound: activateSound));
+  MenuItem addButton(
+    final TaskFunction onActivate, {
+    final String? label,
+    final AssetReference? selectSound,
+    final AssetReference? activateSound,
+  }) {
+    final item = MenuItem(
+      Message(sound: selectSound, text: label),
+      Button(onActivate, activateSound: activateSound),
+    );
     menuItems.add(item);
     return item;
   }
 
   /// Add a label.
-  MenuItem addLabel({String? text, AssetReference? selectSound}) {
+  MenuItem addLabel({final String? text, final AssetReference? selectSound}) {
     final item =
         MenuItem(Message(sound: selectSound, text: text), menuItemLabel);
     menuItems.add(item);
@@ -278,7 +284,7 @@ class Menu extends Level {
 
   /// Handle SDL events.
   @override
-  void handleSdlEvent(Event event) {
+  void handleSdlEvent(final Event event) {
     if (event is KeyboardEvent &&
         event.repeat == false &&
         event.state == PressedState.pressed &&

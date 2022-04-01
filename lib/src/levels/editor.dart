@@ -34,7 +34,7 @@ class Editor extends Level {
   /// The [ambiances] and [randomSounds] lists are passed directly to the
   /// [Level] constructor.
   Editor({
-    required Game game,
+    required final Game game,
     required this.onDone,
     this.text = '',
     this.onCancel,
@@ -55,15 +55,15 @@ class Editor extends Level {
     this.spaceButton = GameControllerButton.b,
     this.backspaceScanCode = ScanCode.backspace,
     this.backspaceButton = GameControllerButton.x,
-    GameControllerAxis upDownAxis = GameControllerAxis.lefty,
-    GameControllerAxis leftRightAxis = GameControllerAxis.rightx,
-    GameControllerAxis typeAxis = GameControllerAxis.triggerright,
-    GameControllerAxis backspaceAxis = GameControllerAxis.triggerleft,
-    int controllerMovementSpeed = 400,
-    double controllerAxisSensitivity = 0.5,
-    Music? music,
-    List<Ambiance>? ambiances,
-    List<RandomSound>? randomSounds,
+    final GameControllerAxis upDownAxis = GameControllerAxis.lefty,
+    final GameControllerAxis leftRightAxis = GameControllerAxis.rightx,
+    final GameControllerAxis typeAxis = GameControllerAxis.triggerright,
+    final GameControllerAxis backspaceAxis = GameControllerAxis.triggerleft,
+    final int controllerMovementSpeed = 400,
+    final double controllerAxisSensitivity = 0.5,
+    final Music? music,
+    final List<Ambiance>? ambiances,
+    final List<RandomSound>? randomSounds,
   })  : _shiftPressed = false,
         _currentPosition = 0,
         super(
@@ -72,26 +72,28 @@ class Editor extends Level {
           ambiances: ambiances,
           randomSounds: randomSounds,
         ) {
-    controllerAxisDispatcher = ControllerAxisDispatcher({
-      upDownAxis: (double value) {
-        if (value > 0) {
-          moveDown();
-        } else {
-          moveUp();
-        }
+    controllerAxisDispatcher = ControllerAxisDispatcher(
+      {
+        upDownAxis: (final value) {
+          if (value > 0) {
+            moveDown();
+          } else {
+            moveUp();
+          }
+        },
+        leftRightAxis: (final value) {
+          if (value > 0) {
+            moveRight();
+          } else {
+            moveLeft();
+          }
+        },
+        typeAxis: (final value) => type(),
+        backspaceAxis: (final value) => backspace()
       },
-      leftRightAxis: (double value) {
-        if (value > 0) {
-          moveRight();
-        } else {
-          moveLeft();
-        }
-      },
-      typeAxis: (double value) => type(),
-      backspaceAxis: (double value) => backspace()
-    },
-        axisSensitivity: controllerAxisSensitivity,
-        functionInterval: controllerMovementSpeed);
+      axisSensitivity: controllerAxisSensitivity,
+      functionInterval: controllerMovementSpeed,
+    );
   }
 
   /// The current text of this editor.
@@ -173,13 +175,13 @@ class Editor extends Level {
   ///
   /// It should be used to replace single characters like " " with something
   /// more meaningful (like the word "space").
-  String convertChar(String char) => char == ' ' ? 'space' : char;
+  String convertChar(final String char) => char == ' ' ? 'space' : char;
 
   /// Output some text.
-  void outputText(String string) => game.outputText(string);
+  void outputText(final String string) => game.outputText(string);
 
   /// Add [value] to [text].
-  void appendText(String value) {
+  void appendText(final String value) {
     text += value;
     outputText(convertChar(value));
   }
@@ -204,8 +206,11 @@ class Editor extends Level {
     text = text.substring(0, text.length - 1);
   }
 
+  /// Whether or not letters should be capitalised.
+  bool get shiftPressed => _shiftPressed;
+
   /// Toggle the state of the shift key.
-  void toggleShift(bool value) {
+  set shiftPressed(final bool value) {
     _shiftPressed = value;
     outputText('Shift ${value ? "enabled" : "disabled"}.');
   }
@@ -214,7 +219,7 @@ class Editor extends Level {
   void type() => appendText(currentLetter);
 
   /// Move by the given [amount] in the letter grid.
-  void moveInLetterGrid(int amount) {
+  void moveInLetterGrid(final int amount) {
     _currentPosition += amount;
     if (_currentPosition < 0) {
       _currentPosition = 0;
@@ -238,7 +243,7 @@ class Editor extends Level {
 
   /// Handle text editing events from SDL.
   @override
-  void handleSdlEvent(Event event) {
+  void handleSdlEvent(final Event event) {
     if (event is TextInputEvent) {
       appendText(event.text);
     } else if (event is KeyboardEvent &&
@@ -255,7 +260,7 @@ class Editor extends Level {
     } else if (event is ControllerButtonEvent) {
       final button = event.button;
       if (button == shiftButton) {
-        toggleShift(event.state == PressedState.pressed);
+        shiftPressed = event.state == PressedState.pressed;
       } else if (event.state == PressedState.pressed) {
         if (button == typeButton) {
           type();

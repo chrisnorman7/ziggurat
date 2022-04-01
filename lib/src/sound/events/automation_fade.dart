@@ -15,7 +15,7 @@ enum FadeType {
 /// Cancel an automation fade.
 class CancelAutomationFade extends SoundEvent {
   /// Create an instance.
-  const CancelAutomationFade({required int id, required this.fadeType})
+  const CancelAutomationFade({required final int id, required this.fadeType})
       : super(id: id);
 
   /// The type of this fade.
@@ -31,8 +31,8 @@ class AutomationFade extends CancelAutomationFade {
   /// Create an instance.
   const AutomationFade({
     required this.game,
-    required int id,
-    required FadeType fadeType,
+    required final int id,
+    required final FadeType fadeType,
     required this.preFade,
     required this.fadeLength,
     required this.startGain,

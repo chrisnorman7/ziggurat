@@ -19,23 +19,27 @@ class MultiGridLevelRowAction {
 /// A row in a [MultiGridLevel].
 class MultiGridLevelRow {
   /// Create an instance.
-  const MultiGridLevelRow(
-      {required this.label,
-      required this.getNumberOfEntries,
-      required this.getEntryLabel,
-      required this.onActivate,
-      this.actions = const []});
+  const MultiGridLevelRow({
+    required this.label,
+    required this.getNumberOfEntries,
+    required this.getEntryLabel,
+    required this.onActivate,
+    this.actions = const [],
+  });
 
   /// Create an instance with a dictionary of [commands]:
   factory MultiGridLevelRow.fromDict(
-          Message label, Map<Message, void Function(int index)> commands,
-          {List<MultiGridLevelRowAction>? actions}) =>
+    final Message label,
+    final Map<Message, void Function(int index)> commands, {
+    final List<MultiGridLevelRowAction>? actions,
+  }) =>
       MultiGridLevelRow(
-          label: label,
-          getNumberOfEntries: () => commands.length,
-          getEntryLabel: (int value) => commands.keys.elementAt(value),
-          onActivate: (int index) => commands.values.elementAt(index)(index),
-          actions: actions ?? []);
+        label: label,
+        getNumberOfEntries: () => commands.length,
+        getEntryLabel: (final value) => commands.keys.elementAt(value),
+        onActivate: (final index) => commands.values.elementAt(index)(index),
+        actions: actions ?? [],
+      );
 
   /// The label of this row.
   ///

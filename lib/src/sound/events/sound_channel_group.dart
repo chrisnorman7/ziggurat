@@ -11,14 +11,14 @@ class SoundChannelGroup {
   final List<SoundChannel> channels;
 
   /// Set the reverb for this group.
-  set reverb(CreateReverb? createdReverb) {
+  set reverb(final CreateReverb? createdReverb) {
     for (final element in channels) {
       element.reverb = createdReverb?.id;
     }
   }
 
   /// Set the group gain.
-  set gain(double value) {
+  set gain(final double value) {
     for (final channel in channels) {
       channel.gain = value;
     }
@@ -32,21 +32,27 @@ class SoundChannelGroup {
   }
 
   /// Apply a low pass to this group.
-  void filterLowpass(double frequency, {double q = 0.7071135624381276}) {
+  void filterLowpass(
+    final double frequency, {
+    final double q = 0.7071135624381276,
+  }) {
     for (final channel in channels) {
       channel.filterLowpass(frequency, q: q);
     }
   }
 
   /// Apply a highpass to this group.
-  void filterHighpass(double frequency, {double q = 0.7071135624381276}) {
+  void filterHighpass(
+    final double frequency, {
+    final double q = 0.7071135624381276,
+  }) {
     for (final channel in channels) {
       channel.filterHighpass(frequency, q: q);
     }
   }
 
   /// Add a bandpass to this group.
-  void filterBandpass(double frequency, double bandwidth) {
+  void filterBandpass(final double frequency, final double bandwidth) {
     for (final channel in channels) {
       channel.filterBandpass(frequency, bandwidth);
     }

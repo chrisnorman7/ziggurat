@@ -22,7 +22,7 @@ class LevelStub {
   });
 
   /// Create an instance from JSON.
-  factory LevelStub.fromJson(Map<String, dynamic> json) =>
+  factory LevelStub.fromJson(final Map<String, dynamic> json) =>
       _$LevelStubFromJson(json);
 
   /// The music for this stub.

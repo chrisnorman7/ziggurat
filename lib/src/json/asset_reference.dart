@@ -25,7 +25,7 @@ class AssetReference {
   const AssetReference(this.name, this.type, {this.encryptionKey});
 
   /// Create an instance from a JSON object.
-  factory AssetReference.fromJson(Map<String, dynamic> json) =>
+  factory AssetReference.fromJson(final Map<String, dynamic> json) =>
       _$AssetReferenceFromJson(json);
 
   /// Create an instance with its [type] set to [AssetType.file].
@@ -59,7 +59,7 @@ class AssetReference {
   ///
   /// If [type] is [AssetType.collection], a random file will be loaded,
   /// selected with [random].
-  List<int> load(Random random) {
+  List<int> load(final Random random) {
     final File file;
     if (type == AssetType.file) {
       file = File(name);
@@ -82,7 +82,7 @@ class AssetReference {
   /// If [type] is [AssetType.file], just return a [File] with its path set to
   /// [name]. Otherwise, use the [FileSystemEntityMethods] extension to
   /// return a random file from a [Directory] with [name] as the path.
-  File getFile(Random random) {
+  File getFile(final Random random) {
     if (type == AssetType.file) {
       return File(name);
     }

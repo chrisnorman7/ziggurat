@@ -19,11 +19,11 @@ class Widget {
 
   /// Override this method to change the label that is shown when this widget's
   /// parent [MenuItem] is selected.
-  Message? getLabel(MenuItem menuItem) => null;
+  Message? getLabel(final MenuItem menuItem) => null;
 
   /// Override this function to change what happens when this widget is
   /// activated.
-  void activate(Menu menu) {
+  void activate(final Menu menu) {
     final f = onActivate;
     if (f != null) {
       f();

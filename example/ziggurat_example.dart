@@ -16,19 +16,19 @@ final leftCommandTrigger = CommandTrigger.basic(
   scanCode: ScanCode.left,
   button: GameControllerButton.dpadLeft,
 );
-final rightCommandTrigger = CommandTrigger(
+const rightCommandTrigger = CommandTrigger(
   name: 'right',
   description: 'Increase the coordinate',
   keyboardKey: CommandKeyboardKey(ScanCode.right),
   button: GameControllerButton.dpadRight,
 );
-final upCommandTrigger = CommandTrigger(
+const upCommandTrigger = CommandTrigger(
   name: 'up',
   description: 'Move up in the menu',
   keyboardKey: CommandKeyboardKey(ScanCode.up),
   button: GameControllerButton.dpadUp,
 );
-final downCommandTrigger = CommandTrigger(
+const downCommandTrigger = CommandTrigger(
   name: 'down',
   description: 'Move down in a menu',
   keyboardKey: CommandKeyboardKey(ScanCode.down),
@@ -38,7 +38,7 @@ final downCommandTrigger = CommandTrigger(
 /// A level with some commands registered.
 class ExcitingLevel extends Level {
   /// Create the level.
-  ExcitingLevel(Game game)
+  ExcitingLevel(final Game game)
       : coordinate = 0,
         super(game: game) {
     registerCommand(
@@ -76,18 +76,18 @@ class ExcitingLevel extends Level {
 /// The main menu.
 class MainMenu extends Menu {
   /// Create the menu.
-  MainMenu(Game game)
+  MainMenu(final Game game)
       : super(
           game: game,
-          title: Message(text: 'Main Menu'),
+          title: const Message(text: 'Main Menu'),
           items: [
             MenuItem(
-              Message(text: 'Play'),
+              const Message(text: 'Play'),
               Button(() => game.replaceLevel(ExcitingLevel(game))),
             ),
             MenuItem(
-              Message(text: 'Quit'),
-              Button(() => game.stop()),
+              const Message(text: 'Quit'),
+              Button(game.stop),
             )
           ],
           onCancel: () => game.outputText('You cannot exit from this menu.'),
@@ -101,9 +101,10 @@ Future<void> main() async {
     triggerMap: TriggerMap([
       quitCommandTrigger,
       CommandTrigger.basic(
-          name: quitCommandTrigger.name,
-          description: 'Quit the game',
-          scanCode: ScanCode.escape),
+        name: quitCommandTrigger.name,
+        description: 'Quit the game',
+        scanCode: ScanCode.escape,
+      ),
       leftCommandTrigger,
       rightCommandTrigger,
       upCommandTrigger,

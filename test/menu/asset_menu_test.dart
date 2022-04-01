@@ -11,7 +11,7 @@ void main() {
     () {
       final menu = AssetReferenceMenu(
         game: game,
-        title: Message(text: 'Assets'),
+        title: const Message(text: 'Assets'),
         assetReferences: {'Sound': asset1, 'Footsteps': asset2},
       );
       test(

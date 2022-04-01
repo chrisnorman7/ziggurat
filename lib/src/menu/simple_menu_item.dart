@@ -12,8 +12,13 @@ import 'widgets/button.dart';
 /// minimal code.
 class SimpleMenuItem extends MenuItem {
   /// Create an instance.
-  SimpleMenuItem(String label, void Function() onActivate,
-      {AssetReference? selectSound, AssetReference? activateSound})
-      : super(Message(text: label, sound: selectSound, keepAlive: true),
-            Button(onActivate, activateSound: activateSound));
+  SimpleMenuItem(
+    final String label,
+    final void Function() onActivate, {
+    final AssetReference? selectSound,
+    final AssetReference? activateSound,
+  }) : super(
+          Message(text: label, sound: selectSound, keepAlive: true),
+          Button(onActivate, activateSound: activateSound),
+        );
 }

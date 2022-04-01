@@ -17,18 +17,21 @@ void main() {
   group('Level', () {
     test('.fromStub', () {
       final game = Game('Level.fromStub');
-      const stub = LevelStub(ambiances: [
-        Ambiance(sound: AssetReference.file('ambiance1.wav')),
-        Ambiance(sound: AssetReference.collection('ambiances'))
-      ], randomSounds: [
-        RandomSound(
-          sound: AssetReference.file('random_sound_1.wav'),
-          minCoordinates: Point(0, 1),
-          maxCoordinates: Point(2, 3),
-          minInterval: 5000,
-          maxInterval: 10000,
-        )
-      ]);
+      const stub = LevelStub(
+        ambiances: [
+          Ambiance(sound: AssetReference.file('ambiance1.wav')),
+          Ambiance(sound: AssetReference.collection('ambiances'))
+        ],
+        randomSounds: [
+          RandomSound(
+            sound: AssetReference.file('random_sound_1.wav'),
+            minCoordinates: Point(0, 1),
+            maxCoordinates: Point(2, 3),
+            minInterval: 5000,
+            maxInterval: 10000,
+          )
+        ],
+      );
       final level = Level.fromStub(game, stub);
       expect(level.game, equals(game));
       expect(level.randomSounds, equals(stub.randomSounds));

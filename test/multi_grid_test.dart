@@ -5,9 +5,12 @@ void main() {
   group('MultiGridLevelRowAction', () {
     test('Initialisation', () {
       var i = 0;
-      final action = MultiGridLevelRowAction(Message(text: 'Test'), () => i++);
-      expect(action.label,
-          predicate((value) => value is Message && value.text == 'Test'));
+      final action =
+          MultiGridLevelRowAction(const Message(text: 'Test'), () => i++);
+      expect(
+        action.label,
+        predicate((final value) => value is Message && value.text == 'Test'),
+      );
       expect(i, isZero);
       action.func();
       expect(i, equals(1));
@@ -17,27 +20,31 @@ void main() {
     test('Initialise', () {
       var i = 0;
       final row = MultiGridLevelRow(
-          label: Message(text: 'Testing'),
-          getNumberOfEntries: () => 5,
-          getEntryLabel: (int value) => Message(text: 'Label $value'),
-          onActivate: (int value) => i = value);
+        label: const Message(text: 'Testing'),
+        getNumberOfEntries: () => 5,
+        getEntryLabel: (final value) => Message(text: 'Label $value'),
+        onActivate: (final value) => i = value,
+      );
       expect(row.actions, isEmpty);
       expect(i, isZero);
-      expect(row.label,
-          predicate((value) => value is Message && value.text == 'Testing'));
+      expect(
+        row.label,
+        predicate((final value) => value is Message && value.text == 'Testing'),
+      );
       expect(row.getNumberOfEntries(), equals(5));
     });
     test('.fromDict', () {
       int? i;
-      void f(int value) => i = value;
+      void f(final int value) => i = value;
       const firstMessage = Message(text: 'First Item');
       const secondMessage = Message(text: 'Second Item');
-      final row = MultiGridLevelRow.fromDict(Message(text: 'Test Row'), {
-        firstMessage: f,
-        secondMessage: f
-      }, actions: [
-        MultiGridLevelRowAction(Message(text: 'Action'), () => i = 1234)
-      ]);
+      final row = MultiGridLevelRow.fromDict(
+        const Message(text: 'Test Row'),
+        {firstMessage: f, secondMessage: f},
+        actions: [
+          MultiGridLevelRowAction(const Message(text: 'Action'), () => i = 1234)
+        ],
+      );
       expect(i, isNull);
       expect(row.label.text, equals('Test Row'));
       expect(row.getNumberOfEntries(), equals(2));

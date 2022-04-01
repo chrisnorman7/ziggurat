@@ -17,7 +17,7 @@ class Message {
   });
 
   /// Create an instance from a JSON object.
-  factory Message.fromJson(Map<String, dynamic> json) =>
+  factory Message.fromJson(final Map<String, dynamic> json) =>
       _$MessageFromJson(json);
 
   /// The text of the message.

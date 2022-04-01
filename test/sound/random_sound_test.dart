@@ -8,7 +8,7 @@ import 'package:ziggurat/ziggurat.dart';
 void main() {
   group('Random sounds tests', () {
     test('Initialisation', () {
-      final r = RandomSound(
+      const r = RandomSound(
         sound: AssetReference.file('sound.wav'),
         minCoordinates: Point(0, 1),
         maxCoordinates: Point(5, 6),

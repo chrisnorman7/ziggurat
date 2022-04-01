@@ -14,7 +14,7 @@ class AxisSetting {
   const AxisSetting(this.axis, this.sensitivity, this.interval);
 
   /// Create an instance from a JSON object.
-  factory AxisSetting.fromJson(Map<String, dynamic> json) =>
+  factory AxisSetting.fromJson(final Map<String, dynamic> json) =>
       _$AxisSettingFromJson(json);
 
   /// The axis that this setting refers to.

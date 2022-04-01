@@ -11,23 +11,31 @@ void main() {
       final game = Game('DialogueLevel');
       var done = 0;
       expect(
-          () => DialogueLevel(game: game, messages: [], onDone: () => done++),
-          throwsA(predicate((value) =>
-              value is AssertionError &&
-              value.message ==
-                  'Both `ProgressControllerButton` and `progressScanCode` '
-                      'cannot be `null`.')));
+        () => DialogueLevel(game: game, messages: [], onDone: () => done++),
+        throwsA(
+          predicate(
+            (final value) =>
+                value is AssertionError &&
+                value.message ==
+                    'Both `ProgressControllerButton` and `progressScanCode` '
+                        'cannot be `null`.',
+          ),
+        ),
+      );
       const progressControllerButton = GameControllerButton.a;
       const progressScanCode = ScanCode.return_;
       final dialogueLevel = DialogueLevel(
-          game: game,
-          messages: [],
-          onDone: () => done++,
-          progressControllerButton: progressControllerButton,
-          progressScanCode: progressScanCode);
+        game: game,
+        messages: [],
+        onDone: () => done++,
+        progressControllerButton: progressControllerButton,
+        progressScanCode: progressScanCode,
+      );
       expect(dialogueLevel.messages, isEmpty);
-      expect(dialogueLevel.progressControllerButton,
-          equals(GameControllerButton.a));
+      expect(
+        dialogueLevel.progressControllerButton,
+        equals(GameControllerButton.a),
+      );
       expect(dialogueLevel.progressScanCode, equals(ScanCode.return_));
       expect(dialogueLevel.position, isZero);
     });
@@ -37,13 +45,14 @@ void main() {
       const message1 = Message(keepAlive: true);
       const message2 = Message(keepAlive: true);
       final dialogueLevel = DialogueLevel(
-          game: game,
-          messages: [message1, message2],
-          onDone: () {
-            done++;
-            game.popLevel();
-          },
-          progressControllerButton: GameControllerButton.a);
+        game: game,
+        messages: [message1, message2],
+        onDone: () {
+          done++;
+          game.popLevel();
+        },
+        progressControllerButton: GameControllerButton.a,
+      );
       expect(done, isZero);
       game.pushLevel(dialogueLevel);
       expect(done, isZero);
@@ -67,27 +76,38 @@ void main() {
       const message3 =
           Message(keepAlive: true, sound: AssetReference.file('file3.wav'));
       final dialogueLevel = DialogueLevel(
-          game: game,
-          messages: [message1, message2, message3],
-          onDone: () => done++,
-          progressScanCode: ScanCode.return_,
-          progressControllerButton: GameControllerButton.a);
+        game: game,
+        messages: [message1, message2, message3],
+        onDone: () => done++,
+        progressScanCode: ScanCode.return_,
+        progressControllerButton: GameControllerButton.a,
+      );
       expect(done, isZero);
       expect(dialogueLevel.sound, isNull);
       expect(dialogueLevel.position, isZero);
       game.pushLevel(dialogueLevel);
       // Shouldn't work because we require `PressedState.pressed`.
-      dialogueLevel.handleSdlEvent(makeKeyboardEvent(
-          sdl, dialogueLevel.progressScanCode!, KeyCode.return_));
+      dialogueLevel.handleSdlEvent(
+        makeKeyboardEvent(
+          sdl,
+          dialogueLevel.progressScanCode!,
+          KeyCode.return_,
+        ),
+      );
       expect(done, isZero);
       expect(dialogueLevel.position, equals(1));
       var sound = dialogueLevel.sound!;
       expect(sound.sound, equals(message1.sound));
       expect(sound.channel, equals(game.interfaceSounds.id));
       // Works because `state == PressedState.pressed`.
-      dialogueLevel.handleSdlEvent(makeKeyboardEvent(
-          sdl, dialogueLevel.progressScanCode!, KeyCode.return_,
-          state: PressedState.pressed));
+      dialogueLevel.handleSdlEvent(
+        makeKeyboardEvent(
+          sdl,
+          dialogueLevel.progressScanCode!,
+          KeyCode.return_,
+          state: PressedState.pressed,
+        ),
+      );
       expect(done, isZero);
       expect(game.currentLevel, equals(dialogueLevel));
       expect(dialogueLevel.position, equals(2));
@@ -96,16 +116,22 @@ void main() {
       expect(sound.sound, equals(message2.sound));
       expect(sound.channel, equals(game.interfaceSounds.id));
       // Won't work.
-      dialogueLevel.handleSdlEvent(makeControllerButtonEvent(
-          sdl, dialogueLevel.progressControllerButton!));
+      dialogueLevel.handleSdlEvent(
+        makeControllerButtonEvent(
+          sdl,
+          dialogueLevel.progressControllerButton!,
+        ),
+      );
       expect(done, isZero);
       expect(game.currentLevel, equals(dialogueLevel));
       expect(dialogueLevel.position, equals(2));
       expect(dialogueLevel.sound, equals(sound));
       // Works.
       final event = makeControllerButtonEvent(
-          sdl, dialogueLevel.progressControllerButton!,
-          state: PressedState.pressed);
+        sdl,
+        dialogueLevel.progressControllerButton!,
+        state: PressedState.pressed,
+      );
       dialogueLevel.handleSdlEvent(event);
       expect(done, isZero);
       expect(game.currentLevel, equals(dialogueLevel));
@@ -126,21 +152,23 @@ void main() {
       const message =
           Message(keepAlive: true, sound: AssetReference.file('test.wav'));
       var dialogueLevel = DialogueLevel(
-          game: game,
-          messages: [message],
-          onDone: () {},
-          progressControllerButton: GameControllerButton.a);
+        game: game,
+        messages: [message],
+        onDone: () {},
+        progressControllerButton: GameControllerButton.a,
+      );
       game.pushLevel(dialogueLevel);
       var sound = dialogueLevel.sound!;
       expect(sound.channel, equals(game.interfaceSounds.id));
       expect(sound.sound, equals(message.sound));
       final soundChannel = game.createSoundChannel();
       dialogueLevel = DialogueLevel(
-          game: game,
-          messages: [message],
-          onDone: () {},
-          progressControllerButton: GameControllerButton.a,
-          soundChannel: soundChannel);
+        game: game,
+        messages: [message],
+        onDone: () {},
+        progressControllerButton: GameControllerButton.a,
+        soundChannel: soundChannel,
+      );
       game.pushLevel(dialogueLevel);
       sound = dialogueLevel.sound!;
       expect(sound.channel, equals(soundChannel.id));

@@ -25,7 +25,7 @@ void main() {
       );
       final menu = ParameterMenu(
         game: game,
-        title: Message(text: 'Parameters'),
+        title: const Message(text: 'Parameters'),
         parameters: [
           bParameter,
           iParameter,
@@ -225,7 +225,7 @@ void main() {
         () {
           final menu = ParameterMenu(
             game: game,
-            title: Message(),
+            title: const Message(),
             parameters: [
               ParameterMenuParameter(
                 getLabel: () => emptyMessage,
@@ -233,13 +233,14 @@ void main() {
                 decreaseValue: () {},
               )
             ],
-          )..menuItems.add(MenuItem(emptyMessage, menuItemLabel));
+          )..menuItems.add(const MenuItem(emptyMessage, menuItemLabel));
           expect(menu.menuItems.length, 2);
           expect(menu.menuItems.first, isA<ParameterMenuParameter>());
           expect(
             menu.menuItems.last,
             predicate(
-              (value) => value is MenuItem && value is! ParameterMenuParameter,
+              (final value) =>
+                  value is MenuItem && value is! ParameterMenuParameter,
             ),
           );
         },

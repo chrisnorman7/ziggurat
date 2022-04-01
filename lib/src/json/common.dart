@@ -5,11 +5,11 @@ import 'dart:math';
 const pointSeparator = ':';
 
 /// Convert the provided [point] to a String.
-String? pointDoubleToString(Point<double>? point) =>
+String? pointDoubleToString(final Point<double>? point) =>
     point == null ? null : '${point.x}$pointSeparator${point.y}';
 
 /// Convert the given [string] to a nullable point.
-Point<double>? stringToPointDoubleNullable(dynamic string) {
+Point<double>? stringToPointDoubleNullable(final dynamic string) {
   if (string == null) {
     return null;
   } else if (string is String) {
@@ -26,7 +26,7 @@ Point<double>? stringToPointDoubleNullable(dynamic string) {
 }
 
 /// Convert the given [string] to a non-nullable point.
-Point<double> stringToPointDouble(dynamic string) {
+Point<double> stringToPointDouble(final dynamic string) {
   if (string is String) {
     final parts = string.split(pointSeparator);
     if (parts.length != 2) {

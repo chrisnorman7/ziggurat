@@ -15,13 +15,13 @@ part 'ambiance.g.dart';
 class Ambiance extends Music {
   /// Create an instance.
   const Ambiance({
-    required AssetReference sound,
-    double gain = 0.5,
+    required final AssetReference sound,
+    final double gain = 0.5,
     this.position,
   }) : super(sound: sound, gain: gain);
 
   /// Create an instance from JSON.
-  factory Ambiance.fromJson(Map<String, dynamic> json) =>
+  factory Ambiance.fromJson(final Map<String, dynamic> json) =>
       _$AmbianceFromJson(json);
 
   /// The position of the sound.

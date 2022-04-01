@@ -16,17 +16,17 @@ import 'widgets/button.dart';
 class FilePickerMenu extends Menu {
   /// Create an instance.
   FilePickerMenu({
-    required Game game,
+    required final Game game,
     required this.onDone,
-    Directory? start,
+    final Directory? start,
     this.caption = 'Open',
     this.getEntityMessage,
     this.allowDirectories = false,
     this.showFiles = true,
-    void Function()? onCancel,
-    Music? music,
-    List<Ambiance>? ambiances,
-    List<RandomSound>? randomSounds,
+    final void Function()? onCancel,
+    final Music? music,
+    final List<Ambiance>? ambiances,
+    final List<RandomSound>? randomSounds,
   })  : currentDirectory = start ?? _lastUsed,
         super(
           game: game,
@@ -40,14 +40,15 @@ class FilePickerMenu extends Menu {
     addButton(
       () => game.replaceLevel(
         FilePickerMenu(
-            game: game,
-            onDone: onDone,
-            allowDirectories: allowDirectories,
-            getEntityMessage: getEntityMessage,
-            onCancel: onCancel,
-            showFiles: showFiles,
-            start: currentDirectory.parent,
-            caption: caption),
+          game: game,
+          onDone: onDone,
+          allowDirectories: allowDirectories,
+          getEntityMessage: getEntityMessage,
+          onCancel: onCancel,
+          showFiles: showFiles,
+          start: currentDirectory.parent,
+          caption: caption,
+        ),
       ),
       label: '..',
     );
@@ -123,24 +124,26 @@ class FilePickerMenu extends Menu {
   final bool showFiles;
 
   /// Get the label for [entity].
-  Message getLabel(FileSystemEntity entity) {
+  Message getLabel(final FileSystemEntity entity) {
     if (getEntityMessage == null) {
       final shortName = path.relative(entity.path, from: currentDirectory.path);
       return Message(
-          text: '$shortName${entity is Directory ? " directory" : ""}');
+        text: '$shortName${entity is Directory ? " directory" : ""}',
+      );
     } else {
       return getEntityMessage!(entity);
     }
   }
 
   @override
-  void handleSdlEvent(Event event) {
+  void handleSdlEvent(final Event event) {
     if (event is KeyboardEvent &&
         event.key.scancode == ScanCode.backspace &&
         event.key.modifiers.isEmpty &&
         event.repeat == false &&
         event.state == PressedState.pressed) {
-      game.replaceLevel(FilePickerMenu(
+      game.replaceLevel(
+        FilePickerMenu(
           game: game,
           onDone: onDone,
           allowDirectories: allowDirectories,
@@ -148,7 +151,9 @@ class FilePickerMenu extends Menu {
           getEntityMessage: getEntityMessage,
           onCancel: onCancel,
           showFiles: showFiles,
-          start: currentDirectory.parent));
+          start: currentDirectory.parent,
+        ),
+      );
     } else {
       super.handleSdlEvent(event);
     }

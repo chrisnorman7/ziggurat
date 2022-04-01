@@ -3,7 +3,7 @@ import 'package:test/test.dart';
 import 'package:ziggurat/ziggurat.dart';
 
 /// Do nothing.
-void f(double value) {}
+void f(final double value) {}
 
 void main() {
   group('ControllerAxisDispatcher', () {
@@ -19,8 +19,8 @@ void main() {
     test('.handleAxisValue', () async {
       var d = 0.0;
       final dispatcher = ControllerAxisDispatcher({
-        GameControllerAxis.leftx: (double value) => d -= value,
-        GameControllerAxis.rightx: (double value) => d += value
+        GameControllerAxis.leftx: (final value) => d -= value,
+        GameControllerAxis.rightx: (final value) => d += value
       });
       expect(dispatcher.axes.length, equals(2));
       expect(d, isZero);
@@ -29,17 +29,24 @@ void main() {
       dispatcher.handleAxisValue(GameControllerAxis.triggerleft, 5.0);
       expect(d, isZero);
       dispatcher.handleAxisValue(
-          GameControllerAxis.leftx, dispatcher.axisSensitivity);
+        GameControllerAxis.leftx,
+        dispatcher.axisSensitivity,
+      );
       expect(d, equals(-dispatcher.axisSensitivity));
       dispatcher.handleAxisValue(
-          GameControllerAxis.rightx, dispatcher.axisSensitivity);
+        GameControllerAxis.rightx,
+        dispatcher.axisSensitivity,
+      );
       expect(d, equals(-dispatcher.axisSensitivity));
       await Future<void>.delayed(
-          Duration(milliseconds: dispatcher.functionInterval + 1));
+        Duration(milliseconds: dispatcher.functionInterval + 1),
+      );
       dispatcher.handleAxisValue(GameControllerAxis.rightx, 1.0);
       expect(d, equals(0.5));
       dispatcher.handleAxisValue(
-          GameControllerAxis.leftx, dispatcher.axisSensitivity);
+        GameControllerAxis.leftx,
+        dispatcher.axisSensitivity,
+      );
       expect(d, equals(0.5));
     });
   });

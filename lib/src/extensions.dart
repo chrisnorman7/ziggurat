@@ -21,7 +21,7 @@ extension DirectoryMethods on Directory {
   /// Return a random file from a directory.
   ///
   /// If this entity is already a file, it will be returned.
-  File randomFile(Random random) {
+  File randomFile(final Random random) {
     final files = <File>[
       for (final file in listSync())
         if (file is File) file
@@ -36,7 +36,7 @@ extension DirectoryMethods on Directory {
 /// Adds a method for always returning a file.
 extension FileSystemEntityMethods on FileSystemEntity {
   /// Always return a file.
-  File ensureFile(Random random) {
+  File ensureFile(final Random random) {
     if (this is File) {
       return this as File;
     } else if (this is Directory) {

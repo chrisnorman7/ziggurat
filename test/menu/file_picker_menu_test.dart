@@ -22,7 +22,7 @@ void main() {
       final game = Game('File Picker Menu');
       final menu = FilePickerMenu(
         game: game,
-        onDone: (entity) => thing = entity,
+        onDone: (final entity) => thing = entity,
         start: currentDirectory,
       );
       expect(menu.allowDirectories, isFalse);
@@ -40,7 +40,7 @@ void main() {
       final directory = Directory('test');
       final menu = FilePickerMenu(
         game: game,
-        onDone: (entity) => throw OnDoneException(entity),
+        onDone: (final entity) => throw OnDoneException(entity),
         start: directory,
       );
       game.pushLevel(menu);
@@ -65,7 +65,7 @@ void main() {
         expect(
           game.currentLevel,
           predicate(
-            (value) =>
+            (final value) =>
                 value is FilePickerMenu &&
                 value.currentDirectory.path == expected.path,
           ),
@@ -79,7 +79,7 @@ void main() {
           menu.activate,
           throwsA(
             predicate(
-              (value) =>
+              (final value) =>
                   value is OnDoneException &&
                   value.entity.path == expected.path,
             ),

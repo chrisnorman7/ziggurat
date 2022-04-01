@@ -21,27 +21,27 @@ import 'level.dart';
 class MultiGridLevel extends Level {
   /// Create an instance.
   MultiGridLevel({
-    required Game game,
+    required final Game game,
     required this.title,
     required this.rows,
     this.onCancel,
-    int? verticalPosition,
-    int? horizontalPosition,
-    GameControllerAxis leftRightAxis = GameControllerAxis.leftx,
+    final int? verticalPosition,
+    final int? horizontalPosition,
+    final GameControllerAxis leftRightAxis = GameControllerAxis.leftx,
     this.leftScanCode = ScanCode.left,
     this.rightScanCode = ScanCode.right,
-    GameControllerAxis upDownAxis = GameControllerAxis.lefty,
+    final GameControllerAxis upDownAxis = GameControllerAxis.lefty,
     this.upScanCode = ScanCode.up,
     this.downScanCode = ScanCode.down,
-    GameControllerAxis activateAxis = GameControllerAxis.triggerright,
+    final GameControllerAxis activateAxis = GameControllerAxis.triggerright,
     this.activateScanCode = ScanCode.space,
-    GameControllerAxis cancelAxis = GameControllerAxis.triggerleft,
+    final GameControllerAxis cancelAxis = GameControllerAxis.triggerleft,
     this.cancelScanCode = ScanCode.escape,
-    double axisSensitivity = 0.5,
-    int axisInterval = 400,
-    Music? music,
-    List<Ambiance>? ambiances,
-    List<RandomSound>? randomSounds,
+    final double axisSensitivity = 0.5,
+    final int axisInterval = 400,
+    final Music? music,
+    final List<Ambiance>? ambiances,
+    final List<RandomSound>? randomSounds,
   })  : axisDispatcher = ControllerAxisDispatcher(
           {},
           axisSensitivity: axisSensitivity,
@@ -61,22 +61,22 @@ class MultiGridLevel extends Level {
       }
       _horizontalPositions[verticalPosition] = horizontalPosition;
     }
-    axisDispatcher.axes[leftRightAxis] = (double value) {
+    axisDispatcher.axes[leftRightAxis] = (final value) {
       if (value < 0) {
         left();
       } else {
         right();
       }
     };
-    axisDispatcher.axes[upDownAxis] = (double value) {
+    axisDispatcher.axes[upDownAxis] = (final value) {
       if (value > 0) {
         down();
       } else {
         up();
       }
     };
-    axisDispatcher.axes[activateAxis] = (double value) => activate();
-    axisDispatcher.axes[cancelAxis] = (double value) => cancel();
+    axisDispatcher.axes[activateAxis] = (final value) => activate();
+    axisDispatcher.axes[cancelAxis] = (final value) => cancel();
   }
 
   /// The title of this level.
@@ -131,7 +131,7 @@ class MultiGridLevel extends Level {
   int? get verticalPosition => _verticalPosition;
 
   /// Set the vertical position.
-  set verticalPosition(int? value) {
+  set verticalPosition(final int? value) {
     if (value != null) {
       while (_horizontalPositions.length < (value + 1)) {
         _horizontalPositions.add(null);
@@ -155,11 +155,11 @@ class MultiGridLevel extends Level {
     if (vp == null) {
       return null;
     }
-    try {
-      return _horizontalPositions.elementAt(vp);
-    } on IndexError {
+    final horizontalPositions = _horizontalPositions;
+    if (vp < 0 || vp >= horizontalPositions.length) {
       return null;
     }
+    return horizontalPositions[vp];
   }
 
   /// Show the label of the current object.
@@ -284,13 +284,13 @@ class MultiGridLevel extends Level {
   }
 
   @override
-  void onPop(double? fadeLength) {
+  void onPop(final double? fadeLength) {
     super.onPop(fadeLength);
     _oldSound?.destroy();
   }
 
   @override
-  void handleSdlEvent(Event event) {
+  void handleSdlEvent(final Event event) {
     if (event is ControllerAxisEvent) {
       axisDispatcher.handleAxisValue(event.axis, event.smallValue);
     } else if (event is KeyboardEvent &&

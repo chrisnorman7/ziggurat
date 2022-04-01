@@ -11,13 +11,14 @@ Future<void> main() async {
   var power = true;
   var speed = 5;
   final menu = ParameterMenu(
-      game: game,
-      title: Message(text: 'Engine Parameters'),
-      parameters: <ParameterMenuParameter>[],
-      onCancel: () => game
-        ..outputText('Quitting.')
-        ..popLevel(ambianceFadeTime: 1.0)
-        ..callAfter(runAfter: 1000, func: game.stop));
+    game: game,
+    title: const Message(text: 'Engine Parameters'),
+    parameters: <ParameterMenuParameter>[],
+    onCancel: () => game
+      ..outputText('Quitting.')
+      ..popLevel(ambianceFadeTime: 1.0)
+      ..callAfter(runAfter: 1000, func: game.stop),
+  );
   final powerMenuItem = ParameterMenuParameter(
     getLabel: () => Message(text: 'Power ${power ? "on" : "off"}'),
     increaseValue: () {

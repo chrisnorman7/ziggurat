@@ -15,10 +15,10 @@ class PlaySound extends SoundEvent {
     required this.sound,
     required this.channel,
     required this.keepAlive,
-    double gain = 0.7,
-    bool looping = false,
-    double pitchBend = 1.0,
-    int? id,
+    final double gain = 0.7,
+    final bool looping = false,
+    final double pitchBend = 1.0,
+    final int? id,
   })  : _gain = gain,
         _paused = false,
         _looping = looping,
@@ -50,7 +50,7 @@ class PlaySound extends SoundEvent {
   double get gain => _gain;
 
   /// Set the gain for this sound.
-  set gain(double value) {
+  set gain(final double value) {
     _gain = value;
     game.queueSoundEvent(SetSoundGain(id: id!, gain: value));
   }
@@ -61,7 +61,7 @@ class PlaySound extends SoundEvent {
   bool get looping => _looping;
 
   /// Set whether or not this sound should loop.
-  set looping(bool value) {
+  set looping(final bool value) {
     _looping = value;
     game.queueSoundEvent(SetSoundLooping(id: id!, looping: value));
   }
@@ -72,7 +72,7 @@ class PlaySound extends SoundEvent {
   bool get paused => _paused;
 
   /// Pause this sound.
-  set paused(bool value) {
+  set paused(final bool value) {
     _paused = value;
     final PauseSound event;
     if (value) {
@@ -91,7 +91,7 @@ class PlaySound extends SoundEvent {
   double get pitchBend => _pitchBend;
 
   /// Set [pitchBend].
-  set pitchBend(double value) {
+  set pitchBend(final double value) {
     _pitchBend = value;
     game.queueSoundEvent(SetSoundPitchBend(id: id!, pitchBend: value));
   }
@@ -111,10 +111,10 @@ class PlaySound extends SoundEvent {
   /// default to [gain], and [endGain] to `0.0`, providing a fade out to
   /// complete silence.
   AutomationFade fade({
-    required double length,
-    double endGain = 0.0,
-    double? startGain,
-    double preFade = 0.0,
+    required final double length,
+    final double endGain = 0.0,
+    final double? startGain,
+    final double preFade = 0.0,
   }) {
     if (keepAlive == false) {
       throw DeadSound(this);
@@ -144,7 +144,7 @@ class PlaySound extends SoundEvent {
 /// Pause something.
 class PauseEvent extends SoundEvent {
   /// Create an event.
-  const PauseEvent(int id) : super(id: id);
+  const PauseEvent(final int id) : super(id: id);
 
   /// Describe this object.
   @override
@@ -154,13 +154,13 @@ class PauseEvent extends SoundEvent {
 /// Pause a [PlaySound] event.
 class PauseSound extends PauseEvent {
   /// Create an instance.
-  const PauseSound(int id) : super(id);
+  const PauseSound(final int id) : super(id);
 }
 
 /// Unpause something.
 class UnpauseEvent extends PauseSound {
   /// Create an event.
-  const UnpauseEvent(int id) : super(id);
+  const UnpauseEvent(final int id) : super(id);
 
   /// Describe this object.
   @override
@@ -170,13 +170,13 @@ class UnpauseEvent extends PauseSound {
 /// Unpause a [PlaySound] instance.
 class UnpauseSound extends UnpauseEvent {
   /// Create an instance.
-  const UnpauseSound(int id) : super(id);
+  const UnpauseSound(final int id) : super(id);
 }
 
 /// Destroy something.
 class DestroyEvent extends SoundEvent {
   /// Create an event.
-  const DestroyEvent(int id) : super(id: id);
+  const DestroyEvent(final int id) : super(id: id);
 
   /// Describe this object.
   @override
@@ -186,13 +186,13 @@ class DestroyEvent extends SoundEvent {
 /// Destroy a [PlaySound] instance.
 class DestroySound extends DestroyEvent {
   /// Create an instance.
-  const DestroySound(int id) : super(id);
+  const DestroySound(final int id) : super(id);
 }
 
 /// Set the gain for something.
 class GainEvent extends SoundEvent {
   /// Create the event.
-  const GainEvent({required int id, required this.gain}) : super(id: id);
+  const GainEvent({required final int id, required this.gain}) : super(id: id);
 
   /// The new gain.
   final double gain;
@@ -205,14 +205,14 @@ class GainEvent extends SoundEvent {
 /// Set the gain for a sound.
 class SetSoundGain extends GainEvent {
   /// Create the instance.
-  const SetSoundGain({required int id, required double gain})
+  const SetSoundGain({required final int id, required final double gain})
       : super(id: id, gain: gain);
 }
 
 /// Set whether or not a sound should loop.
 class SetSoundLooping extends SoundEvent {
   /// Create an event.
-  const SetSoundLooping({required int id, required this.looping})
+  const SetSoundLooping({required final int id, required this.looping})
       : super(id: id);
 
   /// Whether or not the sound should loop.
@@ -226,7 +226,7 @@ class SetSoundLooping extends SoundEvent {
 /// Set the pitch bend for a sound.
 class SetSoundPitchBend extends SoundEvent {
   /// Create the event.
-  const SetSoundPitchBend({required int id, required this.pitchBend})
+  const SetSoundPitchBend({required final int id, required this.pitchBend})
       : super(id: id);
 
   /// The new pitch bend.
@@ -244,9 +244,9 @@ class PlayWave extends SoundEvent {
     required this.game,
     required this.channel,
     required this.waveType,
-    double frequency = a4,
+    final double frequency = a4,
     this.partials = 0,
-    double gain = 0.7,
+    final double gain = 0.7,
   })  : _frequency = frequency,
         _gain = gain,
         _paused = false,
@@ -267,7 +267,7 @@ class PlayWave extends SoundEvent {
   double get frequency => _frequency;
 
   /// Set the frequency to play at.
-  set frequency(double value) {
+  set frequency(final double value) {
     _frequency = value;
     game.queueSoundEvent(SetWaveFrequency(id: id!, frequency: value));
   }
@@ -278,7 +278,7 @@ class PlayWave extends SoundEvent {
   double get gain => _gain;
 
   /// Set the gain for this wave.
-  set gain(double value) {
+  set gain(final double value) {
     _gain = value;
     game.queueSoundEvent(SetWaveGain(id: id!, gain: value));
   }
@@ -310,10 +310,10 @@ class PlayWave extends SoundEvent {
   /// default to [gain], and [endGain] to `0.0`, providing a fade out to
   /// complete silence.
   AutomationFade fade({
-    required double length,
-    double endGain = 0.0,
-    double? startGain,
-    double preFade = 0.0,
+    required final double length,
+    final double endGain = 0.0,
+    final double? startGain,
+    final double preFade = 0.0,
   }) {
     final event = AutomationFade(
       game: game,
@@ -335,9 +335,9 @@ class PlayWave extends SoundEvent {
 
   /// Fade this wave.
   AutomateWaveFrequency automateFrequency({
-    required double length,
-    required double endFrequency,
-    double? startFrequency,
+    required final double length,
+    required final double endFrequency,
+    final double? startFrequency,
   }) {
     final event = AutomateWaveFrequency(
       id: id!,
@@ -359,14 +359,15 @@ class PlayWave extends SoundEvent {
 /// Set the gain for a [PlayWave] instance.
 class SetWaveGain extends GainEvent {
   /// Create an instance.
-  const SetWaveGain({required int id, required double gain})
+  const SetWaveGain({required final int id, required final double gain})
       : super(id: id, gain: gain);
 }
 
 /// Set the frequency for a [PlayWave] instance.
 class SetWaveFrequency extends SoundEvent {
   /// Create an instance.
-  SetWaveFrequency({required int id, required this.frequency}) : super(id: id);
+  SetWaveFrequency({required final int id, required this.frequency})
+      : super(id: id);
 
   /// The new frequency.
   final double frequency;
@@ -379,14 +380,14 @@ class SetWaveFrequency extends SoundEvent {
 /// Destroy a [PlayWave] instance.
 class DestroyWave extends DestroyEvent {
   /// Create an instance.
-  const DestroyWave(int id) : super(id);
+  const DestroyWave(final int id) : super(id);
 }
 
 /// Automate the frequency for a [PlayWave] instance.
 class AutomateWaveFrequency extends SoundEvent {
   /// Create an instance.
   const AutomateWaveFrequency({
-    required int id,
+    required final int id,
     required this.startFrequency,
     required this.length,
     required this.endFrequency,
@@ -411,11 +412,11 @@ class AutomateWaveFrequency extends SoundEvent {
 /// Pause a [PlayWave] instance.
 class PauseWave extends PauseEvent {
   /// Create an instance.
-  const PauseWave(int id) : super(id);
+  const PauseWave(final int id) : super(id);
 }
 
 /// Unpause a [PlayWave] instance.
 class UnpauseWave extends UnpauseEvent {
   /// Create an instance.
-  const UnpauseWave(int id) : super(id);
+  const UnpauseWave(final int id) : super(id);
 }

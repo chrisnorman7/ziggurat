@@ -8,8 +8,10 @@ import 'widgets_base.dart';
 /// A button that can be activated.
 class Button extends Widget {
   /// Create a button.
-  const Button(void Function() onActivate, {AssetReference? activateSound})
-      : super(onActivate: onActivate, activateSound: activateSound);
+  const Button(
+    final void Function() onActivate, {
+    final AssetReference? activateSound,
+  }) : super(onActivate: onActivate, activateSound: activateSound);
 }
 
 /// A button which can toggle through a list of items.
@@ -24,10 +26,10 @@ class ListButton<T> extends Widget {
   int index;
 
   /// The function which will be called when [activate] changes value.
-  final void Function(T)? onChange;
+  final void Function(T value)? onChange;
 
   @override
-  void activate(Menu menu) {
+  void activate(final Menu menu) {
     index++;
     if (index >= items.length) {
       index = 0;
@@ -44,13 +46,14 @@ class ListButton<T> extends Widget {
 
   /// Get a label that shows the current state of this button.
   @override
-  Message getLabel(MenuItem menuItem) {
+  Message getLabel(final MenuItem menuItem) {
     final label = menuItem.label;
     return Message(
-        text: '${label.text} ($value)',
-        gain: label.gain,
-        keepAlive: label.keepAlive,
-        sound: label.sound);
+      text: '${label.text} ($value)',
+      gain: label.gain,
+      keepAlive: label.keepAlive,
+      sound: label.sound,
+    );
   }
 }
 
@@ -59,9 +62,12 @@ class ListButton<T> extends Widget {
 /// This control can toggle between `true` and `false`.
 class Checkbox extends ListButton<bool> {
   /// Create an instance.
-  Checkbox(void Function(bool) onChange,
-      {bool initialValue = true, this.checkedSound, this.uncheckedSound})
-      : super([initialValue, !initialValue], onChange);
+  Checkbox(
+    final void Function(bool) onChange, {
+    final bool initialValue = true,
+    this.checkedSound,
+    this.uncheckedSound,
+  }) : super([initialValue, !initialValue], onChange);
 
   /// The sound that will be played when this checkbox is selected if [value] is
   /// `true`.
@@ -80,7 +86,7 @@ class Checkbox extends ListButton<bool> {
   final AssetReference? uncheckedSound;
 
   @override
-  Message getLabel(MenuItem menuItem) {
+  Message getLabel(final MenuItem menuItem) {
     final label = menuItem.label;
     AssetReference? sound;
     if (value) {
@@ -90,9 +96,10 @@ class Checkbox extends ListButton<bool> {
     }
     sound ??= label.sound;
     return Message(
-        text: '${label.text} (${value == true ? "checked" : "unchecked"})',
-        gain: label.gain,
-        keepAlive: label.keepAlive,
-        sound: sound);
+      text: '${label.text} (${value == true ? "checked" : "unchecked"})',
+      gain: label.gain,
+      keepAlive: label.keepAlive,
+      sound: sound,
+    );
   }
 }

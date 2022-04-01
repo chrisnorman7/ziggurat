@@ -26,7 +26,7 @@ void main() {
       subscription.resume();
       await Future<void>.delayed(Duration.zero);
       expect(events.length, 1);
-      subscription.cancel();
+      await subscription.cancel();
     });
     test('Default sound channels', () {
       final game = Game('Sound Channels');
@@ -40,13 +40,13 @@ void main() {
       expect(channel.id, game.ambianceSounds.id! + 2);
       expect(SoundEvent.maxEventId, equals(channel.id));
       final sound =
-          channel.playSound(AssetReference('testing', AssetType.file));
+          channel.playSound(const AssetReference('testing', AssetType.file));
       expect(sound.id, equals(channel.id! + 1));
       expect(SoundEvent.maxEventId, equals(sound.id));
     });
     test('Sound Keep Alive', () async {
       final game = Game('Sound Keep Alive');
-      final reference = AssetReference('testing', AssetType.file);
+      const reference = AssetReference('testing', AssetType.file);
       var sound = game.interfaceSounds.playSound(reference, keepAlive: true)
         ..destroy();
       sound = game.interfaceSounds.playSound(reference);
@@ -69,7 +69,7 @@ void main() {
       final game = Game('PlaySound');
       final sound1 = PlaySound(
         game: game,
-        sound: AssetReference('something.mp3', AssetType.collection),
+        sound: const AssetReference('something.mp3', AssetType.collection),
         channel: 45,
         keepAlive: false,
       );
@@ -90,17 +90,18 @@ void main() {
         ..setDefaultPannerStrategy(DefaultPannerStrategy.hrtf)
         ..setListenerOrientation(180)
         ..setListenerPosition(3.0, 4.0, 5.0);
-      final reverb = game.createReverb(ReverbPreset(name: 'Test Reverb'));
-      final channel = game.createSoundChannel(position: SoundPositionScalar());
+      final reverb = game.createReverb(const ReverbPreset(name: 'Test Reverb'));
+      final channel =
+          game.createSoundChannel(position: const SoundPositionScalar());
       expect(channel.position, isA<SoundPositionScalar>());
       channel
         ..gain = 1.0
-        ..position = SoundPositionScalar(scalar: 1.0);
+        ..position = const SoundPositionScalar(scalar: 1.0);
       expect(channel.gain, equals(1.0));
       expect(
         channel.position,
         predicate(
-          (value) => value is SoundPositionScalar && value.scalar == 1.0,
+          (final value) => value is SoundPositionScalar && value.scalar == 1.0,
         ),
       );
       channel.reverb = reverb.id;
@@ -108,7 +109,7 @@ void main() {
       channel.reverb = null;
       expect(channel.reverb, isNull);
       final sound = channel.playSound(
-        AssetReference('testing.wav', AssetType.file),
+        const AssetReference('testing.wav', AssetType.file),
         keepAlive: true,
       );
       expect(sound.keepAlive, isTrue);
@@ -142,99 +143,138 @@ void main() {
             equals(game.ambianceSounds),
             equals(game.musicSounds),
             predicate(
-                (value) =>
-                    value is SetDefaultPannerStrategy &&
-                    value.strategy == DefaultPannerStrategy.hrtf,
-                'sets the default panner strategy to HRTF'),
+              (final value) =>
+                  value is SetDefaultPannerStrategy &&
+                  value.strategy == DefaultPannerStrategy.hrtf,
+              'sets the default panner strategy to HRTF',
+            ),
             predicate(
-                (value) =>
-                    value is ListenerOrientationEvent &&
-                    value.x1 == sin(180.0 * pi / 180) &&
-                    value.y1 == cos(180.0 * pi / 180) &&
-                    value.z1 == 0 &&
-                    value.x2 == 0 &&
-                    value.y2 == 0 &&
-                    value.z2 == 1.0,
-                'sets the listener orientation'),
+              (final value) =>
+                  value is ListenerOrientationEvent &&
+                  value.x1 == sin(180.0 * pi / 180) &&
+                  value.y1 == cos(180.0 * pi / 180) &&
+                  value.z1 == 0 &&
+                  value.x2 == 0 &&
+                  value.y2 == 0 &&
+                  value.z2 == 1.0,
+              'sets the listener orientation',
+            ),
             predicate(
-                (value) =>
-                    value is ListenerPositionEvent &&
-                    value.x == 3.0 &&
-                    value.y == 4.0 &&
-                    value.z == 5.0,
-                'sets the listener position'),
+              (final value) =>
+                  value is ListenerPositionEvent &&
+                  value.x == 3.0 &&
+                  value.y == 4.0 &&
+                  value.z == 5.0,
+              'sets the listener position',
+            ),
             equals(reverb),
             equals(channel),
-            predicate((value) =>
-                value is SetSoundChannelGain &&
-                value.id == channel.id &&
-                value.gain == channel.gain),
-            predicate((value) =>
-                value is SetSoundChannelPosition &&
-                value.id == channel.id &&
-                value.position == channel.position),
-            predicate((value) =>
-                value is SetSoundChannelReverb &&
-                value.id == channel.id &&
-                value.reverb == reverb.id),
-            predicate((value) =>
-                value is SetSoundChannelReverb &&
-                value.id == channel.id &&
-                value.reverb == null),
-            equals(sound),
-            predicate((value) => value is PauseSound && value.id == sound.id),
-            predicate((value) => value is UnpauseSound && value.id == sound.id),
-            predicate((value) =>
-                value is SetSoundGain &&
-                value.id == sound.id &&
-                value.gain == sound.gain),
-            predicate((value) =>
-                value is SetSoundLooping &&
-                value.looping == true &&
-                value.id == sound.id),
-            predicate((value) =>
-                value is SetSoundPitchBend &&
-                value.id == sound.id &&
-                value.pitchBend == sound.pitchBend),
-            predicate((value) =>
-                value is SoundChannelBandpass &&
-                value.id == channel.id &&
-                value.frequency == 440.0 &&
-                value.bandwidth == 200.0),
-            predicate((value) =>
-                value is SoundChannelHighpass &&
-                value.id == channel.id &&
-                value.frequency == 440.0 &&
-                value.q == 0.7071135624381276),
-            predicate((value) =>
-                value is SoundChannelLowpass &&
-                value.id == channel.id &&
-                value.frequency == 440.0 &&
-                value.q == 0.7071135624381276),
-            predicate((value) =>
-                value is SoundChannelFilter &&
-                value is! SoundChannelLowpass &&
-                value is! SoundChannelHighpass &&
-                value is! SoundChannelBandpass),
-            predicate((value) =>
-                value is AutomationFade &&
-                value.game == game &&
-                value.preFade == 0.0 &&
-                value.fadeLength == 2.0 &&
-                value.startGain == sound.gain &&
-                value.endGain == 0.0),
-            predicate((value) =>
-                value is CancelAutomationFade && value.id == sound.id),
-            predicate((value) => value is DestroySound && value.id == sound.id),
             predicate(
-                (value) => value is DestroyReverb && value.id == reverb.id)
+              (final value) =>
+                  value is SetSoundChannelGain &&
+                  value.id == channel.id &&
+                  value.gain == channel.gain,
+            ),
+            predicate(
+              (final value) =>
+                  value is SetSoundChannelPosition &&
+                  value.id == channel.id &&
+                  value.position == channel.position,
+            ),
+            predicate(
+              (final value) =>
+                  value is SetSoundChannelReverb &&
+                  value.id == channel.id &&
+                  value.reverb == reverb.id,
+            ),
+            predicate(
+              (final value) =>
+                  value is SetSoundChannelReverb &&
+                  value.id == channel.id &&
+                  value.reverb == null,
+            ),
+            equals(sound),
+            predicate(
+              (final value) => value is PauseSound && value.id == sound.id,
+            ),
+            predicate(
+              (final value) => value is UnpauseSound && value.id == sound.id,
+            ),
+            predicate(
+              (final value) =>
+                  value is SetSoundGain &&
+                  value.id == sound.id &&
+                  value.gain == sound.gain,
+            ),
+            predicate(
+              (final value) =>
+                  value is SetSoundLooping &&
+                  value.looping == true &&
+                  value.id == sound.id,
+            ),
+            predicate(
+              (final value) =>
+                  value is SetSoundPitchBend &&
+                  value.id == sound.id &&
+                  value.pitchBend == sound.pitchBend,
+            ),
+            predicate(
+              (final value) =>
+                  value is SoundChannelBandpass &&
+                  value.id == channel.id &&
+                  value.frequency == 440.0 &&
+                  value.bandwidth == 200.0,
+            ),
+            predicate(
+              (final value) =>
+                  value is SoundChannelHighpass &&
+                  value.id == channel.id &&
+                  value.frequency == 440.0 &&
+                  value.q == 0.7071135624381276,
+            ),
+            predicate(
+              (final value) =>
+                  value is SoundChannelLowpass &&
+                  value.id == channel.id &&
+                  value.frequency == 440.0 &&
+                  value.q == 0.7071135624381276,
+            ),
+            predicate(
+              (final value) =>
+                  value is SoundChannelFilter &&
+                  value is! SoundChannelLowpass &&
+                  value is! SoundChannelHighpass &&
+                  value is! SoundChannelBandpass,
+            ),
+            predicate(
+              (final value) =>
+                  value is AutomationFade &&
+                  value.game == game &&
+                  value.preFade == 0.0 &&
+                  value.fadeLength == 2.0 &&
+                  value.startGain == sound.gain &&
+                  value.endGain == 0.0,
+            ),
+            predicate(
+              (final value) =>
+                  value is CancelAutomationFade && value.id == sound.id,
+            ),
+            predicate(
+              (final value) => value is DestroySound && value.id == sound.id,
+            ),
+            predicate(
+              (final value) => value is DestroyReverb && value.id == reverb.id,
+            )
           ],
         ),
       );
     });
     test('SoundChannel.playSound', () {
-      final sound = game.ambianceSounds
-          .playSound(AssetReference.file('loop.wav'), looping: true, gain: 0.2);
+      final sound = game.ambianceSounds.playSound(
+        const AssetReference.file('loop.wav'),
+        looping: true,
+        gain: 0.2,
+      );
       expect(sound.looping, isTrue);
       expect(sound.gain, equals(0.2));
     });
@@ -243,10 +283,10 @@ void main() {
     });
     test('Level.onPop', () {
       final game = Game('Test onPop');
-      final reference1 = AssetReference.file('ambiance1.wav');
-      final reference2 = AssetReference.file('ambiance2.wav');
-      final ambiance1 = Ambiance(sound: reference1, gain: 0.4);
-      final ambiance2 = Ambiance(
+      const reference1 = AssetReference.file('ambiance1.wav');
+      const reference2 = AssetReference.file('ambiance2.wav');
+      const ambiance1 = Ambiance(sound: reference1, gain: 0.4);
+      const ambiance2 = Ambiance(
         sound: reference2,
         position: Point(4.0, 5.0),
       );
@@ -294,17 +334,17 @@ void main() {
             equals(playback2.channel),
             equals(playback2.sound),
             predicate(
-              (value) =>
+              (final value) =>
                   value is DestroySound && value.id == playback1.sound.id,
               'Destroys ambiance1',
             ),
             predicate(
-              (value) =>
+              (final value) =>
                   value is DestroySound && value.id == playback2.sound.id,
               'Destroys ambiance2',
             ),
             predicate(
-              (value) =>
+              (final value) =>
                   value is DestroySoundChannel &&
                   value.id == playback2.channel.id,
               'destroys ambiance2 channel',
@@ -313,14 +353,14 @@ void main() {
             equals(playback4.channel),
             equals(playback4.sound),
             predicate(
-              (value) =>
+              (final value) =>
                   value is AutomationFade &&
                   value.id == playback3.sound.id &&
                   value.fadeLength == 2.0,
               'Fades ambiance1',
             ),
             predicate(
-              (value) =>
+              (final value) =>
                   value is AutomationFade &&
                   value.id == playback4.sound.id &&
                   value.fadeLength == 2.0,
@@ -333,20 +373,32 @@ void main() {
     test('Sound positions', () {
       final game = Game('Sound positions');
       var channel = game.createSoundChannel();
-      expect(() => channel.position = SoundPositionScalar(),
-          throwsA(isA<PositionMismatchError>()));
-      expect(() => channel.position = SoundPosition3d(),
-          throwsA(isA<PositionMismatchError>()));
-      channel = game.createSoundChannel(position: SoundPositionScalar());
-      expect(() => channel.position = SoundPosition3d(),
-          throwsA(isA<PositionMismatchError>()));
-      expect(() => channel.position = unpanned,
-          throwsA(isA<PositionMismatchError>()));
-      channel = game.createSoundChannel(position: SoundPosition3d());
-      expect(() => channel.position = SoundPositionScalar(),
-          throwsA(isA<PositionMismatchError>()));
-      expect(() => channel.position = unpanned,
-          throwsA(isA<PositionMismatchError>()));
+      expect(
+        () => channel.position = const SoundPositionScalar(),
+        throwsA(isA<PositionMismatchError>()),
+      );
+      expect(
+        () => channel.position = const SoundPosition3d(),
+        throwsA(isA<PositionMismatchError>()),
+      );
+      channel = game.createSoundChannel(position: const SoundPositionScalar());
+      expect(
+        () => channel.position = const SoundPosition3d(),
+        throwsA(isA<PositionMismatchError>()),
+      );
+      expect(
+        () => channel.position = unpanned,
+        throwsA(isA<PositionMismatchError>()),
+      );
+      channel = game.createSoundChannel(position: const SoundPosition3d());
+      expect(
+        () => channel.position = const SoundPositionScalar(),
+        throwsA(isA<PositionMismatchError>()),
+      );
+      expect(
+        () => channel.position = unpanned,
+        throwsA(isA<PositionMismatchError>()),
+      );
     });
   });
 }

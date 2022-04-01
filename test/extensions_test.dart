@@ -9,10 +9,13 @@ void main() {
   group('DirectoryMethods', () {
     test('.randomFile', () {
       final directory = Directory('test');
-      expect([
-        for (final entity in directory.listSync())
-          if (entity is File) entity.path
-      ], contains(directory.randomFile(random).path));
+      expect(
+        [
+          for (final entity in directory.listSync())
+            if (entity is File) entity.path
+        ],
+        contains(directory.randomFile(random).path),
+      );
     });
   });
   group('FileSystemEntityMethods', () {

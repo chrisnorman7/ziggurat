@@ -10,13 +10,13 @@ class DynamicWidget extends Widget {
   /// Create an instance.
   const DynamicWidget(
     this.onGetLabel, {
-    TaskFunction? onActivate,
-    AssetReference? activateSound,
+    final TaskFunction? onActivate,
+    final AssetReference? activateSound,
   }) : super(onActivate: onActivate, activateSound: activateSound);
 
   /// The method that should be used to get the label.
   final Message Function(MenuItem menuItem) onGetLabel;
 
   @override
-  Message? getLabel(MenuItem menuItem) => onGetLabel(menuItem);
+  Message? getLabel(final MenuItem menuItem) => onGetLabel(menuItem);
 }

@@ -26,13 +26,24 @@ class ListenerPositionEvent extends SoundEvent {
 class ListenerOrientationEvent extends SoundEvent {
   /// Create an instance.
   const ListenerOrientationEvent(
-      this.x1, this.y1, this.z1, this.x2, this.y2, this.z2)
-      : super();
+    this.x1,
+    this.y1,
+    this.z1,
+    this.x2,
+    this.y2,
+    this.z2,
+  ) : super();
 
   /// Create an instance from [angle].
-  factory ListenerOrientationEvent.fromAngle(double angle) =>
+  factory ListenerOrientationEvent.fromAngle(final double angle) =>
       ListenerOrientationEvent(
-          sin(angle * pi / 180), cos(angle * pi / 180), 0, 0, 0, 1);
+        sin(angle * pi / 180),
+        cos(angle * pi / 180),
+        0,
+        0,
+        0,
+        1,
+      );
 
   /// X1.
   final double x1;

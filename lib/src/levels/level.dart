@@ -15,10 +15,10 @@ class Level {
   /// Create a level.
   Level({
     required this.game,
-    Map<String, Command>? commands,
+    final Map<String, Command>? commands,
     this.music,
-    List<Ambiance>? ambiances,
-    List<RandomSound>? randomSounds,
+    final List<Ambiance>? ambiances,
+    final List<RandomSound>? randomSounds,
   })  : commands = commands ?? {},
         commandNextRuns = [],
         stoppedCommands = [],
@@ -31,8 +31,8 @@ class Level {
   /// Create an instance from a level stub.
   Level.fromStub(
     this.game,
-    LevelStub stub, {
-    Map<String, Command>? commands,
+    final LevelStub stub, {
+    final Map<String, Command>? commands,
   })  : commands = commands ?? {},
         commandNextRuns = [],
         stoppedCommands = [],
@@ -103,10 +103,15 @@ class Level {
         channel = game.ambianceSounds;
       } else {
         channel = game.createSoundChannel(
-            position: SoundPosition3d(x: position.x, y: position.y));
+          position: SoundPosition3d(x: position.x, y: position.y),
+        );
       }
-      final sound = channel.playSound(ambiance.sound,
-          gain: ambiance.gain, keepAlive: true, looping: true);
+      final sound = channel.playSound(
+        ambiance.sound,
+        gain: ambiance.gain,
+        keepAlive: true,
+        looping: true,
+      );
       ambiancePlaybacks[ambiance] = SoundPlayback(channel, sound);
     }
     randomSounds.forEach(scheduleRandomSound);
@@ -116,7 +121,7 @@ class Level {
   ///
   /// If [SoundPlayback.channel] is not [Game.ambianceSounds], then the
   /// channel will be destroyed.
-  void stopPlayback(SoundPlayback playback) {
+  void stopPlayback(final SoundPlayback playback) {
     playback.sound.destroy();
     if (playback.channel != game.ambianceSounds) {
       playback.channel.destroy();
@@ -125,7 +130,7 @@ class Level {
 
   /// What should happen when this level is popped from a level stack.
   @mustCallSuper
-  void onPop(double? fadeLength) {
+  void onPop(final double? fadeLength) {
     final sound = musicSound;
     musicSound = null;
     if (sound != null) {
@@ -155,7 +160,8 @@ class Level {
       }
     }
     for (final sound in randomSounds) {
-      randomSoundNextPlays.removeWhere((element) => element.value == sound);
+      randomSoundNextPlays
+          .removeWhere((final element) => element.value == sound);
       final playback = randomSoundPlaybacks.remove(sound);
       if (playback != null) {
         if (fadeLength != null) {
@@ -172,20 +178,20 @@ class Level {
   }
 
   /// What should happen when this level is covered by another level.
-  void onCover(Level other) {}
+  void onCover(final Level other) {}
 
   /// What should happen when this level is revealed by another level being
   /// popped from on top of it.
-  void onReveal(Level old) {}
+  void onReveal(final Level old) {}
 
   /// Register a command on this level.
-  void registerCommand(String name, Command command) =>
+  void registerCommand(final String name, final Command command) =>
       commands[name] = command;
 
   /// Get the next run for the given [randomSound].
-  NextRun<RandomSound> getRandomSoundNextPlay(RandomSound randomSound) =>
+  NextRun<RandomSound> getRandomSoundNextPlay(final RandomSound randomSound) =>
       randomSoundNextPlays.firstWhere(
-        (element) => element.value == randomSound,
+        (final element) => element.value == randomSound,
         orElse: () {
           final nextRun = NextRun(randomSound);
           randomSoundNextPlays.add(nextRun);
@@ -194,7 +200,7 @@ class Level {
       );
 
   /// Schedule a random [sound] to play.
-  void scheduleRandomSound(RandomSound sound) {
+  void scheduleRandomSound(final RandomSound sound) {
     final int offset;
     if (sound.minInterval == sound.maxInterval) {
       offset = 0;
@@ -205,7 +211,7 @@ class Level {
   }
 
   /// Get the next run value for the given [command].
-  NextRun<Command>? getCommandNextRun(Command command) {
+  NextRun<Command>? getCommandNextRun(final Command command) {
     for (final nextRun in commandNextRuns) {
       if (nextRun.value == command) {
         return nextRun;
@@ -218,7 +224,7 @@ class Level {
   ///
   /// Returns `true` if the command was handled.
   @mustCallSuper
-  bool startCommand(String name) {
+  bool startCommand(final String name) {
     final command = commands[name];
     if (command != null) {
       final interval = command.interval;
@@ -242,7 +248,7 @@ class Level {
   }
 
   /// Run the given [command].
-  void runCommand(Command command) {
+  void runCommand(final Command command) {
     final onStart = command.onStart;
     if (onStart != null) {
       onStart();
@@ -262,12 +268,13 @@ class Level {
   ///
   /// Returns `true` if the command was handled.
   @mustCallSuper
-  bool stopCommand(String name) {
+  bool stopCommand(final String name) {
     final command = commands[name];
     if (command != null) {
       final nextRun = getCommandNextRun(command);
       if (nextRun != null) {
-        commandNextRuns.removeWhere((element) => element.value == command);
+        commandNextRuns
+            .removeWhere((final element) => element.value == command);
         stoppedCommands.add(nextRun);
       }
       final onStop = command.onStop;
@@ -283,7 +290,7 @@ class Level {
   ///
   ///This method will be called only if the event in question is not consumed
   ///by [game].
-  void handleSdlEvent(Event event) {}
+  void handleSdlEvent(final Event event) {}
 
   /// Let this level tick.
   ///
@@ -297,7 +304,7 @@ class Level {
   /// To prevent jank, this method should not take too long, although some time
   /// correction is performed by the [Game.tick] method.
   @mustCallSuper
-  void tick(Sdl sdl, int timeDelta) {
+  void tick(final Sdl sdl, final int timeDelta) {
     for (final nextRun in commandNextRuns) {
       nextRun.runAfter += timeDelta;
       final command = nextRun.value;
@@ -315,7 +322,7 @@ class Level {
       }
     }
     for (final command in toStop) {
-      stoppedCommands.removeWhere((element) => element.value == command);
+      stoppedCommands.removeWhere((final element) => element.value == command);
     }
     for (final sound in randomSounds) {
       final playNext = getRandomSoundNextPlay(sound);

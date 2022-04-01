@@ -14,11 +14,12 @@ void main() {
       const skipScanCode = ScanCode.return_;
       const skipControllerButton = GameControllerButton.a;
       var sceneLevel = SceneLevel(
-          game: game,
-          message: message,
-          onDone: () => done++,
-          skipScanCode: skipScanCode,
-          skipControllerButton: skipControllerButton);
+        game: game,
+        message: message,
+        onDone: () => done++,
+        skipScanCode: skipScanCode,
+        skipControllerButton: skipControllerButton,
+      );
       expect(sceneLevel.game, equals(game));
       expect(sceneLevel.message, equals(message));
       expect(sceneLevel.duration, isNull);
@@ -28,25 +29,43 @@ void main() {
       sceneLevel.onDone();
       expect(done, equals(1));
       sceneLevel = SceneLevel(
-          game: game, message: message, onDone: () {}, duration: 1234);
+        game: game,
+        message: message,
+        onDone: () {},
+        duration: 1234,
+      );
       expect(sceneLevel.duration, equals(1234));
       expect(sceneLevel.skipControllerButton, isNull);
       expect(sceneLevel.skipScanCode, isNull);
       expect(
-          () => SceneLevel(game: game, message: message, onDone: () {}),
-          throwsA(predicate((value) =>
-              value is AssertionError &&
-              value.message ==
-                  'At least one of `duration`, `skipControllerButton`, or '
-                      '`skipScanCode` must not be null.')));
+        () => SceneLevel(game: game, message: message, onDone: () {}),
+        throwsA(
+          predicate(
+            (final value) =>
+                value is AssertionError &&
+                value.message ==
+                    'At least one of `duration`, `skipControllerButton`, or '
+                        '`skipScanCode` must not be null.',
+          ),
+        ),
+      );
       expect(
-          () => SceneLevel(
-              game: game, message: Message(), duration: 15, onDone: () {}),
-          throwsA(predicate((value) =>
-              value is AssertionError &&
-              value.message ==
-                  'If `keepAlive` is not `true`, then `onPop` will not '
-                      'function properly.')));
+        () => SceneLevel(
+          game: game,
+          message: const Message(),
+          duration: 15,
+          onDone: () {},
+        ),
+        throwsA(
+          predicate(
+            (final value) =>
+                value is AssertionError &&
+                value.message ==
+                    'If `keepAlive` is not `true`, then `onPop` will not '
+                        'function properly.',
+          ),
+        ),
+      );
     });
     test('.skip', () {
       final game = Game('SceneLevel.skip');
@@ -87,22 +106,32 @@ void main() {
       game.pushLevel(sceneLevel);
       expect(sceneLevel.onDoneTask, isNull);
       sceneLevel.handleSdlEvent(
-          makeKeyboardEvent(sdl, sceneLevel.skipScanCode!, KeyCode.return_));
+        makeKeyboardEvent(sdl, sceneLevel.skipScanCode!, KeyCode.return_),
+      );
       expect(done, isZero);
       expect(game.currentLevel, equals(sceneLevel));
       sceneLevel.handleSdlEvent(
-        makeKeyboardEvent(sdl, sceneLevel.skipScanCode!, KeyCode.return_,
-            state: PressedState.pressed),
+        makeKeyboardEvent(
+          sdl,
+          sceneLevel.skipScanCode!,
+          KeyCode.return_,
+          state: PressedState.pressed,
+        ),
       );
       expect(done, equals(1));
       expect(game.currentLevel, equals(sceneLevel));
       sceneLevel.handleSdlEvent(
-          makeControllerButtonEvent(sdl, sceneLevel.skipControllerButton!));
+        makeControllerButtonEvent(sdl, sceneLevel.skipControllerButton!),
+      );
       expect(done, equals(1));
       expect(game.currentLevel, equals(sceneLevel));
-      sceneLevel.handleSdlEvent(makeControllerButtonEvent(
-          sdl, sceneLevel.skipControllerButton!,
-          state: PressedState.pressed));
+      sceneLevel.handleSdlEvent(
+        makeControllerButtonEvent(
+          sdl,
+          sceneLevel.skipControllerButton!,
+          state: PressedState.pressed,
+        ),
+      );
       expect(done, equals(2));
       expect(game.currentLevel, equals(sceneLevel));
     });
@@ -113,7 +142,7 @@ void main() {
       const duration = 3;
       final sceneLevel = SceneLevel(
         game: game,
-        message: Message(keepAlive: true),
+        message: const Message(keepAlive: true),
         onDone: () {
           done++;
           game.popLevel();
@@ -151,18 +180,23 @@ void main() {
       const message =
           Message(keepAlive: true, sound: AssetReference.file('test.wav'));
       var sceneLevel = SceneLevel(
-          game: game, message: message, onDone: () {}, duration: 1234);
+        game: game,
+        message: message,
+        onDone: () {},
+        duration: 1234,
+      );
       game.pushLevel(sceneLevel);
       var sound = sceneLevel.sound!;
       expect(sound.channel, equals(game.interfaceSounds.id));
       expect(sound.sound, equals(message.sound));
       final soundChannel = game.createSoundChannel();
       sceneLevel = SceneLevel(
-          game: game,
-          message: message,
-          onDone: () {},
-          duration: 1234,
-          soundChannel: soundChannel);
+        game: game,
+        message: message,
+        onDone: () {},
+        duration: 1234,
+        soundChannel: soundChannel,
+      );
       game.pushLevel(sceneLevel);
       sound = sceneLevel.sound!;
       expect(sound.channel, equals(soundChannel.id));

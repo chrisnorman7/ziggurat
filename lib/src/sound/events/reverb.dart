@@ -7,9 +7,11 @@ import 'playback.dart';
 /// Create a reverb.
 class CreateReverb extends SoundEvent {
   /// Create a reverb.
-  const CreateReverb(
-      {required this.game, required int id, required this.reverb})
-      : super(id: id);
+  const CreateReverb({
+    required this.game,
+    required final int id,
+    required this.reverb,
+  }) : super(id: id);
 
   /// The game to use.
   final Game game;
@@ -32,7 +34,7 @@ class CreateReverb extends SoundEvent {
 /// the same reverb, the behaviour is undefined.
 class DestroyReverb extends SoundEvent {
   /// Create an event.
-  const DestroyReverb(int id) : super(id: id);
+  const DestroyReverb(final int id) : super(id: id);
 
   /// Describe this object.
   @override

@@ -39,8 +39,11 @@ class MultiGridLevelGame extends Game {
   }
 
   @override
-  PlaySound? outputMessage(Message message,
-      {PlaySound? oldSound, SoundChannel? soundChannel}) {
+  PlaySound? outputMessage(
+    final Message message, {
+    final PlaySound? oldSound,
+    final SoundChannel? soundChannel,
+  }) {
     final context = OutputMessageContext(message, oldSound, soundChannel);
     messages.add(context);
     return super
@@ -55,7 +58,10 @@ void main() {
     const maxValue = 32767;
     test('Initialise', () {
       var level = MultiGridLevel(
-          game: game, title: Message(text: 'Test Level'), rows: []);
+        game: game,
+        title: const Message(text: 'Test Level'),
+        rows: [],
+      );
       expect(level.activateScanCode, equals(ScanCode.space));
       expect(level.axisDispatcher, isA<ControllerAxisDispatcher>());
       expect(level.cancelScanCode, equals(ScanCode.escape));
@@ -66,26 +72,33 @@ void main() {
       expect(level.onCancel, isNull);
       expect(level.rightScanCode, equals(ScanCode.right));
       expect(level.rows, isEmpty);
-      expect(level.title,
-          predicate((value) => value is Message && value.text == 'Test Level'));
+      expect(
+        level.title,
+        predicate(
+          (final value) => value is Message && value.text == 'Test Level',
+        ),
+      );
       expect(level.upScanCode, equals(ScanCode.up));
       expect(level.verticalPosition, isNull);
       level = MultiGridLevel(
-          game: game,
-          title: level.title,
-          rows: level.rows,
-          verticalPosition: 0,
-          horizontalPosition: 1);
+        game: game,
+        title: level.title,
+        rows: level.rows,
+        verticalPosition: 0,
+        horizontalPosition: 1,
+      );
       expect(level.verticalPosition, isZero);
       expect(level.horizontalPosition, equals(1));
     });
     test('.currentRow', () {
       final row = MultiGridLevelRow(
-          label: Message(),
-          getNumberOfEntries: () => 2,
-          getEntryLabel: (int value) => Message(text: value.toString()),
-          onActivate: (int value) {});
-      final level = MultiGridLevel(game: game, title: Message(), rows: [row]);
+        label: const Message(),
+        getNumberOfEntries: () => 2,
+        getEntryLabel: (final value) => Message(text: value.toString()),
+        onActivate: (final value) {},
+      );
+      final level =
+          MultiGridLevel(game: game, title: const Message(), rows: [row]);
       expect(level.currentRow, isNull);
       level.verticalPosition = 0;
       expect(level.currentRow, equals(row));
@@ -94,24 +107,30 @@ void main() {
     });
     test('.showCurrent', () {
       final row = MultiGridLevelRow(
-          label: Message(
-              keepAlive: true,
-              text: 'Test Row',
-              sound: AssetReference.file('row.wav')),
-          getNumberOfEntries: () => 3,
-          getEntryLabel: (int value) => Message(
-              keepAlive: true,
-              sound: AssetReference.file('file$value.wav'),
-              text: 'Entry $value'),
-          onActivate: (int value) {},
-          actions: [
-            MultiGridLevelRowAction(
-                Message(sound: AssetReference.file('action.wav')), () {})
-          ]);
+        label: const Message(
+          keepAlive: true,
+          text: 'Test Row',
+          sound: AssetReference.file('row.wav'),
+        ),
+        getNumberOfEntries: () => 3,
+        getEntryLabel: (final value) => Message(
+          keepAlive: true,
+          sound: AssetReference.file('file$value.wav'),
+          text: 'Entry $value',
+        ),
+        onActivate: (final value) {},
+        actions: [
+          MultiGridLevelRowAction(
+            const Message(sound: AssetReference.file('action.wav')),
+            () {},
+          )
+        ],
+      );
       final level = MultiGridLevel(
-          game: game,
-          title: Message(sound: AssetReference.file('sound.wav')),
-          rows: [row]);
+        game: game,
+        title: const Message(sound: AssetReference.file('sound.wav')),
+        rows: [row],
+      );
       expect(level.verticalPosition, isNull);
       expect(level.currentRow, isNull);
       game.messages.clear();
@@ -147,25 +166,35 @@ void main() {
       expect(context.oldSound?.sound, equals(row.label.sound));
     });
     test('Movement', () {
-      final row1Messages = [Message(text: '1.0'), Message(text: '1.1')];
+      final row1Messages = [
+        const Message(text: '1.0'),
+        const Message(text: '1.1')
+      ];
       final row2Messages = [
-        Message(text: '2.0'),
-        Message(text: '2.1'),
-        Message(text: '2.2')
+        const Message(text: '2.0'),
+        const Message(text: '2.1'),
+        const Message(text: '2.2')
       ];
       final row1 = MultiGridLevelRow(
-          label: Message(text: 'Row 1'),
-          getNumberOfEntries: () => row1Messages.length,
-          getEntryLabel: row1Messages.elementAt,
-          onActivate: (int value) {},
-          actions: [MultiGridLevelRowAction(Message(text: 'Action'), () {})]);
+        label: const Message(text: 'Row 1'),
+        getNumberOfEntries: () => row1Messages.length,
+        getEntryLabel: row1Messages.elementAt,
+        onActivate: (final value) {},
+        actions: [
+          MultiGridLevelRowAction(const Message(text: 'Action'), () {})
+        ],
+      );
       final row2 = MultiGridLevelRow(
-          label: Message(text: 'Row 2'),
-          getNumberOfEntries: () => row2Messages.length,
-          getEntryLabel: row2Messages.elementAt,
-          onActivate: row1.onActivate);
+        label: const Message(text: 'Row 2'),
+        getNumberOfEntries: () => row2Messages.length,
+        getEntryLabel: row2Messages.elementAt,
+        onActivate: row1.onActivate,
+      );
       var level = MultiGridLevel(
-          game: game, title: Message(text: 'Grid Level'), rows: [row1, row2]);
+        game: game,
+        title: const Message(text: 'Grid Level'),
+        rows: [row1, row2],
+      );
       expect(level.verticalPosition, isNull);
       game.messages.clear();
       level.down();
@@ -268,143 +297,295 @@ void main() {
       final sdl = Sdl();
       const keyCode = KeyCode.digit0;
       var cancelled = 0;
-      final row1Messages = [Message(text: '1.0'), Message(text: '1.1')];
+      final row1Messages = [
+        const Message(text: '1.0'),
+        const Message(text: '1.1')
+      ];
       final row2Messages = [
-        Message(text: '2.0'),
-        Message(text: '2.1'),
-        Message(text: '2.2')
+        const Message(text: '2.0'),
+        const Message(text: '2.1'),
+        const Message(text: '2.2')
       ];
       final row1 = MultiGridLevelRow(
-          label: Message(text: 'Row 1'),
-          getNumberOfEntries: () => row1Messages.length,
-          getEntryLabel: row1Messages.elementAt,
-          onActivate: (int value) {},
-          actions: [MultiGridLevelRowAction(Message(text: 'Action'), () {})]);
+        label: const Message(text: 'Row 1'),
+        getNumberOfEntries: () => row1Messages.length,
+        getEntryLabel: row1Messages.elementAt,
+        onActivate: (final value) {},
+        actions: [
+          MultiGridLevelRowAction(const Message(text: 'Action'), () {})
+        ],
+      );
       final row2 = MultiGridLevelRow(
-          label: Message(text: 'Row 2'),
-          getNumberOfEntries: () => row2Messages.length,
-          getEntryLabel: row2Messages.elementAt,
-          onActivate: row1.onActivate);
+        label: const Message(text: 'Row 2'),
+        getNumberOfEntries: () => row2Messages.length,
+        getEntryLabel: row2Messages.elementAt,
+        onActivate: row1.onActivate,
+      );
       final level = MultiGridLevel(
-          game: game,
-          title: Message(text: 'Grid Level'),
-          rows: [row1, row2],
-          onCancel: () => cancelled++);
+        game: game,
+        title: const Message(text: 'Grid Level'),
+        rows: [row1, row2],
+        onCancel: () => cancelled++,
+      );
       expect(level.verticalPosition, isNull);
       game.messages.clear();
-      level.handleSdlEvent(makeKeyboardEvent(sdl, level.downScanCode, keyCode,
-          state: PressedState.pressed));
+      level.handleSdlEvent(
+        makeKeyboardEvent(
+          sdl,
+          level.downScanCode,
+          keyCode,
+          state: PressedState.pressed,
+        ),
+      );
       expect(level.verticalPosition, isZero);
       expect(level.horizontalPosition, isNull);
       expect(game.recentContext.message, equals(row1.label));
-      level.handleSdlEvent(makeKeyboardEvent(sdl, level.downScanCode, keyCode,
-          state: PressedState.pressed));
+      level.handleSdlEvent(
+        makeKeyboardEvent(
+          sdl,
+          level.downScanCode,
+          keyCode,
+          state: PressedState.pressed,
+        ),
+      );
       expect(level.verticalPosition, equals(1));
       expect(level.horizontalPosition, isNull);
       expect(game.recentContext.message, equals(row2.label));
-      level.handleSdlEvent(makeKeyboardEvent(sdl, level.downScanCode, keyCode,
-          state: PressedState.pressed));
+      level.handleSdlEvent(
+        makeKeyboardEvent(
+          sdl,
+          level.downScanCode,
+          keyCode,
+          state: PressedState.pressed,
+        ),
+      );
       expect(level.verticalPosition, equals(1));
       expect(level.horizontalPosition, isNull);
       expect(game.recentContext.message, equals(row2.label));
-      level.handleSdlEvent(makeKeyboardEvent(sdl, level.leftScanCode, keyCode,
-          state: PressedState.pressed));
+      level.handleSdlEvent(
+        makeKeyboardEvent(
+          sdl,
+          level.leftScanCode,
+          keyCode,
+          state: PressedState.pressed,
+        ),
+      );
       expect(level.verticalPosition, equals(1));
       expect(level.horizontalPosition, isNull);
       expect(game.recentContext.message, equals(row2.label));
-      level.handleSdlEvent(makeKeyboardEvent(sdl, level.rightScanCode, keyCode,
-          state: PressedState.pressed));
+      level.handleSdlEvent(
+        makeKeyboardEvent(
+          sdl,
+          level.rightScanCode,
+          keyCode,
+          state: PressedState.pressed,
+        ),
+      );
       expect(level.verticalPosition, equals(1));
       expect(level.horizontalPosition, isZero);
       expect(game.recentContext.message, equals(row2Messages.first));
-      level.handleSdlEvent(makeKeyboardEvent(sdl, level.downScanCode, keyCode,
-          state: PressedState.pressed));
+      level.handleSdlEvent(
+        makeKeyboardEvent(
+          sdl,
+          level.downScanCode,
+          keyCode,
+          state: PressedState.pressed,
+        ),
+      );
       expect(level.verticalPosition, equals(1));
       expect(level.horizontalPosition, isZero);
       expect(game.recentContext.message, equals(row2Messages.first));
-      level.handleSdlEvent(makeKeyboardEvent(sdl, level.rightScanCode, keyCode,
-          state: PressedState.pressed));
+      level.handleSdlEvent(
+        makeKeyboardEvent(
+          sdl,
+          level.rightScanCode,
+          keyCode,
+          state: PressedState.pressed,
+        ),
+      );
       expect(level.verticalPosition, equals(1));
       expect(level.horizontalPosition, equals(1));
       expect(game.recentContext.message, equals(row2Messages[1]));
-      level.handleSdlEvent(makeKeyboardEvent(sdl, level.rightScanCode, keyCode,
-          state: PressedState.pressed));
+      level.handleSdlEvent(
+        makeKeyboardEvent(
+          sdl,
+          level.rightScanCode,
+          keyCode,
+          state: PressedState.pressed,
+        ),
+      );
       expect(level.verticalPosition, equals(1));
       expect(level.horizontalPosition, equals(2));
       expect(game.recentContext.message, equals(row2Messages.last));
-      level.handleSdlEvent(makeKeyboardEvent(sdl, level.rightScanCode, keyCode,
-          state: PressedState.pressed));
+      level.handleSdlEvent(
+        makeKeyboardEvent(
+          sdl,
+          level.rightScanCode,
+          keyCode,
+          state: PressedState.pressed,
+        ),
+      );
       expect(level.verticalPosition, equals(1));
       expect(level.horizontalPosition, equals(2));
       expect(game.recentContext.message, equals(row2Messages.last));
-      level.handleSdlEvent(makeKeyboardEvent(sdl, level.upScanCode, keyCode,
-          state: PressedState.pressed));
+      level.handleSdlEvent(
+        makeKeyboardEvent(
+          sdl,
+          level.upScanCode,
+          keyCode,
+          state: PressedState.pressed,
+        ),
+      );
       expect(level.verticalPosition, isZero);
       expect(level.horizontalPosition, isNull);
       expect(game.recentContext.message, equals(row1.label));
-      level.handleSdlEvent(makeKeyboardEvent(sdl, level.leftScanCode, keyCode,
-          state: PressedState.pressed));
+      level.handleSdlEvent(
+        makeKeyboardEvent(
+          sdl,
+          level.leftScanCode,
+          keyCode,
+          state: PressedState.pressed,
+        ),
+      );
       expect(level.verticalPosition, isZero);
       expect(level.horizontalPosition, equals(-1));
       expect(game.recentContext.message, equals(row1.actions.first.label));
-      level.handleSdlEvent(makeKeyboardEvent(sdl, level.leftScanCode, keyCode,
-          state: PressedState.pressed));
+      level.handleSdlEvent(
+        makeKeyboardEvent(
+          sdl,
+          level.leftScanCode,
+          keyCode,
+          state: PressedState.pressed,
+        ),
+      );
       expect(level.verticalPosition, isZero);
       expect(level.horizontalPosition, equals(-1));
       expect(game.recentContext.message, equals(row1.actions.first.label));
-      level.handleSdlEvent(makeKeyboardEvent(sdl, level.rightScanCode, keyCode,
-          state: PressedState.pressed));
+      level.handleSdlEvent(
+        makeKeyboardEvent(
+          sdl,
+          level.rightScanCode,
+          keyCode,
+          state: PressedState.pressed,
+        ),
+      );
       expect(level.verticalPosition, isZero);
       expect(level.horizontalPosition, isNull);
       expect(game.recentContext.message, equals(row1.label));
-      level.handleSdlEvent(makeKeyboardEvent(sdl, level.rightScanCode, keyCode,
-          state: PressedState.pressed));
+      level.handleSdlEvent(
+        makeKeyboardEvent(
+          sdl,
+          level.rightScanCode,
+          keyCode,
+          state: PressedState.pressed,
+        ),
+      );
       expect(level.verticalPosition, isZero);
       expect(level.horizontalPosition, isZero);
       expect(game.recentContext.message, equals(row1Messages.first));
-      level.handleSdlEvent(makeKeyboardEvent(sdl, level.rightScanCode, keyCode,
-          state: PressedState.pressed));
+      level.handleSdlEvent(
+        makeKeyboardEvent(
+          sdl,
+          level.rightScanCode,
+          keyCode,
+          state: PressedState.pressed,
+        ),
+      );
       expect(level.verticalPosition, isZero);
       expect(level.horizontalPosition, equals(1));
       expect(game.recentContext.message, equals(row1Messages.last));
-      level.handleSdlEvent(makeKeyboardEvent(sdl, level.rightScanCode, keyCode,
-          state: PressedState.pressed));
+      level.handleSdlEvent(
+        makeKeyboardEvent(
+          sdl,
+          level.rightScanCode,
+          keyCode,
+          state: PressedState.pressed,
+        ),
+      );
       expect(level.verticalPosition, isZero);
       expect(level.horizontalPosition, equals(1));
       expect(game.recentContext.message, equals(row1Messages.last));
-      level.handleSdlEvent(makeKeyboardEvent(sdl, level.leftScanCode, keyCode,
-          state: PressedState.pressed));
+      level.handleSdlEvent(
+        makeKeyboardEvent(
+          sdl,
+          level.leftScanCode,
+          keyCode,
+          state: PressedState.pressed,
+        ),
+      );
       expect(level.verticalPosition, isZero);
       expect(level.horizontalPosition, isZero);
       expect(game.recentContext.message, equals(row1Messages.first));
-      level.handleSdlEvent(makeKeyboardEvent(sdl, level.leftScanCode, keyCode,
-          state: PressedState.pressed));
+      level.handleSdlEvent(
+        makeKeyboardEvent(
+          sdl,
+          level.leftScanCode,
+          keyCode,
+          state: PressedState.pressed,
+        ),
+      );
       expect(level.verticalPosition, isZero);
       expect(level.horizontalPosition, isNull);
       expect(game.recentContext.message, equals(row1.label));
-      level.handleSdlEvent(makeKeyboardEvent(sdl, level.leftScanCode, keyCode,
-          state: PressedState.pressed));
+      level.handleSdlEvent(
+        makeKeyboardEvent(
+          sdl,
+          level.leftScanCode,
+          keyCode,
+          state: PressedState.pressed,
+        ),
+      );
       expect(level.verticalPosition, isZero);
       expect(level.horizontalPosition, equals(-1));
       expect(game.recentContext.message, equals(row1.actions.first.label));
-      level.handleSdlEvent(makeKeyboardEvent(sdl, level.upScanCode, keyCode,
-          state: PressedState.pressed));
+      level.handleSdlEvent(
+        makeKeyboardEvent(
+          sdl,
+          level.upScanCode,
+          keyCode,
+          state: PressedState.pressed,
+        ),
+      );
       expect(level.verticalPosition, isNull);
       expect(level.horizontalPosition, isNull);
       expect(game.recentContext.message, equals(level.title));
-      level.handleSdlEvent(makeKeyboardEvent(sdl, level.downScanCode, keyCode,
-          state: PressedState.pressed));
+      level.handleSdlEvent(
+        makeKeyboardEvent(
+          sdl,
+          level.downScanCode,
+          keyCode,
+          state: PressedState.pressed,
+        ),
+      );
       expect(level.verticalPosition, isZero);
       expect(level.horizontalPosition, equals(-1));
-      level.handleSdlEvent(makeKeyboardEvent(sdl, level.downScanCode, keyCode,
-          state: PressedState.pressed));
+      level.handleSdlEvent(
+        makeKeyboardEvent(
+          sdl,
+          level.downScanCode,
+          keyCode,
+          state: PressedState.pressed,
+        ),
+      );
       expect(level.verticalPosition, equals(1));
       expect(level.horizontalPosition, equals(2));
-      level.handleSdlEvent(makeKeyboardEvent(sdl, level.cancelScanCode, keyCode,
-          state: PressedState.pressed));
+      level.handleSdlEvent(
+        makeKeyboardEvent(
+          sdl,
+          level.cancelScanCode,
+          keyCode,
+          state: PressedState.pressed,
+        ),
+      );
       expect(cancelled, equals(1));
-      level.handleSdlEvent(makeKeyboardEvent(sdl, level.cancelScanCode, keyCode,
-          state: PressedState.pressed));
+      level.handleSdlEvent(
+        makeKeyboardEvent(
+          sdl,
+          level.cancelScanCode,
+          keyCode,
+          state: PressedState.pressed,
+        ),
+      );
       expect(cancelled, equals(2));
     });
     test('.handleSdlValue (axis)', () {
@@ -418,29 +599,37 @@ void main() {
           makeControllerAxisEvent(sdl, GameControllerAxis.leftx, minValue);
       final rightEvent =
           makeControllerAxisEvent(sdl, GameControllerAxis.leftx, maxValue);
-      final row1Messages = [Message(text: '1.0'), Message(text: '1.1')];
+      final row1Messages = [
+        const Message(text: '1.0'),
+        const Message(text: '1.1')
+      ];
       final row2Messages = [
-        Message(text: '2.0'),
-        Message(text: '2.1'),
-        Message(text: '2.2')
+        const Message(text: '2.0'),
+        const Message(text: '2.1'),
+        const Message(text: '2.2')
       ];
       final row1 = MultiGridLevelRow(
-          label: Message(text: 'Row 1'),
-          getNumberOfEntries: () => row1Messages.length,
-          getEntryLabel: row1Messages.elementAt,
-          onActivate: (int value) {},
-          actions: [MultiGridLevelRowAction(Message(text: 'Action'), () {})]);
+        label: const Message(text: 'Row 1'),
+        getNumberOfEntries: () => row1Messages.length,
+        getEntryLabel: row1Messages.elementAt,
+        onActivate: (final value) {},
+        actions: [
+          MultiGridLevelRowAction(const Message(text: 'Action'), () {})
+        ],
+      );
       final row2 = MultiGridLevelRow(
-          label: Message(text: 'Row 2'),
-          getNumberOfEntries: () => row2Messages.length,
-          getEntryLabel: row2Messages.elementAt,
-          onActivate: row1.onActivate);
+        label: const Message(text: 'Row 2'),
+        getNumberOfEntries: () => row2Messages.length,
+        getEntryLabel: row2Messages.elementAt,
+        onActivate: row1.onActivate,
+      );
       final level = MultiGridLevel(
-          game: game,
-          title: Message(text: 'Grid Level'),
-          rows: [row1, row2],
-          onCancel: () => cancelled++,
-          axisInterval: 0);
+        game: game,
+        title: const Message(text: 'Grid Level'),
+        rows: [row1, row2],
+        onCancel: () => cancelled++,
+        axisInterval: 0,
+      );
       expect(level.verticalPosition, isNull);
       expect(level.horizontalPosition, isNull);
       game.messages.clear();
@@ -535,38 +724,52 @@ void main() {
       final sdl = Sdl();
       var cancelled = 0;
       final cancelEvent = makeControllerAxisEvent(
-          sdl, GameControllerAxis.triggerleft, maxValue);
-      final row1Messages = [Message(text: '1.0'), Message(text: '1.1')];
+        sdl,
+        GameControllerAxis.triggerleft,
+        maxValue,
+      );
+      final row1Messages = [
+        const Message(text: '1.0'),
+        const Message(text: '1.1')
+      ];
       final row2Messages = [
-        Message(text: '2.0'),
-        Message(text: '2.1'),
-        Message(text: '2.2')
+        const Message(text: '2.0'),
+        const Message(text: '2.1'),
+        const Message(text: '2.2')
       ];
       final row1 = MultiGridLevelRow(
-          label: Message(text: 'Row 1'),
-          getNumberOfEntries: () => row1Messages.length,
-          getEntryLabel: row1Messages.elementAt,
-          onActivate: (int value) {},
-          actions: [MultiGridLevelRowAction(Message(text: 'Action'), () {})]);
+        label: const Message(text: 'Row 1'),
+        getNumberOfEntries: () => row1Messages.length,
+        getEntryLabel: row1Messages.elementAt,
+        onActivate: (final value) {},
+        actions: [
+          MultiGridLevelRowAction(const Message(text: 'Action'), () {})
+        ],
+      );
       final row2 = MultiGridLevelRow(
-          label: Message(text: 'Row 2'),
-          getNumberOfEntries: () => row2Messages.length,
-          getEntryLabel: row2Messages.elementAt,
-          onActivate: row1.onActivate);
+        label: const Message(text: 'Row 2'),
+        getNumberOfEntries: () => row2Messages.length,
+        getEntryLabel: row2Messages.elementAt,
+        onActivate: row1.onActivate,
+      );
       final level = MultiGridLevel(
-          game: game,
-          title: Message(text: 'Grid Level'),
-          rows: [row1, row2],
-          onCancel: () => cancelled++,
-          axisInterval: 0);
+        game: game,
+        title: const Message(text: 'Grid Level'),
+        rows: [row1, row2],
+        onCancel: () => cancelled++,
+        axisInterval: 0,
+      );
       expect(cancelled, isZero);
       level.handleSdlEvent(cancelEvent);
       expect(cancelled, equals(1));
       level.handleSdlEvent(cancelEvent);
       expect(cancelled, equals(2));
       final cancelKeyboardEvent = makeKeyboardEvent(
-          sdl, level.cancelScanCode, KeyCode.digit0,
-          state: PressedState.pressed);
+        sdl,
+        level.cancelScanCode,
+        KeyCode.digit0,
+        state: PressedState.pressed,
+      );
       level.handleSdlEvent(cancelKeyboardEvent);
       expect(cancelled, equals(3));
       level.handleSdlEvent(cancelKeyboardEvent);
@@ -578,33 +781,47 @@ void main() {
       var k = 0;
       final sdl = Sdl();
       final activateEvent = makeControllerAxisEvent(
-          sdl, GameControllerAxis.triggerright, maxValue);
-      final row1Messages = [Message(text: '1.0'), Message(text: '1.1')];
+        sdl,
+        GameControllerAxis.triggerright,
+        maxValue,
+      );
+      final row1Messages = [
+        const Message(text: '1.0'),
+        const Message(text: '1.1')
+      ];
       final row2Messages = [
-        Message(text: '2.0'),
-        Message(text: '2.1'),
-        Message(text: '2.2')
+        const Message(text: '2.0'),
+        const Message(text: '2.1'),
+        const Message(text: '2.2')
       ];
       final row1 = MultiGridLevelRow(
-          label: Message(text: 'Row 1'),
-          getNumberOfEntries: () => row1Messages.length,
-          getEntryLabel: row1Messages.elementAt,
-          onActivate: (int value) => i += value + 1,
-          actions: [MultiGridLevelRowAction(Message(text: 'Action'), () {})]);
+        label: const Message(text: 'Row 1'),
+        getNumberOfEntries: () => row1Messages.length,
+        getEntryLabel: row1Messages.elementAt,
+        onActivate: (final value) => i += value + 1,
+        actions: [
+          MultiGridLevelRowAction(const Message(text: 'Action'), () {})
+        ],
+      );
       final row2 = MultiGridLevelRow(
-          label: Message(text: 'Row 2'),
-          getNumberOfEntries: () => row2Messages.length,
-          getEntryLabel: row2Messages.elementAt,
-          onActivate: (int value) => j += value + 1,
-          actions: [MultiGridLevelRowAction(Message(), () => k++)]);
+        label: const Message(text: 'Row 2'),
+        getNumberOfEntries: () => row2Messages.length,
+        getEntryLabel: row2Messages.elementAt,
+        onActivate: (final value) => j += value + 1,
+        actions: [MultiGridLevelRowAction(const Message(), () => k++)],
+      );
       final level = MultiGridLevel(
-          game: game,
-          title: Message(text: 'Grid Level'),
-          rows: [row1, row2],
-          axisInterval: 0);
+        game: game,
+        title: const Message(text: 'Grid Level'),
+        rows: [row1, row2],
+        axisInterval: 0,
+      );
       final activateKeyboardEvent = makeKeyboardEvent(
-          sdl, level.activateScanCode, KeyCode.digit0,
-          state: PressedState.pressed);
+        sdl,
+        level.activateScanCode,
+        KeyCode.digit0,
+        state: PressedState.pressed,
+      );
       expect(i, isZero);
       expect(j, isZero);
       level
@@ -676,13 +893,14 @@ void main() {
       expect(j, equals(6));
     });
     test('defaultVerticalPosition', () {
-      final row1 = MultiGridLevelRow.fromDict(Message(), {});
-      final row2 = MultiGridLevelRow.fromDict(Message(), {});
+      final row1 = MultiGridLevelRow.fromDict(const Message(), {});
+      final row2 = MultiGridLevelRow.fromDict(const Message(), {});
       final level = MultiGridLevel(
-          game: game,
-          title: Message(),
-          rows: [row1, row2],
-          verticalPosition: 1);
+        game: game,
+        title: const Message(),
+        rows: [row1, row2],
+        verticalPosition: 1,
+      );
       expect(level.currentRow, equals(row2));
       game.messages.clear();
       game.pushLevel(level);

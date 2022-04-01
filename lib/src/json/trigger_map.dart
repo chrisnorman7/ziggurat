@@ -12,7 +12,7 @@ class TriggerMap {
   const TriggerMap(this.triggers);
 
   /// Create an instance from a JSON object.
-  factory TriggerMap.fromJson(Map<String, dynamic> json) =>
+  factory TriggerMap.fromJson(final Map<String, dynamic> json) =>
       _$TriggerMapFromJson(json);
 
   /// The trigger mapping.

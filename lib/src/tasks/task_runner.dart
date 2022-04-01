@@ -4,7 +4,7 @@ import 'task.dart';
 /// A class for holding information about a running [value].
 class TaskRunner extends NextRun<Task> {
   /// Create an instance.
-  TaskRunner(Task value)
+  TaskRunner(final Task value)
       : numberOfRuns = 0,
         super(value);
 

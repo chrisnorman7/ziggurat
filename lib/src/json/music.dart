@@ -15,7 +15,8 @@ class Music {
   });
 
   /// Create an instance from a JSON object.
-  factory Music.fromJson(Map<String, dynamic> json) => _$MusicFromJson(json);
+  factory Music.fromJson(final Map<String, dynamic> json) =>
+      _$MusicFromJson(json);
 
   /// The reference to the asset.
   final AssetReference sound;

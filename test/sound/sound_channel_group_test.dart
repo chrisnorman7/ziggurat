@@ -9,14 +9,16 @@ void main() {
       final channelGroup =
           SoundChannelGroup([game.interfaceSounds, game.ambianceSounds]);
       expect(channelGroup.channels.length, equals(2));
-      expect(channelGroup.channels,
-          allOf(contains(game.ambianceSounds), contains(game.interfaceSounds)));
+      expect(
+        channelGroup.channels,
+        allOf(contains(game.ambianceSounds), contains(game.interfaceSounds)),
+      );
     });
     test('.setReverb', () {
       final game = Game('SoundChannelGroup.setReverb');
       final channelGroup =
           SoundChannelGroup([game.interfaceSounds, game.ambianceSounds]);
-      final reverb = game.createReverb(ReverbPreset(name: 'Test Reverb'));
+      final reverb = game.createReverb(const ReverbPreset(name: 'Test Reverb'));
       channelGroup.reverb = reverb;
       expect(game.interfaceSounds.reverb, equals(reverb.id));
       expect(game.ambianceSounds.reverb, equals(reverb.id));
@@ -42,10 +44,10 @@ void main() {
       final game = Game('SoundChannelGroup.gain')..sounds.listen(events.add);
       final channelGroup =
           SoundChannelGroup([game.interfaceSounds, game.ambianceSounds]);
-      await Future<void>.delayed(Duration(milliseconds: 100));
+      await Future<void>.delayed(const Duration(milliseconds: 100));
       events.clear();
       channelGroup.clearFilters();
-      await Future<void>.delayed(Duration(milliseconds: 100));
+      await Future<void>.delayed(const Duration(milliseconds: 100));
       expect(events.length, equals(2));
       var event = events.first as SoundChannelFilter;
       expect(event.id, equals(game.interfaceSounds.id));
@@ -57,12 +59,12 @@ void main() {
       final game = Game('SoundChannelGroup.gain')..sounds.listen(events.add);
       final channelGroup =
           SoundChannelGroup([game.interfaceSounds, game.ambianceSounds]);
-      await Future<void>.delayed(Duration(milliseconds: 100));
+      await Future<void>.delayed(const Duration(milliseconds: 100));
       events.clear();
       const frequency = 1234.0;
       const q = 5678.0;
       channelGroup.filterLowpass(frequency, q: q);
-      await Future<void>.delayed(Duration(milliseconds: 100));
+      await Future<void>.delayed(const Duration(milliseconds: 100));
       expect(events.length, equals(2));
       var event = events.first as SoundChannelLowpass;
       expect(event.id, equals(game.interfaceSounds.id));
@@ -78,12 +80,12 @@ void main() {
       final game = Game('SoundChannelGroup.gain')..sounds.listen(events.add);
       final channelGroup =
           SoundChannelGroup([game.interfaceSounds, game.ambianceSounds]);
-      await Future<void>.delayed(Duration(milliseconds: 100));
+      await Future<void>.delayed(const Duration(milliseconds: 100));
       events.clear();
       const frequency = 1234.0;
       const q = 5678.0;
       channelGroup.filterHighpass(frequency, q: q);
-      await Future<void>.delayed(Duration(milliseconds: 100));
+      await Future<void>.delayed(const Duration(milliseconds: 100));
       expect(events.length, equals(2));
       var event = events.first as SoundChannelHighpass;
       expect(event.id, equals(game.interfaceSounds.id));
@@ -99,12 +101,12 @@ void main() {
       final game = Game('SoundChannelGroup.gain')..sounds.listen(events.add);
       final channelGroup =
           SoundChannelGroup([game.interfaceSounds, game.ambianceSounds]);
-      await Future<void>.delayed(Duration(milliseconds: 100));
+      await Future<void>.delayed(const Duration(milliseconds: 100));
       events.clear();
       const frequency = 1234.0;
       const bandwidth = 5678.0;
       channelGroup.filterBandpass(frequency, bandwidth);
-      await Future<void>.delayed(Duration(milliseconds: 100));
+      await Future<void>.delayed(const Duration(milliseconds: 100));
       expect(events.length, equals(2));
       var event = events.first as SoundChannelBandpass;
       expect(event.id, equals(game.interfaceSounds.id));
@@ -120,11 +122,11 @@ void main() {
       final game = Game('SoundChannelGroup.gain')..sounds.listen(events.add);
       final channelGroup =
           SoundChannelGroup([game.interfaceSounds, game.ambianceSounds]);
-      await Future<void>.delayed(Duration(milliseconds: 100));
+      await Future<void>.delayed(const Duration(milliseconds: 100));
       events.clear();
       channelGroup.destroy();
       expect(channelGroup.channels, isEmpty);
-      await Future<void>.delayed(Duration(milliseconds: 100));
+      await Future<void>.delayed(const Duration(milliseconds: 100));
       expect(events.length, equals(2));
       expect(events.first, isA<DestroySoundChannel>());
       expect(events.first.id, equals(game.ambianceSounds.id));

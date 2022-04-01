@@ -14,10 +14,10 @@ class SoundChannel extends SoundEvent {
   /// Create a channel.
   SoundChannel({
     required this.game,
-    required int id,
-    SoundPosition position = unpanned,
-    int? reverb,
-    double gain = 0.7,
+    required final int id,
+    final SoundPosition position = unpanned,
+    final int? reverb,
+    final double gain = 0.7,
   })  : _reverb = reverb,
         _gain = gain,
         _position = position,
@@ -32,7 +32,7 @@ class SoundChannel extends SoundEvent {
   SoundPosition get position => _position;
 
   /// Set the position of this channel.
-  set position(SoundPosition value) {
+  set position(final SoundPosition value) {
     if (value.runtimeType != _position.runtimeType) {
       throw PositionMismatchError(this, value);
     }
@@ -52,7 +52,7 @@ class SoundChannel extends SoundEvent {
   /// by [Game.createReverb].
   ///
   /// If [reverbId] is `null`, then the reverb will be cleared.
-  set reverb(int? reverbId) {
+  set reverb(final int? reverbId) {
     _reverb = reverbId;
     game.queueSoundEvent(SetSoundChannelReverb(id!, reverbId));
   }
@@ -63,25 +63,26 @@ class SoundChannel extends SoundEvent {
   double get gain => _gain;
 
   /// Set the gain of this channel.
-  set gain(double value) {
+  set gain(final double value) {
     _gain = value;
     game.queueSoundEvent(SetSoundChannelGain(id: id!, gain: value));
   }
 
   /// Play a sound through this channel.
   PlaySound playSound(
-    AssetReference sound, {
-    double gain = 0.7,
-    bool looping = false,
-    bool keepAlive = false,
+    final AssetReference sound, {
+    final double gain = 0.7,
+    final bool looping = false,
+    final bool keepAlive = false,
   }) {
     final event = PlaySound(
-        game: game,
-        sound: sound,
-        keepAlive: keepAlive,
-        gain: gain,
-        looping: looping,
-        channel: id!);
+      game: game,
+      sound: sound,
+      keepAlive: keepAlive,
+      gain: gain,
+      looping: looping,
+      channel: id!,
+    );
     game.queueSoundEvent(event);
     return event;
   }
@@ -89,10 +90,10 @@ class SoundChannel extends SoundEvent {
   /// Play a wave of the given [waveType] at the given [frequency] through this
   /// channel.
   PlayWave playWave({
-    required WaveType waveType,
-    required double frequency,
-    int partials = 0,
-    double gain = 0.7,
+    required final WaveType waveType,
+    required final double frequency,
+    final int partials = 0,
+    final double gain = 0.7,
   }) {
     final wave = PlayWave(
       game: game,
@@ -107,7 +108,8 @@ class SoundChannel extends SoundEvent {
   }
 
   /// Play a sine wave.
-  PlayWave playSine(double frequency, {double gain = 0.7}) => playWave(
+  PlayWave playSine(final double frequency, {final double gain = 0.7}) =>
+      playWave(
         waveType: WaveType.sine,
         frequency: frequency,
         gain: gain,
@@ -115,9 +117,9 @@ class SoundChannel extends SoundEvent {
 
   /// Play a triangle wave.
   PlayWave playTriangle(
-    double frequency, {
-    int partials = 0,
-    double gain = 0.7,
+    final double frequency, {
+    final int partials = 0,
+    final double gain = 0.7,
   }) =>
       playWave(
         waveType: WaveType.triangle,
@@ -128,9 +130,9 @@ class SoundChannel extends SoundEvent {
 
   /// Play a square wave.
   PlayWave playSquare(
-    double frequency, {
-    int partials = 0,
-    double gain = 0.7,
+    final double frequency, {
+    final int partials = 0,
+    final double gain = 0.7,
   }) =>
       playWave(
         waveType: WaveType.square,
@@ -141,9 +143,9 @@ class SoundChannel extends SoundEvent {
 
   /// Play a saw wave.
   PlayWave playSaw(
-    double frequency, {
-    int partials = 0,
-    double gain = 0.7,
+    final double frequency, {
+    final int partials = 0,
+    final double gain = 0.7,
   }) =>
       playWave(
         waveType: WaveType.saw,
@@ -156,17 +158,28 @@ class SoundChannel extends SoundEvent {
   void clearFilter() => game.queueSoundEvent(SoundChannelFilter(id!));
 
   /// Apply a lowpass to this channel.
-  void filterLowpass(double frequency, {double q = 0.7071135624381276}) =>
+  void filterLowpass(
+    final double frequency, {
+    final double q = 0.7071135624381276,
+  }) =>
       game.queueSoundEvent(SoundChannelLowpass(id!, frequency, q));
 
   /// Apply a highpass to this channel.
-  void filterHighpass(double frequency, {double q = 0.7071135624381276}) =>
+  void filterHighpass(
+    final double frequency, {
+    final double q = 0.7071135624381276,
+  }) =>
       game.queueSoundEvent(SoundChannelHighpass(id!, frequency, q));
 
   /// Add a bandpass to this channel.
-  void filterBandpass(double frequency, double bandwidth) =>
-      game.queueSoundEvent(SoundChannelBandpass(
-          id: id!, frequency: frequency, bandwidth: bandwidth));
+  void filterBandpass(final double frequency, final double bandwidth) =>
+      game.queueSoundEvent(
+        SoundChannelBandpass(
+          id: id!,
+          frequency: frequency,
+          bandwidth: bandwidth,
+        ),
+      );
 
   /// Destroy this channel.
   void destroy() => game.queueSoundEvent(DestroySoundChannel(id!));
@@ -181,20 +194,20 @@ class SoundChannel extends SoundEvent {
 /// Destroy a [SoundChannel] instance.
 class DestroySoundChannel extends DestroySound {
   /// Create an event.
-  const DestroySoundChannel(int id) : super(id);
+  const DestroySoundChannel(final int id) : super(id);
 }
 
 /// Set the gain for a [SoundChannel].
 class SetSoundChannelGain extends SetSoundGain {
   /// Create an event.
-  const SetSoundChannelGain({required int id, required double gain})
+  const SetSoundChannelGain({required final int id, required final double gain})
       : super(id: id, gain: gain);
 }
 
 /// Set the position for a [SoundChannel].
 class SetSoundChannelPosition extends SoundEvent {
   /// Create an instance.
-  const SetSoundChannelPosition(int id, this.position) : super(id: id);
+  const SetSoundChannelPosition(final int id, this.position) : super(id: id);
 
   /// The new position.
   final SoundPosition position;
@@ -210,7 +223,7 @@ class SetSoundChannelReverb extends SoundEvent {
   ///
   /// The given [id] should be the ID of the [SoundChannel] to set the reverb
   /// for.
-  const SetSoundChannelReverb(int id, this.reverb) : super(id: id);
+  const SetSoundChannelReverb(final int id, this.reverb) : super(id: id);
 
   /// The reverb preset to use.
   ///

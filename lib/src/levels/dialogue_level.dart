@@ -15,23 +15,23 @@ import 'level.dart';
 class DialogueLevel extends Level {
   /// Create an instance.
   DialogueLevel({
-    required Game game,
+    required final Game game,
     required this.messages,
     required this.onDone,
     this.progressScanCode,
     this.progressControllerButton,
     this.position = 0,
     this.soundChannel,
-    Music? music,
-    List<Ambiance>? ambiances,
-    List<RandomSound>? randomSounds,
+    final Music? music,
+    final List<Ambiance>? ambiances,
+    final List<RandomSound>? randomSounds,
   })  : assert(
           progressScanCode != null || progressControllerButton != null,
           'Both `ProgressControllerButton` and `progressScanCode` cannot be '
           '`null`.',
         ),
         assert(
-          messages.where((element) => element.keepAlive == false).isEmpty,
+          messages.where((final element) => element.keepAlive == false).isEmpty,
           'All messages must have their `keepAlive` value set to `true`.',
         ),
         super(
@@ -76,8 +76,11 @@ class DialogueLevel extends Level {
     if (position >= messages.length) {
       onDone();
     } else {
-      _sound = game.outputMessage(messages.elementAt(position),
-          oldSound: _sound, soundChannel: soundChannel);
+      _sound = game.outputMessage(
+        messages.elementAt(position),
+        oldSound: _sound,
+        soundChannel: soundChannel,
+      );
       position++;
     }
   }
@@ -89,7 +92,7 @@ class DialogueLevel extends Level {
   }
 
   @override
-  void onPop(double? fadeLength) {
+  void onPop(final double? fadeLength) {
     super.onPop(fadeLength);
     final sound = _sound;
     if (sound != null) {
@@ -106,7 +109,7 @@ class DialogueLevel extends Level {
   }
 
   @override
-  void handleSdlEvent(Event event) {
+  void handleSdlEvent(final Event event) {
     final button = progressControllerButton;
     final scanCode = progressScanCode;
     if (button != null &&

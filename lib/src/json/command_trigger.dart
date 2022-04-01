@@ -19,7 +19,7 @@ class CommandKeyboardKey {
   });
 
   /// Create an instance from a JSON object.
-  factory CommandKeyboardKey.fromJson(Map<String, dynamic> json) =>
+  factory CommandKeyboardKey.fromJson(final Map<String, dynamic> json) =>
       _$CommandKeyboardKeyFromJson(json);
 
   /// The keyboard key which must be used to trigger this command.
@@ -39,11 +39,11 @@ class CommandKeyboardKey {
 
   /// Return a printable string of this key.
   String toPrintableString({
-    String controlKeyName = 'ctrl',
-    String shiftKeyName = 'shift',
-    String altKeyName = 'alt',
-    String Function(ScanCode scanCode)? getScanCodeString,
-    String separator = '+',
+    final String controlKeyName = 'ctrl',
+    final String shiftKeyName = 'shift',
+    final String altKeyName = 'alt',
+    final String Function(ScanCode scanCode)? getScanCodeString,
+    final String separator = '+',
   }) {
     final keys = <String>[];
     if (controlKey) {
@@ -71,31 +71,33 @@ class CommandKeyboardKey {
 @JsonSerializable()
 class CommandTrigger {
   /// Create an instance.
-  const CommandTrigger(
-      {required this.name,
-      required this.description,
-      this.keyboardKey,
-      this.button});
+  const CommandTrigger({
+    required this.name,
+    required this.description,
+    this.keyboardKey,
+    this.button,
+  });
 
   /// Create an instance from a JSON object.
-  factory CommandTrigger.fromJson(Map<String, dynamic> json) =>
+  factory CommandTrigger.fromJson(final Map<String, dynamic> json) =>
       _$CommandTriggerFromJson(json);
 
   /// Create a basic trigger.
   ///
   /// Creating instances can be quite verbose, so this method exists to make
   /// that process shorter.
-  factory CommandTrigger.basic(
-          {required String name,
-          required String description,
-          ScanCode? scanCode,
-          GameControllerButton? button}) =>
+  factory CommandTrigger.basic({
+    required final String name,
+    required final String description,
+    final ScanCode? scanCode,
+    final GameControllerButton? button,
+  }) =>
       CommandTrigger(
-          name: name,
-          description: description,
-          button: button,
-          keyboardKey:
-              (scanCode == null) ? null : CommandKeyboardKey(scanCode));
+        name: name,
+        description: description,
+        button: button,
+        keyboardKey: (scanCode == null) ? null : CommandKeyboardKey(scanCode),
+      );
 
   /// The name of the command which this trigger will send.
   final String name;

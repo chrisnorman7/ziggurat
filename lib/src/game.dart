@@ -110,7 +110,7 @@ class Game {
   /// It is not possible to fully pause sound events, since this could lead to
   /// problems if a sound delete event was never received for example. Instead,
   /// events are simply queued until the [soundsController] is unpaused.
-  void queueSoundEvent(SoundEvent event) {
+  void queueSoundEvent(final SoundEvent event) {
     if (soundsController.isPaused || soundsController.hasListener == false) {
       _queuedSoundEvents.add(event);
     } else {
@@ -127,7 +127,7 @@ class Game {
   }
 
   /// Register a new [task].
-  void registerTask(Task task) => tasks.add(TaskRunner(task));
+  void registerTask(final Task task) => tasks.add(TaskRunner(task));
 
   /// Call the given [func] after the specified time.
   ///
@@ -137,18 +137,21 @@ class Game {
   /// const task = Task(func: f, runAfter: 15);
   /// game.registerTask(task);
   /// ```
-  Task callAfter({required TaskFunction func, required int runAfter}) {
+  Task callAfter({
+    required final TaskFunction func,
+    required final int runAfter,
+  }) {
     final task = Task(func: func, runAfter: runAfter);
     registerTask(task);
     return task;
   }
 
   /// Unregister a task.
-  void unregisterTask(Task task) =>
-      tasks.removeWhere((element) => element.value == task);
+  void unregisterTask(final Task task) =>
+      tasks.removeWhere((final element) => element.value == task);
 
   /// Push a level onto the stack.
-  void pushLevel(Level level, {int? after}) {
+  void pushLevel(final Level level, {final int? after}) {
     if (after != null) {
       callAfter(func: () => pushLevel(level), runAfter: after);
     } else {
@@ -162,7 +165,7 @@ class Game {
   }
 
   /// Pop the most recent level.
-  Level? popLevel({double? ambianceFadeTime}) {
+  Level? popLevel({final double? ambianceFadeTime}) {
     if (_levels.isNotEmpty) {
       final oldLevel = _levels.removeLast()..onPop(ambianceFadeTime);
       final cl = currentLevel;
@@ -175,7 +178,7 @@ class Game {
   }
 
   /// Replace the current level with [level].
-  void replaceLevel(Level level, {double? ambianceFadeTime}) {
+  void replaceLevel(final Level level, {final double? ambianceFadeTime}) {
     popLevel(ambianceFadeTime: ambianceFadeTime);
     pushLevel(
       level,
@@ -188,7 +191,7 @@ class Game {
   ///
   ///This method will be passed one event at a time.
   @mustCallSuper
-  void handleSdlEvent(Event event) {
+  void handleSdlEvent(final Event event) {
     final sdl = event.sdl;
     if (event is QuitEvent) {
       stop();
@@ -271,7 +274,7 @@ class Game {
   /// The [timeDelta] argument will be the number of milliseconds since the last
   /// tick. If the game hasn't ticked before, then this value will be 0.
   @mustCallSuper
-  Future<void> tick(Sdl sdl, int timeDelta) async {
+  Future<void> tick(final Sdl sdl, final int timeDelta) async {
     Event? event;
     do {
       event = sdl.pollEvent();
@@ -286,12 +289,15 @@ class Game {
     final completedTasks = <TaskRunner>[];
     // We must copy the `tasks` list to prevent Concurrent modification during
     // iteration.
-    for (final runner in List<TaskRunner>.from(tasks.where(
-      (element) {
-        final taskLevel = element.value.level;
-        return taskLevel == null || taskLevel == level;
-      },
-    ), growable: false)) {
+    for (final runner in List<TaskRunner>.from(
+      tasks.where(
+        (final element) {
+          final taskLevel = element.value.level;
+          return taskLevel == null || taskLevel == level;
+        },
+      ),
+      growable: false,
+    )) {
       final task = runner.value;
       final interval = task.interval;
       final timeSinceRun = runner.runAfter + timeDelta;
@@ -344,11 +350,11 @@ class Game {
   /// are created on some machines.
   @mustCallSuper
   Future<void> run(
-    Sdl sdl, {
-    int framesPerSecond = 60,
-    TaskFunction? onStart,
+    final Sdl sdl, {
+    final int framesPerSecond = 60,
+    final TaskFunction? onStart,
   }) async {
-    final int tickEvery = 1000 ~/ framesPerSecond;
+    final tickEvery = 1000 ~/ framesPerSecond;
     _window = sdl.createWindow(title);
     var lastTick = 0;
     _isRunning = true;
@@ -377,17 +383,19 @@ class Game {
   }
 
   /// How to output text.
-  void outputText(String text) => _window?.title = text;
+  // ignore: use_setters_to_change_properties
+  void outputText(final String text) => _window?.title = text;
 
   /// Output a sound.
   ///
   /// This method is used by [outputMessage].
-  PlaySound? outputSound(
-      {required AssetReference? sound,
-      SoundChannel? soundChannel,
-      PlaySound? oldSound,
-      double gain = 0.7,
-      bool keepAlive = false}) {
+  PlaySound? outputSound({
+    required final AssetReference? sound,
+    SoundChannel? soundChannel,
+    final PlaySound? oldSound,
+    final double gain = 0.7,
+    final bool keepAlive = false,
+  }) {
     if (oldSound != null && oldSound.keepAlive == true) {
       oldSound.destroy();
     }
@@ -399,22 +407,26 @@ class Game {
   }
 
   /// Output a message.
-  PlaySound? outputMessage(Message message,
-      {SoundChannel? soundChannel, PlaySound? oldSound}) {
+  PlaySound? outputMessage(
+    final Message message, {
+    final SoundChannel? soundChannel,
+    final PlaySound? oldSound,
+  }) {
     final text = message.text;
     if (text != null) {
       outputText(text);
     }
     return outputSound(
-        sound: message.sound,
-        oldSound: oldSound,
-        soundChannel: soundChannel,
-        gain: message.gain,
-        keepAlive: message.keepAlive);
+      sound: message.sound,
+      oldSound: oldSound,
+      soundChannel: soundChannel,
+      gain: message.gain,
+      keepAlive: message.keepAlive,
+    );
   }
 
   /// Create a reverb.
-  CreateReverb createReverb(ReverbPreset reverb) {
+  CreateReverb createReverb(final ReverbPreset reverb) {
     final event =
         CreateReverb(game: this, id: SoundEvent.nextId(), reverb: reverb);
     queueSoundEvent(event);
@@ -423,9 +435,9 @@ class Game {
 
   /// Create a sound channel.
   SoundChannel createSoundChannel({
-    SoundPosition position = unpanned,
-    double gain = 0.7,
-    CreateReverb? reverb,
+    final SoundPosition position = unpanned,
+    final double gain = 0.7,
+    final CreateReverb? reverb,
   }) {
     final event = SoundChannel(
       game: this,
@@ -439,14 +451,14 @@ class Game {
   }
 
   /// Set the listener position.
-  void setListenerPosition(double x, double y, double z) =>
+  void setListenerPosition(final double x, final double y, final double z) =>
       queueSoundEvent(ListenerPositionEvent(x, y, z));
 
   /// Set the orientation of the listener.
-  void setListenerOrientation(double angle) =>
+  void setListenerOrientation(final double angle) =>
       queueSoundEvent(ListenerOrientationEvent.fromAngle(angle));
 
   /// Set the default panner strategy.
-  void setDefaultPannerStrategy(DefaultPannerStrategy strategy) =>
+  void setDefaultPannerStrategy(final DefaultPannerStrategy strategy) =>
       queueSoundEvent(SetDefaultPannerStrategy(strategy));
 }

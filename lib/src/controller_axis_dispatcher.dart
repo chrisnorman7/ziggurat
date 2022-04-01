@@ -29,9 +29,11 @@ import 'menu/menu.dart';
 /// [Editor] classes.
 class ControllerAxisDispatcher {
   /// Create an instance.
-  ControllerAxisDispatcher(this.axes,
-      {this.axisSensitivity = 0.5, this.functionInterval = 400})
-      : _controllerLastMoved = 0;
+  ControllerAxisDispatcher(
+    this.axes, {
+    this.axisSensitivity = 0.5,
+    this.functionInterval = 400,
+  }) : _controllerLastMoved = 0;
 
   /// The axes that are handled by this instance.
   final Map<GameControllerAxis, void Function(double value)> axes;
@@ -48,7 +50,7 @@ class ControllerAxisDispatcher {
   int _controllerLastMoved;
 
   /// Handle an axis value.
-  void handleAxisValue(GameControllerAxis axis, double value) {
+  void handleAxisValue(final GameControllerAxis axis, final double value) {
     final f = axes[axis];
     if (f == null || value.abs() < axisSensitivity) {
       return;

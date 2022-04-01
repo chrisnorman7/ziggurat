@@ -10,14 +10,14 @@ import 'helpers.dart';
 
 class TestLevel extends Level {
   /// Create.
-  TestLevel(Game game)
+  TestLevel(final Game game)
       : lastTicked = 0,
         super(game: game);
 
   /// The number of milliseconds since the [game] ticked.
   int lastTicked;
   @override
-  void tick(Sdl sdl, int timeDelta) {
+  void tick(final Sdl sdl, final int timeDelta) {
     lastTicked = timeDelta;
     super.tick(sdl, timeDelta);
   }
@@ -59,7 +59,7 @@ void main() {
         expect(runner.numberOfRuns, isZero);
         expect(runner.runAfter, j);
       }
-      game.tick(sdl, 1);
+      await game.tick(sdl, 1);
       expect(i, equals(1));
       expect(game.tasks, isEmpty);
     });
@@ -307,14 +307,14 @@ void main() {
     test('Random sounds', () async {
       final sdl = Sdl();
       final game = Game('Play Random Sounds');
-      final randomSound1 = RandomSound(
+      const randomSound1 = RandomSound(
         sound: AssetReference.file('sound1.wav'),
         minCoordinates: Point(1.0, 2.0),
         maxCoordinates: Point(5.0, 6.0),
         minInterval: 1000,
         maxInterval: 1000,
       );
-      final randomSound2 = RandomSound(
+      const randomSound2 = RandomSound(
         sound: AssetReference.file('sound2.wav'),
         minCoordinates: Point(23.0, 24.0),
         maxCoordinates: Point(38.0, 39.0),
@@ -327,8 +327,10 @@ void main() {
       game.pushLevel(l);
       expect(l.randomSoundPlaybacks[randomSound1], isNull);
       expect(l.randomSoundPlaybacks[randomSound2], isNull);
-      expect(l.getRandomSoundNextPlay(randomSound1).runAfter,
-          randomSound1.minInterval);
+      expect(
+        l.getRandomSoundNextPlay(randomSound1).runAfter,
+        randomSound1.minInterval,
+      );
       expect(
         l.getRandomSoundNextPlay(randomSound2).runAfter,
         inOpenClosedRange(randomSound2.minInterval, randomSound2.maxInterval),
@@ -377,18 +379,26 @@ void main() {
       );
       expect(l.randomSoundPlaybacks[randomSound2], isNotNull);
       playback = l.randomSoundPlaybacks[randomSound2]!;
-      expect(playback.sound.gain,
-          inOpenClosedRange(randomSound2.minGain, randomSound2.maxGain));
+      expect(
+        playback.sound.gain,
+        inOpenClosedRange(randomSound2.minGain, randomSound2.maxGain),
+      );
       expect(playback.channel.position, isA<SoundPosition3d>());
       position = playback.channel.position as SoundPosition3d;
       expect(
-          position.x,
-          inOpenClosedRange(
-              randomSound2.minCoordinates.x, randomSound2.maxCoordinates.x));
+        position.x,
+        inOpenClosedRange(
+          randomSound2.minCoordinates.x,
+          randomSound2.maxCoordinates.x,
+        ),
+      );
       expect(
-          position.y,
-          inOpenClosedRange(
-              randomSound2.minCoordinates.y, randomSound2.maxCoordinates.y));
+        position.y,
+        inOpenClosedRange(
+          randomSound2.minCoordinates.y,
+          randomSound2.maxCoordinates.y,
+        ),
+      );
       expect(position.z, isZero);
       expect(
         l.getRandomSoundNextPlay(randomSound2).runAfter,
@@ -396,23 +406,26 @@ void main() {
       );
     });
     test('Commands returning', () {
-      final trigger1 = CommandTrigger(
+      const trigger1 = CommandTrigger(
         name: 'command1',
         description: 'First command',
       );
-      final trigger2 = CommandTrigger(
+      const trigger2 = CommandTrigger(
         name: 'command2',
         description: 'Second command',
       );
       final game = Game(
         'Commands',
-        triggerMap: TriggerMap(
+        triggerMap: const TriggerMap(
           [trigger1, trigger2],
         ),
       );
       final level = Level(
         game: game,
-        commands: {trigger1.name: Command(), trigger2.name: Command()},
+        commands: {
+          trigger1.name: const Command(),
+          trigger2.name: const Command()
+        },
       );
       expect(level.startCommand(trigger1.name), isTrue);
       expect(level.startCommand(trigger2.name), isTrue);
@@ -424,7 +437,7 @@ void main() {
     test(
       'Shadowed commands',
       () {
-        final trigger1 = CommandTrigger(
+        const trigger1 = CommandTrigger(
           name: 'command1',
           description: 'First command',
           keyboardKey: CommandKeyboardKey(ScanCode.right, altKey: true),

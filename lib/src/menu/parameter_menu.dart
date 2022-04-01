@@ -33,7 +33,7 @@ class ParameterMenuParameter extends MenuItem {
 
   /// Show the message provided by [getLabel].
   @override
-  void onFocus(covariant ParameterMenu menu) {
+  void onFocus(covariant final ParameterMenu menu) {
     final message = getLabel();
     menu.oldSound = menu.game.outputMessage(message, oldSound: menu.oldSound);
   }
@@ -43,17 +43,17 @@ class ParameterMenuParameter extends MenuItem {
 class ParameterMenu extends Menu {
   /// Create an instance.
   ParameterMenu({
-    required Game game,
-    required Message title,
-    required List<ParameterMenuParameter> parameters,
+    required final Game game,
+    required final Message title,
+    required final List<ParameterMenuParameter> parameters,
     this.decreaseValueButton = GameControllerButton.dpadLeft,
     this.decreaseValueScanCode = ScanCode.left,
     this.increaseValueButton = GameControllerButton.dpadRight,
     this.increaseValueScanCode = ScanCode.right,
-    TaskFunction? onCancel,
-    Music? music,
-    List<Ambiance>? ambiances,
-    List<RandomSound>? randomSounds,
+    final TaskFunction? onCancel,
+    final Music? music,
+    final List<Ambiance>? ambiances,
+    final List<RandomSound>? randomSounds,
   }) : super(
           game: game,
           title: title,
@@ -78,7 +78,7 @@ class ParameterMenu extends Menu {
 
   /// Handle SDL values.
   @override
-  void handleSdlEvent(Event event) {
+  void handleSdlEvent(final Event event) {
     final item = currentMenuItem;
     if (item is ParameterMenuParameter) {
       if (event is KeyboardEvent &&

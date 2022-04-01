@@ -18,16 +18,16 @@ class SceneLevel extends Level {
   /// Both [ambiances] and [randomSounds] will be passed to the [Level]
   /// constructor.
   SceneLevel({
-    required Game game,
+    required final Game game,
     required this.message,
     required this.onDone,
     this.duration,
     this.skipScanCode,
     this.skipControllerButton,
     this.soundChannel,
-    Music? music,
-    List<Ambiance>? ambiances,
-    List<RandomSound>? randomSounds,
+    final Music? music,
+    final List<Ambiance>? ambiances,
+    final List<RandomSound>? randomSounds,
   })  : assert(
           duration != null ||
               skipControllerButton != null ||
@@ -35,17 +35,17 @@ class SceneLevel extends Level {
           'At least one of `duration`, `skipControllerButton`, or '
           '`skipScanCode` must not be null.',
         ),
+        assert(
+          message.keepAlive == true,
+          'If `keepAlive` is not `true`, then `onPop` will not function '
+          'properly.',
+        ),
         super(
           game: game,
           music: music,
           ambiances: ambiances,
           randomSounds: randomSounds,
-        ) {
-    assert(
-        message.keepAlive == true,
-        'If `keepAlive` is not `true`, then `onPop` will not function '
-        'properly.');
-  }
+        );
 
   /// The message to play.
   ///
@@ -100,7 +100,7 @@ class SceneLevel extends Level {
   }
 
   @override
-  void onPop(double? fadeLength) {
+  void onPop(final double? fadeLength) {
     super.onPop(fadeLength);
     _sound?.destroy();
   }
@@ -115,7 +115,7 @@ class SceneLevel extends Level {
   }
 
   @override
-  void handleSdlEvent(Event event) {
+  void handleSdlEvent(final Event event) {
     if (event is KeyboardEvent &&
         event.repeat == false &&
         event.key.modifiers.isEmpty &&

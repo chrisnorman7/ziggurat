@@ -18,24 +18,25 @@ class AssetReferenceMenu extends Menu {
   /// The title will most likely be gleaned from a [AssetReferenceReference](https://pub.dev/documentation/ziggurat_sounds/latest/ziggurat_sounds/AssetReferenceReference-class.html)
   /// instance.
   AssetReferenceMenu({
-    required Game game,
-    required Message title,
-    required Map<String, AssetReference> assetReferences,
-    Music? music,
-    List<Ambiance>? ambiances,
-    List<RandomSound>? randomSounds,
+    required final Game game,
+    required final Message title,
+    required final Map<String, AssetReference> assetReferences,
+    final Music? music,
+    final List<Ambiance>? ambiances,
+    final List<RandomSound>? randomSounds,
   }) : super(
           game: game,
           title: title,
           items: [
             for (final entry in assetReferences.entries)
               MenuItem(
-                  Message(
-                    text: entry.key,
-                    sound: entry.value,
-                    keepAlive: true,
-                  ),
-                  menuItemLabel)
+                Message(
+                  text: entry.key,
+                  sound: entry.value,
+                  keepAlive: true,
+                ),
+                menuItemLabel,
+              )
           ],
           music: music,
           ambiances: ambiances,
