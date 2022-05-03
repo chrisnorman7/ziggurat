@@ -3,11 +3,35 @@ import 'dart:io';
 import 'dart:math';
 
 import 'error.dart';
+import 'math.dart';
 
 /// An extension for returning a `Point<int>` from a `Point<double>`.
 extension RunnerDoubleMethods on Point<double> {
   /// Return a floored version of this point.
   Point<int> floor() => Point<int>(x.floor(), y.floor());
+
+  /// Return the angle between `this` and [other].
+  double angleBetween(final Point<double> other) {
+    // Check if the points are on top of each other and output something
+    // reasonable.
+    if (x == other.x && y == other.y) {
+      return 0.0;
+    }
+    // If y1 and y2 are the same, we'll end up dividing by 0, and that's bad.
+    if (y == other.y) {
+      if (other.x > x) {
+        return 90.0;
+      } else {
+        return 270.0;
+      }
+    }
+    final angle = atan2(other.x - x, other.y - y);
+    // Convert result from radians to degrees. If you want minutes and seconds
+    // as well it's tough.
+    final degrees = angle * 180 / pi;
+    // Ensure the angle is between 0 and 360.
+    return normaliseAngle(degrees);
+  }
 }
 
 /// An extension for returning a `Point<double>` from a `Point<int>`.

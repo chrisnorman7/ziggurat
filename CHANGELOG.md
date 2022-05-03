@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.43.1]
+
+### Added
+
+* Added the `angleBetween` extension method on `Point<double>`.
+
 ## [0.43.0]
 
 ### Changed
