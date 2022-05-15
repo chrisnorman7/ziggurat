@@ -1,3 +1,4 @@
+// ignore_for_file: prefer_final_parameters
 /// Provides the [SoundChannel] class.
 import '../../../wave_types.dart';
 import '../../error.dart';
@@ -194,14 +195,13 @@ class SoundChannel extends SoundEvent {
 /// Destroy a [SoundChannel] instance.
 class DestroySoundChannel extends DestroySound {
   /// Create an event.
-  const DestroySoundChannel(final int id) : super(id);
+  const DestroySoundChannel(super.id);
 }
 
 /// Set the gain for a [SoundChannel].
 class SetSoundChannelGain extends SetSoundGain {
   /// Create an event.
-  const SetSoundChannelGain({required final int id, required final double gain})
-      : super(id: id, gain: gain);
+  const SetSoundChannelGain({required super.id, required super.gain});
 }
 
 /// Set the position for a [SoundChannel].

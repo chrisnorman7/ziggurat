@@ -1,11 +1,9 @@
+// ignore_for_file: prefer_final_parameters
 /// Provides the [SceneLevel] class.
 import 'package:dart_sdl/dart_sdl.dart';
 
 import '../game.dart';
-import '../json/ambiance.dart';
 import '../json/message.dart';
-import '../json/music.dart';
-import '../json/random_sound.dart';
 import '../sound/events/playback.dart';
 import '../sound/events/sound_channel.dart';
 import '../tasks/task.dart';
@@ -18,16 +16,16 @@ class SceneLevel extends Level {
   /// Both [ambiances] and [randomSounds] will be passed to the [Level]
   /// constructor.
   SceneLevel({
-    required final Game game,
+    required super.game,
     required this.message,
     required this.onDone,
     this.duration,
     this.skipScanCode,
     this.skipControllerButton,
     this.soundChannel,
-    final Music? music,
-    final List<Ambiance>? ambiances,
-    final List<RandomSound>? randomSounds,
+    super.music,
+    super.ambiances,
+    super.randomSounds,
   })  : assert(
           duration != null ||
               skipControllerButton != null ||
@@ -39,12 +37,6 @@ class SceneLevel extends Level {
           message.keepAlive == true,
           'If `keepAlive` is not `true`, then `onPop` will not function '
           'properly.',
-        ),
-        super(
-          game: game,
-          music: music,
-          ambiances: ambiances,
-          randomSounds: randomSounds,
         );
 
   /// The message to play.

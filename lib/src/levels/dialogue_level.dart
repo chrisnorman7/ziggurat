@@ -1,11 +1,8 @@
+// ignore_for_file: prefer_final_parameters
 /// Provides the [DialogueLevel] class.
 import 'package:dart_sdl/dart_sdl.dart';
 
-import '../game.dart';
-import '../json/ambiance.dart';
 import '../json/message.dart';
-import '../json/music.dart';
-import '../json/random_sound.dart';
 import '../sound/events/playback.dart';
 import '../sound/events/sound_channel.dart';
 import 'level.dart';
@@ -15,16 +12,16 @@ import 'level.dart';
 class DialogueLevel extends Level {
   /// Create an instance.
   DialogueLevel({
-    required final Game game,
+    required super.game,
     required this.messages,
     required this.onDone,
     this.progressScanCode,
     this.progressControllerButton,
     this.position = 0,
     this.soundChannel,
-    final Music? music,
-    final List<Ambiance>? ambiances,
-    final List<RandomSound>? randomSounds,
+    super.music,
+    super.ambiances,
+    super.randomSounds,
   })  : assert(
           progressScanCode != null || progressControllerButton != null,
           'Both `ProgressControllerButton` and `progressScanCode` cannot be '
@@ -33,12 +30,6 @@ class DialogueLevel extends Level {
         assert(
           messages.where((final element) => element.keepAlive == false).isEmpty,
           'All messages must have their `keepAlive` value set to `true`.',
-        ),
-        super(
-          game: game,
-          music: music,
-          ambiances: ambiances,
-          randomSounds: randomSounds,
         );
 
   /// The list of messages to progress through.

@@ -1,11 +1,8 @@
+// ignore_for_file: prefer_final_parameters
 /// Provides the [AssetReferenceMenu] class.
 import '../../menus.dart';
-import '../game.dart';
-import '../json/ambiance.dart';
 import '../json/asset_reference.dart';
 import '../json/message.dart';
-import '../json/music.dart';
-import '../json/random_sound.dart';
 
 /// A menu for showing [AssetReference] instances.
 class AssetReferenceMenu extends Menu {
@@ -18,15 +15,13 @@ class AssetReferenceMenu extends Menu {
   /// The title will most likely be gleaned from a [AssetReferenceReference](https://pub.dev/documentation/ziggurat_sounds/latest/ziggurat_sounds/AssetReferenceReference-class.html)
   /// instance.
   AssetReferenceMenu({
-    required final Game game,
-    required final Message title,
+    required super.game,
+    required super.title,
     required final Map<String, AssetReference> assetReferences,
-    final Music? music,
-    final List<Ambiance>? ambiances,
-    final List<RandomSound>? randomSounds,
+    super.music,
+    super.ambiances,
+    super.randomSounds,
   }) : super(
-          game: game,
-          title: title,
           items: [
             for (final entry in assetReferences.entries)
               MenuItem(
@@ -38,8 +33,5 @@ class AssetReferenceMenu extends Menu {
                 menuItemLabel,
               )
           ],
-          music: music,
-          ambiances: ambiances,
-          randomSounds: randomSounds,
         );
 }

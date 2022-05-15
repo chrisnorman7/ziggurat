@@ -15,7 +15,7 @@ class SoundChannelFilter extends SoundEvent {
 /// An event for applying a lowpass to a [SoundChannel] instance.
 class SoundChannelLowpass extends SoundChannelFilter {
   /// Create an instance.
-  const SoundChannelLowpass(final int id, this.frequency, this.q) : super(id);
+  const SoundChannelLowpass(super.id, this.frequency, this.q);
 
   /// The frequency of the low pass.
   final double frequency;
@@ -32,10 +32,10 @@ class SoundChannelLowpass extends SoundChannelFilter {
 class SoundChannelHighpass extends SoundChannelLowpass {
   /// Create an instance.
   const SoundChannelHighpass(
-    final int id,
-    final double frequency,
-    final double q,
-  ) : super(id, frequency, q);
+    super.id,
+    super.frequency,
+    super.q,
+  );
 }
 
 /// An event for applying a bandpass to a [SoundChannel] instance.

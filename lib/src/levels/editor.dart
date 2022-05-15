@@ -1,13 +1,10 @@
+// ignore_for_file: prefer_final_parameters
 /// Provides the [Editor] class.
 import 'dart:math';
 
 import 'package:dart_sdl/dart_sdl.dart';
 
 import '../controller_axis_dispatcher.dart';
-import '../game.dart';
-import '../json/ambiance.dart';
-import '../json/music.dart';
-import '../json/random_sound.dart';
 import 'level.dart';
 
 /// A level for editing text.
@@ -34,7 +31,7 @@ class Editor extends Level {
   /// The [ambiances] and [randomSounds] lists are passed directly to the
   /// [Level] constructor.
   Editor({
-    required final Game game,
+    required super.game,
     required this.onDone,
     this.text = '',
     this.onCancel,
@@ -61,17 +58,11 @@ class Editor extends Level {
     final GameControllerAxis backspaceAxis = GameControllerAxis.triggerleft,
     final int controllerMovementSpeed = 400,
     final double controllerAxisSensitivity = 0.5,
-    final Music? music,
-    final List<Ambiance>? ambiances,
-    final List<RandomSound>? randomSounds,
+    super.music,
+    super.ambiances,
+    super.randomSounds,
   })  : _shiftPressed = false,
-        _currentPosition = 0,
-        super(
-          game: game,
-          music: music,
-          ambiances: ambiances,
-          randomSounds: randomSounds,
-        ) {
+        _currentPosition = 0 {
     controllerAxisDispatcher = ControllerAxisDispatcher(
       {
         upDownAxis: (final value) {

@@ -1,3 +1,4 @@
+// ignore_for_file: prefer_final_parameters
 /// Provides the [AutomationFade] and [CancelAutomationFade] classes.
 import '../../game.dart';
 import 'events_base.dart';
@@ -31,13 +32,13 @@ class AutomationFade extends CancelAutomationFade {
   /// Create an instance.
   const AutomationFade({
     required this.game,
-    required final int id,
-    required final FadeType fadeType,
+    required super.id,
+    required super.fadeType,
     required this.preFade,
     required this.fadeLength,
     required this.startGain,
     required this.endGain,
-  }) : super(id: id, fadeType: fadeType);
+  });
 
   /// The game this fade is associated with.
   final Game game;

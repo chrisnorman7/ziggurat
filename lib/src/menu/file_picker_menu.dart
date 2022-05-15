@@ -1,13 +1,12 @@
+// ignore_for_file: prefer_final_parameters
+/// Provides the [FilePickerMenu] class.
 import 'dart:io';
 
 import 'package:dart_sdl/dart_sdl.dart';
 import 'package:path/path.dart' as path;
 
 import '../game.dart';
-import '../json/ambiance.dart';
 import '../json/message.dart';
-import '../json/music.dart';
-import '../json/random_sound.dart';
 import 'menu.dart';
 import 'menu_item.dart';
 import 'widgets/button.dart';
@@ -24,17 +23,14 @@ class FilePickerMenu extends Menu {
     this.allowDirectories = false,
     this.showFiles = true,
     final void Function()? onCancel,
-    final Music? music,
-    final List<Ambiance>? ambiances,
-    final List<RandomSound>? randomSounds,
+    super.music,
+    super.ambiances,
+    super.randomSounds,
   })  : currentDirectory = start ?? _lastUsed,
         super(
           game: game,
           title: Message(text: '$caption (${(start ?? _lastUsed).path})'),
           onCancel: onCancel,
-          music: music,
-          ambiances: ambiances,
-          randomSounds: randomSounds,
         ) {
     _lastUsed = currentDirectory;
     addButton(

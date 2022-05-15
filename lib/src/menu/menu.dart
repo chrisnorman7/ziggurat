@@ -1,9 +1,9 @@
+// ignore_for_file: prefer_final_parameters
 /// Provides the [Menu] class.
 import 'package:dart_sdl/dart_sdl.dart';
 
 import '../../sound.dart';
 import '../controller_axis_dispatcher.dart';
-import '../game.dart';
 import '../json/asset_reference.dart';
 import '../json/message.dart';
 import '../levels/level.dart';
@@ -56,7 +56,7 @@ class Menu extends Level {
   /// The [movementAxis] value is the axis which can be used to move within this
   /// menu.
   Menu({
-    required final Game game,
+    required super.game,
     required this.title,
     final List<MenuItem>? items,
     this.position,
@@ -77,18 +77,12 @@ class Menu extends Level {
     this.searchEnabled = true,
     this.searchInterval = 500,
     this.soundChannel,
-    final Music? music,
-    final List<Ambiance>? ambiances,
-    final List<RandomSound>? randomSounds,
+    super.music,
+    super.ambiances,
+    super.randomSounds,
   })  : menuItems = items ?? [],
         searchString = '',
-        searchTime = 0,
-        super(
-          game: game,
-          music: music,
-          ambiances: ambiances,
-          randomSounds: randomSounds,
-        ) {
+        searchTime = 0 {
     controllerAxisDispatcher = ControllerAxisDispatcher(
       {
         movementAxis: (final value) {

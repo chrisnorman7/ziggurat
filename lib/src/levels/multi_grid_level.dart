@@ -1,14 +1,11 @@
+// ignore_for_file: prefer_final_parameters
 /// Provides the [MultiGridLevel] class.
 import 'dart:math';
 
 import 'package:dart_sdl/dart_sdl.dart';
 
 import '../controller_axis_dispatcher.dart';
-import '../game.dart';
-import '../json/ambiance.dart';
 import '../json/message.dart';
-import '../json/music.dart';
-import '../json/random_sound.dart';
 import '../multi_grid.dart';
 import '../sound/events/playback.dart';
 import 'level.dart';
@@ -21,7 +18,7 @@ import 'level.dart';
 class MultiGridLevel extends Level {
   /// Create an instance.
   MultiGridLevel({
-    required final Game game,
+    required super.game,
     required this.title,
     required this.rows,
     this.onCancel,
@@ -39,22 +36,16 @@ class MultiGridLevel extends Level {
     this.cancelScanCode = ScanCode.escape,
     final double axisSensitivity = 0.5,
     final int axisInterval = 400,
-    final Music? music,
-    final List<Ambiance>? ambiances,
-    final List<RandomSound>? randomSounds,
+    super.music,
+    super.ambiances,
+    super.randomSounds,
   })  : axisDispatcher = ControllerAxisDispatcher(
           {},
           axisSensitivity: axisSensitivity,
           functionInterval: axisInterval,
         ),
         _horizontalPositions = [],
-        _verticalPosition = verticalPosition,
-        super(
-          game: game,
-          music: music,
-          ambiances: ambiances,
-          randomSounds: randomSounds,
-        ) {
+        _verticalPosition = verticalPosition {
     if (verticalPosition != null) {
       while (_horizontalPositions.length <= verticalPosition) {
         _horizontalPositions.add(null);

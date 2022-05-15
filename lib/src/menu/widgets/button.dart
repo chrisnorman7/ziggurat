@@ -1,3 +1,4 @@
+// ignore_for_file: prefer_final_parameters
 /// Provides the [Button] class.
 import '../../json/asset_reference.dart';
 import '../../json/message.dart';
@@ -10,8 +11,8 @@ class Button extends Widget {
   /// Create a button.
   const Button(
     final void Function() onActivate, {
-    final AssetReference? activateSound,
-  }) : super(onActivate: onActivate, activateSound: activateSound);
+    super.activateSound,
+  }) : super(onActivate: onActivate);
 }
 
 /// A button which can toggle through a list of items.

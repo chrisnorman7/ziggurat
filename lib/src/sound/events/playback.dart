@@ -1,3 +1,4 @@
+// ignore_for_file: prefer_final_parameters
 /// Provides events relating to playing sounds.
 import '../../../notes.dart';
 import '../../../wave_types.dart';
@@ -154,13 +155,13 @@ class PauseEvent extends SoundEvent {
 /// Pause a [PlaySound] event.
 class PauseSound extends PauseEvent {
   /// Create an instance.
-  const PauseSound(final int id) : super(id);
+  const PauseSound(super.id);
 }
 
 /// Unpause something.
 class UnpauseEvent extends PauseSound {
   /// Create an event.
-  const UnpauseEvent(final int id) : super(id);
+  const UnpauseEvent(super.id);
 
   /// Describe this object.
   @override
@@ -170,7 +171,7 @@ class UnpauseEvent extends PauseSound {
 /// Unpause a [PlaySound] instance.
 class UnpauseSound extends UnpauseEvent {
   /// Create an instance.
-  const UnpauseSound(final int id) : super(id);
+  const UnpauseSound(super.id);
 }
 
 /// Destroy something.
@@ -186,7 +187,7 @@ class DestroyEvent extends SoundEvent {
 /// Destroy a [PlaySound] instance.
 class DestroySound extends DestroyEvent {
   /// Create an instance.
-  const DestroySound(final int id) : super(id);
+  const DestroySound(super.id);
 }
 
 /// Set the gain for something.
@@ -205,8 +206,10 @@ class GainEvent extends SoundEvent {
 /// Set the gain for a sound.
 class SetSoundGain extends GainEvent {
   /// Create the instance.
-  const SetSoundGain({required final int id, required final double gain})
-      : super(id: id, gain: gain);
+  const SetSoundGain({
+    required super.id,
+    required super.gain,
+  });
 }
 
 /// Set whether or not a sound should loop.
@@ -359,8 +362,7 @@ class PlayWave extends SoundEvent {
 /// Set the gain for a [PlayWave] instance.
 class SetWaveGain extends GainEvent {
   /// Create an instance.
-  const SetWaveGain({required final int id, required final double gain})
-      : super(id: id, gain: gain);
+  const SetWaveGain({required super.id, required super.gain});
 }
 
 /// Set the frequency for a [PlayWave] instance.
@@ -380,7 +382,7 @@ class SetWaveFrequency extends SoundEvent {
 /// Destroy a [PlayWave] instance.
 class DestroyWave extends DestroyEvent {
   /// Create an instance.
-  const DestroyWave(final int id) : super(id);
+  const DestroyWave(super.id);
 }
 
 /// Automate the frequency for a [PlayWave] instance.
@@ -412,11 +414,11 @@ class AutomateWaveFrequency extends SoundEvent {
 /// Pause a [PlayWave] instance.
 class PauseWave extends PauseEvent {
   /// Create an instance.
-  const PauseWave(final int id) : super(id);
+  const PauseWave(super.id);
 }
 
 /// Unpause a [PlayWave] instance.
 class UnpauseWave extends UnpauseEvent {
   /// Create an instance.
-  const UnpauseWave(final int id) : super(id);
+  const UnpauseWave(super.id);
 }

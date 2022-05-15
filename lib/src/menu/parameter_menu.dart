@@ -1,12 +1,9 @@
+// ignore_for_file: prefer_final_parameters
 /// Provides the [ParameterMenu] and [ParameterMenuParameter] classes.
 import 'package:dart_sdl/dart_sdl.dart';
 
 import '../../menus.dart';
-import '../game.dart';
-import '../json/ambiance.dart';
 import '../json/message.dart';
-import '../json/music.dart';
-import '../json/random_sound.dart';
 import '../tasks/task.dart';
 
 /// The default message for [ParameterMenuParameter].
@@ -43,25 +40,19 @@ class ParameterMenuParameter extends MenuItem {
 class ParameterMenu extends Menu {
   /// Create an instance.
   ParameterMenu({
-    required final Game game,
-    required final Message title,
+    required super.game,
+    required super.title,
     required final List<ParameterMenuParameter> parameters,
     this.decreaseValueButton = GameControllerButton.dpadLeft,
     this.decreaseValueScanCode = ScanCode.left,
     this.increaseValueButton = GameControllerButton.dpadRight,
     this.increaseValueScanCode = ScanCode.right,
-    final TaskFunction? onCancel,
-    final Music? music,
-    final List<Ambiance>? ambiances,
-    final List<RandomSound>? randomSounds,
+    super.onCancel,
+    super.music,
+    super.ambiances,
+    super.randomSounds,
   }) : super(
-          game: game,
-          title: title,
           items: List<MenuItem>.from(parameters),
-          music: music,
-          ambiances: ambiances,
-          randomSounds: randomSounds,
-          onCancel: onCancel,
         );
 
   /// The scan code for decreasing values.

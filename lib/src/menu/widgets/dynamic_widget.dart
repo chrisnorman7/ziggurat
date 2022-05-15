@@ -1,7 +1,6 @@
+// ignore_for_file: prefer_final_parameters
 /// Provides the [DynamicWidget] class.
-import '../../json/asset_reference.dart';
 import '../../json/message.dart';
-import '../../tasks/task.dart';
 import '../menu_item.dart';
 import 'widgets_base.dart';
 
@@ -10,9 +9,9 @@ class DynamicWidget extends Widget {
   /// Create an instance.
   const DynamicWidget(
     this.onGetLabel, {
-    final TaskFunction? onActivate,
-    final AssetReference? activateSound,
-  }) : super(onActivate: onActivate, activateSound: activateSound);
+    super.onActivate,
+    super.activateSound,
+  });
 
   /// The method that should be used to get the label.
   final Message Function(MenuItem menuItem) onGetLabel;

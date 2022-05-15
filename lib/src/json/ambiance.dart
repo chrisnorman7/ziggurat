@@ -1,3 +1,4 @@
+// ignore_for_file: prefer_final_parameters
 /// Provides the [Ambiance] class.
 import 'dart:math';
 
@@ -15,10 +16,10 @@ part 'ambiance.g.dart';
 class Ambiance extends Music {
   /// Create an instance.
   const Ambiance({
-    required final AssetReference sound,
-    final double gain = 0.5,
+    required super.sound,
+    super.gain,
     this.position,
-  }) : super(sound: sound, gain: gain);
+  });
 
   /// Create an instance from JSON.
   factory Ambiance.fromJson(final Map<String, dynamic> json) =>
