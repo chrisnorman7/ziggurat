@@ -407,6 +407,81 @@ void main() {
       menu.down();
       expect(menu.currentMenuItem, isNull);
     });
+    test('Menu commands', () {
+      const quitCommand = CommandTrigger(
+        name: 'quit',
+        description: 'Quit the game',
+        keyboardKey: CommandKeyboardKey(ScanCode.q),
+      );
+      const helpCommand = CommandTrigger(
+        name: 'help',
+        description: 'Get help',
+        keyboardKey: CommandKeyboardKey(
+          ScanCode.f1,
+        ),
+      );
+      final game = Game(
+        'Test Menu Game',
+        triggerMap: const TriggerMap(
+          [
+            quitCommand,
+            helpCommand,
+          ],
+        ),
+      );
+      var quit = 0;
+      final m = Menu(
+        game: game,
+        title: const Message(text: 'Test Menu'),
+        items: [
+          MenuItem(
+            const Message(text: 'Quit'),
+            Button(
+              () => quit++,
+            ),
+          )
+        ],
+      );
+      game.pushLevel(m);
+      expect(m.position, isNull);
+      var command = 0;
+      m.registerCommand(
+        quitCommand.name,
+        Command(
+          onStart: () => command++,
+        ),
+      );
+      var help = 0;
+      m.registerCommand(
+        helpCommand.name,
+        Command(
+          onStart: () => help++,
+        ),
+      );
+      final sdl = Sdl();
+      game.handleSdlEvent(
+        makeKeyboardEvent(
+          sdl,
+          ScanCode.f1,
+          KeyCode.f1,
+          state: PressedState.pressed,
+        ),
+      );
+      expect(help, 1);
+      expect(quit, isZero);
+      expect(command, isZero);
+      game.handleSdlEvent(
+        makeKeyboardEvent(
+          sdl,
+          ScanCode.q,
+          KeyCode.q,
+          state: PressedState.pressed,
+        ),
+      );
+      expect(command, 1);
+      expect(help, 1);
+      expect(quit, isZero);
+    });
   });
   group('MenuItem', () {
     test('DynamicWidget', () {
