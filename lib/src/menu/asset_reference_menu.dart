@@ -21,6 +21,7 @@ class AssetReferenceMenu extends Menu {
     super.music,
     super.ambiances,
     super.randomSounds,
+    super.onCancel,
   }) : super(
           items: [
             for (final entry in assetReferences.entries)
