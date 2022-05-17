@@ -1,11 +1,5 @@
 # Changelog
 
-## [0.44.1]
-
-### Fixed
-
-* Fixed a bug where registered commands wouldn't trigger in menus.
-
 ## [0.44.0]
 
 ### Changed
