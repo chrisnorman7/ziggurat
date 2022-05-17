@@ -21,7 +21,7 @@ KeyboardEvent makeKeyboardEvent(
   final ScanCode scanCode,
   final KeyCode keyCode, {
   final PressedState state = PressedState.released,
-  final Set<KeyMod>? modifiers,
+  final Set<KeyMod> modifiers = const <KeyMod>{},
 }) =>
     KeyboardEvent(
       sdl,
@@ -32,7 +32,7 @@ KeyboardEvent makeKeyboardEvent(
       KeyboardKey(
         scancode: scanCode,
         keycode: keyCode,
-        modifiers: modifiers ?? {},
+        modifiers: modifiers,
       ),
     );
 
