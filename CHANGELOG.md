@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.44.1]
+
+### Added
+
+* Allow instances of `AssetReferenceMenu` to be cancelled.
+
 ## [0.44.0]
 
 ### Changed
