@@ -287,28 +287,31 @@ class Menu extends Level {
                 event.key.modifiers.contains(KeyMod.num)))) {
       final scanCode = event.key.scancode;
       if (scanCode == upScanCode) {
-        up();
+        return up();
       } else if (scanCode == downScanCode) {
-        down();
+        return down();
       } else if (scanCode == activateScanCode) {
-        activate();
+        return activate();
       } else if (scanCode == cancelScanCode) {
-        cancel();
+        return cancel();
       }
     } else if (event is ControllerButtonEvent &&
         event.state == PressedState.pressed) {
       final button = event.button;
       if (button == upButton) {
-        up();
+        return up();
       } else if (button == downButton) {
-        down();
+        return down();
       } else if (button == activateButton) {
-        activate();
+        return activate();
       } else if (button == cancelButton) {
-        cancel();
+        return cancel();
       }
     } else if (event is ControllerAxisEvent) {
-      controllerAxisDispatcher.handleAxisValue(event.axis, event.smallValue);
+      return controllerAxisDispatcher.handleAxisValue(
+        event.axis,
+        event.smallValue,
+      );
     } else if (event is TextInputEvent &&
         searchEnabled == true &&
         event.text.isNotEmpty) {
@@ -326,6 +329,8 @@ class Menu extends Level {
           break;
         }
       }
+      return;
     }
+    super.handleSdlEvent(event);
   }
 }
