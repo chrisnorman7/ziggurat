@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.45.0]
+
+### Added
+
+* Added the `Tile`, `TileMap`, and `TileMapLevel` classes.
+
 ## [0.44.2]
 
 ### Added
