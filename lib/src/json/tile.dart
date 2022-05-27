@@ -3,9 +3,11 @@ import 'dart:math';
 
 import 'package:json_annotation/json_annotation.dart';
 
+import 'tile_map.dart';
+
 part 'tile.g.dart';
 
-/// A tile for a map.
+/// A tile for a [TileMap].
 @JsonSerializable()
 class Tile {
   /// Create an instance.

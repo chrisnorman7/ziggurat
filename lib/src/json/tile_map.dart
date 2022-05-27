@@ -53,6 +53,39 @@ class TileMap {
     return map[point.y] ?? defaultFlags;
   }
 
+  /// Set the tile at the given [point] to the given [flags].
+  ///
+  /// If you only want to set or unset a single flag at a time, consider the
+  /// [setTileFlag] and [clearTileFlag] methods.
+  void setTileFlags({
+    required final Point<int> point,
+    required final int flags,
+  }) {
+    tiles.putIfAbsent(point.x, () => {})[point.y] = flags;
+  }
+
+  /// Set the given [flag] on the tile at the given [point].
+  void setTileFlag({
+    required final Point<int> point,
+    required final int flag,
+  }) {
+    final map = tiles.putIfAbsent(point.x, () => {});
+    final value = map.putIfAbsent(point.y, () => 0) | flag;
+    map[point.y] = value;
+  }
+
+  /// Clear the given [flag] from the tile at the given [point].
+  void clearTileFlag({
+    required final Point<int> point,
+    required final int flag,
+  }) {
+    final map = tiles.putIfAbsent(point.x, () => {});
+    final value = map.putIfAbsent(point.y, () => 0);
+    if (value & flag != 0) {
+      map[point.y] = value - flag;
+    }
+  }
+
   /// Returns `true` if the given [point] represents valid coordinates for this
   /// map.
   bool validCoordinates(final Point<int> point) =>

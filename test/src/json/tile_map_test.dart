@@ -36,6 +36,47 @@ void main() {
         },
       );
       test(
+        '.setTileFlags',
+        () {
+          // ignore: prefer_const_constructors
+          final tileMap = TileMap(width: 10, height: 10, tiles: {})
+            ..setTileFlags(point: const Point(0, 0), flags: 14);
+          expect(tileMap.getTileFlags(const Point(0, 0)), 14);
+          tileMap.setTileFlags(point: const Point(3, 3), flags: 15);
+          expect(tileMap.getTileFlags(const Point(0, 0)), 14);
+          expect(tileMap.getTileFlags(const Point(3, 3)), 15);
+        },
+      );
+      test(
+        '.setTileFlag',
+        () {
+          // ignore: prefer_const_constructors
+          final tileMap = TileMap(width: 10, height: 10, tiles: {})
+            ..setTileFlag(point: const Point(0, 0), flag: 1);
+          expect(tileMap.getTileFlags(const Point(0, 0)), 1);
+          tileMap.setTileFlag(point: const Point(0, 0), flag: 2);
+          expect(tileMap.getTileFlags(const Point(0, 0)), 3);
+          tileMap.setTileFlag(point: const Point(5, 5), flag: 1);
+          expect(tileMap.getTileFlags(const Point(5, 5)), 1);
+        },
+      );
+      test(
+        '.clearTileFlag',
+        () {
+          // ignore: prefer_const_constructors
+          final tileMap = TileMap(width: 10, height: 10, tiles: {})
+            ..setTileFlag(point: const Point(0, 0), flag: 5)
+            ..clearTileFlag(point: const Point(0, 0), flag: 2);
+          expect(tileMap.getTileFlags(const Point(0, 0)), 5);
+          tileMap.clearTileFlag(point: const Point(0, 0), flag: 1);
+          expect(tileMap.getTileFlags(const Point(0, 0)), 4);
+          tileMap
+            ..setTileFlags(point: const Point(5, 5), flags: 7)
+            ..clearTileFlag(point: const Point(5, 5), flag: 2);
+          expect(tileMap.getTileFlags(const Point(5, 5)), 5);
+        },
+      );
+      test(
         '.validCoordinates',
         () {
           const tileMap = TileMap(width: 10, height: 10);

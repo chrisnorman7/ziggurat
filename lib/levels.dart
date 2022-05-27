@@ -24,3 +24,4 @@ export 'src/levels/editor.dart';
 export 'src/levels/level.dart';
 export 'src/levels/multi_grid_level.dart';
 export 'src/levels/scene_level.dart';
+export 'src/levels/tile_map_level.dart';
