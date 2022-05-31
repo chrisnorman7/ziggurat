@@ -80,6 +80,7 @@ class Menu extends Level {
     super.music,
     super.ambiances,
     super.randomSounds,
+    super.commands,
   })  : menuItems = items ?? [],
         searchString = '',
         searchTime = 0 {
