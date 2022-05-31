@@ -18,6 +18,10 @@ class TileMapLevel<T extends Tile> extends Level {
     required this.makeTile,
     this.initialCoordinates = const Point(0.0, 0.0),
     this.initialHeading = 0.0,
+    super.ambiances,
+    super.commands,
+    super.music,
+    super.randomSounds,
   })  : _coordinates = initialCoordinates,
         _heading = initialHeading;
 
