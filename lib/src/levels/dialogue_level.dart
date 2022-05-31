@@ -22,6 +22,7 @@ class DialogueLevel extends Level {
     super.music,
     super.ambiances,
     super.randomSounds,
+    super.commands,
   })  : assert(
           progressScanCode != null || progressControllerButton != null,
           'Both `ProgressControllerButton` and `progressScanCode` cannot be '
