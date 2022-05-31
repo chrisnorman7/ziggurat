@@ -39,6 +39,7 @@ class MultiGridLevel extends Level {
     super.music,
     super.ambiances,
     super.randomSounds,
+    super.commands,
   })  : axisDispatcher = ControllerAxisDispatcher(
           {},
           axisSensitivity: axisSensitivity,
