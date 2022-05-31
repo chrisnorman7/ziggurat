@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.46.0]
+
+### Changed
+
+* You can now pass many more super parameters to `Level` subclasses.
+
 ## [0.45.0]
 
 ### Added
