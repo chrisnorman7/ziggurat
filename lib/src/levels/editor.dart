@@ -61,6 +61,7 @@ class Editor extends Level {
     super.music,
     super.ambiances,
     super.randomSounds,
+    super.commands,
   })  : _shiftPressed = false,
         _currentPosition = 0 {
     controllerAxisDispatcher = ControllerAxisDispatcher(
