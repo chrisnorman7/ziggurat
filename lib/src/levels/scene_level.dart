@@ -26,6 +26,7 @@ class SceneLevel extends Level {
     super.music,
     super.ambiances,
     super.randomSounds,
+    super.commands,
   })  : assert(
           duration != null ||
               skipControllerButton != null ||
