@@ -461,4 +461,19 @@ class Game {
   /// Set the default panner strategy.
   void setDefaultPannerStrategy(final DefaultPannerStrategy strategy) =>
       queueSoundEvent(SetDefaultPannerStrategy(strategy));
+
+  /// Rumble on all [joysticks].
+  void rumble({
+    required final int duration,
+    final int lowFrequency = 65535,
+    final int highFrequency = 65535,
+  }) {
+    for (final joystick in joysticks.values) {
+      joystick.rumble(
+        duration: duration,
+        highFrequency: highFrequency,
+        lowFrequency: lowFrequency,
+      );
+    }
+  }
 }
