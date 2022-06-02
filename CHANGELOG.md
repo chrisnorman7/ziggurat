@@ -7,6 +7,10 @@
 * Added the `Game.rumble` method.
 * Allow all levels to take advantage of commands.
 
+### Changed
+
+* When overriding `Level.handleSdlEvent`, you must now call `super.handleSdlEvent` to ensure commands are handled properly.
+
 ## [0.46.0]
 
 ### Changed
