@@ -295,6 +295,8 @@ class Menu extends Level {
         activate();
       } else if (scanCode == cancelScanCode) {
         cancel();
+      } else {
+        super.handleSdlEvent(event);
       }
     } else if (event is ControllerButtonEvent &&
         event.state == PressedState.pressed) {
@@ -307,6 +309,8 @@ class Menu extends Level {
         activate();
       } else if (button == cancelButton) {
         cancel();
+      } else {
+        super.handleSdlEvent(event);
       }
     } else if (event is ControllerAxisEvent) {
       controllerAxisDispatcher.handleAxisValue(
@@ -330,6 +334,8 @@ class Menu extends Level {
           break;
         }
       }
+    } else {
+      super.handleSdlEvent(event);
     }
   }
 }

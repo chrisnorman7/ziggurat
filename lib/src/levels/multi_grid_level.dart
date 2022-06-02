@@ -302,7 +302,11 @@ class MultiGridLevel extends Level {
         activate();
       } else if (scanCode == cancelScanCode) {
         cancel();
+      } else {
+        super.handleSdlEvent(event);
       }
+    } else {
+      super.handleSdlEvent(event);
     }
   }
 }

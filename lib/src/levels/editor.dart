@@ -248,6 +248,8 @@ class Editor extends Level {
         cancel();
       } else if (scanCode == backspaceScanCode) {
         backspace();
+      } else {
+        super.handleSdlEvent(event);
       }
     } else if (event is ControllerButtonEvent) {
       final button = event.button;
@@ -276,6 +278,8 @@ class Editor extends Level {
       }
     } else if (event is ControllerAxisEvent) {
       controllerAxisDispatcher.handleAxisValue(event.axis, event.smallValue);
+    } else {
+      super.handleSdlEvent(event);
     }
   }
 }

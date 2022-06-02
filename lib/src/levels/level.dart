@@ -290,6 +290,7 @@ class Level {
   ///
   ///This method will be called only if the event in question is not consumed
   ///by [game].
+  @mustCallSuper
   void handleSdlEvent(final Event event) {}
 
   /// Let this level tick.

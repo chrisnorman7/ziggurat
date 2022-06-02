@@ -119,6 +119,8 @@ class SceneLevel extends Level {
         event.button == skipControllerButton &&
         event.state == PressedState.pressed) {
       skip();
+    } else {
+      super.handleSdlEvent(event);
     }
   }
 }
