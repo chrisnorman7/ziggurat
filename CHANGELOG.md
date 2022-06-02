@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.47.0]
+
+### Added
+
+* Added the `Game.rumble` method.
+* Allow all levels to take advantage of commands.
+
 ## [0.46.0]
 
 ### Changed
