@@ -116,6 +116,8 @@ class DialogueLevel extends Level {
         event.key.modifiers.isEmpty &&
         event.key.scancode == scanCode) {
       progress();
+    } else {
+      super.handleSdlEvent(event);
     }
   }
 }
