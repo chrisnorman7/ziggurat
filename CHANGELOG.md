@@ -5,6 +5,9 @@
 ### Changed
 
 * Convert the `Game` constructor to exclusively use named arguments.
+* The `Game` class now requires a valid `Sdl` instance.
+* Add `orgName` and `appName` properties to the `Game` class.
+* Add a `preferencesDirectory` getter to the `Game` class.
 
 ## [0.47.0]
 
