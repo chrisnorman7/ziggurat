@@ -66,6 +66,9 @@ void main() {
           preferences.set('test', 'ing');
           expect(cache['test'], 'ing');
           expect(file.existsSync(), true);
+          final preferences2 = Preferences(file: preferences.file);
+          expect(preferences2.get<String>('hello'), 'world');
+          expect(preferences2.get<String>('test'), 'ing');
         },
       );
       test(

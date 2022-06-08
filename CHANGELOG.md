@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.48.2]
+
+### Fixed
+
+* Fixed a bug where preferences weren't loaded properly.
+
 ## [0.48.1]
 
 ### Fixed
