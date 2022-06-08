@@ -6,6 +6,8 @@
 
 * Convert the `Game` constructor to exclusively use named arguments.
 * The `Game` class now requires a valid `Sdl` instance.
+* The `Game.run` method no longer accepts a `sdl` argument.
+* The `Game.tick` method no longer accepts a `sdl` argument.
 
 ### Added
 

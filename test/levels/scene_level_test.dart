@@ -167,7 +167,7 @@ void main() {
       expect(runner.numberOfRuns, isZero);
       expect(runner.runAfter, isZero);
       for (var i = 1; i < duration; i++) {
-        await game.tick(sdl, 1);
+        await game.tick(1);
         expect(done, isZero, reason: 'Done increments after $i');
         expect(game.tasks.length, equals(1));
         expect(game.tasks, contains(runner));
@@ -176,7 +176,7 @@ void main() {
         expect(runner.runAfter, i);
       }
       expect(runner.runAfter, duration - 1);
-      await game.tick(sdl, 1);
+      await game.tick(1);
       expect(runner.numberOfRuns, 1);
       expect(runner.runAfter, isZero);
       expect(game.tasks, isEmpty);
