@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:dart_sdl/dart_sdl.dart';
+import 'package:path/path.dart' as path;
 import 'package:test/test.dart';
 import 'package:ziggurat/levels.dart';
 import 'package:ziggurat/sound.dart';
@@ -523,6 +524,15 @@ void main() {
         expect(list, [1, 2]);
       },
     );
+  });
+
+  group('Game.preferences', () {
+    final game = Game(
+      title: 'Preferences Tests',
+      sdl: sdl,
+      appName: 'preferences_tests_game',
+      orgName: 'com.test',
+    );
     test('.preferencesDirectory', () {
       const orgName = 'com.website';
       const appName = 'test_game';
@@ -549,6 +559,19 @@ void main() {
       expect(directory2.path, directory.path);
       expect(directory.existsSync(), isTrue);
       directory.deleteSync(recursive: true);
+    });
+    test('.preferencesFile', () {
+      expect(
+        game.preferencesFile.path,
+        path.join(
+          game.preferencesDirectory.path,
+          game.preferencesFileName,
+        ),
+      );
+    });
+    test('.preferences', () {
+      final preferences = game.preferences;
+      expect(preferences.cache, isEmpty);
     });
   });
 }

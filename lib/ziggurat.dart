@@ -17,6 +17,7 @@ export 'src/json/trigger_map.dart';
 export 'src/math.dart';
 export 'src/multi_grid.dart';
 export 'src/next_run.dart';
+export 'src/preferences.dart';
 export 'src/setting_defaults.dart';
 export 'src/tasks/task.dart';
 export 'src/tasks/task_runner.dart';

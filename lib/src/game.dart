@@ -5,11 +5,10 @@ import 'dart:math';
 
 import 'package:dart_sdl/dart_sdl.dart';
 import 'package:meta/meta.dart';
+import 'package:path/path.dart' as path;
 
-import 'json/asset_reference.dart';
-import 'json/message.dart';
+import '../ziggurat.dart';
 import 'json/reverb_preset.dart';
-import 'json/trigger_map.dart';
 import 'levels/level.dart';
 import 'sound/events/events_base.dart';
 import 'sound/events/global.dart';
@@ -17,8 +16,6 @@ import 'sound/events/playback.dart';
 import 'sound/events/reverb.dart';
 import 'sound/events/sound_channel.dart';
 import 'sound/events/sound_position.dart';
-import 'tasks/task.dart';
-import 'tasks/task_runner.dart';
 
 /// The main game object.
 class Game {
@@ -28,6 +25,8 @@ class Game {
     required this.sdl,
     this.orgName = 'com.example',
     this.appName = 'untitled_game',
+    this.preferencesFileName = 'preferences.json',
+    this.preferencesKey = defaultPreferencesKey,
     this.triggerMap = const TriggerMap([]),
   })  : _levels = [],
         _isRunning = false,
@@ -62,9 +61,32 @@ class Game {
   /// [preferencesDirectory].
   final String appName;
 
+  /// The filename where [preferences] will be read from.
+  ///
+  /// This value will be combined with [preferencesDirectory] to get the
+  /// fully-qualified filename.
+  final String preferencesFileName;
+
+  /// The file where [preferences] will be stored.
+  File get preferencesFile => File(
+        path.join(
+          preferencesDirectory.path,
+          preferencesFileName,
+        ),
+      );
+
+  /// The key where [preferences] will be stored.
+  final String preferencesKey;
+
   /// Get the preferences directory for this game.
   Directory get preferencesDirectory =>
       Directory(sdl.getPrefPath(orgName, appName));
+
+  /// The preferences object for this game.
+  Preferences get preferences => Preferences(
+        file: preferencesFile,
+        key: preferencesKey,
+      );
 
   /// The level stack of this game.
   final List<Level> _levels;
