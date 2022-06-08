@@ -6,13 +6,16 @@ import 'package:ziggurat/ziggurat.dart';
 import '../helpers.dart';
 
 void main() {
+  final sdl = Sdl();
   group(
     'ParameterMenu class',
     () {
-      final sdl = Sdl();
       var b = true;
       var i = 10;
-      final game = Game('ParameterMenu Tests');
+      final game = Game(
+        title: 'ParameterMenu Tests',
+        sdl: sdl,
+      );
       final bParameter = ParameterMenuParameter(
         getLabel: () => Message(text: 'Boolean: $b'),
         increaseValue: () => b = true,

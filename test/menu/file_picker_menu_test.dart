@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:dart_sdl/dart_sdl.dart';
 import 'package:path/path.dart' as path;
 import 'package:test/test.dart';
 import 'package:ziggurat/menus.dart';
@@ -15,11 +16,15 @@ class OnDoneException implements Exception {
 }
 
 void main() {
+  final sdl = Sdl();
   group('FilePickerMenu', () {
     test('Initialise', () {
       final currentDirectory = Directory('test');
       FileSystemEntity? thing;
-      final game = Game('File Picker Menu');
+      final game = Game(
+        title: 'File Picker Menu',
+        sdl: sdl,
+      );
       final menu = FilePickerMenu(
         game: game,
         onDone: (final entity) => thing = entity,
@@ -36,7 +41,10 @@ void main() {
       expect(thing, isNull);
     });
     test('.onDone', () {
-      final game = Game('FilePickerMenu.onDone');
+      final game = Game(
+        title: 'FilePickerMenu.onDone',
+        sdl: sdl,
+      );
       final directory = Directory('test');
       final menu = FilePickerMenu(
         game: game,
@@ -88,7 +96,10 @@ void main() {
       }
     });
     test('Parent directory', () {
-      final game = Game('FilePickerMenu Parent Directory');
+      final game = Game(
+        title: 'FilePickerMenu Parent Directory',
+        sdl: sdl,
+      );
       final directory = Directory('test');
       final menu = FilePickerMenu(
         game: game,

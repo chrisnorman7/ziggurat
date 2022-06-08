@@ -7,7 +7,10 @@ import 'package:ziggurat/ziggurat.dart';
 
 Future<void> main() async {
   final sdl = Sdl()..init();
-  final game = Game('Parameter Menu');
+  final game = Game(
+    title: 'Parameter Menu',
+    sdl: sdl,
+  );
   var power = true;
   var speed = 5;
   final menu = ParameterMenu(

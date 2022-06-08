@@ -1,9 +1,14 @@
+import 'package:dart_sdl/dart_sdl.dart';
 import 'package:test/test.dart';
 import 'package:ziggurat/menus.dart';
 import 'package:ziggurat/ziggurat.dart';
 
 void main() {
-  final game = Game('Asset Menu');
+  final sdl = Sdl();
+  final game = Game(
+    title: 'Asset Menu',
+    sdl: sdl,
+  );
   const asset1 = AssetReference.file('sound.wav');
   const asset2 = AssetReference.collection('footsteps');
   group(

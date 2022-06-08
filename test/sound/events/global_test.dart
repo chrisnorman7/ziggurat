@@ -1,9 +1,14 @@
+import 'package:dart_sdl/dart_sdl.dart';
 import 'package:test/test.dart';
 import 'package:ziggurat/sound.dart';
 import 'package:ziggurat/src/game.dart';
 
 void main() {
-  final game = Game('Sound Event Tests');
+  final sdl = Sdl();
+  final game = Game(
+    title: 'Sound Event Tests',
+    sdl: sdl,
+  );
   group(
     'automation_fade.dart',
     () {

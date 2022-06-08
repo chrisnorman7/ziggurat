@@ -23,9 +23,10 @@ class OutputMessageContext {
 
 class MultiGridLevelGame extends Game {
   /// Create an instance.
-  MultiGridLevelGame()
-      : messages = [],
-        super('Test Game');
+  MultiGridLevelGame({
+    required super.sdl,
+  })  : messages = [],
+        super(title: 'Test Game');
 
   /// The messages that have been output.
   final List<OutputMessageContext> messages;
@@ -52,8 +53,9 @@ class MultiGridLevelGame extends Game {
 }
 
 void main() {
+  final sdl = Sdl();
   group('MultiGridLevel', () {
-    final game = MultiGridLevelGame();
+    final game = MultiGridLevelGame(sdl: sdl);
     const minValue = -32768;
     const maxValue = 32767;
     test('Initialise', () {
@@ -294,7 +296,6 @@ void main() {
       expect(level.horizontalPosition, isZero);
     });
     test('.handleSdlValue (scancode)', () {
-      final sdl = Sdl();
       const keyCode = KeyCode.digit0;
       var cancelled = 0;
       final row1Messages = [
@@ -589,7 +590,6 @@ void main() {
       expect(cancelled, equals(2));
     });
     test('.handleSdlValue (axis)', () {
-      final sdl = Sdl();
       var cancelled = 0;
       final upEvent =
           makeControllerAxisEvent(sdl, GameControllerAxis.lefty, minValue);
@@ -721,7 +721,6 @@ void main() {
       expect(level.horizontalPosition, equals(2));
     });
     test('.onCancel', () {
-      final sdl = Sdl();
       var cancelled = 0;
       final cancelEvent = makeControllerAxisEvent(
         sdl,
@@ -779,7 +778,6 @@ void main() {
       var i = 0;
       var j = 0;
       var k = 0;
-      final sdl = Sdl();
       final activateEvent = makeControllerAxisEvent(
         sdl,
         GameControllerAxis.triggerright,

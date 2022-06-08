@@ -1,3 +1,4 @@
+import 'package:dart_sdl/dart_sdl.dart';
 import 'package:test/test.dart';
 import 'package:ziggurat/notes.dart';
 import 'package:ziggurat/sound.dart';
@@ -5,7 +6,11 @@ import 'package:ziggurat/src/game.dart';
 import 'package:ziggurat/wave_types.dart';
 
 void main() {
-  final game = Game('Test Game');
+  final sdl = Sdl();
+  final game = Game(
+    title: 'Test Game',
+    sdl: sdl,
+  );
   group(
     'sound_channel.dart',
     () {

@@ -1,3 +1,4 @@
+import 'package:dart_sdl/dart_sdl.dart';
 import 'package:test/test.dart';
 import 'package:ziggurat/notes.dart';
 import 'package:ziggurat/sound.dart';
@@ -5,7 +6,11 @@ import 'package:ziggurat/wave_types.dart';
 import 'package:ziggurat/ziggurat.dart';
 
 void main() {
-  final game = Game('Test events');
+  final sdl = Sdl();
+  final game = Game(
+    title: 'Test events',
+    sdl: sdl,
+  );
   group(
     'playback.dart',
     () {
@@ -193,7 +198,10 @@ void main() {
       test(
         'PlayWave methods',
         () async {
-          final game = Game('PlayWave.pause');
+          final game = Game(
+            title: 'PlayWave.pause',
+            sdl: sdl,
+          );
           final events = <SoundEvent>[];
           game.sounds.listen(events.add);
           await Future<void>.delayed(Duration.zero);

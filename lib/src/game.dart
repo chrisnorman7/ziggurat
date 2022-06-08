@@ -22,8 +22,9 @@ import 'tasks/task_runner.dart';
 /// The main game object.
 class Game {
   /// Create an instance.
-  Game(
-    this.title, {
+  Game({
+    required this.title,
+    required this.sdl,
     this.triggerMap = const TriggerMap([]),
   })  : _levels = [],
         _isRunning = false,
@@ -45,6 +46,9 @@ class Game {
   ///
   /// This value will be used to determine the title of the resulting window.
   final String title;
+
+  /// The SDL instance to use.
+  final Sdl sdl;
 
   /// The level stack of this game.
   final List<Level> _levels;

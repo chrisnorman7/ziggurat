@@ -90,22 +90,32 @@ class IncrementLevel extends Level {
 }
 
 void main() {
+  final sdl = Sdl();
   group('Level Tests', () {
     test('Test Initialisation', () {
-      final game = Game('Test Game');
+      final game = Game(
+        title: 'Test Game',
+        sdl: sdl,
+      );
       final level = Level(game: game);
       expect(level.game, equals(game));
       expect(level.commands, equals(<String, Command>{}));
     });
     test('Register Commands', () {
-      final game = Game('Test Game');
+      final game = Game(
+        title: 'Test Game',
+        sdl: sdl,
+      );
       final level = Level(game: game);
       const command = Command();
       level.registerCommand('testing', command);
       expect(level.commands, equals({'testing': command}));
     });
     test('Push Level', () {
-      final game = Game('Test Game');
+      final game = Game(
+        title: 'Test Game',
+        sdl: sdl,
+      );
       final level1 = CustomLevel(game);
       game.pushLevel(level1);
       expect(game.currentLevel, equals(level1));
@@ -127,7 +137,10 @@ void main() {
       expect(level1.wasRevealed, equals(level2));
     });
     test('Command Tests', () {
-      final game = Game('Test Game');
+      final game = Game(
+        title: 'Test Game',
+        sdl: sdl,
+      );
       final level = CommandLevel(game);
       expect(level.started, isFalse);
       expect(level.stopped, isFalse);
@@ -145,7 +158,10 @@ void main() {
       expect(level.stopped, isTrue);
     });
     test('Start Command Tests', () async {
-      final game = Game('Test Game');
+      final game = Game(
+        title: 'Test Game',
+        sdl: sdl,
+      );
       final level = IncrementLevel(game);
       game.pushLevel(level);
       final command = level.commands[incrementCommandName]!;
@@ -175,7 +191,6 @@ void main() {
       level.startCommand('increment');
       expect(level.counter, 1);
       expect(level.getCommandNextRun(command)?.runAfter, 0);
-      final sdl = Sdl();
       await game.tick(sdl, 1);
       expect(level.getCommandNextRun(command)?.runAfter, 1);
       await game.tick(sdl, 498);
@@ -186,7 +201,10 @@ void main() {
       expect(level.getCommandNextRun(command)?.runAfter, isZero);
     });
     test('Ambiances', () {
-      final game = Game('Level Ambiances');
+      final game = Game(
+        title: 'Level Ambiances',
+        sdl: sdl,
+      );
       const ambiance1 =
           Ambiance(sound: AssetReference.file('sound1'), gain: 0.1);
       const ambiance2 = Ambiance(
@@ -234,7 +252,10 @@ void main() {
       );
     });
     test('music', () {
-      final game = Game('Music Test');
+      final game = Game(
+        title: 'Music Test',
+        sdl: sdl,
+      );
       const music = Music(
         sound: AssetReference.file('music.mp3'),
         gain: 1.0,
@@ -256,13 +277,13 @@ void main() {
       expect(level.musicSound, isNull);
     });
     test('.stoppedCommands', () async {
-      final sdl = Sdl();
       final commandTrigger = CommandTrigger.basic(
         name: 'increase',
         description: 'Increase `i`',
       );
       final game = Game(
-        'Level.stoppedCommands',
+        title: 'Level.stoppedCommands',
+        sdl: sdl,
         triggerMap: TriggerMap([commandTrigger]),
       );
       final level = Level(game: game);
@@ -308,7 +329,10 @@ void main() {
   });
   group('Custom Levels', () {
     test('Initialisation', () {
-      final game = Game('Test game');
+      final game = Game(
+        title: 'Test game',
+        sdl: sdl,
+      );
       final level = CustomLevel(game);
       expect(level.game, equals(game));
       expect(level.wasPushed, isFalse);

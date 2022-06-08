@@ -1,11 +1,16 @@
+import 'package:dart_sdl/dart_sdl.dart';
 import 'package:test/test.dart';
 import 'package:ziggurat/sound.dart';
 import 'package:ziggurat/ziggurat.dart';
 
 void main() {
+  final sdl = Sdl();
   group('SoundChannel', () {
     test('Initialise', () {
-      final game = Game('SoundChannelGroup');
+      final game = Game(
+        title: 'SoundChannelGroup',
+        sdl: sdl,
+      );
       final channelGroup =
           SoundChannelGroup([game.interfaceSounds, game.ambianceSounds]);
       expect(channelGroup.channels.length, equals(2));
@@ -15,7 +20,10 @@ void main() {
       );
     });
     test('.setReverb', () {
-      final game = Game('SoundChannelGroup.setReverb');
+      final game = Game(
+        title: 'SoundChannelGroup.setReverb',
+        sdl: sdl,
+      );
       final channelGroup =
           SoundChannelGroup([game.interfaceSounds, game.ambianceSounds]);
       final reverb = game.createReverb(const ReverbPreset(name: 'Test Reverb'));
@@ -27,7 +35,10 @@ void main() {
       expect(game.ambianceSounds.reverb, isNull);
     });
     test('.gain', () {
-      final game = Game('SoundChannelGroup.gain');
+      final game = Game(
+        title: 'SoundChannelGroup.gain',
+        sdl: sdl,
+      );
       final channelGroup =
           SoundChannelGroup([game.interfaceSounds, game.ambianceSounds]);
       expect(game.interfaceSounds.gain, equals(0.7));
@@ -41,7 +52,12 @@ void main() {
     });
     test('.clearFilters', () async {
       final events = <SoundEvent>[];
-      final game = Game('SoundChannelGroup.gain')..sounds.listen(events.add);
+      final game = Game(
+        title: 'SoundChannelGroup.gain',
+        sdl: sdl,
+      )..sounds.listen(
+          events.add,
+        );
       final channelGroup =
           SoundChannelGroup([game.interfaceSounds, game.ambianceSounds]);
       await Future<void>.delayed(const Duration(milliseconds: 100));
@@ -56,7 +72,10 @@ void main() {
     });
     test('.filterLowpass', () async {
       final events = <SoundEvent>[];
-      final game = Game('SoundChannelGroup.gain')..sounds.listen(events.add);
+      final game = Game(
+        title: 'SoundChannelGroup.gain',
+        sdl: sdl,
+      )..sounds.listen(events.add);
       final channelGroup =
           SoundChannelGroup([game.interfaceSounds, game.ambianceSounds]);
       await Future<void>.delayed(const Duration(milliseconds: 100));
@@ -77,7 +96,10 @@ void main() {
     });
     test('.filterHighpass', () async {
       final events = <SoundEvent>[];
-      final game = Game('SoundChannelGroup.gain')..sounds.listen(events.add);
+      final game = Game(
+        title: 'SoundChannelGroup.gain',
+        sdl: sdl,
+      )..sounds.listen(events.add);
       final channelGroup =
           SoundChannelGroup([game.interfaceSounds, game.ambianceSounds]);
       await Future<void>.delayed(const Duration(milliseconds: 100));
@@ -98,7 +120,10 @@ void main() {
     });
     test('.filterBandpass', () async {
       final events = <SoundEvent>[];
-      final game = Game('SoundChannelGroup.gain')..sounds.listen(events.add);
+      final game = Game(
+        title: 'SoundChannelGroup.gain',
+        sdl: sdl,
+      )..sounds.listen(events.add);
       final channelGroup =
           SoundChannelGroup([game.interfaceSounds, game.ambianceSounds]);
       await Future<void>.delayed(const Duration(milliseconds: 100));
@@ -119,7 +144,10 @@ void main() {
     });
     test('.destroy', () async {
       final events = <SoundEvent>[];
-      final game = Game('SoundChannelGroup.gain')..sounds.listen(events.add);
+      final game = Game(
+        title: 'SoundChannelGroup.gain',
+        sdl: sdl,
+      )..sounds.listen(events.add);
       final channelGroup =
           SoundChannelGroup([game.interfaceSounds, game.ambianceSounds]);
       await Future<void>.delayed(const Duration(milliseconds: 100));

@@ -1,14 +1,19 @@
 import 'dart:math';
 
+import 'package:dart_sdl/dart_sdl.dart';
 import 'package:test/test.dart';
 import 'package:ziggurat/levels.dart';
 import 'package:ziggurat/sound.dart';
 import 'package:ziggurat/ziggurat.dart';
 
 void main() {
+  final sdl = Sdl();
   group('Sound Event Tests', () {
     test('Ensure listening works', () async {
-      final game = Game('Ensure Listener');
+      final game = Game(
+        title: 'Ensure Listener',
+        sdl: sdl,
+      );
       expect(game.soundsController.hasListener, isFalse);
       expect(game.sounds, equals(game.soundsController.stream));
       final events = <SoundEvent>[];
@@ -29,12 +34,18 @@ void main() {
       await subscription.cancel();
     });
     test('Default sound channels', () {
-      final game = Game('Sound Channels');
+      final game = Game(
+        title: 'Sound Channels',
+        sdl: sdl,
+      );
       expect(game.interfaceSounds.id, SoundEvent.maxEventId - 2);
       expect(game.ambianceSounds.id, equals(game.interfaceSounds.id! + 1));
     });
     test('Event ID increment', () {
-      final game = Game('Sound Channel');
+      final game = Game(
+        title: 'Sound Channel',
+        sdl: sdl,
+      );
       expect(SoundEvent.maxEventId, game.ambianceSounds.id! + 1);
       final channel = game.createSoundChannel();
       expect(channel.id, game.ambianceSounds.id! + 2);
@@ -45,7 +56,10 @@ void main() {
       expect(SoundEvent.maxEventId, equals(sound.id));
     });
     test('Sound Keep Alive', () async {
-      final game = Game('Sound Keep Alive');
+      final game = Game(
+        title: 'Sound Keep Alive',
+        sdl: sdl,
+      );
       const reference = AssetReference('testing', AssetType.file);
       var sound = game.interfaceSounds.playSound(reference, keepAlive: true)
         ..destroy();
@@ -66,7 +80,10 @@ void main() {
       );
     });
     test('PlaySound with a custom ID', () {
-      final game = Game('PlaySound');
+      final game = Game(
+        title: 'PlaySound',
+        sdl: sdl,
+      );
       final sound1 = PlaySound(
         game: game,
         sound: const AssetReference('something.mp3', AssetType.collection),
@@ -84,7 +101,10 @@ void main() {
     });
   });
   group('Sounds stream tests', () {
-    final game = Game('Test Sounds');
+    final game = Game(
+      title: 'Test Sounds',
+      sdl: sdl,
+    );
     test('Events', () async {
       game
         ..setDefaultPannerStrategy(DefaultPannerStrategy.hrtf)
@@ -279,10 +299,16 @@ void main() {
       expect(sound.gain, equals(0.2));
     });
     test('Destroy test', () async {
-      Game('Test Destroy').destroy();
+      Game(
+        title: 'Test Destroy',
+        sdl: sdl,
+      ).destroy();
     });
     test('Level.onPop', () {
-      final game = Game('Test onPop');
+      final game = Game(
+        title: 'Test onPop',
+        sdl: sdl,
+      );
       const reference1 = AssetReference.file('ambiance1.wav');
       const reference2 = AssetReference.file('ambiance2.wav');
       const ambiance1 = Ambiance(sound: reference1, gain: 0.4);
@@ -371,7 +397,10 @@ void main() {
       );
     });
     test('Sound positions', () {
-      final game = Game('Sound positions');
+      final game = Game(
+        title: 'Sound positions',
+        sdl: sdl,
+      );
       var channel = game.createSoundChannel();
       expect(
         () => channel.position = const SoundPositionScalar(),

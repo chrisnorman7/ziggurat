@@ -8,7 +8,11 @@ import 'package:ziggurat/ziggurat.dart';
 import '../helpers.dart';
 
 void main() {
-  final game = Game('Edit Test');
+  final sdl = Sdl();
+  final game = Game(
+    title: 'Edit Test',
+    sdl: sdl,
+  );
   group('Editor', () {
     test('Initialisation', () {
       String? text;
@@ -20,7 +24,6 @@ void main() {
       expect(editor.controllerAxisDispatcher.axisSensitivity, equals(0.5));
     });
     test('Handle text', () {
-      final sdl = Sdl();
       final editor = Editor(game: game, onDone: print)
         ..handleSdlEvent(
           makeKeyboardEvent(sdl, ScanCode.digit0, KeyCode.digit0),
@@ -40,7 +43,6 @@ void main() {
       expect(editor.text, equals('hello world'));
     });
     test('.onDone', () {
-      final sdl = Sdl();
       String? text;
       final editor = Editor(
         game: game,
@@ -73,7 +75,6 @@ void main() {
       expect(text, equals(editor.text));
     });
     test('.onCancel', () {
-      final sdl = Sdl();
       var editor = Editor(game: game, onDone: print);
       final escapeEvent = makeKeyboardEvent(
         sdl,
@@ -104,7 +105,6 @@ void main() {
       expect(cancelled, equals(2));
     });
     test('.backspace', () {
-      final sdl = Sdl();
       final editor = Editor(game: game, onDone: print);
       final backspaceEvent = makeKeyboardEvent(
         sdl,
@@ -128,7 +128,6 @@ void main() {
       expect(editor.text, equals('Testin'));
     });
     test('Axes', () {
-      final sdl = Sdl();
       const minValue = -32768;
       const maxValue = 32767;
       final editor =
@@ -194,7 +193,6 @@ void main() {
       expect(editor.currentLetter, equals(editor.controllerAlphabet[0]));
     });
     test('Shift key', () {
-      final sdl = Sdl();
       final editor = Editor(game: game, onDone: print);
       editor
         ..handleSdlEvent(

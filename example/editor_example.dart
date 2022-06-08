@@ -6,7 +6,10 @@ import 'package:ziggurat/ziggurat.dart';
 
 Future<void> main() async {
   final sdl = Sdl()..init();
-  final game = Game('Editor Example');
+  final game = Game(
+    title: 'Editor Example',
+    sdl: sdl,
+  );
   final editor = Editor(
     game: game,
     onDone: (final value) {

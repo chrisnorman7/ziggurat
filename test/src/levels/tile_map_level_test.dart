@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:dart_sdl/dart_sdl.dart';
 import 'package:test/test.dart';
 import 'package:ziggurat/levels.dart';
 import 'package:ziggurat/ziggurat.dart';
@@ -58,7 +59,11 @@ class TestTileMapLevel extends TileMapLevel<TestTile> {
 }
 
 void main() {
-  final game = Game('Tile Map Levels');
+  final sdl = Sdl();
+  final game = Game(
+    title: 'Tile Map Levels',
+    sdl: sdl,
+  );
   group(
     'TileMapLevel',
     () {

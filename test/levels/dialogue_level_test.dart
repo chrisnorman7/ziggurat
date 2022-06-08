@@ -6,9 +6,13 @@ import 'package:ziggurat/ziggurat.dart';
 import '../helpers.dart';
 
 void main() {
+  final sdl = Sdl();
   group('DialogueLevel', () {
     test('Initialise', () {
-      final game = Game('DialogueLevel');
+      final game = Game(
+        title: 'DialogueLevel',
+        sdl: sdl,
+      );
       var done = 0;
       expect(
         () => DialogueLevel(game: game, messages: [], onDone: () => done++),
@@ -40,7 +44,11 @@ void main() {
       expect(dialogueLevel.position, isZero);
     });
     test('.progress', () {
-      final game = Game('DialogueLevel.progress');
+      final sdl = Sdl();
+      final game = Game(
+        title: 'DialogueLevel.progress',
+        sdl: sdl,
+      );
       var done = 0;
       const message1 = Message(keepAlive: true);
       const message2 = Message(keepAlive: true);
@@ -66,8 +74,10 @@ void main() {
       expect(game.currentLevel, isNull);
     });
     test('.handleSdlValue', () {
-      final sdl = Sdl();
-      final game = Game('DialogueLevel.handleSdlValue');
+      final game = Game(
+        title: 'DialogueLevel.handleSdlValue',
+        sdl: sdl,
+      );
       var done = 0;
       const message1 =
           Message(keepAlive: true, sound: AssetReference.file('file1.wav'));
@@ -148,7 +158,10 @@ void main() {
       expect(dialogueLevel.sound, equals(sound));
     });
     test('.onPush', () {
-      final game = Game('DialogueLevel.onPush');
+      final game = Game(
+        title: 'DialogueLevel.onPush',
+        sdl: sdl,
+      );
       const message =
           Message(keepAlive: true, sound: AssetReference.file('test.wav'));
       var dialogueLevel = DialogueLevel(

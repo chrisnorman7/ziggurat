@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.48.0]
+
+### Changed
+
+* Convert the `Game` constructor to exclusively use named arguments.
+
 ## [0.47.0]
 
 ### Added

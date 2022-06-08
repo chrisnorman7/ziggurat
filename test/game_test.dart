@@ -24,15 +24,22 @@ class TestLevel extends Level {
 }
 
 void main() {
+  final sdl = Sdl();
   group('Game tests', () {
     test('Initialization', () {
-      final game = Game('Test Game');
+      final game = Game(
+        title: 'Test Game',
+        sdl: sdl,
+      );
       expect(game.title, equals('Test Game'));
       expect(game.currentLevel, isNull);
       expect(game.triggerMap.triggers, equals(<CommandTrigger>[]));
     });
     test('Current Level', () {
-      final game = Game('Test Game');
+      final game = Game(
+        title: 'Test Game',
+        sdl: sdl,
+      );
       final level1 = Level(game: game);
       game.pushLevel(level1);
       expect(game.currentLevel, equals(level1));
@@ -41,8 +48,10 @@ void main() {
       expect(game.currentLevel, equals(level2));
     });
     test('One-off Task Test', () async {
-      final sdl = Sdl();
-      final game = Game('Test Game');
+      final game = Game(
+        title: 'Test Game',
+        sdl: sdl,
+      );
       var i = 0;
       final task = Task(runAfter: 3, func: () => i++);
       game.registerTask(task);
@@ -64,8 +73,10 @@ void main() {
       expect(game.tasks, isEmpty);
     });
     test('Repeating Task Test', () async {
-      final sdl = Sdl();
-      final game = Game('Test Game');
+      final game = Game(
+        title: 'Test Game',
+        sdl: sdl,
+      );
       var i = 0;
       final task = Task(runAfter: 3, func: () => i++, interval: 2);
       expect(task.interval, equals(2));
@@ -94,7 +105,10 @@ void main() {
       expect(game.tasks.first, runner);
     });
     test('Tasks with levels', () async {
-      final game = Game('Tasks With Levels');
+      final game = Game(
+        title: 'Tasks With Levels',
+        sdl: sdl,
+      );
       final level1 = Level(game: game);
       final level2 = Level(game: game);
       var x = 0;
@@ -110,7 +124,6 @@ void main() {
       expect(level1Runner.value, level1Task);
       final level2Runner = game.tasks.last;
       expect(level2Runner.value, level2Task);
-      final sdl = Sdl();
       expect(runnerWithoutLevel.runAfter, isZero);
       expect(level1Runner.runAfter, isZero);
       expect(level2Runner.runAfter, isZero);
@@ -153,8 +166,10 @@ void main() {
       expect(game.tasks, isEmpty);
     });
     test('.registerTask', () {
-      final sdl = Sdl();
-      final game = Game('Tasks that add tasks');
+      final game = Game(
+        title: 'Tasks that add tasks',
+        sdl: sdl,
+      );
       expect(game.tasks, isEmpty);
       game.registerTask(
         Task(
@@ -170,7 +185,10 @@ void main() {
     test(
       '.callAfter',
       () {
-        final game = Game('Test callAfter');
+        final game = Game(
+          title: 'Test callAfter',
+          sdl: sdl,
+        );
         var i = 0;
         final task = game.callAfter(func: () => i++, runAfter: 15);
         expect(task, isA<Task>());
@@ -179,7 +197,6 @@ void main() {
         expect(game.tasks.length, 1);
         var runner = game.tasks.first;
         expect(runner.value, task);
-        final sdl = Sdl();
         game.tick(sdl, 14);
         expect(game.tasks.length, 1);
         runner = game.tasks.first;
@@ -194,7 +211,10 @@ void main() {
       },
     );
     test('.unregisterTask', () {
-      final game = Game('unregisterTask');
+      final game = Game(
+        title: 'unregisterTask',
+        sdl: sdl,
+      );
       final task = Task(runAfter: 1234, func: game.stop);
       game.registerTask(task);
       expect(game.tasks.length, equals(1));
@@ -209,7 +229,10 @@ void main() {
       expect(game.tasks, isEmpty);
     });
     test('replaceLevel', () {
-      final game = Game('Replace Level');
+      final game = Game(
+        title: 'Replace Level',
+        sdl: sdl,
+      );
       final level1 = Level(game: game);
       final level2 = Level(game: game);
       game
@@ -227,8 +250,10 @@ void main() {
       expect(runner.value.runAfter, equals(2000));
     });
     test('.tick', () {
-      final sdl = Sdl();
-      final game = Game('Game.tick');
+      final game = Game(
+        title: 'Game.tick',
+        sdl: sdl,
+      );
       final level = TestLevel(game);
       game.tick(sdl, 1);
       expect(level.lastTicked, isZero);
@@ -242,8 +267,10 @@ void main() {
       expect(level.lastTicked, equals(1234));
     });
     test('.pushLevel', () async {
-      final game = Game('Game.pushLevel');
-      final sdl = Sdl();
+      final game = Game(
+        title: 'Game.pushLevel',
+        sdl: sdl,
+      );
       final level1 = Level(game: game);
       final level2 = Level(game: game);
       game.pushLevel(level1);
@@ -263,8 +290,10 @@ void main() {
       expect(game.tasks, isEmpty);
     });
     test('.pushLevel with `after`', () async {
-      final sdl = Sdl();
-      final game = Game('Game.pushLevel');
+      final game = Game(
+        title: 'Game.pushLevel',
+        sdl: sdl,
+      );
       final level = Level(game: game);
       game.pushLevel(level, after: 200);
       expect(game.currentLevel, isNull);
@@ -305,8 +334,10 @@ void main() {
       expect(runner.runAfter, isZero);
     });
     test('Random sounds', () async {
-      final sdl = Sdl();
-      final game = Game('Play Random Sounds');
+      final game = Game(
+        title: 'Play Random Sounds',
+        sdl: sdl,
+      );
       const randomSound1 = RandomSound(
         sound: AssetReference.file('sound1.wav'),
         minCoordinates: Point(1.0, 2.0),
@@ -415,7 +446,8 @@ void main() {
         description: 'Second command',
       );
       final game = Game(
-        'Commands',
+        title: 'Commands',
+        sdl: sdl,
         triggerMap: const TriggerMap(
           [trigger1, trigger2],
         ),
@@ -448,7 +480,8 @@ void main() {
           keyboardKey: CommandKeyboardKey(trigger1.keyboardKey!.scanCode),
         );
         final game = Game(
-          'Testing',
+          title: 'Testing',
+          sdl: sdl,
           triggerMap: TriggerMap(
             [trigger1, trigger2],
           ),
@@ -467,7 +500,6 @@ void main() {
         );
         game.pushLevel(level);
         expect(list, isEmpty);
-        final sdl = Sdl();
         game.handleSdlEvent(
           makeKeyboardEvent(
             sdl,

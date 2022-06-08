@@ -7,8 +7,12 @@ import 'package:ziggurat/ziggurat.dart';
 import '../helpers.dart';
 
 void main() {
+  final sdl = Sdl();
   group('Menu', () {
-    final game = Game('Menu Testing Game');
+    final game = Game(
+      title: 'Menu Testing Game',
+      sdl: sdl,
+    );
     test('Initialisation', () {
       var menu = Menu(game: game, title: const Message(text: 'Test Menu'));
       expect(menu.title, isA<Message>());
@@ -101,7 +105,6 @@ void main() {
       expect(cancel, equals(1));
     });
     test('.handleSdlEvent', () {
-      final sdl = Sdl();
       var cancel = 0;
       var activate = 0;
       final menu = Menu(
@@ -159,7 +162,6 @@ void main() {
       expect(activate, equals(1));
     });
     test('Moving with number lock on', () {
-      final sdl = Sdl();
       final menu = Menu(
         game: game,
         title: const Message(text: 'Testing With Number Lock'),
@@ -188,7 +190,13 @@ void main() {
       expect(menu.currentMenuItem, isNull);
     });
     test('ListButton', () {
-      final menu = Menu(game: Game('ListButton'), title: emptyMessage);
+      final menu = Menu(
+        game: Game(
+          title: 'ListButton',
+          sdl: sdl,
+        ),
+        title: emptyMessage,
+      );
       var newValue = '';
       final listButton = ListButton<String>(
         ['First', 'Second', 'Third'],
@@ -219,7 +227,13 @@ void main() {
       expect(label.text, equals('Button ($newValue)'));
     });
     test('Checkbox', () {
-      final menu = Menu(game: Game('ListButton'), title: emptyMessage);
+      final menu = Menu(
+        game: Game(
+          title: 'ListButton',
+          sdl: sdl,
+        ),
+        title: emptyMessage,
+      );
       bool? value;
       final checkbox = Checkbox((final b) => value = b);
       expect(checkbox.value, isTrue);
@@ -242,7 +256,10 @@ void main() {
       expect(checkbox.value, isFalse);
     });
     test('Menu Sounds', () {
-      final game = Game('Menu Sounds');
+      final game = Game(
+        title: 'Menu Sounds',
+        sdl: sdl,
+      );
       const sound1 = AssetReference('Sound 1', AssetType.file);
       const sound2 = AssetReference('Sound 2', AssetType.file);
       final menu = Menu(
@@ -273,7 +290,10 @@ void main() {
       expect(menu.oldSound, isNull);
     });
     test('Button Widget', () {
-      final game = Game('Button Widget');
+      final game = Game(
+        title: 'Button Widget',
+        sdl: sdl,
+      );
       var number = 0;
       final button = Button(
         () {
@@ -296,7 +316,10 @@ void main() {
       expect(menu.oldSound?.sound, equals(button.activateSound));
     });
     test('.addButton', () {
-      final game = Game('Menu.addButton');
+      final game = Game(
+        title: 'Menu.addButton',
+        sdl: sdl,
+      );
       final menu = Menu(game: game, title: const Message());
       expect(menu.menuItems, isEmpty);
       var i = 0;
@@ -319,7 +342,10 @@ void main() {
       expect(i, equals(1));
     });
     test('.addLabel', () {
-      final game = Game('Menu.addLabel');
+      final game = Game(
+        title: 'Menu.addLabel',
+        sdl: sdl,
+      );
       final menu = Menu(game: game, title: const Message());
       const selectSound = AssetReference.file('select.wav');
       final item = menu.addLabel(text: 'Testing', selectSound: selectSound);
@@ -363,7 +389,6 @@ void main() {
       expect(menu.oldSound, isNull);
     });
     test('Searching', () async {
-      final sdl = Sdl();
       final menuItems = [
         const MenuItem(Message(text: 'First Item'), menuItemLabel),
         const MenuItem(Message(text: 'Second Item'), menuItemLabel)
@@ -421,7 +446,8 @@ void main() {
         ),
       );
       final game = Game(
-        'Test Menu Game',
+        title: 'Test Menu Game',
+        sdl: sdl,
         triggerMap: const TriggerMap(
           [
             quitCommand,
@@ -458,7 +484,6 @@ void main() {
           onStart: () => help++,
         ),
       );
-      final sdl = Sdl();
       game.handleSdlEvent(
         makeKeyboardEvent(
           sdl,
@@ -492,7 +517,10 @@ void main() {
       expect(widget.getLabel(menuItem)?.text, equals('Test Widget'));
     });
     test('Activate Dynamic Widgets', () {
-      final game = Game('Activate Dynamic Widgets');
+      final game = Game(
+        title: 'Activate Dynamic Widgets',
+        sdl: sdl,
+      );
       final widget = DynamicWidget((final menuItem) => emptyMessage);
       final menu = Menu(
         game: game,

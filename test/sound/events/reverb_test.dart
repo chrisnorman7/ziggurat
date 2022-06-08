@@ -1,9 +1,14 @@
+import 'package:dart_sdl/dart_sdl.dart';
 import 'package:test/test.dart';
 import 'package:ziggurat/sound.dart';
 import 'package:ziggurat/src/game.dart';
 
 void main() {
-  final game = Game('Test Game');
+  final sdl = Sdl();
+  final game = Game(
+    title: 'Test Game',
+    sdl: sdl,
+  );
   group(
     'reverb.dart',
     () {

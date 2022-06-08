@@ -6,10 +6,11 @@ import 'package:ziggurat/ziggurat.dart';
 import '../helpers.dart';
 
 void main() {
+  final sdl = Sdl();
   group('SceneLevel', () {
     test('Initialise', () {
       var done = 0;
-      final game = Game('SceneLevel');
+      final game = Game(title: 'SceneLevel', sdl: sdl);
       const message = Message(text: 'Done.', keepAlive: true);
       const skipScanCode = ScanCode.return_;
       const skipControllerButton = GameControllerButton.a;
@@ -68,7 +69,10 @@ void main() {
       );
     });
     test('.skip', () {
-      final game = Game('SceneLevel.skip');
+      final game = Game(
+        title: 'SceneLevel.skip',
+        sdl: sdl,
+      );
       var done = 0;
       const message = Message(keepAlive: true);
       final sceneLevel = SceneLevel(
@@ -91,8 +95,10 @@ void main() {
       expect(game.tasks, isEmpty);
     });
     test('.handleSdlValue', () {
-      final sdl = Sdl();
-      final game = Game('SceneLevel.handleSdlValue');
+      final game = Game(
+        title: 'SceneLevel.handleSdlValue',
+        sdl: sdl,
+      );
       var done = 0;
       const message = Message(keepAlive: true);
       final sceneLevel = SceneLevel(
@@ -136,8 +142,10 @@ void main() {
       expect(game.currentLevel, equals(sceneLevel));
     });
     test('.duration', () async {
-      final sdl = Sdl();
-      final game = Game('SceneLevel.duration');
+      final game = Game(
+        title: 'SceneLevel.duration',
+        sdl: sdl,
+      );
       var done = 0;
       const duration = 3;
       final sceneLevel = SceneLevel(
@@ -176,7 +184,10 @@ void main() {
       expect(game.currentLevel, isNull);
     });
     test('.onPush', () {
-      final game = Game('SceneLevel.onPush');
+      final game = Game(
+        title: 'SceneLevel.onPush',
+        sdl: sdl,
+      );
       const message =
           Message(keepAlive: true, sound: AssetReference.file('test.wav'));
       var sceneLevel = SceneLevel(

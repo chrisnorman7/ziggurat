@@ -97,7 +97,8 @@ class MainMenu extends Menu {
 Future<void> main() async {
   final sdl = Sdl()..init();
   final game = Game(
-    'Ziggurat Example',
+    title: 'Ziggurat Example',
+    sdl: sdl,
     triggerMap: TriggerMap([
       quitCommandTrigger,
       CommandTrigger.basic(
