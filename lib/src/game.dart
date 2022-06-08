@@ -1,5 +1,6 @@
 /// Provides the [Game] class.
 import 'dart:async';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:dart_sdl/dart_sdl.dart';
@@ -25,6 +26,8 @@ class Game {
   Game({
     required this.title,
     required this.sdl,
+    this.orgName = 'com.example',
+    this.appName = 'untitled_game',
     this.triggerMap = const TriggerMap([]),
   })  : _levels = [],
         _isRunning = false,
@@ -49,6 +52,19 @@ class Game {
 
   /// The SDL instance to use.
   final Sdl sdl;
+
+  /// The name of the organisation who makes this game.
+  final String orgName;
+
+  /// The internal name for this game.
+  ///
+  /// This name will be used along with [orgName], to get a suitable
+  /// [preferencesDirectory].
+  final String appName;
+
+  /// Get the preferences directory for this game.
+  Directory get preferencesDirectory =>
+      Directory(sdl.getPrefPath(orgName, appName));
 
   /// The level stack of this game.
   final List<Level> _levels;

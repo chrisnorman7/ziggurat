@@ -523,5 +523,32 @@ void main() {
         expect(list, [1, 2]);
       },
     );
+    test('.preferencesDirectory', () {
+      const orgName = 'com.website';
+      const appName = 'test_game';
+      final game = Game(
+        title: 'Preferences Directory',
+        sdl: sdl,
+        orgName: orgName,
+        appName: appName,
+      );
+      expect(game.orgName, orgName);
+      expect(game.appName, appName);
+      final directory = game.preferencesDirectory;
+      expect(
+        directory.path,
+        sdl.getPrefPath(
+          game.orgName,
+          game.appName,
+        ),
+      );
+      expect(directory.existsSync(), isTrue);
+      directory.deleteSync(recursive: true);
+      expect(directory.existsSync(), isFalse);
+      final directory2 = game.preferencesDirectory;
+      expect(directory2.path, directory.path);
+      expect(directory.existsSync(), isTrue);
+      directory.deleteSync(recursive: true);
+    });
   });
 }
