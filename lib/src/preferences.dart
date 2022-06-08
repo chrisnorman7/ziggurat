@@ -29,7 +29,7 @@ class Preferences {
     if (c == null) {
       if (file.existsSync()) {
         final data = file.readAsStringSync();
-        c = jsonDecode(data) as Map<String, Object>;
+        c = jsonDecode(data) as Map<String, Object?>;
       } else {
         c = <String, Object>{};
       }

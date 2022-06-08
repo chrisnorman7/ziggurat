@@ -117,6 +117,18 @@ void main() {
           expect(preferences.getBool(key), false);
         },
       );
+      test(
+        '.load',
+        () {
+          const key = 'map_key';
+          final cache = preferences.cache;
+          preferences.set(
+            key,
+            {'hello': 'world', 'life': 42},
+          );
+          expect(cache[key], preferences.get<Map<String, dynamic>>(key));
+        },
+      );
     },
   );
 }
