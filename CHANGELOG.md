@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.48.1]
+
+### Fixed
+
+* Fixed some type problems with preferences.
+
 ## [0.48.0]
 
 ### Changed
