@@ -391,8 +391,7 @@ class Game {
   /// [registerTask], which wasn't quite as reliable, due to how fast windows
   /// are created on some machines.
   @mustCallSuper
-  Future<void> run(
-    final Sdl sdl, {
+  Future<void> run({
     final int framesPerSecond = 60,
     final TaskFunction? onStart,
   }) async {

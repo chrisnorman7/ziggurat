@@ -114,7 +114,6 @@ Future<void> main() async {
   );
   final level = MainMenu(game);
   await game.run(
-    sdl,
     onStart: () => game.pushLevel(level),
   );
 }

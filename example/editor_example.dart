@@ -22,6 +22,6 @@ Future<void> main() async {
     },
   );
   game.pushLevel(editor);
-  await game.run(sdl);
+  await game.run();
   sdl.quit();
 }

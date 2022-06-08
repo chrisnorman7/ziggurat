@@ -46,7 +46,6 @@ Future<void> main() async {
   );
   menu.menuItems.addAll(<ParameterMenuParameter>[powerMenuItem, speedMenuItem]);
   await game.run(
-    sdl,
     onStart: () => game.pushLevel(menu),
   );
 }
