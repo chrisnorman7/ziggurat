@@ -297,15 +297,13 @@ class Level {
   ///
   /// This method will be called by [Game.tick].
   ///
-  /// The [sdl] argument will be the SDL instance that is running the game.
-  ///
   /// The [timeDelta] argument will be how long it has been since the game last
   /// ticked.
   ///
   /// To prevent jank, this method should not take too long, although some time
   /// correction is performed by the [Game.tick] method.
   @mustCallSuper
-  void tick(final Sdl sdl, final int timeDelta) {
+  void tick(final int timeDelta) {
     for (final nextRun in commandNextRuns) {
       nextRun.runAfter += timeDelta;
       final command = nextRun.value;

@@ -326,7 +326,7 @@ class Game {
     } while (event != null);
     final level = currentLevel;
     if (level != null) {
-      level.tick(sdl, timeDelta);
+      level.tick(timeDelta);
     }
     final completedTasks = <TaskRunner>[];
     // We must copy the `tasks` list to prevent Concurrent modification during

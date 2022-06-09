@@ -18,9 +18,9 @@ class TestLevel extends Level {
   /// The number of milliseconds since the [game] ticked.
   int lastTicked;
   @override
-  void tick(final Sdl sdl, final int timeDelta) {
+  void tick(final int timeDelta) {
     lastTicked = timeDelta;
-    super.tick(sdl, timeDelta);
+    super.tick(timeDelta);
   }
 }
 
