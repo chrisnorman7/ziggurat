@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.49.0]
+
+### Changed
+
+* Removed the `sdl` argument from `Level.tick`.
+
 ## [0.48.2]
 
 ### Fixed
