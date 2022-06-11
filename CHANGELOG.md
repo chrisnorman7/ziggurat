@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.49.1]
+
+### Changed
+
+* When playing waves, set the default partials to `1`, to prevent synthizer crash.
+* When playing waves, if playing a waver other than a sine wave, throw `StateError` if partials is less than 1.
+
 ## [0.49.0]
 
 ### Changed

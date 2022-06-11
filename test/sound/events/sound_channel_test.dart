@@ -89,7 +89,7 @@ void main() {
           expect(wave.frequency, c4);
           expect(wave.gain, 0.8);
           expect(wave.game, game);
-          expect(wave.partials, isZero);
+          expect(wave.partials, 1);
           expect(wave.waveType, WaveType.sine);
         },
       );
@@ -97,6 +97,13 @@ void main() {
         '.playTriangle',
         () {
           final soundChannel = game.createSoundChannel();
+          expect(
+            () => soundChannel.playTriangle(
+              g4,
+              partials: 0,
+            ),
+            throwsStateError,
+          );
           final wave = soundChannel.playTriangle(g3, gain: 1.0, partials: 8);
           expect(wave.channel, soundChannel.id);
           expect(wave.frequency, g3);
@@ -110,6 +117,13 @@ void main() {
         '.playSquare',
         () {
           final soundChannel = game.createSoundChannel();
+          expect(
+            () => soundChannel.playSquare(
+              g4,
+              partials: 0,
+            ),
+            throwsStateError,
+          );
           final wave = soundChannel.playSquare(fSharp6, gain: 0.5, partials: 3);
           expect(wave.channel, soundChannel.id);
           expect(wave.frequency, fSharp6);
@@ -123,6 +137,13 @@ void main() {
         '.playSaw',
         () {
           final soundChannel = game.createSoundChannel();
+          expect(
+            () => soundChannel.playSaw(
+              g4,
+              partials: 0,
+            ),
+            throwsStateError,
+          );
           final wave = soundChannel.playSaw(a2, gain: 0.25, partials: 7);
           expect(wave.channel, soundChannel.id);
           expect(wave.frequency, a2);

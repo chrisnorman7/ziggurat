@@ -90,12 +90,19 @@ class SoundChannel extends SoundEvent {
 
   /// Play a wave of the given [waveType] at the given [frequency] through this
   /// channel.
+  ///
+  /// If [waveType] is [WaveType.sine], then [partials] are ignored.
+  ///
+  /// If [partials] is `< 1`, then [StateError] is thrown.
   PlayWave playWave({
     required final WaveType waveType,
     required final double frequency,
-    final int partials = 0,
+    final int partials = 1,
     final double gain = 0.7,
   }) {
+    if (partials < 1 && waveType != WaveType.sine) {
+      throw StateError('Synthizer does not like `partials` being less than 1.');
+    }
     final wave = PlayWave(
       game: game,
       channel: id!,
@@ -109,7 +116,10 @@ class SoundChannel extends SoundEvent {
   }
 
   /// Play a sine wave.
-  PlayWave playSine(final double frequency, {final double gain = 0.7}) =>
+  PlayWave playSine(
+    final double frequency, {
+    final double gain = 0.7,
+  }) =>
       playWave(
         waveType: WaveType.sine,
         frequency: frequency,
@@ -119,7 +129,7 @@ class SoundChannel extends SoundEvent {
   /// Play a triangle wave.
   PlayWave playTriangle(
     final double frequency, {
-    final int partials = 0,
+    final int partials = 1,
     final double gain = 0.7,
   }) =>
       playWave(
@@ -132,7 +142,7 @@ class SoundChannel extends SoundEvent {
   /// Play a square wave.
   PlayWave playSquare(
     final double frequency, {
-    final int partials = 0,
+    final int partials = 1,
     final double gain = 0.7,
   }) =>
       playWave(
@@ -145,7 +155,7 @@ class SoundChannel extends SoundEvent {
   /// Play a saw wave.
   PlayWave playSaw(
     final double frequency, {
-    final int partials = 0,
+    final int partials = 1,
     final double gain = 0.7,
   }) =>
       playWave(
