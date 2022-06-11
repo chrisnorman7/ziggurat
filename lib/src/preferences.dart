@@ -50,6 +50,12 @@ class Preferences {
     save();
   }
 
+  /// Clear the value at the given [name].
+  void clear(final String name) {
+    cache.remove(name);
+    save();
+  }
+
   /// Get the given [name] from the [cache].
   ///
   /// If [name] is not found in the [cache], [defaultValue] or `null` will be

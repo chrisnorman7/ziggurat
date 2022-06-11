@@ -132,6 +132,27 @@ void main() {
           expect(cache[key], preferences.get<Map<String, dynamic>>(key));
         },
       );
+      test(
+        '.clear',
+        () {
+          const key = 'something';
+          final cache = preferences.cache;
+          preferences
+            ..set('hello', 'world')
+            ..set(key, 'Hello world.');
+          expect(cache[key], 'Hello world.');
+          preferences.clear(key);
+          expect(cache.containsKey(key), isFalse);
+          expect(preferences.getString('hello'), 'world');
+          final preferences2 = Preferences(
+            file: preferences.file,
+            key: preferences.key,
+          );
+          expect(preferences2.getString('hello'), 'world');
+          expect(preferences2.getString(key), isNull);
+          expect(preferences2.cache.containsKey(key), isFalse);
+        },
+      );
     },
   );
 }
