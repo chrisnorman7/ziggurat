@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.49.2]
+
+### Added
+
+* Added the `Preferences.clear` method to clear preferences keys.
+
 ## [0.49.1]
 
 ### Changed
