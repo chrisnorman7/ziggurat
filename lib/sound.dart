@@ -10,6 +10,7 @@ export 'src/json/music.dart';
 export 'src/json/random_sound.dart';
 export 'src/json/reverb_preset.dart';
 export 'src/sound/events/automation_fade.dart';
+export 'src/sound/events/echo.dart';
 export 'src/sound/events/events_base.dart';
 export 'src/sound/events/global.dart';
 export 'src/sound/events/playback.dart';
