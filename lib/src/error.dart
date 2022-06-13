@@ -72,6 +72,18 @@ class NoSuchReverbError extends SoundsError {
   String toString() => 'No such reverb: $id.';
 }
 
+/// No such echo was found.
+class NoSuchEchoError extends SoundsError {
+  /// Create an instance.
+  NoSuchEchoError(this.id);
+
+  /// The ID of the echo.
+  final int id;
+
+  @override
+  String toString() => 'No such echo: $id.';
+}
+
 /// No such sound was found.
 class NoSuchSoundError extends SoundsError {
   /// Create an instance.

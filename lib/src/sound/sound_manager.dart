@@ -8,6 +8,7 @@ import '../json/asset_reference.dart';
 import 'audio_channel.dart';
 import 'buffer_cache.dart';
 import 'events/automation_fade.dart';
+import 'events/echo.dart';
 import 'events/events_base.dart';
 import 'events/global.dart';
 import 'events/playback.dart';
@@ -35,6 +36,7 @@ class SoundManager {
     required this.context,
     required this.bufferCache,
   })  : _reverbs = {},
+        _echoes = {},
         _channels = {},
         _sounds = {},
         _waves = {};
@@ -49,6 +51,11 @@ class SoundManager {
   ///
   /// You should get reverbs with the [getReverb] method.
   final Map<int, Reverb> _reverbs;
+
+  /// The echoes that have been registered.
+  ///
+  /// You should get echoes with the [getEcho] method.
+  final Map<int, GlobalEcho> _echoes;
 
   /// The audio channels that have been registered.
   ///
@@ -74,6 +81,17 @@ class SoundManager {
       throw NoSuchReverbError(id);
     }
     return reverb;
+  }
+
+  /// Get the echo with the given [id].
+  ///
+  /// If no echo is found, then [NoSuchEchoError] is thrown.
+  GlobalEcho getEcho(final int id) {
+    final echo = _echoes[id];
+    if (echo == null) {
+      throw NoSuchEchoError(id);
+    }
+    return echo;
   }
 
   /// Get a channel.
@@ -179,6 +197,8 @@ class SoundManager {
       handleAutomateWaveFrequency(event);
     } else if (event is DestroyWave) {
       handleDestroyWave(event);
+    } else if (event is CreateEcho) {
+      handleCreateEcho(event);
     } else {
       throw UnimplementedError('Cannot handle $event.');
     }
@@ -513,5 +533,22 @@ class SoundManager {
       channel.waves.remove(id);
     }
     generator.destroy();
+  }
+
+  /// Handle the create echo event.
+  void handleCreateEcho(final CreateEcho event) {
+    final echo = context.createGlobalEcho()
+      ..setTaps(
+        event.taps
+            .map<EchoTapConfig>(
+              (final e) => EchoTapConfig(
+                e.delay,
+                e.gainL,
+                e.gainR,
+              ),
+            )
+            .toList(),
+      );
+    _echoes[event.id!] = echo;
   }
 }
