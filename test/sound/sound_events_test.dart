@@ -111,8 +111,25 @@ void main() {
         ..setListenerOrientation(180)
         ..setListenerPosition(3.0, 4.0, 5.0);
       final reverb = game.createReverb(const ReverbPreset(name: 'Test Reverb'));
-      final channel =
-          game.createSoundChannel(position: const SoundPositionScalar());
+      const echoTap = EchoTap(
+        delay: 10.0,
+        gainL: 0.5,
+        gainR: 0.4,
+      );
+      final echo = game.createEcho(
+        [echoTap],
+      );
+      expect(echo.game, game);
+      expect(echo.taps, [echoTap]);
+      final echoTaps = [
+        const EchoTap(delay: 1.0),
+        const EchoTap(delay: 2.0),
+        const EchoTap(delay: 3.0),
+      ];
+      echo.taps = echoTaps;
+      final channel = game.createSoundChannel(
+        position: const SoundPositionScalar(),
+      );
       expect(channel.position, isA<SoundPositionScalar>());
       channel
         ..gain = 1.0
@@ -124,10 +141,16 @@ void main() {
           (final value) => value is SoundPositionScalar && value.scalar == 1.0,
         ),
       );
+      expect(channel.reverb, null);
+      expect(channel.echo, null);
       channel.reverb = reverb.id;
       expect(channel.reverb, equals(reverb.id));
       channel.reverb = null;
       expect(channel.reverb, isNull);
+      channel.echo = echo.id;
+      expect(channel.echo, echo.id);
+      channel.echo = null;
+      expect(channel.echo, null);
       final sound = channel.playSound(
         const AssetReference('testing.wav', AssetType.file),
         keepAlive: true,
@@ -155,6 +178,7 @@ void main() {
       fade.cancel();
       sound.destroy();
       reverb.destroy();
+      echo.destroy();
       expect(
         game.sounds,
         emitsInOrder(
@@ -188,6 +212,13 @@ void main() {
               'sets the listener position',
             ),
             equals(reverb),
+            equals(echo),
+            predicate(
+              (final value) =>
+                  value is ModifyEchoTaps &&
+                  value.id == echo.id &&
+                  value.taps == echoTaps,
+            ),
             equals(channel),
             predicate(
               (final value) =>
@@ -212,6 +243,18 @@ void main() {
                   value is SetSoundChannelReverb &&
                   value.id == channel.id &&
                   value.reverb == null,
+            ),
+            predicate(
+              (final value) =>
+                  value is SetSoundChannelEcho &&
+                  value.id == channel.id &&
+                  value.echo == echo.id,
+            ),
+            predicate(
+              (final value) =>
+                  value is SetSoundChannelEcho &&
+                  value.id == channel.id &&
+                  value.echo == null,
             ),
             equals(sound),
             predicate(
@@ -284,6 +327,9 @@ void main() {
             ),
             predicate(
               (final value) => value is DestroyReverb && value.id == reverb.id,
+            ),
+            predicate(
+              (final value) => value is DestroyEcho && value.id == echo.id,
             )
           ],
         ),
