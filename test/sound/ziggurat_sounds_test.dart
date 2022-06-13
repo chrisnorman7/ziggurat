@@ -30,7 +30,7 @@ void main() {
   final random = game.random;
   final defaultBufferCache = BufferCache(
     synthizer: synthizer,
-    maxSize: pow(1024, 3).floor(),
+    maxSize: 1.gb,
     random: random,
   );
   final soundManager = CustomSoundManager(
