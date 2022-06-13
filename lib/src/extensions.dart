@@ -5,6 +5,18 @@ import 'dart:math';
 import 'error.dart';
 import 'math.dart';
 
+/// The number of bytes in a kilobyte.
+const kilobytes = 1024;
+
+/// The number of bytes in a megabyte.
+const megabytes = kilobytes * kilobytes;
+
+/// The number of bytes in a gigabyte.
+const gigabytes = megabytes * kilobytes;
+
+/// The number of bytes in a terabyte.
+const terabytes = gigabytes * kilobytes;
+
 /// An extension for returning a `Point<int>` from a `Point<double>`.
 extension RunnerDoubleMethods on Point<double> {
   /// Return a floored version of this point.
@@ -73,14 +85,14 @@ extension FileSystemEntityMethods on FileSystemEntity {
 /// Size conversions.
 extension SizeExtensions on int {
   /// Return the number of bytes in this value as kilobytes.
-  int get kb => this * 1024;
+  int get kb => this * kilobytes;
 
   /// Return the number of bytes in this value as megabytes.
-  int get mb => this * 1048576;
+  int get mb => this * megabytes;
 
   /// Return the number of bytes in this value as gigabytes.
-  int get gb => this * 1048576;
+  int get gb => this * gigabytes;
 
   /// Return the number of bytes in this value as terabytes.
-  int get tb => this * pow(1024, 4).floor();
+  int get tb => this * terabytes;
 }

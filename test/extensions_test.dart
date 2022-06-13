@@ -40,24 +40,59 @@ void main() {
     'SizeExtensions',
     () {
       test(
+        'kb',
+        () {
+          expect(kilobytes, 1024);
+        },
+      );
+      test(
         '.kb',
         () {
           expect(1.kb, 1024);
           expect(2.kb, 2048);
+          expect(10.kb, 10240);
+        },
+      );
+      test(
+        'mb',
+        () {
+          expect(megabytes, 1048576);
         },
       );
       test(
         '.mb',
         () {
-          expect(1.mb, 1048576);
-          expect(10.mb, 10485760);
+          expect(1.mb, megabytes);
+          expect(2.mb, megabytes * 2);
+          expect(10.mb, megabytes * 10);
+        },
+      );
+      test(
+        'gb',
+        () {
+          expect(gigabytes, 1073741824);
         },
       );
       test(
         '.gb',
         () {
-          expect(1.gb, 1048576);
-          expect(10.gb, 10485760);
+          expect(1.gb, gigabytes);
+          expect(2.gb, gigabytes * 2);
+          expect(10.gb, gigabytes * 10);
+        },
+      );
+      test(
+        'tb',
+        () {
+          expect(terabytes, gigabytes * 1024);
+        },
+      );
+      test(
+        '.tb',
+        () {
+          expect(1.tb, terabytes);
+          expect(2.tb, terabytes * 2);
+          expect(10.tb, terabytes * 10);
         },
       );
     },
