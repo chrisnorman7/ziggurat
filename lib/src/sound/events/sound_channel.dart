@@ -1,4 +1,3 @@
-// ignore_for_file: prefer_final_parameters
 /// Provides the [SoundChannel] class.
 import '../../../wave_types.dart';
 import '../../error.dart';
@@ -56,6 +55,17 @@ class SoundChannel extends SoundEvent {
   set reverb(final int? reverbId) {
     _reverb = reverbId;
     game.queueSoundEvent(SetSoundChannelReverb(id!, reverbId));
+  }
+
+  int? _echo;
+
+  /// The ID of the echo for this channel.
+  int? get echo => _echo;
+
+  /// Set the echo for this sound channel.
+  set echo(final int? value) {
+    _echo = value;
+    game.queueSoundEvent(SetSoundChannelEcho(id: id!, echo: value));
   }
 
   double _gain;
@@ -243,4 +253,16 @@ class SetSoundChannelReverb extends SoundEvent {
   /// Describe this object.
   @override
   String toString() => '<$runtimeType id: $id, reverb: $reverb>';
+}
+
+/// Set the echo of the sound channel with the given [id] to the given [echo].
+class SetSoundChannelEcho extends SoundEvent {
+  /// Create an instance.
+  const SetSoundChannelEcho({
+    required final int id,
+    required this.echo,
+  }) : super(id: id);
+
+  /// The ID of the echo to use.
+  final int? echo;
 }
