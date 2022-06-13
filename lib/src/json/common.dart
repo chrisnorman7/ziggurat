@@ -1,5 +1,10 @@
 /// Provides functions which are used by all JSON classes.
+import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
+
+/// An indented JSON encoder.
+const jsonEncoder = JsonEncoder.withIndent('  ');
 
 /// The separator for [Point] values.
 const pointSeparator = ':';
@@ -37,5 +42,20 @@ Point<double> stringToPointDouble(final dynamic string) {
     return Point<double>(x, y);
   } else {
     throw UnimplementedError('Cannot handle $string.');
+  }
+}
+
+/// A mixin for providing simple dumping and loading.
+mixin DumpLoadMixin {
+  /// Convert this object to JSON.
+  Map<String, dynamic> toJson() {
+    throw UnimplementedError();
+  }
+
+  /// Dump an instance to [file].
+  void dump(final File file) {
+    final data = toJson();
+    final json = jsonEncoder.convert(data);
+    file.writeAsStringSync(json);
   }
 }
