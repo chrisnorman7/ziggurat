@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:dart_synthizer/dart_synthizer.dart';
 import 'package:encrypt/encrypt.dart';
 
+import '../error.dart';
 import '../json/asset_reference.dart';
 
 /// A class to get and hold buffers.
@@ -49,6 +50,9 @@ class BufferCache {
     final file = reference.getFile(random);
     var buffer = _buffers[file.path];
     if (buffer == null) {
+      if (!file.existsSync()) {
+        throw NoSuchBufferError(file);
+      }
       final encryptionKey = reference.encryptionKey;
       if (encryptionKey == null) {
         buffer = Buffer.fromFile(synthizer, file);

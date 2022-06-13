@@ -36,8 +36,68 @@ class InvalidEntityError extends ZigguratError {
   String toString() => 'Unknown entity $entity (${entity.runtimeType}).';
 }
 
+/// The base class for all sound errors.
+class SoundsError extends ZigguratError {}
+
+/// No such buffer was found.
+class NoSuchBufferError extends SoundsError {
+  /// Create an instance.
+  NoSuchBufferError(this.file);
+
+  /// The file which does not exist.
+  final File file;
+}
+
+/// No such channel was found.
+class NoSuchChannelError extends SoundsError {
+  /// Create an instance.
+  NoSuchChannelError(this.id);
+
+  /// The ID of the channel.
+  final int id;
+
+  @override
+  String toString() => 'No such channel: $id.';
+}
+
+/// No such reverb was found.
+class NoSuchReverbError extends SoundsError {
+  /// Create an instance.
+  NoSuchReverbError(this.id);
+
+  /// The ID of the reverb.
+  final int id;
+
+  @override
+  String toString() => 'No such reverb: $id.';
+}
+
+/// No such sound was found.
+class NoSuchSoundError extends SoundsError {
+  /// Create an instance.
+  NoSuchSoundError(this.id);
+
+  /// The ID of the sound.
+  final int id;
+
+  @override
+  String toString() => 'No sound found with ID $id.';
+}
+
+/// No such wave was found.
+class NoSuchWaveError extends SoundsError {
+  /// Create an instance.
+  NoSuchWaveError(this.id);
+
+  /// The ID of the wave.
+  final int id;
+
+  @override
+  String toString() => 'No wave found with ID $id.';
+}
+
 /// The [sound] had its [PlaySound.keepAlive] value set to `false`.
-class DeadSound extends ZigguratError {
+class DeadSound extends SoundsError {
   /// Create an instance.
   DeadSound(this.sound);
 

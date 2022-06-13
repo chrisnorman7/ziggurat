@@ -1,12 +1,20 @@
 /// Provides the [SoundManager] class.
 import 'package:dart_synthizer/dart_synthizer.dart';
 
-import '../../sound.dart';
 import '../../wave_types.dart';
-import '../../ziggurat.dart';
+import '../error.dart';
+import '../game.dart';
+import '../json/asset_reference.dart';
 import 'audio_channel.dart';
 import 'buffer_cache.dart';
-import 'error.dart';
+import 'events/automation_fade.dart';
+import 'events/events_base.dart';
+import 'events/global.dart';
+import 'events/playback.dart';
+import 'events/reverb.dart';
+import 'events/sound_channel.dart';
+import 'events/sound_channel_filter.dart';
+import 'events/sound_position.dart';
 import 'extensions.dart';
 import 'reverb.dart';
 
