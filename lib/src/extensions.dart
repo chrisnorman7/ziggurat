@@ -69,3 +69,18 @@ extension FileSystemEntityMethods on FileSystemEntity {
     throw InvalidEntityError(this);
   }
 }
+
+/// Size conversions.
+extension SizeExtensions on int {
+  /// Return the number of bytes in this value as kilobytes.
+  int get kb => this * 1024;
+
+  /// Return the number of bytes in this value as megabytes.
+  int get mb => this * 1048576;
+
+  /// Return the number of bytes in this value as gigabytes.
+  int get gb => this * 1048576;
+
+  /// Return the number of bytes in this value as terabytes.
+  int get tb => this * pow(1024, 4).floor();
+}

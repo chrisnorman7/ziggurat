@@ -36,4 +36,30 @@ void main() {
       }
     });
   });
+  group(
+    'SizeExtensions',
+    () {
+      test(
+        '.kb',
+        () {
+          expect(1.kb, 1024);
+          expect(2.kb, 2048);
+        },
+      );
+      test(
+        '.mb',
+        () {
+          expect(1.mb, 1048576);
+          expect(10.mb, 10485760);
+        },
+      );
+      test(
+        '.gb',
+        () {
+          expect(1.gb, 1048576);
+          expect(10.gb, 10485760);
+        },
+      );
+    },
+  );
 }
