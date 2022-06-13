@@ -10,6 +10,7 @@ import 'package:path/path.dart' as path;
 import '../ziggurat.dart';
 import 'json/reverb_preset.dart';
 import 'levels/level.dart';
+import 'sound/events/echo.dart';
 import 'sound/events/events_base.dart';
 import 'sound/events/global.dart';
 import 'sound/events/playback.dart';
@@ -470,6 +471,17 @@ class Game {
   CreateReverb createReverb(final ReverbPreset reverb) {
     final event =
         CreateReverb(game: this, id: SoundEvent.nextId(), reverb: reverb);
+    queueSoundEvent(event);
+    return event;
+  }
+
+  /// Create an echo.
+  CreateEcho createEcho(final List<EchoTap> taps) {
+    final event = CreateEcho(
+      id: SoundEvent.nextId(),
+      game: this,
+      taps: taps,
+    );
     queueSoundEvent(event);
     return event;
   }
