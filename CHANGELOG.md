@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.50.0]
+
+### Added
+
+* Added sounds to ziggurat.
+
 ## [0.49.2]
 
 ### Added
