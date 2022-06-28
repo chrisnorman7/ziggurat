@@ -1,9 +1,12 @@
 /// A quick example.
 import 'package:dart_sdl/dart_sdl.dart';
+import 'package:dart_synthizer/dart_synthizer.dart';
 import 'package:ziggurat/levels.dart';
 import 'package:ziggurat/menus.dart';
+import 'package:ziggurat/sound.dart';
 import 'package:ziggurat/ziggurat.dart';
 
+const sound = AssetReference.file('sound.wav');
 final quitCommandTrigger = CommandTrigger.basic(
   name: 'quit',
   description: 'Quit the game',
@@ -52,7 +55,12 @@ class ExcitingLevel extends Level {
       Command(
         onStart: () {
           coordinate--;
-          game.outputText('Left: $coordinate');
+          game.outputMessage(
+            Message(
+              sound: sound,
+              text: 'Left: $coordinate',
+            ),
+          );
         },
         interval: 500,
       ),
@@ -62,7 +70,12 @@ class ExcitingLevel extends Level {
       Command(
         onStart: () {
           coordinate++;
-          game.outputText('Right: $coordinate');
+          game.outputMessage(
+            Message(
+              sound: sound,
+              text: 'Right: $coordinate',
+            ),
+          );
         },
         interval: 500,
       ),
@@ -112,8 +125,32 @@ Future<void> main() async {
       downCommandTrigger,
     ]),
   );
-  final level = MainMenu(game);
-  await game.run(
-    onStart: () => game.pushLevel(level),
+  final synthizer = Synthizer()..initialize();
+  final context = synthizer.createContext();
+  final bufferCache = BufferCache(
+    synthizer: synthizer,
+    maxSize: 1.gb,
+    random: game.random,
   );
+  final soundManager = SoundManager(
+    context: context,
+    bufferCache: bufferCache,
+  );
+  game.sounds.listen(
+    (final event) {
+      // ignore: avoid_print
+      print('Sound: $event');
+      soundManager.handleEvent(event);
+    },
+  );
+  final level = MainMenu(game);
+  try {
+    await game.run(
+      onStart: () => game.pushLevel(level),
+    );
+  } finally {
+    sdl.quit();
+    context.destroy();
+    synthizer.shutdown();
+  }
 }
