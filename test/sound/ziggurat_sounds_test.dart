@@ -95,13 +95,23 @@ void main() {
             ),
           );
           expect(reverb.reverb.gain.value, equals(preset.gain));
+          reverbEvent.reset();
+          await Future<void>.delayed(const Duration(milliseconds: 100));
+          expect(soundManager.events.length, 5);
+          expect(
+            soundManager.events.last,
+            predicate(
+              (final value) =>
+                  value is ResetReverb && value.id == reverbEvent.id,
+            ),
+          );
           reverbEvent.destroy();
           await Future<void>.delayed(Duration.zero);
           expect(
             () => soundManager.getReverb(reverbEvent.id!),
             throwsA(isA<NoSuchReverbError>()),
           );
-          expect(soundManager.events.length, 5);
+          expect(soundManager.events.length, 6);
           expect(
             soundManager.events.last,
             predicate(

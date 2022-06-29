@@ -22,6 +22,9 @@ class CreateReverb extends SoundEvent {
   /// Destroy this reverb.
   void destroy() => game.queueSoundEvent(DestroyReverb(id!));
 
+  /// Reset this reverb.
+  void reset() => game.queueSoundEvent(ResetReverb(id!));
+
   /// Describe this object.
   @override
   String toString() => '<$runtimeType id: $id, reverb: ${reverb.name}>';
@@ -39,4 +42,10 @@ class DestroyReverb extends SoundEvent {
   /// Describe this object.
   @override
   String toString() => '<$runtimeType id: $id>';
+}
+
+/// Reset the [CreateReverb] with the given [id].
+class ResetReverb extends SoundEvent {
+  /// Create an instance.
+  const ResetReverb(final int id) : super(id: id);
 }

@@ -147,6 +147,8 @@ class SoundManager {
       handleDestroySoundChannel(event);
     } else if (event is CreateReverb) {
       handleCreateReverb(event);
+    } else if (event is ResetReverb) {
+      handleResetReverb(event);
     } else if (event is DestroyReverb) {
       handleDestroyReverb(event);
     } else if (event is PlaySound) {
@@ -585,5 +587,10 @@ class SoundManager {
   /// Reset an echo.
   void handleResetEcho(final ResetEcho event) {
     getEcho(event.id!).reset();
+  }
+
+  /// Handle resetting a reverb.
+  void handleResetReverb(final ResetReverb event) {
+    getReverb(event.id!).reverb.reset();
   }
 }
