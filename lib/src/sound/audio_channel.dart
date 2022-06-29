@@ -6,8 +6,12 @@ import 'reverb.dart';
 /// A channel to play sounds through.
 class AudioChannel {
   /// Create the channel.
-  AudioChannel(this.id, this.source, this.reverb)
-      : sounds = {},
+  AudioChannel({
+    required this.id,
+    required this.source,
+    this.reverb,
+    this.echo,
+  })  : sounds = {},
         waves = {};
 
   /// The id of this channel.
@@ -18,6 +22,9 @@ class AudioChannel {
 
   /// The reverb this channel is feeding.
   Reverb? reverb;
+
+  /// The echo that this channel is connected to.
+  GlobalEcho? echo;
 
   /// The sounds that are playing through this channel.
   final Map<int, BufferGenerator> sounds;

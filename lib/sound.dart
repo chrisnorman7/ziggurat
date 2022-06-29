@@ -17,6 +17,7 @@ export 'src/sound/events/events_base.dart';
 export 'src/sound/events/global.dart';
 export 'src/sound/events/playback.dart';
 export 'src/sound/events/reverb.dart';
+export 'src/sound/events/simple_sound.dart';
 export 'src/sound/events/sound_channel.dart';
 export 'src/sound/events/sound_channel_filter.dart';
 export 'src/sound/events/sound_channel_group.dart';

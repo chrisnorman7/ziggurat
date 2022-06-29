@@ -17,8 +17,10 @@ class SoundChannel extends SoundEvent {
     required final int id,
     final SoundPosition position = unpanned,
     final int? reverb,
+    final int? echo,
     final double gain = 0.7,
   })  : _reverb = reverb,
+        _echo = echo,
         _gain = gain,
         _position = position,
         super(id: id);
@@ -37,7 +39,7 @@ class SoundChannel extends SoundEvent {
       throw PositionMismatchError(this, value);
     }
     _position = value;
-    game.queueSoundEvent(SetSoundChannelPosition(id!, value));
+    game.queueSoundEvent(SetSoundChannelPosition(id: id!, position: value));
   }
 
   /// The ID of a reverb that was previously created.
@@ -54,7 +56,7 @@ class SoundChannel extends SoundEvent {
   /// If [reverbId] is `null`, then the reverb will be cleared.
   set reverb(final int? reverbId) {
     _reverb = reverbId;
-    game.queueSoundEvent(SetSoundChannelReverb(id!, reverbId));
+    game.queueSoundEvent(SetSoundChannelReverb(id: id!, reverb: reverbId));
   }
 
   int? _echo;
@@ -227,7 +229,10 @@ class SetSoundChannelGain extends SetSoundGain {
 /// Set the position for a [SoundChannel].
 class SetSoundChannelPosition extends SoundEvent {
   /// Create an instance.
-  const SetSoundChannelPosition(final int id, this.position) : super(id: id);
+  const SetSoundChannelPosition({
+    required final int id,
+    required this.position,
+  }) : super(id: id);
 
   /// The new position.
   final SoundPosition position;
@@ -243,7 +248,10 @@ class SetSoundChannelReverb extends SoundEvent {
   ///
   /// The given [id] should be the ID of the [SoundChannel] to set the reverb
   /// for.
-  const SetSoundChannelReverb(final int id, this.reverb) : super(id: id);
+  const SetSoundChannelReverb({
+    required final int id,
+    required this.reverb,
+  }) : super(id: id);
 
   /// The reverb preset to use.
   ///

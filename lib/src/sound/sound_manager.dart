@@ -294,6 +294,22 @@ class SoundManager {
     }
   }
 
+  /// Set the echo for a sound channel.
+  void handleSetSoundChannelEcho(final SetSoundChannelEcho event) {
+    final channel = getChannel(event.id!);
+    final echoId = event.echo;
+    if (echoId == null) {
+      final echo = channel.echo;
+      if (echo != null) {
+        context.removeRoute(channel.source, echo);
+      }
+    } else {
+      final echo = getEcho(echoId);
+      context.configRoute(channel.source, echo);
+      channel.echo = echo;
+    }
+  }
+
   /// Remove filtering from a sound channel.
   void handleSoundChannelFilter(final SoundChannelFilter event) {
     getChannel(event.id!).source.filter.value = BiquadConfig.designIdentity(
@@ -457,8 +473,21 @@ class SoundManager {
     } else {
       reverb = null;
     }
+    final echoId = event.echo;
+    final GlobalEcho? echo;
+    if (echoId != null) {
+      echo = getEcho(echoId);
+      context.configRoute(source, echo);
+    } else {
+      echo = null;
+    }
     final soundChannelId = event.id!;
-    _channels[soundChannelId] = AudioChannel(soundChannelId, source, reverb);
+    _channels[soundChannelId] = AudioChannel(
+      id: soundChannelId,
+      source: source,
+      reverb: reverb,
+      echo: echo,
+    );
   }
 
   /// Play a wave.

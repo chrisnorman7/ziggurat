@@ -46,7 +46,7 @@ void main() {
       test(
         'SetSoundChannelPosition',
         () {
-          const event = SetSoundChannelPosition(7, unpanned);
+          const event = SetSoundChannelPosition(id: 7, position: unpanned);
           expect(
             event.toString(),
             '<SetSoundChannelPosition id: 7, '
@@ -57,7 +57,7 @@ void main() {
       test(
         'SetSoundChannelReverb',
         () {
-          const event = SetSoundChannelReverb(5, 4);
+          const event = SetSoundChannelReverb(id: 5, reverb: 4);
           expect(event.toString(), '<SetSoundChannelReverb id: 5, reverb: 4>');
         },
       );
