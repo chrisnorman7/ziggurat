@@ -1,4 +1,3 @@
-// ignore_for_file: prefer_final_parameters
 /// Provides the [ParameterMenu] and [ParameterMenuParameter] classes.
 import 'package:dart_sdl/dart_sdl.dart';
 

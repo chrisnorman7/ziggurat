@@ -1,4 +1,3 @@
-// ignore_for_file: prefer_final_parameters
 /// Provides the [AutomationFade] and [CancelAutomationFade] classes.
 import '../../game.dart';
 import 'events_base.dart';

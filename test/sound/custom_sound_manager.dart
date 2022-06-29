@@ -1,4 +1,3 @@
-// ignore_for_file: prefer_final_parameters
 /// Provides the [CustomSoundManager] class.
 import 'package:ziggurat/sound.dart';
 

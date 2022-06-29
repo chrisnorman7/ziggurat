@@ -1,4 +1,3 @@
-// ignore_for_file: prefer_final_parameters
 /// Provides the [DialogueLevel] class.
 import 'package:dart_sdl/dart_sdl.dart';
 

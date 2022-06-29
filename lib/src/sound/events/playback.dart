@@ -1,4 +1,3 @@
-// ignore_for_file: prefer_final_parameters
 /// Provides events relating to playing sounds.
 import '../../../notes.dart';
 import '../../../wave_types.dart';

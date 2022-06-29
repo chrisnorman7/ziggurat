@@ -1,4 +1,3 @@
-// ignore_for_file: prefer_final_parameters
 /// Provides the [Ambiance] class.
 import 'dart:math';
 

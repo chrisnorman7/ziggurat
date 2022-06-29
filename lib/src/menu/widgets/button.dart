@@ -1,4 +1,3 @@
-// ignore_for_file: prefer_final_parameters
 /// Provides the [Button] class.
 import '../../json/asset_reference.dart';
 import '../../json/message.dart';
