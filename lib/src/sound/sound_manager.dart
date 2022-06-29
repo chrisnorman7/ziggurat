@@ -203,6 +203,8 @@ class SoundManager {
       handleDestroyEcho(event);
     } else if (event is ModifyEchoTaps) {
       handleModifyEchoTaps(event);
+    } else if (event is ResetEcho) {
+      handleResetEcho(event);
     } else {
       throw UnimplementedError('Cannot handle $event.');
     }
@@ -567,11 +569,7 @@ class SoundManager {
 
   /// Handle modifying echo taps.
   void handleModifyEchoTaps(final ModifyEchoTaps event) {
-    final echo = _echoes[event.id!];
-    if (echo == null) {
-      throw NoSuchEchoError(event.id!);
-    }
-    echo.setTaps(
+    getEcho(event.id!).setTaps(
       event.taps
           .map(
             (final e) => EchoTapConfig(
@@ -582,5 +580,10 @@ class SoundManager {
           )
           .toList(),
     );
+  }
+
+  /// Reset an echo.
+  void handleResetEcho(final ResetEcho event) {
+    getEcho(event.id!).reset();
   }
 }

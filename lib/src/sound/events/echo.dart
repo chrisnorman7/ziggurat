@@ -57,6 +57,9 @@ class CreateEcho extends SoundEvent {
     game.queueSoundEvent(DestroyEcho(id!));
   }
 
+  /// Reset this echo.
+  void reset() => game.queueSoundEvent(ResetEcho(id!));
+
   /// Describe this object.
   @override
   String toString() => '<$runtimeType id: $id, taps: $_taps>';
@@ -78,4 +81,10 @@ class ModifyEchoTaps extends SoundEvent {
 class DestroyEcho extends SoundEvent {
   /// Create an instance.
   const DestroyEcho(final int id) : super(id: id);
+}
+
+/// Reset the [CreateEcho] instance with the given [id].
+class ResetEcho extends SoundEvent {
+  /// Create an instance.
+  const ResetEcho(final int id) : super(id: id);
 }

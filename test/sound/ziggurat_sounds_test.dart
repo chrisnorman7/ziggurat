@@ -299,6 +299,7 @@ void main() {
             ],
           );
           await Future<void>.delayed(const Duration(milliseconds: 100));
+          expect(soundManager.getEcho(echo.id!), isA<GlobalEcho>());
           expect(soundManager.events.length, 1);
           expect(soundManager.events.last, echo);
           echo.taps = [
@@ -329,6 +330,28 @@ void main() {
               (soundManager.events.last as ModifyEchoTaps).taps,
             ),
             emitsInOrder(echo.taps),
+          );
+          echo.reset();
+          await Future<void>.delayed(const Duration(milliseconds: 100));
+          expect(soundManager.events.length, 3);
+          expect(
+            soundManager.events.last,
+            predicate(
+              (final value) => value is ResetEcho && value.id == echo.id,
+            ),
+          );
+          echo.destroy();
+          await Future<void>.delayed(const Duration(milliseconds: 100));
+          expect(soundManager.events.length, 4);
+          expect(
+            soundManager.events.last,
+            predicate(
+              (final value) => value is DestroyEcho && value.id == echo.id,
+            ),
+          );
+          expect(
+            () => soundManager.getEcho(echo.id!),
+            throwsA(isA<NoSuchEchoError>()),
           );
         },
       );
