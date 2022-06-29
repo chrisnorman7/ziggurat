@@ -199,6 +199,10 @@ class SoundManager {
       handleDestroyWave(event);
     } else if (event is CreateEcho) {
       handleCreateEcho(event);
+    } else if (event is DestroyEcho) {
+      handleDestroyEcho(event);
+    } else if (event is ModifyEchoTaps) {
+      handleModifyEchoTaps(event);
     } else {
       throw UnimplementedError('Cannot handle $event.');
     }
@@ -550,5 +554,33 @@ class SoundManager {
             .toList(),
       );
     _echoes[event.id!] = echo;
+  }
+
+  /// Handle the destroy echo event.
+  void handleDestroyEcho(final DestroyEcho event) {
+    final echo = _echoes.remove(event.id);
+    if (echo == null) {
+      throw NoSuchEchoError(event.id!);
+    }
+    echo.destroy();
+  }
+
+  /// Handle modifying echo taps.
+  void handleModifyEchoTaps(final ModifyEchoTaps event) {
+    final echo = _echoes[event.id!];
+    if (echo == null) {
+      throw NoSuchEchoError(event.id!);
+    }
+    echo.setTaps(
+      event.taps
+          .map(
+            (final e) => EchoTapConfig(
+              e.delay,
+              e.gainL,
+              e.gainR,
+            ),
+          )
+          .toList(),
+    );
   }
 }

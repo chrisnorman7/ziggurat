@@ -38,6 +38,7 @@ class CreateEcho extends SoundEvent {
 
   /// The game to use.
   final Game game;
+
   final List<EchoTap> _taps;
 
   /// The taps to use.
