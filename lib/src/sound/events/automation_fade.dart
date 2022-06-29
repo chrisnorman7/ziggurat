@@ -2,6 +2,7 @@
 import '../../game.dart';
 import 'events_base.dart';
 import 'playback.dart';
+import 'simple_sound.dart';
 
 /// The type of an [AutomationFade] instance.
 enum FadeType {
@@ -10,6 +11,9 @@ enum FadeType {
 
   /// Fade out a [PlayWave] instance.
   wave,
+
+  /// Fade out a [PlaySimpleSound] instance.
+  simpleSound,
 }
 
 /// Cancel an automation fade.

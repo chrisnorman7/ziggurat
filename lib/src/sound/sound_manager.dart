@@ -18,6 +18,7 @@ import 'events/sound_channel_filter.dart';
 import 'events/sound_position.dart';
 import 'extensions.dart';
 import 'reverb.dart';
+import 'simple_sound.dart';
 
 /// The sound manager class.
 ///
@@ -39,7 +40,8 @@ class SoundManager {
         _echoes = {},
         _channels = {},
         _sounds = {},
-        _waves = {};
+        _waves = {},
+        _simpleSounds = {};
 
   /// The synthizer context to use.
   final Context context;
@@ -71,6 +73,9 @@ class SoundManager {
   ///
   /// You should get waves with the [getWave] method.
   final Map<int, FastSineBankGenerator> _waves;
+
+  /// The created simple sounds.
+  final Map<int, SimpleSound> _simpleSounds;
 
   /// Get a reverb.
   ///
@@ -111,6 +116,18 @@ class SoundManager {
   /// thrown.
   BufferGenerator getSound(final int id) {
     final sound = _sounds[id];
+    if (sound == null) {
+      throw NoSuchSoundError(id);
+    }
+    return sound;
+  }
+
+  /// Get a simple sound with the given [id].
+  ///
+  /// If no simple sound is found with the given [id], [NoSuchSoundError] will
+  /// be thrown.
+  SimpleSound getSimpleSound(final int id) {
+    final sound = _simpleSounds[id];
     if (sound == null) {
       throw NoSuchSoundError(id);
     }
@@ -253,6 +270,9 @@ class SoundManager {
       case FadeType.wave:
         getWave(id).gain.clear();
         break;
+      case FadeType.simpleSound:
+        getSimpleSound(id).generator.gain.clear();
+        break;
     }
   }
 
@@ -267,6 +287,9 @@ class SoundManager {
         break;
       case FadeType.wave:
         generator = getWave(id);
+        break;
+      case FadeType.simpleSound:
+        generator = getSimpleSound(id).generator;
         break;
     }
     generator.gain.automate(

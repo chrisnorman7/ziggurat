@@ -3,16 +3,20 @@ import 'dart:io';
 import 'dart:math';
 
 import 'sound/events/playback.dart';
+import 'sound/events/simple_sound.dart';
 import 'sound/events/sound_channel.dart';
 import 'sound/events/sound_position.dart';
 
 /// The base class for all ziggurat errors.
-class ZigguratError extends Error {}
+class ZigguratError implements Exception {
+  /// Allow constant constructors.
+  const ZigguratError();
+}
 
 /// An attempt was made to get a random file from an empty directory.
 class NoFilesError extends ZigguratError {
   /// Create the error.
-  NoFilesError(this.directory);
+  const NoFilesError(this.directory);
 
   /// The directory which was accessed.
   final Directory directory;
@@ -26,7 +30,7 @@ class NoFilesError extends ZigguratError {
 /// a file was encountered.
 class InvalidEntityError extends ZigguratError {
   /// Create the instance.
-  InvalidEntityError(this.entity);
+  const InvalidEntityError(this.entity);
 
   /// The entity in question.
   final FileSystemEntity entity;
@@ -37,12 +41,15 @@ class InvalidEntityError extends ZigguratError {
 }
 
 /// The base class for all sound errors.
-class SoundsError extends ZigguratError {}
+class SoundsError extends ZigguratError {
+  /// Allow subclasses to have constant constructors.
+  const SoundsError();
+}
 
 /// No such buffer was found.
 class NoSuchBufferError extends SoundsError {
   /// Create an instance.
-  NoSuchBufferError(this.file);
+  const NoSuchBufferError(this.file);
 
   /// The file which does not exist.
   final File file;
@@ -51,7 +58,7 @@ class NoSuchBufferError extends SoundsError {
 /// No such channel was found.
 class NoSuchChannelError extends SoundsError {
   /// Create an instance.
-  NoSuchChannelError(this.id);
+  const NoSuchChannelError(this.id);
 
   /// The ID of the channel.
   final int id;
@@ -63,7 +70,7 @@ class NoSuchChannelError extends SoundsError {
 /// No such reverb was found.
 class NoSuchReverbError extends SoundsError {
   /// Create an instance.
-  NoSuchReverbError(this.id);
+  const NoSuchReverbError(this.id);
 
   /// The ID of the reverb.
   final int id;
@@ -75,7 +82,7 @@ class NoSuchReverbError extends SoundsError {
 /// No such echo was found.
 class NoSuchEchoError extends SoundsError {
   /// Create an instance.
-  NoSuchEchoError(this.id);
+  const NoSuchEchoError(this.id);
 
   /// The ID of the echo.
   final int id;
@@ -87,7 +94,7 @@ class NoSuchEchoError extends SoundsError {
 /// No such sound was found.
 class NoSuchSoundError extends SoundsError {
   /// Create an instance.
-  NoSuchSoundError(this.id);
+  const NoSuchSoundError(this.id);
 
   /// The ID of the sound.
   final int id;
@@ -99,7 +106,7 @@ class NoSuchSoundError extends SoundsError {
 /// No such wave was found.
 class NoSuchWaveError extends SoundsError {
   /// Create an instance.
-  NoSuchWaveError(this.id);
+  const NoSuchWaveError(this.id);
 
   /// The ID of the wave.
   final int id;
@@ -111,7 +118,7 @@ class NoSuchWaveError extends SoundsError {
 /// The [sound] had its [PlaySound.keepAlive] value set to `false`.
 class DeadSound extends SoundsError {
   /// Create an instance.
-  DeadSound(this.sound);
+  const DeadSound(this.sound);
 
   /// The sound that was supposed to be destroyed.
   final PlaySound sound;
@@ -120,11 +127,20 @@ class DeadSound extends SoundsError {
   String toString() => 'Sound $sound was already scheduled for destruction.';
 }
 
+/// The [sound] had its [PlaySimpleSound.keepAlive] value set to `false`.
+class DeadSimpleSound extends SoundsError {
+  /// Create an instance.
+  const DeadSimpleSound(this.sound);
+
+  /// The sound that was supposed to be destroyed.
+  final PlaySimpleSound sound;
+}
+
 /// An attempt was made to set a channel position to a position not supported
 /// by its source type.
 class PositionMismatchError extends ZigguratError {
   /// Create an instance.
-  PositionMismatchError(this.channel, this.position);
+  const PositionMismatchError(this.channel, this.position);
 
   /// The channel whose position was supposed to be set.
   final SoundChannel channel;
@@ -139,7 +155,7 @@ class PositionMismatchError extends ZigguratError {
 /// The player is not on a box.
 class NoBoxError extends ZigguratError {
   /// Create an instance.
-  NoBoxError(this.coordinates);
+  const NoBoxError(this.coordinates);
 
   /// The coordinates where no box was found.
   final Point<double> coordinates;
