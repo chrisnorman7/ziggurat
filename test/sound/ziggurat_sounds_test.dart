@@ -287,6 +287,51 @@ void main() {
           sound.destroy();
         },
       );
+      test(
+        'Echo',
+        () async {
+          soundManager.events.clear();
+          final echo = game.createEcho(
+            [
+              const EchoTap(
+                delay: 0.5,
+              )
+            ],
+          );
+          await Future<void>.delayed(const Duration(milliseconds: 100));
+          expect(soundManager.events.length, 1);
+          expect(soundManager.events.last, echo);
+          echo.taps = [
+            const EchoTap(
+              delay: 0.25,
+              gainL: 1.0,
+              gainR: 0.0,
+            ),
+            const EchoTap(
+              delay: 0.5,
+              gainL: 0.0,
+              gainR: 1.0,
+            ),
+            const EchoTap(
+              delay: 0.75,
+            )
+          ];
+          await Future<void>.delayed(const Duration(milliseconds: 100));
+          expect(soundManager.events.length, 2);
+          expect(
+            soundManager.events.last,
+            predicate(
+              (final value) => value is ModifyEchoTaps && value.id == echo.id,
+            ),
+          );
+          expect(
+            Stream.fromIterable(
+              (soundManager.events.last as ModifyEchoTaps).taps,
+            ),
+            emitsInOrder(echo.taps),
+          );
+        },
+      );
     },
   );
   group(
