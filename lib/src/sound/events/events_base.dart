@@ -1,4 +1,5 @@
 /// Provides the [SoundEvent] class.
+library events_base;
 
 /// The base class for all sound events.
 class SoundEvent {
