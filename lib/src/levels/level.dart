@@ -6,6 +6,7 @@ import '../command.dart';
 import '../game.dart';
 import '../json/level_stub.dart';
 import '../next_run.dart';
+import '../sound/sound_playback.dart';
 
 /// The top-level level class.
 ///

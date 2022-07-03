@@ -4,8 +4,8 @@ import 'dart:math';
 import 'package:dart_synthizer/dart_synthizer.dart';
 import 'package:encrypt/encrypt.dart';
 
-import '../error.dart';
-import '../json/asset_reference.dart';
+import '../../../error.dart';
+import '../../../json/asset_reference.dart';
 
 /// A class to get and hold buffers.
 ///

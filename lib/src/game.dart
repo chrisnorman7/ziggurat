@@ -10,13 +10,13 @@ import 'package:path/path.dart' as path;
 import '../ziggurat.dart';
 import 'json/reverb_preset.dart';
 import 'levels/level.dart';
-import 'sound/events/echo.dart';
-import 'sound/events/events_base.dart';
-import 'sound/events/global.dart';
-import 'sound/events/playback.dart';
-import 'sound/events/reverb.dart';
-import 'sound/events/sound_channel.dart';
-import 'sound/events/sound_position.dart';
+import 'sound/backend/effects/backend_echo.dart';
+import 'sound/backend/effects/backend_reverb.dart';
+import 'sound/backend/listener.dart';
+import 'sound/backend/sound.dart';
+import 'sound/backend/sound_backend.dart';
+import 'sound/backend/sound_channel.dart';
+import 'sound/backend/sound_position.dart';
 
 /// The main game object.
 class Game {
@@ -24,6 +24,7 @@ class Game {
   Game({
     required this.title,
     required this.sdl,
+    required this.soundBackend,
     this.orgName = 'com.example',
     this.appName = 'untitled_game',
     this.preferencesFileName = 'preferences.json',
@@ -32,18 +33,12 @@ class Game {
   })  : _levels = [],
         _isRunning = false,
         tasks = [],
-        _queuedSoundEvents = [],
         gameControllers = {},
         joysticks = {},
-        random = Random() {
-    soundsController = StreamController(
-      onListen: _addAllSoundEvents,
-      onResume: _addAllSoundEvents,
-    );
-    interfaceSounds = createSoundChannel();
-    ambianceSounds = createSoundChannel();
-    musicSounds = createSoundChannel();
-  }
+        random = Random(),
+        interfaceSounds = soundBackend.createSoundChannel(),
+        ambianceSounds = soundBackend.createSoundChannel(),
+        musicSounds = soundBackend.createSoundChannel();
 
   /// The title of this game.
   ///
@@ -114,15 +109,6 @@ class Game {
   /// The tasks which have been registered using [registerTask].
   final List<TaskRunner> tasks;
 
-  /// The stream controller for dispatching sound events.
-  ///
-  /// Do not add events to this controller directly, instead, use the
-  /// [queueSoundEvent] method.
-  late final StreamController<SoundEvent> soundsController;
-
-  /// The place where sound events go until [soundsController] has listeners.
-  final List<SoundEvent> _queuedSoundEvents;
-
   /// The game controllers that are currently open.
   final Map<int, GameController> gameControllers;
 
@@ -132,42 +118,17 @@ class Game {
   /// The random number generator to use.
   final Random random;
 
-  /// The stream for listening to sound events.
-  ///
-  /// You can add sounds with the [queueSoundEvent] method.
-  Stream<SoundEvent> get sounds => soundsController.stream;
+  /// The sound backend to use.
+  final SoundBackend soundBackend;
 
   /// The default channel for playing interface sounds through.
-  late final SoundChannel interfaceSounds;
+  final SoundChannel<SoundPosition> interfaceSounds;
 
   /// The sound channel to play ambiance sounds through.
-  late final SoundChannel ambianceSounds;
+  final SoundChannel<SoundPosition> ambianceSounds;
 
   /// The sound channel for [Level] music.
   late final SoundChannel musicSounds;
-
-  /// Queue a sound event.
-  ///
-  /// If [soundsController] is paused, then events will be queued.
-  ///
-  /// It is not possible to fully pause sound events, since this could lead to
-  /// problems if a sound delete event was never received for example. Instead,
-  /// events are simply queued until the [soundsController] is unpaused.
-  void queueSoundEvent(final SoundEvent event) {
-    if (soundsController.isPaused || soundsController.hasListener == false) {
-      _queuedSoundEvents.add(event);
-    } else {
-      soundsController.add(event);
-    }
-  }
-
-  /// Fire all the events that have built up.
-  void _addAllSoundEvents() {
-    while (_queuedSoundEvents.isNotEmpty) {
-      final event = _queuedSoundEvents.removeAt(0);
-      soundsController.add(event);
-    }
-  }
 
   /// Register a new [task].
   void registerTask(final Task task) => tasks.add(TaskRunner(task));
@@ -371,9 +332,6 @@ class Game {
     _window?.destroy();
     interfaceSounds.destroy();
     ambianceSounds.destroy();
-    soundsController
-      ..close()
-      ..done;
   }
 
   /// Run this game.
@@ -431,10 +389,10 @@ class Game {
   /// Output a sound.
   ///
   /// This method is used by [outputMessage].
-  PlaySound? outputSound({
+  Sound? outputSound({
     required final AssetReference? sound,
-    SoundChannel? soundChannel,
-    final PlaySound? oldSound,
+    final SoundChannel? soundChannel,
+    final Sound? oldSound,
     final double gain = 0.7,
     final bool keepAlive = false,
   }) {
@@ -442,17 +400,19 @@ class Game {
       oldSound.destroy();
     }
     if (sound != null) {
-      soundChannel ??= interfaceSounds;
-      return soundChannel.playSound(sound, gain: gain, keepAlive: keepAlive);
+      return (soundChannel ?? interfaceSounds).playSound(
+        assetReference: sound,
+        keepAlive: keepAlive,
+      )..gain = gain;
     }
     return null;
   }
 
   /// Output a message.
-  PlaySound? outputMessage(
+  Sound? outputMessage(
     final Message message, {
     final SoundChannel? soundChannel,
-    final PlaySound? oldSound,
+    final Sound? oldSound,
   }) {
     final text = message.text;
     if (text != null) {
@@ -468,52 +428,35 @@ class Game {
   }
 
   /// Create a reverb.
-  CreateReverb createReverb(final ReverbPreset reverb) {
-    final event =
-        CreateReverb(game: this, id: SoundEvent.nextId(), reverb: reverb);
-    queueSoundEvent(event);
-    return event;
-  }
+  BackendReverb createReverb(final ReverbPreset reverb) =>
+      soundBackend.createReverb(reverb);
 
   /// Create an echo.
-  CreateEcho createEcho(final List<EchoTap> taps) {
-    final event = CreateEcho(
-      id: SoundEvent.nextId(),
-      game: this,
-      taps: taps,
-    );
-    queueSoundEvent(event);
-    return event;
-  }
+  BackendEcho createEcho(final Iterable<EchoTap> taps) =>
+      soundBackend.createEcho(taps);
 
   /// Create a sound channel.
   SoundChannel createSoundChannel({
     final SoundPosition position = unpanned,
     final double gain = 0.7,
-    final CreateReverb? reverb,
-  }) {
-    final event = SoundChannel(
-      game: this,
-      id: SoundEvent.nextId(),
-      reverb: reverb?.id,
-      gain: gain,
-      position: position,
-    );
-    queueSoundEvent(event);
-    return event;
-  }
+  }) =>
+      soundBackend.createSoundChannel(
+        gain: gain,
+        position: position,
+      );
 
   /// Set the listener position.
   void setListenerPosition(final double x, final double y, final double z) =>
-      queueSoundEvent(ListenerPositionEvent(x, y, z));
+      soundBackend.listenerPosition = ListenerPosition(x, y, z);
 
   /// Set the orientation of the listener.
-  void setListenerOrientation(final double angle) =>
-      queueSoundEvent(ListenerOrientationEvent.fromAngle(angle));
+  void setListenerOrientation(final double angle) {
+    soundBackend.listenerOrientation = ListenerOrientation.fromAngle(angle);
+  }
 
   /// Set the default panner strategy.
-  void setDefaultPannerStrategy(final DefaultPannerStrategy strategy) =>
-      queueSoundEvent(SetDefaultPannerStrategy(strategy));
+  set setDefaultPannerStrategy(final DefaultPannerStrategy strategy) =>
+      soundBackend.defaultPannerStrategy = strategy;
 
   /// Rumble on all [joysticks].
   void rumble({

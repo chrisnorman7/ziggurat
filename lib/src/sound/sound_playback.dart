@@ -1,6 +1,5 @@
-/// Provides the [SoundPlayback] class.
-import 'events/playback.dart';
-import 'events/sound_channel.dart';
+import 'backend/sound.dart';
+import 'backend/sound_channel.dart';
 
 /// This class represents a playing sound.
 class SoundPlayback {
@@ -11,5 +10,5 @@ class SoundPlayback {
   final SoundChannel channel;
 
   /// The sound that is playing through [channel].
-  final PlaySound sound;
+  final Sound sound;
 }

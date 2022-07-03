@@ -2,8 +2,8 @@
 import 'package:dart_sdl/dart_sdl.dart';
 
 import '../json/message.dart';
-import '../sound/events/playback.dart';
-import '../sound/events/sound_channel.dart';
+import '../sound/backend/sound.dart';
+import '../sound/backend/sound_channel.dart';
 import 'level.dart';
 
 /// A level that shows a series of [Message] instances to the player, allowing
@@ -48,10 +48,10 @@ class DialogueLevel extends Level {
   final SoundChannel? soundChannel;
 
   /// The currently playing sound.
-  PlaySound? _sound;
+  Sound? _sound;
 
   /// The currently-playing sound.
-  PlaySound? get sound => _sound;
+  Sound? get sound => _sound;
 
   /// The scancode that allows progressing through the [messages] list.
   final ScanCode? progressScanCode;
