@@ -19,119 +19,333 @@ void main() {
     bufferCache: bufferCache,
   );
   group(
-    'SynthizerSoundBackend',
+    'Synthizer',
     () {
       tearDownAll(backend.shutdown);
-      test(
-        'Initialise',
+      group(
+        'SynthizerSoundBackend',
         () {
-          expect(backend.defaultPannerStrategy, DefaultPannerStrategy.stereo);
-          expect(
-            backend.listenerPosition,
-            predicate(
-              (final value) =>
-                  value is ListenerPosition &&
-                  value.x == 0.0 &&
-                  value.y == 0.0 &&
-                  value.z == 0.0,
-            ),
+          test(
+            'Initialise',
+            () {
+              expect(
+                backend.defaultPannerStrategy,
+                DefaultPannerStrategy.stereo,
+              );
+              expect(
+                backend.listenerPosition,
+                predicate(
+                  (final value) =>
+                      value is ListenerPosition &&
+                      value.x == 0.0 &&
+                      value.y == 0.0 &&
+                      value.z == 0.0,
+                ),
+              );
+              expect(
+                backend.listenerOrientation,
+                predicate(
+                  (final value) =>
+                      value is ListenerOrientation &&
+                      value.x1 == 0.0 &&
+                      value.y1 == 1.0 &&
+                      value.z1 == 0.0 &&
+                      value.x2 == 0.0 &&
+                      value.y2 == 0.0 &&
+                      value.z2 == 1.0,
+                ),
+              );
+            },
           );
-          expect(
-            backend.listenerOrientation,
-            predicate(
-              (final value) =>
-                  value is ListenerOrientation &&
-                  value.x1 == 0.0 &&
-                  value.y1 == 1.0 &&
-                  value.z1 == 0.0 &&
-                  value.x2 == 0.0 &&
-                  value.y2 == 0.0 &&
-                  value.z2 == 1.0,
-            ),
+
+          test(
+            '.createSoundChannel Unpanned',
+            () async {
+              final channel = backend.createSoundChannel();
+              expect(channel.source, isA<DirectSource>());
+              await Future<void>.delayed(const Duration(milliseconds: 200));
+              expect(channel.gain, 0.7);
+              expect(channel.position, unpanned);
+              channel.destroy();
+            },
+          );
+
+          test(
+            '.createSoundChannel Angular',
+            () async {
+              final channel = backend.createSoundChannel(
+                position: const SoundPositionAngular(
+                  azimuth: 90.0,
+                  elevation: 45.0,
+                ),
+                gain: 0.5,
+              );
+              expect(channel.source, isA<AngularPannedSource>());
+              await Future<void>.delayed(const Duration(milliseconds: 200));
+              expect(channel.gain, 0.5);
+              expect(
+                channel.position,
+                predicate(
+                  (final value) =>
+                      value is SoundPositionAngular &&
+                      value.azimuth == 90.0 &&
+                      value.elevation == 45.0,
+                ),
+              );
+              channel.destroy();
+            },
+          );
+
+          test(
+            '.createSoundChannel Scalar',
+            () async {
+              final channel = backend.createSoundChannel(
+                gain: 0.2,
+                position: const SoundPositionScalar(scalar: -1.0),
+              );
+              expect(channel.source, isA<ScalarPannedSource>());
+              await Future<void>.delayed(const Duration(milliseconds: 200));
+              expect(channel.gain, 0.2);
+              expect(
+                channel.position,
+                predicate(
+                  (final value) =>
+                      value is SoundPositionScalar && value.scalar == -1.0,
+                ),
+              );
+              channel.destroy();
+            },
+          );
+
+          test(
+            '.createSoundChannel 3d',
+            () async {
+              final channel = backend.createSoundChannel(
+                gain: 0.8,
+                position: const SoundPosition3d(
+                  x: 1.0,
+                  y: 2.0,
+                  z: 3.0,
+                ),
+              );
+              expect(channel.source, isA<Source3D>());
+              await Future<void>.delayed(const Duration(milliseconds: 200));
+              expect(channel.gain, 0.8);
+              expect(
+                channel.position,
+                predicate(
+                  (final value) =>
+                      value is SoundPosition3d &&
+                      value.x == 1.0 &&
+                      value.y == 2.0 &&
+                      value.z == 3.0,
+                ),
+              );
+              channel.destroy();
+            },
+          );
+
+          test(
+            '.createReverb',
+            () async {
+              const preset = ReverbPreset(name: 'Test Reverb Preset', t60: 2.0);
+              final reverb = backend.createReverb(preset);
+              expect(reverb.backend, backend);
+              expect(reverb.reverb, isA<GlobalFdnReverb>());
+              expect(reverb.synthizer, synthizer);
+              await Future<void>.delayed(const Duration(milliseconds: 100));
+              final synthizerReverb = reverb.reverb;
+              expect(synthizerReverb.gain.value, 0.5);
+              expect(synthizerReverb.t60.value, 2.0);
+              reverb.destroy();
+            },
+          );
+
+          test(
+            '.createEcho',
+            () async {
+              final echo = backend.createEcho(
+                [const EchoTap(delay: 0.5, gainL: 1.0, gainR: 1.0)],
+              );
+              expect(echo.backend, backend);
+              expect(echo.echo, isA<GlobalEcho>());
+              await Future<void>.delayed(const Duration(milliseconds: 100));
+              echo.destroy();
+            },
+          );
+
+          test(
+            '.listenerPosition',
+            () async {
+              final position = backend.listenerPosition;
+              expect(
+                position,
+                predicate<ListenerPosition>(
+                  (final value) =>
+                      value.x == 0.0 && value.y == 0.0 && value.z == 0.0,
+                ),
+              );
+              backend.listenerPosition = const ListenerPosition(1.0, 2.0, 3.0);
+              await Future<void>.delayed(const Duration(milliseconds: 100));
+              expect(
+                backend.listenerPosition,
+                predicate<ListenerPosition>(
+                  (final value) =>
+                      value.x == 1.0 && value.y == 2.0 && value.z == 3.0,
+                ),
+              );
+              expect(
+                context.position.value,
+                predicate<Double3>(
+                  (final value) =>
+                      value.x == 1.0 && value.y == 2.0 && value.z == 3.0,
+                ),
+              );
+              backend.listenerPosition = const ListenerPosition(9.0, 8.0, 7.0);
+              await Future<void>.delayed(const Duration(milliseconds: 100));
+              expect(
+                backend.listenerPosition,
+                predicate<ListenerPosition>(
+                  (final value) =>
+                      value.x == 9.0 && value.y == 8.0 && value.z == 7.0,
+                ),
+              );
+              expect(
+                context.position.value,
+                predicate<Double3>(
+                  (final value) =>
+                      value.x == 9.0 && value.y == 8.0 && value.z == 7.0,
+                ),
+              );
+            },
+          );
+
+          test(
+            '.listenerOrientation',
+            () async {
+              expect(
+                backend.listenerOrientation,
+                predicate<ListenerOrientation>(
+                  (final value) =>
+                      value.x1 == 0.0 &&
+                      value.y1 == 1.0 &&
+                      value.z1 == 0.0 &&
+                      value.x2 == 0.0 &&
+                      value.y2 == 0.0 &&
+                      value.z2 == 1.0,
+                ),
+              );
+              final newOrientation = ListenerOrientation.fromAngle(90.0);
+              backend.listenerOrientation = newOrientation;
+              await Future<void>.delayed(const Duration(milliseconds: 100));
+              expect(
+                backend.listenerOrientation,
+                predicate<ListenerOrientation>(
+                  (final value) =>
+                      value.x1 == newOrientation.x1 &&
+                      value.y1 == newOrientation.y1 &&
+                      value.z1 == newOrientation.z1 &&
+                      value.x2 == newOrientation.x2 &&
+                      value.y2 == newOrientation.y2 &&
+                      value.z2 == newOrientation.z2,
+                ),
+              );
+              expect(
+                context.orientation.value,
+                predicate<Double6>(
+                  (final value) =>
+                      value.x1 == newOrientation.x1 &&
+                      value.y1 == newOrientation.y1 &&
+                      value.z1 == newOrientation.z1 &&
+                      value.x2 == newOrientation.x2 &&
+                      value.y2 == newOrientation.y2 &&
+                      value.z2 == newOrientation.z2,
+                ),
+              );
+              backend.listenerOrientation = const ListenerOrientation(
+                0,
+                1,
+                0,
+                0,
+                0,
+                1,
+              );
+              await Future<void>.delayed(const Duration(milliseconds: 100));
+              expect(
+                backend.listenerOrientation,
+                predicate<ListenerOrientation>(
+                  (final value) =>
+                      value.x1 == 0 &&
+                      value.y1 == 1 &&
+                      value.z1 == 0 &&
+                      value.x2 == 0 &&
+                      value.y2 == 0 &&
+                      value.z2 == 1,
+                ),
+              );
+            },
+          );
+
+          test(
+            '.defaultPannerStrategy',
+            () async {
+              expect(
+                context.defaultPannerStrategy.value,
+                PannerStrategy.stereo,
+              );
+              expect(
+                backend.defaultPannerStrategy,
+                DefaultPannerStrategy.stereo,
+              );
+              backend.defaultPannerStrategy = DefaultPannerStrategy.hrtf;
+              await Future<void>.delayed(const Duration(milliseconds: 100));
+              expect(backend.defaultPannerStrategy, DefaultPannerStrategy.hrtf);
+              expect(context.defaultPannerStrategy.value, PannerStrategy.hrtf);
+              backend.defaultPannerStrategy = DefaultPannerStrategy.stereo;
+              await Future<void>.delayed(const Duration(milliseconds: 100));
+              expect(
+                backend.defaultPannerStrategy,
+                DefaultPannerStrategy.stereo,
+              );
+              expect(
+                context.defaultPannerStrategy.value,
+                PannerStrategy.stereo,
+              );
+            },
           );
         },
       );
 
-      test(
-        '.createSoundChannel Unpanned',
-        () async {
-          final channel = backend.createSoundChannel();
-          await Future<void>.delayed(const Duration(milliseconds: 200));
-          expect(channel.gain, 0.7);
-          expect(channel.position, unpanned);
-          channel.destroy();
-        },
-      );
+      group(
+        'SynthizerSoundChannel',
+        () {
+          test(
+            'Initialise',
+            () {
+              final channel = backend.createSoundChannel();
+              expect(channel.backend, backend);
+              expect(backend.context, context);
+              expect(channel.synthizer, synthizer);
+              channel.destroy();
+            },
+          );
 
-      test(
-        '.createSoundChannel Angular',
-        () async {
-          final channel = backend.createSoundChannel(
-            position: const SoundPositionAngular(
-              azimuth: 90.0,
-              elevation: 45.0,
-            ),
-            gain: 0.5,
+          test(
+            '.gain',
+            () async {
+              final channel = backend.createSoundChannel();
+              await Future<void>.delayed(const Duration(milliseconds: 100));
+              channel.gain = 0.4;
+              await Future<void>.delayed(const Duration(milliseconds: 100));
+              expect(channel.gain, 0.4);
+              expect(channel.source.gain.value, 0.4);
+              channel.gain = 1.0;
+              await Future<void>.delayed(const Duration(milliseconds: 100));
+              expect(channel.gain, 1.0);
+              expect(channel.source.gain.value, 1.0);
+              channel.destroy();
+            },
           );
-          await Future<void>.delayed(const Duration(milliseconds: 200));
-          expect(channel.gain, 0.5);
-          expect(
-            channel.position,
-            predicate(
-              (final value) =>
-                  value is SoundPositionAngular &&
-                  value.azimuth == 90.0 &&
-                  value.elevation == 45.0,
-            ),
-          );
-          channel.destroy();
-        },
-      );
-
-      test(
-        '.createSoundChannel Scalar',
-        () async {
-          final channel = backend.createSoundChannel(
-            gain: 0.2,
-            position: const SoundPositionScalar(scalar: -1.0),
-          );
-          await Future<void>.delayed(const Duration(milliseconds: 200));
-          expect(channel.gain, 0.2);
-          expect(
-            channel.position,
-            predicate(
-              (final value) =>
-                  value is SoundPositionScalar && value.scalar == -1.0,
-            ),
-          );
-          channel.destroy();
-        },
-      );
-
-      test(
-        '.createSoundChannel 3d',
-        () async {
-          final channel = backend.createSoundChannel(
-            gain: 0.8,
-            position: const SoundPosition3d(
-              x: 1.0,
-              y: 2.0,
-              z: 3.0,
-            ),
-          );
-          await Future<void>.delayed(const Duration(milliseconds: 200));
-          expect(channel.gain, 0.8);
-          expect(
-            channel.position,
-            predicate(
-              (final value) =>
-                  value is SoundPosition3d &&
-                  value.x == 1.0 &&
-                  value.y == 2.0 &&
-                  value.z == 3.0,
-            ),
-          );
-          channel.destroy();
         },
       );
     },
