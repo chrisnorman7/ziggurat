@@ -4,7 +4,6 @@ import '../../../json/reverb_preset.dart';
 import '../effects/backend_echo.dart';
 import '../listener.dart';
 import '../sound_backend.dart';
-import '../sound_channel.dart';
 import '../sound_position.dart';
 import 'buffer_cache.dart';
 import 'effects/synthizer_backend_echo.dart';
@@ -27,7 +26,7 @@ class SynthizerSoundBackend implements SoundBackend {
 
   /// Get a sound channel.
   @override
-  SoundChannel createSoundChannel({
+  SynthizerSoundChannel createSoundChannel({
     final SoundPosition position = unpanned,
     final double gain = 0.7,
   }) {

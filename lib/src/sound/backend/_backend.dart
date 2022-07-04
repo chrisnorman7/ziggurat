@@ -1,3 +1,4 @@
+export 'effects/_effects.dart';
 export 'listener.dart';
 export 'silent/_silent.dart';
 export 'sound.dart';
