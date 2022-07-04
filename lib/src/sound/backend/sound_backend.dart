@@ -1,10 +1,7 @@
 /// Provides the [SoundBackend] class.
-import '../../json/reverb_preset.dart';
+import '../../../sound.dart';
 import 'effects/backend_echo.dart';
 import 'effects/backend_reverb.dart';
-import 'listener.dart';
-import 'sound_channel.dart';
-import 'sound_position.dart';
 
 /// A backend for playing sound.
 abstract class SoundBackend {

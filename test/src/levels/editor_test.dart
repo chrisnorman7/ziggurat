@@ -6,7 +6,7 @@ import 'package:ziggurat/levels.dart';
 import 'package:ziggurat/src/sound/backend/silent/silent_sound_backend.dart';
 import 'package:ziggurat/ziggurat.dart';
 
-import '../helpers.dart';
+import '../../helpers.dart';
 
 void main() {
   final sdl = Sdl();

@@ -4,7 +4,7 @@ import 'package:ziggurat/levels.dart';
 import 'package:ziggurat/sound.dart';
 import 'package:ziggurat/ziggurat.dart';
 
-import '../helpers.dart';
+import '../../helpers.dart';
 
 /// A message context.
 class OutputMessageContext {

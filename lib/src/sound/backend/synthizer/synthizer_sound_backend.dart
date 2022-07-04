@@ -27,7 +27,7 @@ class SynthizerSoundBackend implements SoundBackend {
 
   /// Get a sound channel.
   @override
-  SoundChannel<SoundPosition> createSoundChannel({
+  SoundChannel createSoundChannel({
     final SoundPosition position = unpanned,
     final double gain = 0.7,
   }) {

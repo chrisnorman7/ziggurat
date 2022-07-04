@@ -4,7 +4,7 @@ import 'package:ziggurat/menus.dart';
 import 'package:ziggurat/sound.dart';
 import 'package:ziggurat/ziggurat.dart';
 
-import '../helpers.dart';
+import '../../helpers.dart';
 
 void main() {
   final sdl = Sdl();
