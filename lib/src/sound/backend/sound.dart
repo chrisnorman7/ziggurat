@@ -1,8 +1,12 @@
 /// Provides the [Sound] class.
 import 'sound_backend.dart';
+import 'sound_channel.dart';
 
 /// A sound that has been played by a [SoundBackend] instance.
 abstract class Sound {
+  /// The channel this sound is playing through.
+  SoundChannel get channel;
+
   /// Whether or not to keep this sound alive.
   bool get keepAlive;
 

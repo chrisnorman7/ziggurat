@@ -2,6 +2,7 @@
 
 import 'package:dart_sdl/dart_sdl.dart';
 import 'package:ziggurat/levels.dart';
+import 'package:ziggurat/src/sound/backend/silent/silent_sound_backend.dart';
 import 'package:ziggurat/ziggurat.dart';
 
 Future<void> main() async {
@@ -9,6 +10,7 @@ Future<void> main() async {
   final game = Game(
     title: 'Editor Example',
     sdl: sdl,
+    soundBackend: SilentSoundBackend(),
   );
   final editor = Editor(
     game: game,

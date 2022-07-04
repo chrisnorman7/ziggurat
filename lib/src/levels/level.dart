@@ -6,7 +6,6 @@ import '../command.dart';
 import '../game.dart';
 import '../json/level_stub.dart';
 import '../next_run.dart';
-import '../sound/sound_playback.dart';
 
 /// The top-level level class.
 ///
@@ -63,7 +62,7 @@ class Level {
   final Music? music;
 
   /// The playing [music].
-  PlaySound? musicSound;
+  Sound? musicSound;
 
   /// A list of ambiances for this level.
   final List<Ambiance> ambiances;
@@ -91,7 +90,7 @@ class Level {
     final sound = music;
     if (sound != null) {
       musicSound = game.musicSounds.playSound(
-        sound.sound,
+        assetReference: sound.sound,
         gain: sound.gain,
         keepAlive: true,
         looping: true,
@@ -108,7 +107,7 @@ class Level {
         );
       }
       final sound = channel.playSound(
-        ambiance.sound,
+        assetReference: ambiance.sound,
         gain: ambiance.gain,
         keepAlive: true,
         looping: true,
@@ -347,12 +346,12 @@ class Level {
         if (c == null) {
           c = game.createSoundChannel(position: position);
         } else {
-          c.position = position;
+          (c as SoundChannel<SoundPosition3d>).position = position;
         }
         randomSoundPlaybacks[sound] = SoundPlayback(
           c,
           c.playSound(
-            sound.sound,
+            assetReference: sound.sound,
             keepAlive: true,
             gain: sound.minGain == sound.maxGain
                 ? sound.minGain

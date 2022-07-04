@@ -9,8 +9,11 @@ import 'wave.dart';
 
 /// A channel for playing sounds through.
 abstract class SoundChannel<T extends SoundPosition> {
-  /// The position of this channel.
+  /// Get the position of this channel.
   T get position;
+
+  /// Set the position of this channel.
+  set position(final T value);
 
   /// The Gain of this channel.
   double get gain;
@@ -52,6 +55,9 @@ abstract class SoundChannel<T extends SoundPosition> {
   Sound playSound({
     required final AssetReference assetReference,
     final bool keepAlive = false,
+    final double gain = 0.7,
+    final bool looping = false,
+    final double pitchBend = 1.0,
   });
 
   /// Play a wave of the given [waveType] at the given [frequency] through this

@@ -1,6 +1,7 @@
 import 'package:dart_sdl/dart_sdl.dart';
 import 'package:test/test.dart';
 import 'package:ziggurat/levels.dart';
+import 'package:ziggurat/sound.dart';
 import 'package:ziggurat/ziggurat.dart';
 
 import '../helpers.dart';
@@ -12,6 +13,7 @@ void main() {
       final game = Game(
         title: 'DialogueLevel',
         sdl: sdl,
+        soundBackend: SilentSoundBackend(),
       );
       var done = 0;
       expect(
@@ -48,6 +50,7 @@ void main() {
       final game = Game(
         title: 'DialogueLevel.progress',
         sdl: sdl,
+        soundBackend: SilentSoundBackend(),
       );
       var done = 0;
       const message1 = Message(keepAlive: true);
@@ -77,6 +80,7 @@ void main() {
       final game = Game(
         title: 'DialogueLevel.handleSdlValue',
         sdl: sdl,
+        soundBackend: SilentSoundBackend(),
       );
       var done = 0;
       const message1 =
@@ -106,9 +110,8 @@ void main() {
       );
       expect(done, isZero);
       expect(dialogueLevel.position, equals(1));
-      var sound = dialogueLevel.sound!;
-      expect(sound.sound, equals(message1.sound));
-      expect(sound.channel, equals(game.interfaceSounds.id));
+      var sound = dialogueLevel.sound;
+      expect(sound, isNotNull);
       // Works because `state == PressedState.pressed`.
       dialogueLevel.handleSdlEvent(
         makeKeyboardEvent(
@@ -122,9 +125,7 @@ void main() {
       expect(game.currentLevel, equals(dialogueLevel));
       expect(dialogueLevel.position, equals(2));
       expect(dialogueLevel.sound, isNot(equals(sound)));
-      sound = dialogueLevel.sound!;
-      expect(sound.sound, equals(message2.sound));
-      expect(sound.channel, equals(game.interfaceSounds.id));
+      sound = dialogueLevel.sound;
       // Won't work.
       dialogueLevel.handleSdlEvent(
         makeControllerButtonEvent(
@@ -147,9 +148,7 @@ void main() {
       expect(game.currentLevel, equals(dialogueLevel));
       expect(dialogueLevel.position, equals(3));
       expect(dialogueLevel.sound, isNot(equals(sound)));
-      sound = dialogueLevel.sound!;
-      expect(sound.sound, equals(message3.sound));
-      expect(sound.channel, equals(game.interfaceSounds.id));
+      sound = dialogueLevel.sound;
       // Let's make sure `onDone` gets called.
       dialogueLevel.handleSdlEvent(event);
       expect(done, equals(1));
@@ -161,6 +160,7 @@ void main() {
       final game = Game(
         title: 'DialogueLevel.onPush',
         sdl: sdl,
+        soundBackend: SilentSoundBackend(),
       );
       const message =
           Message(keepAlive: true, sound: AssetReference.file('test.wav'));
@@ -171,9 +171,7 @@ void main() {
         progressControllerButton: GameControllerButton.a,
       );
       game.pushLevel(dialogueLevel);
-      var sound = dialogueLevel.sound!;
-      expect(sound.channel, equals(game.interfaceSounds.id));
-      expect(sound.sound, equals(message.sound));
+      expect(dialogueLevel.sound, isNotNull);
       final soundChannel = game.createSoundChannel();
       dialogueLevel = DialogueLevel(
         game: game,
@@ -183,9 +181,7 @@ void main() {
         soundChannel: soundChannel,
       );
       game.pushLevel(dialogueLevel);
-      sound = dialogueLevel.sound!;
-      expect(sound.channel, equals(soundChannel.id));
-      expect(sound.sound, equals(message.sound));
+      expect(dialogueLevel.sound, isNotNull);
     });
   });
 }

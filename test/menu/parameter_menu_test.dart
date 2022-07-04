@@ -1,6 +1,7 @@
 import 'package:dart_sdl/dart_sdl.dart';
 import 'package:test/test.dart';
 import 'package:ziggurat/menus.dart';
+import 'package:ziggurat/sound.dart';
 import 'package:ziggurat/ziggurat.dart';
 
 import '../helpers.dart';
@@ -15,6 +16,7 @@ void main() {
       final game = Game(
         title: 'ParameterMenu Tests',
         sdl: sdl,
+        soundBackend: SilentSoundBackend(),
       );
       final bParameter = ParameterMenuParameter(
         getLabel: () => Message(text: 'Boolean: $b'),

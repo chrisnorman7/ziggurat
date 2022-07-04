@@ -4,6 +4,7 @@ import 'package:dart_sdl/dart_sdl.dart';
 import 'package:path/path.dart' as path;
 import 'package:test/test.dart';
 import 'package:ziggurat/menus.dart';
+import 'package:ziggurat/sound.dart';
 import 'package:ziggurat/ziggurat.dart';
 
 /// A file system entity has been selected.
@@ -24,6 +25,7 @@ void main() {
       final game = Game(
         title: 'File Picker Menu',
         sdl: sdl,
+        soundBackend: SilentSoundBackend(),
       );
       final menu = FilePickerMenu(
         game: game,
@@ -44,6 +46,7 @@ void main() {
       final game = Game(
         title: 'FilePickerMenu.onDone',
         sdl: sdl,
+        soundBackend: SilentSoundBackend(),
       );
       final directory = Directory('test');
       final menu = FilePickerMenu(
@@ -99,6 +102,7 @@ void main() {
       final game = Game(
         title: 'FilePickerMenu Parent Directory',
         sdl: sdl,
+        soundBackend: SilentSoundBackend(),
       );
       final directory = Directory('test');
       final menu = FilePickerMenu(

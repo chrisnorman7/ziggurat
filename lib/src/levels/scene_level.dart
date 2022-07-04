@@ -3,8 +3,8 @@ import 'package:dart_sdl/dart_sdl.dart';
 
 import '../game.dart';
 import '../json/message.dart';
-import '../sound/events/playback.dart';
-import '../sound/events/sound_channel.dart';
+import '../sound/backend/sound.dart';
+import '../sound/backend/sound_channel.dart';
 import '../tasks/task.dart';
 import 'level.dart';
 
@@ -69,10 +69,10 @@ class SceneLevel extends Level {
   final GameControllerButton? skipControllerButton;
 
   /// The playing sound (if any).
-  PlaySound? _sound;
+  Sound? _sound;
 
   /// The currently-playing sound.
-  PlaySound? get sound => _sound;
+  Sound? get sound => _sound;
 
   /// The task which will call [onDone].
   Task? onDoneTask;

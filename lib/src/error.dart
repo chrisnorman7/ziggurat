@@ -2,10 +2,8 @@
 import 'dart:io';
 import 'dart:math';
 
-import 'sound/events/playback.dart';
-import 'sound/events/simple_sound.dart';
-import 'sound/events/sound_channel.dart';
-import 'sound/events/sound_position.dart';
+import 'sound/backend/sound_channel.dart';
+import 'sound/backend/sound_position.dart';
 
 /// The base class for all ziggurat errors.
 class ZigguratError implements Exception {
@@ -113,27 +111,6 @@ class NoSuchWaveError extends SoundsError {
 
   @override
   String toString() => 'No wave found with ID $id.';
-}
-
-/// The [sound] had its [PlaySound.keepAlive] value set to `false`.
-class DeadSound extends SoundsError {
-  /// Create an instance.
-  const DeadSound(this.sound);
-
-  /// The sound that was supposed to be destroyed.
-  final PlaySound sound;
-
-  @override
-  String toString() => 'Sound $sound was already scheduled for destruction.';
-}
-
-/// The [sound] had its [PlaySimpleSound.keepAlive] value set to `false`.
-class DeadSimpleSound extends SoundsError {
-  /// Create an instance.
-  const DeadSimpleSound(this.sound);
-
-  /// The sound that was supposed to be destroyed.
-  final PlaySimpleSound sound;
 }
 
 /// An attempt was made to set a channel position to a position not supported

@@ -1,9 +1,12 @@
 /// A quick example.
+import 'dart:math';
+
 import 'package:dart_sdl/dart_sdl.dart';
 import 'package:dart_synthizer/dart_synthizer.dart';
 import 'package:ziggurat/levels.dart';
 import 'package:ziggurat/menus.dart';
-import 'package:ziggurat/sound.dart';
+import 'package:ziggurat/src/sound/backend/synthizer/buffer_cache.dart';
+import 'package:ziggurat/src/sound/backend/synthizer/synthizer_sound_backend.dart';
 import 'package:ziggurat/ziggurat.dart';
 
 const sound = AssetReference.file('sound.wav');
@@ -109,9 +112,22 @@ class MainMenu extends Menu {
 
 Future<void> main() async {
   final sdl = Sdl()..init();
+  final synthizer = Synthizer()..initialize();
+  final context = synthizer.createContext();
+  final random = Random();
+  final bufferCache = BufferCache(
+    synthizer: synthizer,
+    maxSize: 1.gb,
+    random: random,
+  );
+  final sounds = SynthizerSoundBackend(
+    context: context,
+    bufferCache: bufferCache,
+  );
   final game = Game(
     title: 'Ziggurat Example',
     sdl: sdl,
+    soundBackend: sounds,
     triggerMap: TriggerMap([
       quitCommandTrigger,
       CommandTrigger.basic(
@@ -125,24 +141,6 @@ Future<void> main() async {
       downCommandTrigger,
     ]),
   );
-  final synthizer = Synthizer()..initialize();
-  final context = synthizer.createContext();
-  final bufferCache = BufferCache(
-    synthizer: synthizer,
-    maxSize: 1.gb,
-    random: game.random,
-  );
-  final soundManager = SoundManager(
-    context: context,
-    bufferCache: bufferCache,
-  );
-  game.sounds.listen(
-    (final event) {
-      // ignore: avoid_print
-      print('Sound: $event');
-      soundManager.handleEvent(event);
-    },
-  );
   final level = MainMenu(game);
   try {
     await game.run(
@@ -150,7 +148,6 @@ Future<void> main() async {
     );
   } finally {
     sdl.quit();
-    context.destroy();
-    synthizer.shutdown();
+    sounds.shutdown();
   }
 }

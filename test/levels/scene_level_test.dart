@@ -1,6 +1,7 @@
 import 'package:dart_sdl/dart_sdl.dart';
 import 'package:test/test.dart';
 import 'package:ziggurat/levels.dart';
+import 'package:ziggurat/sound.dart';
 import 'package:ziggurat/ziggurat.dart';
 
 import '../helpers.dart';
@@ -10,7 +11,11 @@ void main() {
   group('SceneLevel', () {
     test('Initialise', () {
       var done = 0;
-      final game = Game(title: 'SceneLevel', sdl: sdl);
+      final game = Game(
+        title: 'SceneLevel',
+        sdl: sdl,
+        soundBackend: SilentSoundBackend(),
+      );
       const message = Message(text: 'Done.', keepAlive: true);
       const skipScanCode = ScanCode.return_;
       const skipControllerButton = GameControllerButton.a;
@@ -72,6 +77,7 @@ void main() {
       final game = Game(
         title: 'SceneLevel.skip',
         sdl: sdl,
+        soundBackend: SilentSoundBackend(),
       );
       var done = 0;
       const message = Message(keepAlive: true);
@@ -98,6 +104,7 @@ void main() {
       final game = Game(
         title: 'SceneLevel.handleSdlValue',
         sdl: sdl,
+        soundBackend: SilentSoundBackend(),
       );
       var done = 0;
       const message = Message(keepAlive: true);
@@ -145,6 +152,7 @@ void main() {
       final game = Game(
         title: 'SceneLevel.duration',
         sdl: sdl,
+        soundBackend: SilentSoundBackend(),
       );
       var done = 0;
       const duration = 3;
@@ -187,6 +195,7 @@ void main() {
       final game = Game(
         title: 'SceneLevel.onPush',
         sdl: sdl,
+        soundBackend: SilentSoundBackend(),
       );
       const message =
           Message(keepAlive: true, sound: AssetReference.file('test.wav'));
@@ -198,8 +207,7 @@ void main() {
       );
       game.pushLevel(sceneLevel);
       var sound = sceneLevel.sound!;
-      expect(sound.channel, equals(game.interfaceSounds.id));
-      expect(sound.sound, equals(message.sound));
+      expect(sound.channel, game.interfaceSounds);
       final soundChannel = game.createSoundChannel();
       sceneLevel = SceneLevel(
         game: game,
@@ -210,7 +218,7 @@ void main() {
       );
       game.pushLevel(sceneLevel);
       sound = sceneLevel.sound!;
-      expect(sound.channel, equals(soundChannel.id));
+      expect(sound.channel, soundChannel);
     });
   });
 }

@@ -15,7 +15,7 @@ class OutputMessageContext {
   final Message message;
 
   /// The old sound.
-  final PlaySound? oldSound;
+  final Sound? oldSound;
 
   /// The sound channel that was to be used.
   final SoundChannel? soundChannel;
@@ -26,7 +26,10 @@ class MultiGridLevelGame extends Game {
   MultiGridLevelGame({
     required super.sdl,
   })  : messages = [],
-        super(title: 'Test Game');
+        super(
+          title: 'Test Game',
+          soundBackend: SilentSoundBackend(),
+        );
 
   /// The messages that have been output.
   final List<OutputMessageContext> messages;
@@ -40,9 +43,9 @@ class MultiGridLevelGame extends Game {
   }
 
   @override
-  PlaySound? outputMessage(
+  Sound? outputMessage(
     final Message message, {
-    final PlaySound? oldSound,
+    final Sound? oldSound,
     final SoundChannel? soundChannel,
   }) {
     final context = OutputMessageContext(message, oldSound, soundChannel);
@@ -147,7 +150,6 @@ void main() {
       level.showCurrent();
       context = game.recentContext;
       expect(context.message, equals(row.label));
-      expect(context.oldSound?.sound, equals(level.title.sound));
       expect(context.soundChannel, isNull);
       expect(level.horizontalPosition, isNull);
       level.right();
@@ -157,7 +159,6 @@ void main() {
       expect(message.text, equals('Entry 0'));
       expect(message.sound?.type, equals(AssetType.file));
       expect(message.sound?.name, equals('file0.wav'));
-      expect(context.oldSound?.sound, equals(row.label.sound));
       level.left();
       expect(game.messages.length, equals(1));
       level.left();
@@ -165,7 +166,6 @@ void main() {
       expect(game.messages.length, equals(2));
       context = game.messages.removeLast();
       expect(context.message, equals(row.actions.first.label));
-      expect(context.oldSound?.sound, equals(row.label.sound));
     });
     test('Movement', () {
       final row1Messages = [

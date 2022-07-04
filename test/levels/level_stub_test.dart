@@ -21,6 +21,7 @@ void main() {
       final game = Game(
         title: 'Level.fromStub',
         sdl: sdl,
+        soundBackend: SilentSoundBackend(),
       );
       const stub = LevelStub(
         ambiances: [

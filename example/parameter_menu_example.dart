@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:dart_sdl/dart_sdl.dart';
 import 'package:ziggurat/menus.dart';
+import 'package:ziggurat/sound.dart';
 import 'package:ziggurat/ziggurat.dart';
 
 Future<void> main() async {
@@ -10,6 +11,7 @@ Future<void> main() async {
   final game = Game(
     title: 'Parameter Menu',
     sdl: sdl,
+    soundBackend: SilentSoundBackend(),
   );
   var power = true;
   var speed = 5;

@@ -1,13 +1,13 @@
 import 'package:dart_synthizer/dart_synthizer.dart';
 
-import '../sound.dart';
-import 'synthizer_sound_backend.dart';
+import '../../../../sound.dart';
 
 /// A sound that has been played by a [SynthizerSoundBackend] instance.
 class SynthizerSound implements Sound {
   /// Create an instance.
   const SynthizerSound({
     required this.backend,
+    required this.channel,
     required this.keepAlive,
     required this.source,
     required this.generator,
@@ -15,6 +15,10 @@ class SynthizerSound implements Sound {
 
   /// The backend to use.
   final SynthizerSoundBackend backend;
+
+  /// The channel this sound is playing through.
+  @override
+  final SynthizerSoundChannel channel;
 
   /// The source to play through.
   final Source source;

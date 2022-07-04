@@ -1,6 +1,6 @@
 import 'package:dart_synthizer/dart_synthizer.dart';
 
-import '../../../../../sound.dart';
+import '../../../../json/reverb_preset.dart';
 import '../../effects/backend_reverb.dart';
 import '../synthizer_sound_backend.dart';
 

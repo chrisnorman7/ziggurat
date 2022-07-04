@@ -31,6 +31,7 @@ void main() {
       final game = Game(
         title: 'Test Game',
         sdl: sdl,
+        soundBackend: SilentSoundBackend(),
       );
       expect(game.title, equals('Test Game'));
       expect(game.currentLevel, isNull);
@@ -40,6 +41,7 @@ void main() {
       final game = Game(
         title: 'Test Game',
         sdl: sdl,
+        soundBackend: SilentSoundBackend(),
       );
       final level1 = Level(game: game);
       game.pushLevel(level1);
@@ -52,6 +54,7 @@ void main() {
       final game = Game(
         title: 'Test Game',
         sdl: sdl,
+        soundBackend: SilentSoundBackend(),
       );
       var i = 0;
       final task = Task(runAfter: 3, func: () => i++);
@@ -77,6 +80,7 @@ void main() {
       final game = Game(
         title: 'Test Game',
         sdl: sdl,
+        soundBackend: SilentSoundBackend(),
       );
       var i = 0;
       final task = Task(runAfter: 3, func: () => i++, interval: 2);
@@ -109,6 +113,7 @@ void main() {
       final game = Game(
         title: 'Tasks With Levels',
         sdl: sdl,
+        soundBackend: SilentSoundBackend(),
       );
       final level1 = Level(game: game);
       final level2 = Level(game: game);
@@ -170,6 +175,7 @@ void main() {
       final game = Game(
         title: 'Tasks that add tasks',
         sdl: sdl,
+        soundBackend: SilentSoundBackend(),
       );
       expect(game.tasks, isEmpty);
       game.registerTask(
@@ -189,6 +195,7 @@ void main() {
         final game = Game(
           title: 'Test callAfter',
           sdl: sdl,
+          soundBackend: SilentSoundBackend(),
         );
         var i = 0;
         final task = game.callAfter(func: () => i++, runAfter: 15);
@@ -215,6 +222,7 @@ void main() {
       final game = Game(
         title: 'unregisterTask',
         sdl: sdl,
+        soundBackend: SilentSoundBackend(),
       );
       final task = Task(runAfter: 1234, func: game.stop);
       game.registerTask(task);
@@ -233,6 +241,7 @@ void main() {
       final game = Game(
         title: 'Replace Level',
         sdl: sdl,
+        soundBackend: SilentSoundBackend(),
       );
       final level1 = Level(game: game);
       final level2 = Level(game: game);
@@ -254,6 +263,7 @@ void main() {
       final game = Game(
         title: 'Game.tick',
         sdl: sdl,
+        soundBackend: SilentSoundBackend(),
       );
       final level = TestLevel(game);
       game.tick(1);
@@ -271,6 +281,7 @@ void main() {
       final game = Game(
         title: 'Game.pushLevel',
         sdl: sdl,
+        soundBackend: SilentSoundBackend(),
       );
       final level1 = Level(game: game);
       final level2 = Level(game: game);
@@ -294,6 +305,7 @@ void main() {
       final game = Game(
         title: 'Game.pushLevel',
         sdl: sdl,
+        soundBackend: SilentSoundBackend(),
       );
       final level = Level(game: game);
       game.pushLevel(level, after: 200);
@@ -338,6 +350,7 @@ void main() {
       final game = Game(
         title: 'Play Random Sounds',
         sdl: sdl,
+        soundBackend: SilentSoundBackend(),
       );
       const randomSound1 = RandomSound(
         sound: AssetReference.file('sound1.wav'),
@@ -452,6 +465,7 @@ void main() {
         triggerMap: const TriggerMap(
           [trigger1, trigger2],
         ),
+        soundBackend: SilentSoundBackend(),
       );
       final level = Level(
         game: game,
@@ -486,6 +500,7 @@ void main() {
           triggerMap: TriggerMap(
             [trigger1, trigger2],
           ),
+          soundBackend: SilentSoundBackend(),
         );
         final list = <int>[];
         final level = Level(
@@ -532,6 +547,7 @@ void main() {
       sdl: sdl,
       appName: 'preferences_tests_game',
       orgName: 'com.test',
+      soundBackend: SilentSoundBackend(),
     );
     test('.preferencesDirectory', () {
       const orgName = 'com.website';
@@ -541,6 +557,7 @@ void main() {
         sdl: sdl,
         orgName: orgName,
         appName: appName,
+        soundBackend: SilentSoundBackend(),
       );
       expect(game.orgName, orgName);
       expect(game.appName, appName);

@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:dart_sdl/dart_sdl.dart';
 import 'package:test/test.dart';
 import 'package:ziggurat/levels.dart';
+import 'package:ziggurat/src/sound/backend/silent/silent_sound_backend.dart';
 import 'package:ziggurat/ziggurat.dart';
 
 import '../helpers.dart';
@@ -12,6 +13,7 @@ void main() {
   final game = Game(
     title: 'Edit Test',
     sdl: sdl,
+    soundBackend: SilentSoundBackend(),
   );
   group('Editor', () {
     test('Initialisation', () {

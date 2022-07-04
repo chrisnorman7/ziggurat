@@ -12,6 +12,7 @@ void main() {
     final game = Game(
       title: 'Menu Testing Game',
       sdl: sdl,
+      soundBackend: SilentSoundBackend(),
     );
     test('Initialisation', () {
       var menu = Menu(game: game, title: const Message(text: 'Test Menu'));
@@ -194,6 +195,7 @@ void main() {
         game: Game(
           title: 'ListButton',
           sdl: sdl,
+          soundBackend: SilentSoundBackend(),
         ),
         title: emptyMessage,
       );
@@ -231,6 +233,7 @@ void main() {
         game: Game(
           title: 'ListButton',
           sdl: sdl,
+          soundBackend: SilentSoundBackend(),
         ),
         title: emptyMessage,
       );
@@ -259,6 +262,7 @@ void main() {
       final game = Game(
         title: 'Menu Sounds',
         sdl: sdl,
+        soundBackend: SilentSoundBackend(),
       );
       const sound1 = AssetReference('Sound 1', AssetType.file);
       const sound2 = AssetReference('Sound 2', AssetType.file);
@@ -272,19 +276,17 @@ void main() {
       );
       expect(menu.oldSound, isNull);
       menu.down();
-      expect(
-        menu.oldSound,
-        predicate((final value) => value is PlaySound && value.sound == sound1),
-      );
+      final oldSound = menu.oldSound;
+      expect(oldSound, isNotNull);
       menu.down();
       expect(
         menu.oldSound,
-        predicate((final value) => value is PlaySound && value.sound == sound2),
+        predicate((final value) => value is Sound && value != oldSound),
       );
       menu.up();
       expect(
         menu.oldSound,
-        predicate((final value) => value is PlaySound && value.sound == sound1),
+        predicate((final value) => value is Sound && value != oldSound),
       );
       menu.up();
       expect(menu.oldSound, isNull);
@@ -293,6 +295,7 @@ void main() {
       final game = Game(
         title: 'Button Widget',
         sdl: sdl,
+        soundBackend: SilentSoundBackend(),
       );
       var number = 0;
       final button = Button(
@@ -309,16 +312,17 @@ void main() {
       expect(number, isZero);
       expect(menu.oldSound, isNull);
       menu.down();
-      expect(menu.currentMenuItem?.widget, equals(button));
+      expect(menu.currentMenuItem?.widget, button);
       expect(menu.oldSound, isNull);
       menu.activate();
       expect(number, equals(1));
-      expect(menu.oldSound?.sound, equals(button.activateSound));
+      expect(menu.oldSound, isNotNull);
     });
     test('.addButton', () {
       final game = Game(
         title: 'Menu.addButton',
         sdl: sdl,
+        soundBackend: SilentSoundBackend(),
       );
       final menu = Menu(game: game, title: const Message());
       expect(menu.menuItems, isEmpty);
@@ -345,6 +349,7 @@ void main() {
       final game = Game(
         title: 'Menu.addLabel',
         sdl: sdl,
+        soundBackend: SilentSoundBackend(),
       );
       final menu = Menu(game: game, title: const Message());
       const selectSound = AssetReference.file('select.wav');
@@ -373,17 +378,14 @@ void main() {
       expect(menu.oldSound, isNull);
       menu.down();
       expect(menu.oldSound, isNotNull);
-      expect(menu.oldSound!.sound, equals(menu.menuItems.first.label.sound));
       game.popLevel();
       expect(game.currentLevel, isNull);
       expect(menu.oldSound, isNull);
       game.pushLevel(menu);
       expect(game.currentLevel, equals(menu));
       expect(menu.oldSound, isNotNull);
-      expect(menu.oldSound!.sound, equals(menu.menuItems.first.label.sound));
       menu.down();
       expect(menu.oldSound, isNotNull);
-      expect(menu.oldSound!.sound, equals(menu.menuItems.last.label.sound));
       game.popLevel();
       expect(game.currentLevel, isNull);
       expect(menu.oldSound, isNull);
@@ -454,6 +456,7 @@ void main() {
             helpCommand,
           ],
         ),
+        soundBackend: SilentSoundBackend(),
       );
       var quit = 0;
       final m = Menu(
@@ -520,6 +523,7 @@ void main() {
       final game = Game(
         title: 'Activate Dynamic Widgets',
         sdl: sdl,
+        soundBackend: SilentSoundBackend(),
       );
       final widget = DynamicWidget((final menuItem) => emptyMessage);
       final menu = Menu(

@@ -96,6 +96,7 @@ void main() {
       final game = Game(
         title: 'Test Game',
         sdl: sdl,
+        soundBackend: SilentSoundBackend(),
       );
       final level = Level(game: game);
       expect(level.game, equals(game));
@@ -105,6 +106,7 @@ void main() {
       final game = Game(
         title: 'Test Game',
         sdl: sdl,
+        soundBackend: SilentSoundBackend(),
       );
       final level = Level(game: game);
       const command = Command();
@@ -115,6 +117,7 @@ void main() {
       final game = Game(
         title: 'Test Game',
         sdl: sdl,
+        soundBackend: SilentSoundBackend(),
       );
       final level1 = CustomLevel(game);
       game.pushLevel(level1);
@@ -140,6 +143,7 @@ void main() {
       final game = Game(
         title: 'Test Game',
         sdl: sdl,
+        soundBackend: SilentSoundBackend(),
       );
       final level = CommandLevel(game);
       expect(level.started, isFalse);
@@ -161,6 +165,7 @@ void main() {
       final game = Game(
         title: 'Test Game',
         sdl: sdl,
+        soundBackend: SilentSoundBackend(),
       );
       final level = IncrementLevel(game);
       game.pushLevel(level);
@@ -204,9 +209,12 @@ void main() {
       final game = Game(
         title: 'Level Ambiances',
         sdl: sdl,
+        soundBackend: SilentSoundBackend(),
       );
-      const ambiance1 =
-          Ambiance(sound: AssetReference.file('sound1'), gain: 0.1);
+      const ambiance1 = Ambiance(
+        sound: AssetReference.file('sound1'),
+        gain: 0.1,
+      );
       const ambiance2 = Ambiance(
         sound: AssetReference.collection('sound2'),
         gain: 0.2,
@@ -222,8 +230,8 @@ void main() {
         ambiance1Playback?.sound,
         predicate(
           (final value) =>
-              value is PlaySound &&
-              value.sound == ambiance1.sound &&
+              value is Sound &&
+              value.channel == game.ambianceSounds &&
               value.gain == ambiance1.gain &&
               value.keepAlive == true,
         ),
@@ -244,8 +252,8 @@ void main() {
         ambiance2Playback.sound,
         predicate(
           (final value) =>
-              value is PlaySound &&
-              value.sound == ambiance2.sound &&
+              value is Sound &&
+              value.channel == game.ambianceSounds &&
               value.gain == ambiance2.gain &&
               value.keepAlive == true,
         ),
@@ -255,6 +263,7 @@ void main() {
       final game = Game(
         title: 'Music Test',
         sdl: sdl,
+        soundBackend: SilentSoundBackend(),
       );
       const music = Music(
         sound: AssetReference.file('music.mp3'),
@@ -267,12 +276,10 @@ void main() {
       expect(level.musicSound, isNull);
       game.pushLevel(level);
       final sound = level.musicSound!;
-      expect(sound.channel, game.musicSounds.id);
+      expect(sound.channel, game.musicSounds);
       expect(sound.gain, music.gain);
-      expect(sound.game, game);
       expect(sound.keepAlive, isTrue);
       expect(sound.looping, isTrue);
-      expect(sound.sound, music.sound);
       game.popLevel();
       expect(level.musicSound, isNull);
     });
@@ -284,6 +291,7 @@ void main() {
       final game = Game(
         title: 'Level.stoppedCommands',
         sdl: sdl,
+        soundBackend: SilentSoundBackend(),
         triggerMap: TriggerMap([commandTrigger]),
       );
       final level = Level(game: game);
@@ -332,6 +340,7 @@ void main() {
       final game = Game(
         title: 'Test game',
         sdl: sdl,
+        soundBackend: SilentSoundBackend(),
       );
       final level = CustomLevel(game);
       expect(level.game, equals(game));

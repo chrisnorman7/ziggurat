@@ -6,7 +6,7 @@ import 'package:dart_sdl/dart_sdl.dart';
 import '../controller_axis_dispatcher.dart';
 import '../json/message.dart';
 import '../multi_grid.dart';
-import '../sound/events/playback.dart';
+import '../sound/backend/sound.dart';
 import 'level.dart';
 
 /// A level which presents a series of rows, each one containing different
@@ -110,7 +110,7 @@ class MultiGridLevel extends Level {
   final ControllerAxisDispatcher axisDispatcher;
 
   /// The currently-playing sound, if any.
-  PlaySound? _oldSound;
+  Sound? _oldSound;
 
   /// The vertical position.
   int? _verticalPosition;

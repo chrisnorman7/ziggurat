@@ -13,7 +13,8 @@ import 'synthizer_sound_backend.dart';
 import 'synthizer_wave.dart';
 
 /// A synthizer sound channel.
-class SynthizerSoundChannel<T extends SoundPosition> implements SoundChannel {
+class SynthizerSoundChannel<T extends SoundPosition>
+    implements SoundChannel<T> {
   /// Create an instance.
   const SynthizerSoundChannel({
     required this.backend,
@@ -67,6 +68,7 @@ class SynthizerSoundChannel<T extends SoundPosition> implements SoundChannel {
   }
 
   /// Set the [source] position.
+  @override
   set position(final T value) {
     if (value == unpanned) {
       throw UnimplementedError(
@@ -177,11 +179,18 @@ class SynthizerSoundChannel<T extends SoundPosition> implements SoundChannel {
   SynthizerSound playSound({
     required final AssetReference assetReference,
     final bool keepAlive = false,
+    final double gain = 0.7,
+    final bool looping = false,
+    final double pitchBend = 1.0,
   }) {
     final buffer = backend.bufferCache.getBuffer(assetReference);
-    final generator = context.createBufferGenerator(buffer: buffer);
+    final generator = context.createBufferGenerator(buffer: buffer)
+      ..gain.value = gain
+      ..looping.value = looping
+      ..pitchBend.value = pitchBend;
     return SynthizerSound(
       backend: backend,
+      channel: this,
       keepAlive: keepAlive,
       source: source,
       generator: generator,

@@ -154,7 +154,7 @@ class Menu extends Level {
   final SoundChannel? soundChannel;
 
   /// The last sound played by this menu.
-  PlaySound? oldSound;
+  Sound? oldSound;
 
   /// The most recent search string.
   String searchString;
