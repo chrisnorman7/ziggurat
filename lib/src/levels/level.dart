@@ -293,17 +293,10 @@ class Level {
   @mustCallSuper
   void handleSdlEvent(final Event event) {}
 
-  /// Let this level tick.
+  /// Tick all [commandNextRuns].
   ///
-  /// This method will be called by [Game.tick].
-  ///
-  /// The [timeDelta] argument will be how long it has been since the game last
-  /// ticked.
-  ///
-  /// To prevent jank, this method should not take too long, although some time
-  /// correction is performed by the [Game.tick] method.
-  @mustCallSuper
-  void tick(final int timeDelta) {
+  /// This method is called by [tick].
+  void tickCommands(final int timeDelta) {
     for (final nextRun in commandNextRuns) {
       nextRun.runAfter += timeDelta;
       final command = nextRun.value;
@@ -312,17 +305,19 @@ class Level {
         runCommand(command);
       }
     }
-    final toStop = <Command>{};
-    for (final nextRun in stoppedCommands) {
-      final command = nextRun.value;
-      nextRun.runAfter += timeDelta;
-      if (nextRun.runAfter >= command.interval!) {
-        toStop.add(command);
-      }
-    }
-    for (final command in toStop) {
-      stoppedCommands.removeWhere((final element) => element.value == command);
-    }
+  }
+
+  /// Remove any commands from the [stoppedCommands] list that can now be ran
+  /// again.
+  void stopCommands(final int timeDelta) {
+    stoppedCommands.removeWhere((final element) {
+      element.runAfter += timeDelta;
+      return element.runAfter >= element.value.interval!;
+    });
+  }
+
+  /// Tick all random sounds.
+  void tickRandomSounds(final int timeDelta) {
     for (final sound in randomSounds) {
       final playNext = getRandomSoundNextPlay(sound);
       if (playNext.runAfter <= 0) {
@@ -346,7 +341,7 @@ class Level {
         if (c == null) {
           c = game.createSoundChannel(position: position);
         } else {
-          (c as SoundChannel<SoundPosition3d>).position = position;
+          c.position = position;
         }
         randomSoundPlaybacks[sound] = SoundPlayback(
           c,
@@ -365,5 +360,21 @@ class Level {
         playNext.runAfter -= timeDelta;
       }
     }
+  }
+
+  /// Let this level tick.
+  ///
+  /// This method will be called by [Game.tick].
+  ///
+  /// The [timeDelta] argument will be how long it has been since the game last
+  /// ticked.
+  ///
+  /// To prevent jank, this method should not take too long, although some time
+  /// correction is performed by the [Game.tick] method.
+  @mustCallSuper
+  void tick(final int timeDelta) {
+    tickCommands(timeDelta);
+    stopCommands(timeDelta);
+    tickRandomSounds(timeDelta);
   }
 }

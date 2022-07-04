@@ -37,11 +37,14 @@ class SilentSoundBackend implements SoundBackend {
       const SilentBackendReverb();
 
   @override
-  SilentSoundChannel<SoundPosition> createSoundChannel({
+  SilentSoundChannel createSoundChannel({
     final SoundPosition position = unpanned,
     final double gain = 0.7,
   }) =>
-      SilentSoundChannel(gain: gain);
+      SilentSoundChannel(
+        gain: gain,
+        position: position,
+      );
 
   @override
   void shutdown() {}

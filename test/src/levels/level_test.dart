@@ -239,9 +239,11 @@ void main() {
       expect(ambiance1Playback?.channel, equals(game.ambianceSounds));
       expect(
         ambiance2Playback?.channel,
-        isA<SoundChannel<SoundPosition3d>>(),
+        isNotNull,
       );
-      final position = ambiance2Playback!.channel.position as SoundPosition3d;
+      final ambiance2Channel = ambiance2Playback!.channel;
+      expect(ambiance2Channel.position, isA<SoundPosition3d>());
+      final position = ambiance2Playback.channel.position as SoundPosition3d;
       expect(position.x, equals(ambiance2.position!.x));
       expect(position.y, equals(ambiance2.position!.y));
       expect(position.z, isZero);
@@ -250,7 +252,7 @@ void main() {
         predicate(
           (final value) =>
               value is Sound &&
-              value.channel == game.ambianceSounds &&
+              value.channel == ambiance2Channel &&
               value.gain == ambiance2.gain &&
               value.keepAlive == true,
         ),

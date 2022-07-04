@@ -122,10 +122,10 @@ class Game {
   final SoundBackend soundBackend;
 
   /// The default channel for playing interface sounds through.
-  final SoundChannel<SoundPosition> interfaceSounds;
+  final SoundChannel interfaceSounds;
 
   /// The sound channel to play ambiance sounds through.
-  final SoundChannel<SoundPosition> ambianceSounds;
+  final SoundChannel ambianceSounds;
 
   /// The sound channel for [Level] music.
   late final SoundChannel musicSounds;

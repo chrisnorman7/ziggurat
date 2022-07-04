@@ -2,6 +2,7 @@
 import 'package:dart_synthizer/dart_synthizer.dart';
 
 import '../../../../wave_types.dart';
+import '../../../error.dart';
 import '../../../json/asset_reference.dart';
 import '../sound_channel.dart';
 import '../sound_position.dart';
@@ -13,8 +14,7 @@ import 'synthizer_sound_backend.dart';
 import 'synthizer_wave.dart';
 
 /// A synthizer sound channel.
-class SynthizerSoundChannel<T extends SoundPosition>
-    implements SoundChannel<T> {
+class SynthizerSoundChannel implements SoundChannel {
   /// Create an instance.
   const SynthizerSoundChannel({
     required this.backend,
@@ -48,20 +48,20 @@ class SynthizerSoundChannel<T extends SoundPosition>
 
   /// Get the position of [source].
   @override
-  T get position {
+  SoundPosition get position {
     final s = source;
     if (s is DirectSource) {
-      return unpanned as T;
+      return unpanned;
     } else if (s is Source3D) {
       final p = s.position.value;
-      return SoundPosition3d(x: p.x, y: p.y, z: p.z) as T;
+      return SoundPosition3d(x: p.x, y: p.y, z: p.z);
     } else if (s is AngularPannedSource) {
       return SoundPositionAngular(
         azimuth: s.azimuth.value,
         elevation: s.elevation.value,
-      ) as T;
+      );
     } else if (s is ScalarPannedSource) {
-      return SoundPositionScalar(scalar: s.panningScalar.value) as T;
+      return SoundPositionScalar(scalar: s.panningScalar.value);
     } else {
       throw UnimplementedError('Cannot handle source $s.');
     }
@@ -69,19 +69,29 @@ class SynthizerSoundChannel<T extends SoundPosition>
 
   /// Set the [source] position.
   @override
-  set position(final T value) {
+  set position(final SoundPosition value) {
+    final s = source;
     if (value == unpanned) {
       throw UnimplementedError(
         'You cannot set the `position` for an unpanned source.',
       );
     } else if (value is SoundPosition3d) {
-      (source as Source3D).position.value = Double3(value.x, value.y, value.z);
+      if (s is! Source3D) {
+        throw PositionMismatchError(this, value);
+      }
+      s.position.value = Double3(value.x, value.y, value.z);
     } else if (value is SoundPositionAngular) {
-      (source as AngularPannedSource)
+      if (s is! AngularPannedSource) {
+        throw PositionMismatchError(this, value);
+      }
+      s
         ..azimuth.value = value.azimuth
         ..elevation.value = value.elevation;
     } else if (value is SoundPositionScalar) {
-      (source as ScalarPannedSource).panningScalar.value = value.scalar;
+      if (s is! ScalarPannedSource) {
+        throw PositionMismatchError(this, value);
+      }
+      s.panningScalar.value = value.scalar;
     } else {
       throw UnimplementedError('Cannot handle sound position $value.');
     }

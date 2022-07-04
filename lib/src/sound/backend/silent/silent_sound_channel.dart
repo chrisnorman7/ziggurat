@@ -11,7 +11,7 @@ import 'silent_wave.dart';
 /// A silent sound channel.
 ///
 /// This class does nothing.
-class SilentSoundChannel<T extends SoundPosition> implements SoundChannel {
+class SilentSoundChannel implements SoundChannel {
   /// Create an instance.
   SilentSoundChannel({
     required this.gain,

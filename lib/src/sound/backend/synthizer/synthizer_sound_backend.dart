@@ -34,40 +34,28 @@ class SynthizerSoundBackend implements SoundBackend {
     final Source source;
     if (position == unpanned) {
       source = context.createDirectSource();
-      return SynthizerSoundChannel<SoundPosition>(
-        backend: this,
-        source: source,
-      );
     } else if (position is SoundPosition3d) {
       source = context.createSource3D(
         x: position.x,
         y: position.y,
         z: position.z,
       );
-      return SynthizerSoundChannel<SoundPosition3d>(
-        backend: this,
-        source: source,
-      );
     } else if (position is SoundPositionAngular) {
       source = context.createAngularPannedSource(
         azimuth: position.azimuth,
         elevation: position.elevation,
       );
-      return SynthizerSoundChannel<SoundPositionAngular>(
-        backend: this,
-        source: source,
-      );
     } else if (position is SoundPositionScalar) {
       source = context.createScalarPannedSource(
         panningScalar: position.scalar,
       );
-      return SynthizerSoundChannel<SoundPositionScalar>(
-        backend: this,
-        source: source,
-      );
     } else {
       throw StateError('Cannot create a source for $position.');
     }
+    return SynthizerSoundChannel(
+      backend: this,
+      source: source,
+    )..gain = gain;
   }
 
   /// Shutdown the backend.

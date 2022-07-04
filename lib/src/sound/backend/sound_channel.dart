@@ -1,5 +1,6 @@
 /// Provides the [SoundChannel] class.
 import '../../../wave_types.dart';
+import '../../error.dart';
 import '../../json/asset_reference.dart';
 import 'effects/backend_echo.dart';
 import 'effects/backend_reverb.dart';
@@ -8,12 +9,15 @@ import 'sound_position.dart';
 import 'wave.dart';
 
 /// A channel for playing sounds through.
-abstract class SoundChannel<T extends SoundPosition> {
+abstract class SoundChannel {
   /// Get the position of this channel.
-  T get position;
+  SoundPosition get position;
 
   /// Set the position of this channel.
-  set position(final T value);
+  ///
+  /// If a [value] cannot be applied due to limitations of the sound subsystem,
+  /// then [PositionMismatchError] should be thrown.
+  set position(final SoundPosition value);
 
   /// The Gain of this channel.
   double get gain;
