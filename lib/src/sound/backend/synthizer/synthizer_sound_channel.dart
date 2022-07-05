@@ -71,17 +71,17 @@ class SynthizerSoundChannel implements SoundChannel {
   @override
   set position(final SoundPosition value) {
     final s = source;
-    if (value == unpanned) {
+    if (s is DirectSource) {
       throw UnimplementedError(
         'You cannot set the `position` for an unpanned source.',
       );
-    } else if (value is SoundPosition3d) {
-      if (s is! Source3D) {
+    } else if (s is Source3D) {
+      if (value is! SoundPosition3d) {
         throw PositionMismatchError(this, value);
       }
       s.position.value = Double3(value.x, value.y, value.z);
-    } else if (value is SoundPositionAngular) {
-      if (s is! AngularPannedSource) {
+    } else if (s is AngularPannedSource) {
+      if (value is! SoundPositionAngular) {
         throw PositionMismatchError(this, value);
       }
       s

@@ -346,6 +346,89 @@ void main() {
               channel.destroy();
             },
           );
+
+          test(
+            '.position',
+            () async {
+              var channel = backend.createSoundChannel();
+              await Future<void>.delayed(const Duration(milliseconds: 100));
+              expect(channel.position, unpanned);
+              final throwsPositionMismatchError = throwsA(
+                isA<PositionMismatchError>(),
+              );
+              expect(
+                () => channel.position = const SoundPositionAngular(
+                  azimuth: 90.0,
+                ),
+                throwsUnimplementedError,
+              );
+              expect(
+                () => channel.position = const SoundPosition3d(),
+                throwsUnimplementedError,
+              );
+              expect(
+                () => channel.position = unpanned,
+                throwsUnimplementedError,
+              );
+              await Future<void>.delayed(const Duration(milliseconds: 100));
+              expect(channel.position, unpanned);
+              channel.destroy();
+              channel = backend.createSoundChannel(
+                position: const SoundPositionAngular(
+                  azimuth: 45.0,
+                  elevation: 90.0,
+                ),
+              );
+              await Future<void>.delayed(const Duration(milliseconds: 100));
+              expect(
+                channel.position,
+                predicate<SoundPositionAngular>(
+                  (final value) =>
+                      value.azimuth == 45.0 && value.elevation == 90.0,
+                ),
+              );
+              channel.position = const SoundPositionAngular(
+                azimuth: 90.0,
+                elevation: 45.0,
+              );
+              await Future<void>.delayed(const Duration(milliseconds: 100));
+              expect(
+                channel.position,
+                predicate<SoundPositionAngular>(
+                  (final value) =>
+                      value.azimuth == 90.0 && value.elevation == 45.0,
+                ),
+              );
+              expect(
+                () => channel.position = unpanned,
+                throwsPositionMismatchError,
+              );
+              expect(
+                () => channel.position = const SoundPosition3d(),
+                throwsPositionMismatchError,
+              );
+              channel.destroy();
+              channel = backend.createSoundChannel(
+                position: const SoundPosition3d(x: 1.0, y: 2.0, z: 3.0),
+              );
+              await Future<void>.delayed(const Duration(milliseconds: 100));
+              expect(
+                channel.position,
+                predicate<SoundPosition3d>(
+                  (final value) =>
+                      value.x == 1.0 && value.y == 2.0 && value.z == 3.0,
+                ),
+              );
+              expect(
+                () => channel.position = unpanned,
+                throwsPositionMismatchError,
+              );
+              expect(
+                () => channel.position = const SoundPositionAngular(),
+                throwsPositionMismatchError,
+              );
+            },
+          );
         },
       );
     },
