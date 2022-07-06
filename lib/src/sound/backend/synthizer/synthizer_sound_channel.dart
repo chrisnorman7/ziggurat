@@ -198,6 +198,7 @@ class SynthizerSoundChannel implements SoundChannel {
       ..gain.value = gain
       ..looping.value = looping
       ..pitchBend.value = pitchBend;
+    source.addGenerator(generator);
     return SynthizerSound(
       backend: backend,
       channel: this,
@@ -271,6 +272,7 @@ class SynthizerSoundChannel implements SoundChannel {
         );
         break;
     }
+    source.addGenerator(generator);
     return SynthizerWave(
       backend: backend,
       generator: generator,
