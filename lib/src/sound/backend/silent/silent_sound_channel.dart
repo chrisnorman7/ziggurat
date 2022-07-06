@@ -3,6 +3,7 @@ import '../../../../wave_types.dart';
 import '../../../json/asset_reference.dart';
 import '../effects/backend_echo.dart';
 import '../effects/backend_reverb.dart';
+import '../sound.dart';
 import '../sound_channel.dart';
 import '../sound_position.dart';
 import 'silent_sound.dart';
@@ -134,4 +135,21 @@ class SilentSoundChannel implements SoundChannel {
 
   @override
   void removeReverb(final BackendReverb reverb) {}
+
+  /// Play a sound from the given [string].
+  @override
+  Sound playString({
+    required final String string,
+    final bool keepAlive = false,
+    final double gain = 0.7,
+    final bool looping = false,
+    final double pitchBend = 1.0,
+  }) =>
+      SilentSound(
+        channel: this,
+        gain: gain,
+        keepAlive: keepAlive,
+        looping: looping,
+        pitchBend: pitchBend,
+      );
 }

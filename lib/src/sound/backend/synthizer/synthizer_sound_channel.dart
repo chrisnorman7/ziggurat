@@ -185,6 +185,18 @@ class SynthizerSoundChannel implements SoundChannel {
         gain: gain,
       );
 
+  /// Configure lingering for the given [generator], according to [keepAlive].
+  void configureLinger({
+    required final Generator generator,
+    required final bool keepAlive,
+  }) {
+    if (!keepAlive) {
+      generator
+        ..configDeleteBehavior(linger: true)
+        ..destroy();
+    }
+  }
+
   @override
   SynthizerSound playSound({
     required final AssetReference assetReference,
@@ -198,6 +210,7 @@ class SynthizerSoundChannel implements SoundChannel {
       ..gain.value = gain
       ..looping.value = looping
       ..pitchBend.value = pitchBend;
+    configureLinger(generator: generator, keepAlive: keepAlive);
     source.addGenerator(generator);
     return SynthizerSound(
       backend: backend,
@@ -282,5 +295,30 @@ class SynthizerSoundChannel implements SoundChannel {
   @override
   void removeAllEffects() {
     source.removeAllRoutes();
+  }
+
+  /// Play a sound from the given [string].
+  @override
+  SynthizerSound playString({
+    required final String string,
+    final bool keepAlive = false,
+    final double gain = 0.7,
+    final bool looping = false,
+    final double pitchBend = 1.0,
+  }) {
+    final buffer = Buffer.fromString(synthizer, string);
+    final generator = context.createBufferGenerator(buffer: buffer)
+      ..gain.value = gain
+      ..looping.value = looping
+      ..pitchBend.value = pitchBend;
+    configureLinger(generator: generator, keepAlive: keepAlive);
+    source.addGenerator(generator);
+    return SynthizerSound(
+      backend: backend,
+      channel: this,
+      keepAlive: keepAlive,
+      source: source,
+      generator: generator,
+    );
   }
 }
