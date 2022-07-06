@@ -141,27 +141,59 @@ class SynthizerSoundChannel implements SoundChannel {
 
   /// Add reverb to this channel.
   @override
-  void addReverb(covariant final SynthizerBackendReverb reverb) {
-    context.configRoute(source, reverb.reverb);
+  void addReverb({
+    required covariant final SynthizerBackendReverb reverb,
+    final double gain = 1.0,
+    final double fadeTime = 0.01,
+  }) {
+    context.configRoute(
+      source,
+      reverb.reverb,
+      fadeTime: fadeTime,
+      gain: gain,
+    );
   }
 
   /// Remove reverb from this channel.
   @override
-  void removeReverb(covariant final SynthizerBackendReverb reverb) {
-    context.removeRoute(source, reverb.reverb);
+  void removeReverb({
+    required covariant final SynthizerBackendReverb reverb,
+    final double fadeTime = 0.01,
+  }) {
+    context.removeRoute(
+      source,
+      reverb.reverb,
+      fadeTime: fadeTime,
+    );
   }
 
   /// Add an echo to this channel.
 
   @override
-  void addEcho(covariant final SynthizerBackendEcho echo) {
-    context.configRoute(source, echo.echo);
+  void addEcho({
+    required covariant final SynthizerBackendEcho echo,
+    final double gain = 1.0,
+    final double fadeTime = 0.01,
+  }) {
+    context.configRoute(
+      source,
+      echo.echo,
+      fadeTime: fadeTime,
+      gain: gain,
+    );
   }
 
   /// Remove an echo from this channel.
   @override
-  void removeEcho(covariant final SynthizerBackendEcho echo) {
-    context.removeRoute(source, echo.echo);
+  void removeEcho({
+    required covariant final SynthizerBackendEcho echo,
+    final double fadeTime = 0.01,
+  }) {
+    context.removeRoute(
+      source,
+      echo.echo,
+      fadeTime: fadeTime,
+    );
   }
 
   @override

@@ -41,16 +41,30 @@ abstract class SoundChannel {
   void filterBandpass(final double frequency, final double bandwidth);
 
   /// Add reverb to this channel.
-  void addReverb(final BackendReverb reverb);
+  void addReverb({
+    required final BackendReverb reverb,
+    final double gain = 1.0,
+    final double fadeTime = 0.01,
+  });
 
   /// Remove reverb from this channel.
-  void removeReverb(final BackendReverb reverb);
+  void removeReverb({
+    required final BackendReverb reverb,
+    final double fadeTime = 0.01,
+  });
 
   /// Add an echo to this channel.
-  void addEcho(final BackendEcho echo);
+  void addEcho({
+    required final BackendEcho echo,
+    final double gain = 1.0,
+    final double fadeTime = 0.01,
+  });
 
   /// Remove an echo from this channel.
-  void removeEcho(final BackendEcho echo);
+  void removeEcho({
+    required final BackendEcho echo,
+    final double fadeTime = 0.01,
+  });
 
   /// Remove all effects.
   void removeAllEffects();

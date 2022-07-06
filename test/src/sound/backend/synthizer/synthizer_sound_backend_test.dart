@@ -502,6 +502,37 @@ void main() {
               channel.destroy();
             },
           );
+
+          test(
+            'Reverb',
+            () async {
+              final channel = backend.createSoundChannel();
+              final sound = channel.playSound(
+                assetReference: assetReference,
+                looping: true,
+                keepAlive: true,
+              );
+              final reverb = backend.createReverb(
+                const ReverbPreset(
+                  name: 'Test Reverb',
+                  gain: 1.0,
+                  t60: 1.0,
+                ),
+              );
+              await Future<void>.delayed(const Duration(seconds: 1));
+              channel.addReverb(
+                reverb: reverb,
+              );
+              await Future<void>.delayed(const Duration(seconds: 1));
+              channel.removeReverb(
+                reverb: reverb,
+              );
+              await Future<void>.delayed(const Duration(seconds: 1));
+              reverb.destroy();
+              sound.destroy();
+              channel.destroy();
+            },
+          );
         },
       );
     },

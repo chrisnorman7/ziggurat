@@ -20,10 +20,11 @@ class SilentSoundChannel implements SoundChannel {
   });
 
   @override
-  void addEcho(final BackendEcho echo) {}
-
-  @override
-  void addReverb(final BackendReverb reverb) {}
+  void addEcho({
+    required final BackendEcho echo,
+    final double gain = 1.0,
+    final double fadeTime = 0.01,
+  }) {}
 
   @override
   void clearFilter() {}
@@ -131,10 +132,16 @@ class SilentSoundChannel implements SoundChannel {
   void removeAllEffects() {}
 
   @override
-  void removeEcho(final BackendEcho echo) {}
+  void removeEcho({
+    required final BackendEcho echo,
+    final double fadeTime = 0.01,
+  }) {}
 
   @override
-  void removeReverb(final BackendReverb reverb) {}
+  void removeReverb({
+    required final BackendReverb reverb,
+    final double fadeTime = 0.01,
+  }) {}
 
   /// Play a sound from the given [string].
   @override
@@ -152,4 +159,11 @@ class SilentSoundChannel implements SoundChannel {
         looping: looping,
         pitchBend: pitchBend,
       );
+
+  @override
+  void addReverb({
+    required final BackendReverb reverb,
+    final double gain = 1.0,
+    final double fadeTime = 0.01,
+  }) {}
 }
