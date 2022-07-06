@@ -372,12 +372,14 @@ void main() {
               );
               await Future<void>.delayed(const Duration(milliseconds: 100));
               expect(channel.position, unpanned);
+              expect(channel.source, isA<DirectSource>());
               channel.destroy();
+              var soundPositionAngular = const SoundPositionAngular(
+                azimuth: 45.0,
+                elevation: 90.0,
+              );
               channel = backend.createSoundChannel(
-                position: const SoundPositionAngular(
-                  azimuth: 45.0,
-                  elevation: 90.0,
-                ),
+                position: soundPositionAngular,
               );
               await Future<void>.delayed(const Duration(milliseconds: 100));
               expect(
@@ -387,16 +389,33 @@ void main() {
                       value.azimuth == 45.0 && value.elevation == 90.0,
                 ),
               );
-              channel.position = const SoundPositionAngular(
+              expect(
+                channel.source as AngularPannedSource,
+                predicate<AngularPannedSource>(
+                  (final value) =>
+                      value.azimuth.value == soundPositionAngular.azimuth &&
+                      value.elevation.value == soundPositionAngular.elevation,
+                ),
+              );
+              soundPositionAngular = const SoundPositionAngular(
                 azimuth: 90.0,
                 elevation: 45.0,
               );
+              channel.position = soundPositionAngular;
               await Future<void>.delayed(const Duration(milliseconds: 100));
               expect(
                 channel.position,
                 predicate<SoundPositionAngular>(
                   (final value) =>
                       value.azimuth == 90.0 && value.elevation == 45.0,
+                ),
+              );
+              expect(
+                channel.source as AngularPannedSource,
+                predicate<AngularPannedSource>(
+                  (final value) =>
+                      value.azimuth.value == soundPositionAngular.azimuth &&
+                      value.elevation.value == soundPositionAngular.elevation,
                 ),
               );
               expect(
@@ -420,6 +439,13 @@ void main() {
                 ),
               );
               expect(
+                (channel.source as Source3D).position.value,
+                predicate<Double3>(
+                  (final value) =>
+                      value.x == 1.0 && value.y == 2.0 && value.z == 3.0,
+                ),
+              );
+              expect(
                 () => channel.position = unpanned,
                 throwsPositionMismatchError,
               );
@@ -427,6 +453,23 @@ void main() {
                 () => channel.position = const SoundPositionAngular(),
                 throwsPositionMismatchError,
               );
+              channel.position = const SoundPosition3d(x: 7, y: 8, z: 9);
+              await Future<void>.delayed(const Duration(milliseconds: 100));
+              expect(
+                channel.position,
+                predicate<SoundPosition3d>(
+                  (final value) =>
+                      value.x == 7.0 && value.y == 8.0 && value.z == 9.0,
+                ),
+              );
+              expect(
+                (channel.source as Source3D).position.value,
+                predicate<Double3>(
+                  (final value) =>
+                      value.x == 7.0 && value.y == 8.0 && value.z == 9.0,
+                ),
+              );
+              channel.destroy();
             },
           );
         },
