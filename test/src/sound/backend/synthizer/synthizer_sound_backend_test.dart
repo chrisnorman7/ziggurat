@@ -2,8 +2,12 @@ import 'dart:math';
 
 import 'package:dart_synthizer/dart_synthizer.dart';
 import 'package:test/test.dart';
+import 'package:ziggurat/notes.dart';
 import 'package:ziggurat/sound.dart';
 import 'package:ziggurat/ziggurat.dart';
+
+/// The asset to use for testing.
+const assetReference = AssetReference.file('sound.wav');
 
 void main() {
   final synthizer = Synthizer()..initialize();
@@ -469,6 +473,32 @@ void main() {
                       value.x == 7.0 && value.y == 8.0 && value.z == 9.0,
                 ),
               );
+              channel.destroy();
+            },
+          );
+
+          test(
+            'Filtering',
+            () async {
+              // Since there is currently no way to read synthizer filters, the
+              // best we can do here is run the filtering functions, and ensure
+              // there are no errors thrown.
+              final channel = backend.createSoundChannel();
+              final sound = channel.playSound(
+                assetReference: assetReference,
+                keepAlive: true,
+                looping: true,
+              );
+              await Future<void>.delayed(const Duration(milliseconds: 100));
+              channel.filterBandpass(a4, 50);
+              await Future<void>.delayed(const Duration(milliseconds: 100));
+              channel.filterHighpass(10000);
+              await Future<void>.delayed(const Duration(milliseconds: 100));
+              channel.filterLowpass(500);
+              await Future<void>.delayed(const Duration(milliseconds: 100));
+              channel.clearFilter();
+              await Future<void>.delayed(const Duration(milliseconds: 100));
+              sound.destroy();
               channel.destroy();
             },
           );
