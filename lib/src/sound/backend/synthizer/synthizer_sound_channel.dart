@@ -216,7 +216,6 @@ class SynthizerSoundChannel implements SoundChannel {
       backend: backend,
       channel: this,
       keepAlive: keepAlive,
-      source: source,
       generator: generator,
     );
   }
@@ -317,7 +316,6 @@ class SynthizerSoundChannel implements SoundChannel {
       backend: backend,
       channel: this,
       keepAlive: keepAlive,
-      source: source,
       generator: generator,
     );
   }

@@ -9,7 +9,6 @@ class SynthizerSound implements Sound {
     required this.backend,
     required this.channel,
     required this.keepAlive,
-    required this.source,
     required this.generator,
   });
 
@@ -21,7 +20,7 @@ class SynthizerSound implements Sound {
   final SynthizerSoundChannel channel;
 
   /// The source to play through.
-  final Source source;
+  Source get source => channel.source;
 
   /// The generator to play through.
   final Generator generator;
