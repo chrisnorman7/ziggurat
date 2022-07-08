@@ -168,7 +168,6 @@ class SynthizerSoundChannel implements SoundChannel {
   }
 
   /// Add an echo to this channel.
-
   @override
   void addEcho({
     required covariant final SynthizerBackendEcho echo,

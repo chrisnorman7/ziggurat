@@ -533,6 +533,44 @@ void main() {
               channel.destroy();
             },
           );
+
+          test(
+            'Echo',
+            () async {
+              final channel = backend.createSoundChannel();
+              final echo = backend.createEcho(
+                [
+                  const EchoTap(delay: 0.5, gainL: 1.0, gainR: 0.0),
+                  const EchoTap(
+                    delay: 0.75,
+                    gainL: 0.0,
+                    gainR: 0.75,
+                  ),
+                  const EchoTap(
+                    delay: 1.0,
+                    gainL: 0.5,
+                    gainR: 0.0,
+                  )
+                ],
+              );
+              final sound = channel.playSound(
+                assetReference: assetReference,
+                keepAlive: true,
+                looping: true,
+              );
+              await Future<void>.delayed(const Duration(seconds: 1));
+              channel.addEcho(
+                echo: echo,
+                fadeTime: 0.5,
+              );
+              await Future<void>.delayed(const Duration(seconds: 1));
+              channel.removeEcho(echo: echo, fadeTime: 0.5);
+              await Future<void>.delayed(const Duration(seconds: 2));
+              sound.destroy();
+              echo.destroy();
+              channel.destroy();
+            },
+          );
         },
       );
     },
