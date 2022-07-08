@@ -10,14 +10,14 @@ dependencies:
   dart_sdl: ^0.10.0
   dart_synthizer: ^0.11.0
   encrypt: ^5.0.1
-  json_annotation: ^4.5.0
+  json_annotation: ^4.6.0
   meta: ^1.8.0
   path: ^1.8.2
 
 dev_dependencies:
-  analyzer: ^4.1.0
+  analyzer: ^4.2.0
   build_runner: ^2.1.11
   build_test: ^2.1.5
   json_serializable: ^6.2.0
   lints: ^2.0.0
-  test: ^1.21.3
+  test: ^1.21.4
