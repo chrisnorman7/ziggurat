@@ -16,7 +16,7 @@ AssetReference _$AssetReferenceFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$AssetReferenceToJson(AssetReference instance) =>
     <String, dynamic>{
       'name': instance.name,
-      'type': _$AssetTypeEnumMap[instance.type],
+      'type': _$AssetTypeEnumMap[instance.type]!,
       'encryptionKey': instance.encryptionKey,
     };
 

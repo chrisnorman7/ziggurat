@@ -16,7 +16,7 @@ CommandKeyboardKey _$CommandKeyboardKeyFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$CommandKeyboardKeyToJson(CommandKeyboardKey instance) =>
     <String, dynamic>{
-      'scanCode': _$ScanCodeEnumMap[instance.scanCode],
+      'scanCode': _$ScanCodeEnumMap[instance.scanCode]!,
       'shiftKey': instance.shiftKey,
       'controlKey': instance.controlKey,
       'altKey': instance.altKey,

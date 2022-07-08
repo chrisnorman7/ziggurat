@@ -14,7 +14,7 @@ AxisSetting _$AxisSettingFromJson(Map<String, dynamic> json) => AxisSetting(
 
 Map<String, dynamic> _$AxisSettingToJson(AxisSetting instance) =>
     <String, dynamic>{
-      'axis': _$GameControllerAxisEnumMap[instance.axis],
+      'axis': _$GameControllerAxisEnumMap[instance.axis]!,
       'sensitivity': instance.sensitivity,
       'interval': instance.interval,
     };
