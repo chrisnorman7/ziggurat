@@ -195,6 +195,7 @@ class SynthizerSoundChannel implements SoundChannel {
     );
   }
 
+  /// Play a saw wave.
   @override
   Wave playSaw(
     final double frequency, {
@@ -208,51 +209,21 @@ class SynthizerSoundChannel implements SoundChannel {
         gain: gain,
       );
 
+  /// Play a sine wave.
   @override
-  Wave playSine({required final double frequency, final double gain = 0.7}) =>
+  SynthizerWave playSine({
+    required final double frequency,
+    final double gain = 0.7,
+  }) =>
       playWave(
         waveType: WaveType.sine,
         frequency: frequency,
         gain: gain,
       );
 
-  /// Configure lingering for the given [generator], according to [keepAlive].
-  void configureLinger({
-    required final Generator generator,
-    required final bool keepAlive,
-  }) {
-    if (!keepAlive) {
-      generator
-        ..configDeleteBehavior(linger: true)
-        ..destroy();
-    }
-  }
-
+  /// Play a square wave.
   @override
-  SynthizerSound playSound({
-    required final AssetReference assetReference,
-    final bool keepAlive = false,
-    final double gain = 0.7,
-    final bool looping = false,
-    final double pitchBend = 1.0,
-  }) {
-    final buffer = backend.bufferCache.getBuffer(assetReference);
-    final generator = context.createBufferGenerator(buffer: buffer)
-      ..gain.value = gain
-      ..looping.value = looping
-      ..pitchBend.value = pitchBend;
-    configureLinger(generator: generator, keepAlive: keepAlive);
-    source.addGenerator(generator);
-    return SynthizerSound(
-      backend: backend,
-      channel: this,
-      keepAlive: keepAlive,
-      generator: generator,
-    );
-  }
-
-  @override
-  Wave playSquare({
+  SynthizerWave playSquare({
     required final double frequency,
     final int partials = 1,
     final double gain = 0.7,
@@ -264,8 +235,9 @@ class SynthizerSoundChannel implements SoundChannel {
         gain: gain,
       );
 
+  /// Play a triangle wave.
   @override
-  Wave playTriangle({
+  SynthizerWave playTriangle({
     required final double frequency,
     final int partials = 1,
     final double gain = 0.7,
@@ -285,7 +257,7 @@ class SynthizerSoundChannel implements SoundChannel {
     final int partials = 1,
     final double gain = 0.7,
   }) {
-    if (partials < 1 && waveType != WaveType.sine) {
+    if (partials < 1) {
       throw StateError('Synthizer does not like `partials` being less than 1.');
     }
     final FastSineBankGenerator generator;
@@ -315,6 +287,7 @@ class SynthizerSoundChannel implements SoundChannel {
         );
         break;
     }
+    generator.gain.value = gain;
     source.addGenerator(generator);
     return SynthizerWave(
       backend: backend,
@@ -322,9 +295,41 @@ class SynthizerSoundChannel implements SoundChannel {
     );
   }
 
+  /// Configure lingering for the given [generator], according to [keepAlive].
+  void configureLinger({
+    required final Generator generator,
+    required final bool keepAlive,
+  }) {
+    if (!keepAlive) {
+      generator
+        ..configDeleteBehavior(linger: true)
+        ..destroy();
+    }
+  }
+
+  /// Play a sound with the given [assetReference].
   @override
-  void removeAllEffects() {
-    source.removeAllRoutes();
+  SynthizerSound playSound({
+    required final AssetReference assetReference,
+    final bool keepAlive = false,
+    final double gain = 0.7,
+    final bool looping = false,
+    final double pitchBend = 1.0,
+  }) {
+    final buffer = backend.bufferCache.getBuffer(assetReference);
+    final generator = context.createBufferGenerator()
+      ..gain.value = gain
+      ..looping.value = looping
+      ..pitchBend.value = pitchBend
+      ..buffer.value = buffer;
+    source.addGenerator(generator);
+    configureLinger(generator: generator, keepAlive: keepAlive);
+    return SynthizerSound(
+      backend: backend,
+      channel: this,
+      keepAlive: keepAlive,
+      generator: generator,
+    );
   }
 
   /// Play a sound from the given [string].
@@ -337,17 +342,24 @@ class SynthizerSoundChannel implements SoundChannel {
     final double pitchBend = 1.0,
   }) {
     final buffer = Buffer.fromString(synthizer, string);
-    final generator = context.createBufferGenerator(buffer: buffer)
+    final generator = context.createBufferGenerator()
       ..gain.value = gain
       ..looping.value = looping
-      ..pitchBend.value = pitchBend;
-    configureLinger(generator: generator, keepAlive: keepAlive);
+      ..pitchBend.value = pitchBend
+      ..buffer.value = buffer;
     source.addGenerator(generator);
+    configureLinger(generator: generator, keepAlive: keepAlive);
     return SynthizerSound(
       backend: backend,
       channel: this,
       keepAlive: keepAlive,
       generator: generator,
     );
+  }
+
+  /// Remove all effects.
+  @override
+  void removeAllEffects() {
+    source.removeAllRoutes();
   }
 }

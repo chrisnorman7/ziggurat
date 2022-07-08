@@ -1,9 +1,11 @@
+import 'dart:io';
 import 'dart:math';
 
 import 'package:dart_synthizer/dart_synthizer.dart';
 import 'package:test/test.dart';
 import 'package:ziggurat/notes.dart';
 import 'package:ziggurat/sound.dart';
+import 'package:ziggurat/wave_types.dart';
 import 'package:ziggurat/ziggurat.dart';
 
 /// The asset to use for testing.
@@ -569,6 +571,259 @@ void main() {
               sound.destroy();
               echo.destroy();
               channel.destroy();
+            },
+          );
+
+          test(
+            '.playSaw',
+            () async {
+              final channel = backend.createSoundChannel();
+              final wave = channel.playSaw(
+                a1,
+                gain: 0.5,
+              ) as SynthizerWave;
+              await Future<void>.delayed(const Duration(milliseconds: 100));
+              expect(wave.backend, backend);
+              expect(wave.gain, 0.5);
+              expect(wave.generator.frequency.value, a1);
+              wave.destroy();
+              channel.destroy();
+            },
+          );
+
+          test(
+            '.playSine',
+            () async {
+              final channel = backend.createSoundChannel();
+              final wave = channel.playSine(frequency: a2, gain: 0.6);
+              await Future<void>.delayed(const Duration(milliseconds: 100));
+              expect(wave.backend, backend);
+              expect(wave.gain, 0.6);
+              expect(wave.generator.frequency.value, a2);
+              wave.destroy();
+              channel.destroy();
+            },
+          );
+
+          test(
+            '.playSquare',
+            () async {
+              final channel = backend.createSoundChannel();
+              final wave = channel.playSquare(
+                frequency: a3,
+              );
+              await Future<void>.delayed(const Duration(milliseconds: 100));
+              expect(wave.backend, backend);
+              expect(wave.gain, 0.7);
+              expect(wave.generator.frequency.value, a3);
+              wave.destroy();
+              channel.destroy();
+            },
+          );
+
+          test(
+            '.playTriangle',
+            () async {
+              final channel = backend.createSoundChannel();
+              final wave = channel.playTriangle(
+                frequency: a4,
+                gain: 0.8,
+              );
+              await Future<void>.delayed(const Duration(milliseconds: 100));
+              expect(wave.backend, backend);
+              expect(wave.gain, 0.8);
+              expect(wave.generator.frequency.value, a4);
+              wave.destroy();
+              channel.destroy();
+            },
+          );
+
+          test(
+            '.playWave',
+            () async {
+              final channel = backend.createSoundChannel();
+              expect(
+                () => channel.playWave(
+                  waveType: WaveType.saw,
+                  frequency: a4,
+                  partials: 0,
+                ),
+                throwsStateError,
+              );
+            },
+          );
+
+          test(
+            '.playSound',
+            () async {
+              final channel = backend.createSoundChannel();
+              var sound = channel.playSound(assetReference: assetReference);
+              await Future<void>.delayed(const Duration(milliseconds: 100));
+              expect(sound.backend, backend);
+              expect(sound.channel, channel);
+              expect(() => sound.gain, throwsStateError);
+              expect(sound.generator, isA<BufferGenerator>());
+              expect(sound.keepAlive, isFalse);
+              expect(() => sound.looping, throwsStateError);
+              expect(() => sound.pitchBend, throwsStateError);
+              expect(() => sound.position, throwsStateError);
+              expect(sound.destroy, throwsStateError);
+              sound = channel.playSound(
+                assetReference: assetReference,
+                gain: 0.5,
+                keepAlive: true,
+                looping: true,
+                pitchBend: 2.0,
+              );
+              await Future<void>.delayed(const Duration(milliseconds: 100));
+              expect(sound.backend, backend);
+              expect(sound.channel, channel);
+              expect(sound.gain, 0.5);
+              expect(sound.generator, isA<BufferGenerator>());
+              expect(sound.keepAlive, isTrue);
+              expect(sound.looping, isTrue);
+              expect(sound.pitchBend, 2.0);
+              expect(sound.position, greaterThan(0.05));
+              sound.destroy();
+            },
+          );
+
+          test(
+            '.playString',
+            () async {
+              final channel = backend.createSoundChannel();
+              final file = File(assetReference.name);
+              final bytes = file.readAsBytesSync();
+              final string = String.fromCharCodes(bytes);
+              var sound = channel.playString(string: string);
+              await Future<void>.delayed(const Duration(milliseconds: 100));
+              expect(sound.backend, backend);
+              expect(sound.channel, channel);
+              expect(() => sound.gain, throwsStateError);
+              expect(sound.generator, isA<BufferGenerator>());
+              expect(sound.keepAlive, isFalse);
+              expect(() => sound.looping, throwsStateError);
+              expect(() => sound.pitchBend, throwsStateError);
+              expect(() => sound.position, throwsStateError);
+              expect(sound.destroy, throwsStateError);
+              sound = channel.playString(
+                string: string,
+                gain: 0.5,
+                keepAlive: true,
+                looping: true,
+                pitchBend: 0.7,
+              );
+              await Future<void>.delayed(const Duration(milliseconds: 100));
+              expect(sound.backend, backend);
+              expect(sound.channel, channel);
+              expect(sound.gain, 0.5);
+              expect(sound.generator, isA<BufferGenerator>());
+              expect(sound.keepAlive, isTrue);
+              expect(sound.looping, isTrue);
+              expect(sound.pitchBend, 0.7);
+              expect(sound.position, greaterThan(0.05));
+              sound.destroy();
+            },
+          );
+
+          test(
+            '.removeAllEffects',
+            () async {
+              const seconds = 1;
+              final channel = backend.createSoundChannel();
+              const reverbPreset = ReverbPreset(
+                name: 'Test Reverb',
+                gain: 1.0,
+                t60: 2.0,
+              );
+              final reverb = backend.createReverb(reverbPreset);
+              final echo = backend.createEcho(
+                [
+                  for (var i = 0.1; i <= 2.0; i++)
+                    EchoTap(delay: i, gainL: i, gainR: i)
+                ],
+              );
+              final sound = channel.playSound(
+                assetReference: assetReference,
+                keepAlive: true,
+                looping: true,
+              );
+              await Future<void>.delayed(const Duration(seconds: seconds));
+              channel.addEcho(echo: echo);
+              await Future<void>.delayed(const Duration(seconds: seconds));
+              channel.addReverb(reverb: reverb);
+              await Future<void>.delayed(const Duration(seconds: seconds));
+              channel.removeAllEffects();
+              echo.destroy();
+              reverb.destroy();
+              await Future<void>.delayed(const Duration(seconds: seconds));
+              sound.destroy();
+              channel.destroy();
+            },
+          );
+        },
+      );
+
+      group(
+        'SynthizerBackendEcho',
+        () {
+          final channel = backend.createSoundChannel();
+          tearDownAll(channel.destroy);
+          test(
+            'Initialise',
+            () async {
+              final echo = backend.createEcho([]);
+              await Future<void>.delayed(const Duration(milliseconds: 100));
+              expect(echo.backend, backend);
+              expect(echo.echo, isA<GlobalEcho>());
+              echo.destroy();
+            },
+          );
+
+          test(
+            '.setTaps',
+            () async {
+              final sound = channel.playSound(
+                assetReference: assetReference,
+                keepAlive: true,
+                looping: true,
+              );
+              await Future<void>.delayed(const Duration(seconds: 1));
+              final echo = backend.createEcho(
+                [
+                  for (var i = 1; i < 11; i++)
+                    EchoTap(delay: i * 0.1, gainL: i / 11, gainR: i / 11)
+                ],
+              );
+              channel.addEcho(echo: echo);
+              await Future<void>.delayed(const Duration(seconds: 1));
+              echo.setTaps([const EchoTap(delay: 0.5, gainL: 1.0, gainR: 0.0)]);
+              await Future<void>.delayed(const Duration(seconds: 1));
+              echo.destroy();
+              sound.destroy();
+            },
+          );
+
+          test(
+            '.reset',
+            () async {
+              final sound = channel.playSound(
+                assetReference: assetReference,
+                keepAlive: true,
+                looping: true,
+              );
+              final echo = backend.createEcho(
+                [
+                  const EchoTap(delay: 0.5, gainL: 1.0, gainR: 0.0),
+                  const EchoTap(delay: 1.0, gainL: 0.0, gainR: 1.0),
+                ],
+              );
+              channel.addEcho(echo: echo);
+              await Future<void>.delayed(const Duration(seconds: 1));
+              echo.reset();
+              await Future<void>.delayed(const Duration(seconds: 1));
+              echo.destroy();
+              sound.destroy();
             },
           );
         },
