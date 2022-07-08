@@ -42,6 +42,7 @@ class SynthizerBackendReverb implements BackendReverb {
     reverb.destroy();
   }
 
+  /// Update the [reverb] settings.
   @override
   void setPreset(
     final ReverbPreset preset, {

@@ -107,6 +107,13 @@ class SynthizerSound implements Sound {
     generator.pause();
   }
 
+  /// Unpause [generator].
+  @override
+  void unpause() {
+    checkDeadSound();
+    generator.play();
+  }
+
   /// Get the pitch bend for [generator].
   @override
   double get pitchBend {
@@ -146,12 +153,5 @@ class SynthizerSound implements Sound {
     } else {
       throw StateError('Cannot set the playback position of $g.');
     }
-  }
-
-  /// Unpause [generator].
-  @override
-  void unpause() {
-    checkDeadSound();
-    generator.play();
   }
 }

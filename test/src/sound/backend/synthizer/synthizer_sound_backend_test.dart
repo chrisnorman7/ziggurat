@@ -11,6 +11,8 @@ import 'package:ziggurat/ziggurat.dart';
 /// The asset to use for testing.
 const assetReference = AssetReference.file('sound.wav');
 
+/// A silent asset reference.
+const silence = AssetReference.file('silence.wav');
 void main() {
   final synthizer = Synthizer()..initialize();
   final context = synthizer.createContext();
@@ -824,6 +826,435 @@ void main() {
               await Future<void>.delayed(const Duration(seconds: 1));
               echo.destroy();
               sound.destroy();
+            },
+          );
+        },
+      );
+
+      group(
+        'SynthizerBackendReverb',
+        () {
+          final channel = backend.createSoundChannel();
+          const reverbPreset =
+              ReverbPreset(name: 'Test Reverb', gain: 1.0, t60: 3.0);
+          tearDownAll(channel.destroy);
+
+          test(
+            'Initialise',
+            () async {
+              final reverb = backend.createReverb(reverbPreset);
+              await Future<void>.delayed(const Duration(milliseconds: 100));
+              expect(reverb.backend, backend);
+              expect(reverb.reverb, isA<GlobalFdnReverb>());
+              expect(reverb.synthizer, synthizer);
+              final r = reverb.reverb;
+              expect(
+                r.meanFreePath.value,
+                reverbPreset.meanFreePath,
+              );
+              expect(
+                r.t60.value,
+                reverbPreset.t60,
+              );
+              expect(
+                r.lateReflectionsLfRolloff.value,
+                reverbPreset.lateReflectionsLfRolloff,
+              );
+              expect(
+                r.lateReflectionsLfReference.value,
+                reverbPreset.lateReflectionsLfReference,
+              );
+              expect(
+                r.lateReflectionsHfRolloff.value,
+                reverbPreset.lateReflectionsHfRolloff,
+              );
+              expect(
+                r.lateReflectionsHfReference.value,
+                reverbPreset.lateReflectionsHfReference,
+              );
+              expect(
+                r.lateReflectionsDiffusion.value,
+                reverbPreset.lateReflectionsDiffusion,
+              );
+              expect(
+                r.lateReflectionsModulationDepth.value,
+                reverbPreset.lateReflectionsModulationDepth,
+              );
+              expect(
+                r.lateReflectionsModulationFrequency.value,
+                reverbPreset.lateReflectionsModulationFrequency,
+              );
+              expect(
+                r.lateReflectionsDelay.value,
+                reverbPreset.lateReflectionsDelay,
+              );
+              expect(r.gain.value, reverbPreset.gain);
+              reverb.destroy();
+            },
+          );
+
+          test(
+            '.setPreset',
+            () async {
+              final reverb = backend.createReverb(reverbPreset);
+              channel.addReverb(reverb: reverb);
+              await Future<void>.delayed(const Duration(milliseconds: 100));
+              const newPreset = ReverbPreset(
+                name: 'New Preset',
+                t60: 5.0,
+              );
+              reverb.setPreset(newPreset);
+              await Future<void>.delayed(const Duration(milliseconds: 100));
+              final r = reverb.reverb;
+              expect(
+                r.meanFreePath.value,
+                reverbPreset.meanFreePath,
+              );
+              expect(
+                r.t60.value,
+                newPreset.t60,
+              );
+              expect(
+                r.lateReflectionsLfRolloff.value,
+                reverbPreset.lateReflectionsLfRolloff,
+              );
+              expect(
+                r.lateReflectionsLfReference.value,
+                reverbPreset.lateReflectionsLfReference,
+              );
+              expect(
+                r.lateReflectionsHfRolloff.value,
+                reverbPreset.lateReflectionsHfRolloff,
+              );
+              expect(
+                r.lateReflectionsHfReference.value,
+                reverbPreset.lateReflectionsHfReference,
+              );
+              expect(
+                r.lateReflectionsDiffusion.value,
+                reverbPreset.lateReflectionsDiffusion,
+              );
+              expect(
+                r.lateReflectionsModulationDepth.value,
+                reverbPreset.lateReflectionsModulationDepth,
+              );
+              expect(
+                r.lateReflectionsModulationFrequency.value,
+                reverbPreset.lateReflectionsModulationFrequency,
+              );
+              expect(
+                r.lateReflectionsDelay.value,
+                reverbPreset.lateReflectionsDelay,
+              );
+              expect(r.gain.value, newPreset.gain);
+              reverb.destroy();
+            },
+          );
+
+          test(
+            'Filtering',
+            () async {
+              // Since there is currently no way to read synthizer filters, the
+              // best we can do here is run the filtering functions, and ensure
+              // there are no errors thrown.
+              final sound = channel.playSound(
+                assetReference: assetReference,
+                keepAlive: true,
+                looping: true,
+              );
+              final reverb = backend.createReverb(reverbPreset);
+              channel.addReverb(reverb: reverb);
+              await Future<void>.delayed(const Duration(milliseconds: 100));
+              reverb.filterBandpass(a4, 50);
+              await Future<void>.delayed(const Duration(milliseconds: 100));
+              reverb.filterHighpass(10000);
+              await Future<void>.delayed(const Duration(milliseconds: 100));
+              reverb.filterLowpass(500);
+              await Future<void>.delayed(const Duration(milliseconds: 100));
+              reverb.clearFilter();
+              await Future<void>.delayed(const Duration(milliseconds: 100));
+              sound.destroy();
+              reverb.destroy();
+            },
+          );
+
+          test(
+            '.reset',
+            () async {
+              final reverb = backend.createReverb(reverbPreset);
+              channel.addReverb(reverb: reverb);
+              final sound = channel.playSound(
+                assetReference: assetReference,
+                keepAlive: true,
+                looping: true,
+              );
+              await Future<void>.delayed(const Duration(seconds: 1));
+              reverb.reset();
+              await Future<void>.delayed(const Duration(seconds: 1));
+              reverb.destroy();
+              sound.destroy();
+            },
+          );
+        },
+      );
+
+      group(
+        'SynthizerSound',
+        () {
+          final channel = backend.createSoundChannel();
+          tearDownAll(channel.destroy);
+
+          test(
+            'Initialise',
+            () async {
+              final sound = channel.playSound(assetReference: assetReference);
+              await Future<void>.delayed(const Duration(milliseconds: 100));
+              expect(sound.backend, backend);
+              expect(sound.channel, channel);
+              expect(sound.context, context);
+              expect(sound.generator, isA<BufferGenerator>());
+              expect(sound.keepAlive, isFalse);
+              expect(sound.source, channel.source);
+            },
+          );
+
+          test(
+            '.cancelFade',
+            () async {
+              final sound = channel.playSound(
+                assetReference: assetReference,
+                keepAlive: true,
+              )..fade(length: 1.0);
+              await Future<void>.delayed(const Duration(milliseconds: 100));
+              sound.cancelFade();
+              final gain = sound.gain;
+              expect(gain, inClosedOpenRange(0.2, 1.0));
+              await Future<void>.delayed(const Duration(milliseconds: 100));
+              expect(sound.gain, gain);
+              sound.destroy();
+            },
+          );
+
+          test(
+            '.checkSound',
+            () {
+              var sound = channel.playSound(assetReference: assetReference);
+              expect(sound.checkDeadSound, throwsStateError);
+              sound = channel.playSound(
+                assetReference: assetReference,
+                keepAlive: true,
+              );
+              expect(sound.checkDeadSound, returnsNormally);
+              sound.destroy();
+            },
+          );
+
+          test(
+            '.fade',
+            () async {
+              final sound = channel.playSound(
+                assetReference: assetReference,
+                gain: 1.0,
+                keepAlive: true,
+              )..fade(
+                  length: 0.5,
+                  startGain: 1.0,
+                );
+              await Future<void>.delayed(const Duration(milliseconds: 100));
+              expect(sound.gain, inExclusiveRange(0.0, 1.0));
+              await Future<void>.delayed(const Duration(milliseconds: 500));
+              expect(sound.gain, isZero);
+              sound.destroy();
+            },
+          );
+
+          test(
+            '.gain',
+            () async {
+              var sound = channel.playSound(assetReference: assetReference);
+              await Future<void>.delayed(const Duration(milliseconds: 100));
+              expect(() => sound.gain, throwsStateError);
+              expect(() => sound.gain = 1.0, throwsStateError);
+              sound = channel.playSound(
+                assetReference: assetReference,
+                keepAlive: true,
+              );
+              await Future<void>.delayed(const Duration(milliseconds: 100));
+              expect(sound.gain, 0.7);
+              sound.gain = 1.0;
+              await Future<void>.delayed(const Duration(milliseconds: 100));
+              expect(sound.gain, 1.0);
+              sound.destroy();
+            },
+          );
+
+          test(
+            '.looping',
+            () async {
+              var sound = channel.playSound(assetReference: assetReference);
+              await Future<void>.delayed(const Duration(milliseconds: 100));
+              expect(() => sound.looping, throwsStateError);
+              expect(() => sound.looping = true, throwsStateError);
+              sound = channel.playSound(
+                assetReference: assetReference,
+                keepAlive: true,
+              );
+              await Future<void>.delayed(const Duration(milliseconds: 100));
+              expect(sound.looping, isFalse);
+              sound.looping = true;
+              await Future<void>.delayed(const Duration(milliseconds: 100));
+              expect(sound.looping, isTrue);
+              sound.destroy();
+            },
+          );
+
+          test(
+            '.pause and .unpause',
+            () async {
+              var sound = channel.playSound(assetReference: assetReference);
+              await Future<void>.delayed(const Duration(milliseconds: 100));
+              expect(sound.pause, throwsStateError);
+              sound = channel.playSound(
+                assetReference: assetReference,
+                keepAlive: true,
+              );
+              await Future<void>.delayed(const Duration(milliseconds: 100));
+              sound.pause();
+              final position = sound.position;
+              expect(position, greaterThan(0.0));
+              await Future<void>.delayed(const Duration(milliseconds: 100));
+              expect(sound.position, greaterThan(position));
+              sound.unpause();
+              await Future<void>.delayed(const Duration(milliseconds: 100));
+              final newPosition = sound.position;
+              expect(newPosition, greaterThan(position));
+              sound.destroy();
+            },
+          );
+
+          test(
+            '.pitchBend',
+            () async {
+              var sound = channel.playSound(assetReference: assetReference);
+              await Future<void>.delayed(const Duration(milliseconds: 100));
+              expect(() => sound.pitchBend, throwsStateError);
+              expect(() => sound.pitchBend = 2.0, throwsStateError);
+              sound = channel.playSound(
+                assetReference: assetReference,
+                keepAlive: true,
+              );
+              await Future<void>.delayed(const Duration(milliseconds: 100));
+              expect(sound.pitchBend, 1.0);
+              sound.pitchBend = 0.5;
+              await Future<void>.delayed(const Duration(milliseconds: 100));
+              expect(sound.pitchBend, 0.5);
+              sound.pitchBend = 0.25;
+              await Future<void>.delayed(const Duration(milliseconds: 100));
+              expect(sound.pitchBend, 0.25);
+            },
+          );
+
+          test(
+            '.position',
+            () async {
+              var sound = channel.playSound(assetReference: assetReference);
+              expect(() => sound.position, throwsStateError);
+              expect(() => sound.position = 2.0, throwsStateError);
+              sound = channel.playSound(
+                assetReference: assetReference,
+                keepAlive: true,
+              );
+              await Future<void>.delayed(const Duration(milliseconds: 100));
+              final position = sound.position;
+              expect(position, greaterThan(0.0));
+              await Future<void>.delayed(const Duration(milliseconds: 100));
+              expect(sound.position, greaterThan(position));
+              sound.destroy();
+            },
+          );
+        },
+      );
+
+      group(
+        'BufferCache',
+        () {
+          final cache = BufferCache(
+            synthizer: synthizer,
+            maxSize: 1.gb,
+            random: random,
+          );
+          tearDownAll(cache.destroy);
+
+          test(
+            'Initialise',
+            () {
+              expect(cache.maxSize, 1.gb);
+              expect(cache.random, random);
+              expect(cache.size, isZero);
+              expect(cache.synthizer, synthizer);
+            },
+          );
+
+          test(
+            '.getBuffer',
+            () {
+              final buffer = cache.getBuffer(assetReference);
+              expect(buffer, isA<Buffer>());
+              final size = cache.size;
+              expect(size, buffer.size);
+              expect(cache.getBuffer(assetReference), buffer);
+              expect(cache.size, size);
+              final silentBuffer = cache.getBuffer(
+                const AssetReference.file('silence.wav'),
+              );
+              expect(cache.size, buffer.size + silentBuffer.size);
+              expect(
+                () => cache.getBuffer(const AssetReference.file('Nothing.wav')),
+                throwsA(isA<NoSuchBufferError>()),
+              );
+            },
+          );
+
+          test(
+            '.prune',
+            () {
+              final cache = BufferCache(
+                synthizer: synthizer,
+                maxSize: 1.gb,
+                random: random,
+              )
+                ..getBuffer(assetReference)
+                ..prune();
+              expect(cache.size, isZero);
+              final buffer1 = cache.getBuffer(assetReference);
+              expect(cache.size, buffer1.size);
+              final buffer2 = cache.getBuffer(silence);
+              expect(cache.size, buffer1.size + buffer2.size);
+              cache.prune();
+              expect(cache.size, buffer2.size);
+            },
+          );
+
+          test(
+            '.destroy',
+            () async {
+              final cache = BufferCache(
+                synthizer: synthizer,
+                maxSize: pow(1024, 3).floor(),
+                random: random,
+              );
+              final buffer1 = cache.getBuffer(
+                assetReference,
+              );
+              final buffer2 = cache.getBuffer(
+                silence,
+              );
+              expect(cache.size, equals(buffer1.size + buffer2.size));
+              cache.destroy();
+              expect(cache.size, isZero);
+              final newBuffer1 = cache.getBuffer(assetReference);
+              expect(cache.size, newBuffer1.size);
+              expect(newBuffer1, isNot(buffer1));
             },
           );
         },
