@@ -424,6 +424,8 @@ class Game {
     final Sound? oldSound,
     final double gain = 0.7,
     final bool keepAlive = false,
+    final bool looping = false,
+    final double pitchBend = 1.0,
   }) {
     if (oldSound != null && oldSound.keepAlive == true) {
       oldSound.destroy();
@@ -431,8 +433,11 @@ class Game {
     if (sound != null) {
       return (soundChannel ?? interfaceSounds).playSound(
         assetReference: sound,
+        gain: gain,
         keepAlive: keepAlive,
-      )..gain = gain;
+        looping: looping,
+        pitchBend: pitchBend,
+      );
     }
     return null;
   }
