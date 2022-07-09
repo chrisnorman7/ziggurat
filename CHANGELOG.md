@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.50.1]
+
+### Fixed
+
+* Fixed `Game.outputSound` to not throw errors.
+
+### Added
+
+* The `Game.outputSound` method now allows setting `looping` and `pitchBend`.
+
 ## [0.50.0]
 
 ### Added
