@@ -5,6 +5,12 @@
 ### Added
 
 * Added sounds to ziggurat.
+* Added the `Game.playSimpleSound` method.
+
+### Changed
+
+* Sounds no longer work over a stream.
+* The `Game` constructor now requires a `SoundBackend`.
 
 ## [0.49.2]
 
