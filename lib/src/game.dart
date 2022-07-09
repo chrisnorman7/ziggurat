@@ -386,6 +386,35 @@ class Game {
   // ignore: use_setters_to_change_properties
   void outputText(final String text) => _window?.title = text;
 
+  /// Quickly play a sound.
+  ///
+  /// If [position] is not [unpanned], the resulting sound's [Sound.keepAlive]
+  /// will be `true`, and [Sound.channel] must be manually destroyed.
+  ///
+  /// If [position] is [unpanned], then the resulting sound's [Sound.channel]
+  /// will be set to [interfaceSounds], and [Sound.keepAlive] will be `false`.
+  Sound playSimpleSound({
+    required final AssetReference sound,
+    final double gain = 0.7,
+    final SoundPosition position = unpanned,
+    final bool looping = false,
+    final double pitchBend = 1.0,
+  }) {
+    final SoundChannel channel;
+    if (position == unpanned) {
+      channel = interfaceSounds;
+    } else {
+      channel = soundBackend.createSoundChannel(position: position);
+    }
+    return channel.playSound(
+      assetReference: sound,
+      gain: gain,
+      keepAlive: position != unpanned,
+      looping: looping,
+      pitchBend: pitchBend,
+    );
+  }
+
   /// Output a sound.
   ///
   /// This method is used by [outputMessage].

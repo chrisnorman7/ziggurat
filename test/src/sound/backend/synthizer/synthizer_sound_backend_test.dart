@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'package:dart_sdl/dart_sdl.dart';
 import 'package:dart_synthizer/dart_synthizer.dart';
 import 'package:test/test.dart';
 import 'package:ziggurat/notes.dart';
@@ -1255,6 +1256,62 @@ void main() {
               final newBuffer1 = cache.getBuffer(assetReference);
               expect(cache.size, newBuffer1.size);
               expect(newBuffer1, isNot(buffer1));
+            },
+          );
+        },
+      );
+
+      group(
+        'Game',
+        () {
+          final sdl = Sdl();
+          final game = Game(
+            title: 'Test `playSimpleSound`',
+            sdl: sdl,
+            soundBackend: backend,
+          );
+
+          test(
+            '.playSimpleSound',
+            () async {
+              var sound = game.playSimpleSound(sound: assetReference);
+              await Future<void>.delayed(const Duration(milliseconds: 100));
+              expect(sound, isA<SynthizerSound>());
+              expect(sound.channel, game.interfaceSounds);
+              expect(() => sound.gain, throwsStateError);
+              expect(sound.keepAlive, isFalse);
+              expect(() => sound.looping, throwsStateError);
+              expect(() => sound.pitchBend, throwsStateError);
+              expect(() => sound.position, throwsStateError);
+              expect(sound.destroy, throwsStateError);
+              sound = game.playSimpleSound(
+                sound: assetReference,
+                gain: 0.5,
+                looping: true,
+                pitchBend: 0.7,
+                position: const SoundPosition3d(
+                  x: 1.0,
+                  y: 2.0,
+                  z: 3.0,
+                ),
+              );
+              await Future<void>.delayed(const Duration(milliseconds: 100));
+              final channel = sound.channel;
+              expect(channel.gain, 0.7);
+              expect(
+                channel.position,
+                predicate<SoundPosition3d>(
+                  (final value) =>
+                      value.x == 1.0 && value.y == 2.0 && value.z == 3.0,
+                ),
+              );
+              expect(sound.gain, 0.5);
+              expect(sound.keepAlive, isTrue);
+              expect(sound.looping, isTrue);
+              expect(sound.pitchBend, 0.7);
+              expect(sound.position, greaterThan(0.0));
+              sound.destroy();
+              channel.destroy();
             },
           );
         },
