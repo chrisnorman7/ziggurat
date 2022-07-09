@@ -1,3 +1,4 @@
+/// Provides the [SoundPlayback] class.
 import 'backend/sound.dart';
 import 'backend/sound_channel.dart';
 
