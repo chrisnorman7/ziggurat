@@ -1,4 +1,4 @@
-/// Provides exports relating to sound.
+/// Playing and generating sounds.
 ///
 /// Sounds are provided by way of a [SoundBackend] instance. By default, two
 /// backends are implemented:

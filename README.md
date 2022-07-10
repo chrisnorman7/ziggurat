@@ -7,7 +7,14 @@ general set of APIs for making audio games.
 
 ## Sounds
 
-Please note that since version 0.50.0, Ziggurat both generates and handles sound
-events. There is no longer any need for the
+Please note that since version 0.50.0, Ziggurat has full sound support in the
+library, by way of the
+[SoundBackend](https://pub.dev/documentation/ziggurat/latest/sound/SoundBackend-class.html)
+class, and in particular, the
+[SynthizerSoundBackend](https://pub.dev/documentation/ziggurat/latest/sound/SynthizerSoundBackend-class.html)
+class, which handles playing sounds through
+[Synthizer](https://synthizer.github.io/).
+
+As such, there is no longer any need for the
 [ziggurat_sounds](https://pub.dev/packages/ziggurat_sounds) package, and this
-will be deprecated.
+has been discontinued.

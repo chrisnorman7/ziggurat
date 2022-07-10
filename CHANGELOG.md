@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.50.2]
+
+### Changed
+
+* Updated docs.
+
 ## [0.50.1]
 
 ### Fixed

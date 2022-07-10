@@ -1,5 +1,34 @@
-/// A library for creating games.
+/// The main library.
+///
+/// ## Description
+///
+/// This package attempts to give you common methods and classes that will be
+/// useful when creating games.
+///
+/// The primary focus is on audio games, and honestly there are probably better
+/// packages for full-on video games. That said, if you want to use this library
+/// to make a video game, I'm certainly not going to stop you.
+///
+/// ## Tools
+///
+/// Writing [AssetReference]s, [Menu]s, and generally fleshing out [Level]s with
+/// [Ambiance]s and [RandomSound]s - not to mention tying [CommandTrigger]s to
+/// functions can be tedious. To this end, the
+/// [skeleton_crew](https://github.com/chrisnorman7/skeleton_crew) application
+/// can be used to automate many common Ziggurat tasks, then generate the code
+/// for you.
+///
+/// If you want to stay on the command line, the
+/// [ziggurat_utils](https://pub.dev/packages/ziggurat_utils) package has
+/// various utilities that you may find useful for creating and modifying
+/// [AssetReference]s.
 library ziggurat;
+
+import 'levels.dart';
+import 'menus.dart';
+import 'sound.dart';
+import 'src/json/asset_reference.dart';
+import 'src/json/command_trigger.dart';
 
 export 'src/command.dart';
 export 'src/controller_axis_dispatcher.dart';
