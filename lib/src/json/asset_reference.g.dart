@@ -11,6 +11,7 @@ AssetReference _$AssetReferenceFromJson(Map<String, dynamic> json) =>
       json['name'] as String,
       $enumDecode(_$AssetTypeEnumMap, json['type']),
       encryptionKey: json['encryptionKey'] as String?,
+      gain: (json['gain'] as num?)?.toDouble() ?? defaultGain,
     );
 
 Map<String, dynamic> _$AssetReferenceToJson(AssetReference instance) =>
@@ -18,6 +19,7 @@ Map<String, dynamic> _$AssetReferenceToJson(AssetReference instance) =>
       'name': instance.name,
       'type': _$AssetTypeEnumMap[instance.type]!,
       'encryptionKey': instance.encryptionKey,
+      'gain': instance.gain,
     };
 
 const _$AssetTypeEnumMap = {

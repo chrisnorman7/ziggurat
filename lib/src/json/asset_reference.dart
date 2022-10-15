@@ -9,6 +9,9 @@ import '../extensions.dart';
 
 part 'asset_reference.g.dart';
 
+/// The default gain to use.
+const defaultGain = 0.7;
+
 /// The possible asset types.
 enum AssetType {
   /// A single file.
@@ -22,19 +25,30 @@ enum AssetType {
 @JsonSerializable()
 class AssetReference {
   /// Create an instance.
-  const AssetReference(this.name, this.type, {this.encryptionKey});
+  const AssetReference(
+    this.name,
+    this.type, {
+    this.encryptionKey,
+    this.gain = defaultGain,
+  });
 
   /// Create an instance from a JSON object.
   factory AssetReference.fromJson(final Map<String, dynamic> json) =>
       _$AssetReferenceFromJson(json);
 
   /// Create an instance with its [type] set to [AssetType.file].
-  const AssetReference.file(this.name, {this.encryptionKey})
-      : type = AssetType.file;
+  const AssetReference.file(
+    this.name, {
+    this.encryptionKey,
+    this.gain = defaultGain,
+  }) : type = AssetType.file;
 
   /// Create an instance with its [type] set to [AssetType.collection].
-  const AssetReference.collection(this.name, {this.encryptionKey})
-      : type = AssetType.collection;
+  const AssetReference.collection(
+    this.name, {
+    this.encryptionKey,
+    this.gain = defaultGain,
+  }) : type = AssetType.collection;
 
   /// The name of this sound.
   ///
@@ -51,6 +65,9 @@ class AssetReference {
   /// If this value is `null`, the file or contents of the folder is assumed to
   /// be unencrypted.
   final String? encryptionKey;
+
+  /// The gain to play this sound at.
+  final double gain;
 
   /// Convert an instance to JSON.
   Map<String, dynamic> toJson() => _$AssetReferenceToJson(this);
