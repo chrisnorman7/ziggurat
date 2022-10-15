@@ -110,7 +110,7 @@ class Menu extends Level {
   ///
   /// If this value is `null`, nothing will happen when the [cancel] method is
   /// called.
-  final void Function()? onCancel;
+  final TaskFunction? onCancel;
 
   /// The scancode that will call the [up] method.
   final ScanCode upScanCode;

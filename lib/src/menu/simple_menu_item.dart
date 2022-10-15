@@ -1,6 +1,7 @@
 /// Provides the [SimpleMenuItem] class.
 import '../json/asset_reference.dart';
 import '../json/message.dart';
+import '../tasks/task.dart';
 import 'menu_item.dart';
 import 'widgets/button.dart';
 
@@ -14,7 +15,7 @@ class SimpleMenuItem extends MenuItem {
   /// Create an instance.
   SimpleMenuItem(
     final String? label,
-    final void Function() onActivate, {
+    final TaskFunction onActivate, {
     final AssetReference? selectSound,
     final AssetReference? activateSound,
   }) : super(

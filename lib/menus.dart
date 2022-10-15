@@ -16,6 +16,8 @@ export 'src/menu/menu.dart';
 export 'src/menu/menu_item.dart';
 export 'src/menu/parameter_menu.dart';
 export 'src/menu/simple_menu_item.dart';
+export 'src/menu/uniform_menu/uniform_menu.dart';
+export 'src/menu/uniform_menu/uniform_menu_item.dart';
 export 'src/menu/widgets/button.dart';
 export 'src/menu/widgets/dynamic_widget.dart';
 export 'src/menu/widgets/label.dart';
