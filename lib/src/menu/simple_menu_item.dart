@@ -13,7 +13,7 @@ import 'widgets/button.dart';
 class SimpleMenuItem extends MenuItem {
   /// Create an instance.
   SimpleMenuItem(
-    final String label,
+    final String? label,
     final void Function() onActivate, {
     final AssetReference? selectSound,
     final AssetReference? activateSound,
