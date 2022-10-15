@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.51.0]
+
+### Added
+
+* Added the `UniformMenu` class.
+
 ## [0.50.2]
 
 ### Changed
