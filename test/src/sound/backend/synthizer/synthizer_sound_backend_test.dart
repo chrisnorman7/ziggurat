@@ -686,7 +686,7 @@ void main() {
               expect(sound.keepAlive, isTrue);
               expect(sound.looping, isTrue);
               expect(sound.pitchBend, 2.0);
-              expect(sound.position, greaterThan(0.05));
+              expect(sound.position, isNonZero);
               sound.destroy();
             },
           );

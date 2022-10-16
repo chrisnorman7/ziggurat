@@ -253,7 +253,7 @@ void main() {
       expect(game.currentLevel, isNull);
       game
         ..pushLevel(level1)
-        ..replaceLevel(level2, ambianceFadeTime: 2.0);
+        ..replaceLevel(level2, fadeOutTime: 2.0);
       expect(game.currentLevel, isNull);
       expect(game.tasks.length, equals(1));
       final runner = game.tasks.first;

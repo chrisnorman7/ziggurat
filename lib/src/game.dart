@@ -155,12 +155,19 @@ class Game {
       tasks.removeWhere((final element) => element.value == task);
 
   /// Push a level onto the stack.
-  void pushLevel(final Level level, {final int? after}) {
+  void pushLevel(
+    final Level level, {
+    final int? after,
+    final double? fadeLength,
+  }) {
     if (after != null) {
-      callAfter(func: () => pushLevel(level), runAfter: after);
+      callAfter(
+        func: () => pushLevel(level, fadeLength: fadeLength),
+        runAfter: after,
+      );
     } else {
       final cl = currentLevel;
-      level.onPush();
+      level.onPush(fadeLength: fadeLength);
       _levels.add(level);
       if (cl != null) {
         cl.onCover(level);
@@ -169,7 +176,9 @@ class Game {
   }
 
   /// Pop the most recent level.
-  Level? popLevel({final double? ambianceFadeTime}) {
+  Level? popLevel({
+    final double? ambianceFadeTime,
+  }) {
     if (_levels.isNotEmpty) {
       final oldLevel = _levels.removeLast()..onPop(ambianceFadeTime);
       final cl = currentLevel;
@@ -182,12 +191,16 @@ class Game {
   }
 
   /// Replace the current level with [level].
-  void replaceLevel(final Level level, {final double? ambianceFadeTime}) {
-    popLevel(ambianceFadeTime: ambianceFadeTime);
+  void replaceLevel(
+    final Level level, {
+    final double? fadeOutTime,
+    final double? fadeInTime,
+  }) {
+    popLevel(ambianceFadeTime: fadeOutTime);
     pushLevel(
       level,
-      after:
-          ambianceFadeTime == null ? null : (ambianceFadeTime * 1000).round(),
+      after: fadeOutTime == null ? null : (fadeOutTime * 1000).round(),
+      fadeLength: fadeInTime,
     );
   }
 
