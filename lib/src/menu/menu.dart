@@ -178,8 +178,8 @@ class Menu extends Level {
 
   /// Show the current item in this menu when it is pushed.
   @override
-  void onPush() {
-    super.onPush();
+  void onPush({final double? fadeLength}) {
+    super.onPush(fadeLength: fadeLength);
     showCurrentItem();
   }
 

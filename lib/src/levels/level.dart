@@ -84,17 +84,27 @@ class Level {
   /// should play again.
   final List<NextRun<RandomSound>> randomSoundNextPlays;
 
-  /// What should happen when this game is pushed into a level stack.
+  /// What should happen when this level is pushed into a level stack.
+  ///
+  /// If [fadeLength] is not `null`, then [music] and all [ambiances] will be
+  /// faded in.
   @mustCallSuper
-  void onPush() {
+  void onPush({final double? fadeLength}) {
     final sound = music;
     if (sound != null) {
       musicSound = game.musicSounds.playSound(
         assetReference: sound.sound,
-        gain: sound.gain,
+        gain: fadeLength == null ? sound.gain : 0.0,
         keepAlive: true,
         looping: true,
       );
+      if (fadeLength != null) {
+        musicSound!.fade(
+          length: fadeLength,
+          endGain: sound.gain,
+          startGain: 0.0,
+        );
+      }
     }
     for (final ambiance in ambiances) {
       final SoundChannel channel;
@@ -108,10 +118,17 @@ class Level {
       }
       final sound = channel.playSound(
         assetReference: ambiance.sound,
-        gain: ambiance.gain,
+        gain: fadeLength == null ? ambiance.gain : 0.0,
         keepAlive: true,
         looping: true,
       );
+      if (fadeLength != null) {
+        sound.fade(
+          length: fadeLength,
+          endGain: ambiance.gain,
+          startGain: 0.0,
+        );
+      }
       ambiancePlaybacks[ambiance] = SoundPlayback(channel, sound);
     }
     randomSounds.forEach(scheduleRandomSound);

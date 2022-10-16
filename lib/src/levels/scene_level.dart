@@ -78,8 +78,8 @@ class SceneLevel extends Level {
   Task? onDoneTask;
 
   @override
-  void onPush() {
-    super.onPush();
+  void onPush({final double? fadeLength}) {
+    super.onPush(fadeLength: fadeLength);
     _sound = game.outputMessage(
       message,
       soundChannel: soundChannel,

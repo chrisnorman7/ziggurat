@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.52.0]
+
+### Added
+
+* Level ambiance and music can now be faded with a `fadeLength` argument to `Level.onPush`.
+
 ## [0.51.0]
 
 ### Added

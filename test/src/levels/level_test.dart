@@ -28,8 +28,8 @@ class CustomLevel extends Level {
 
   /// This level was pushed.
   @override
-  void onPush() {
-    super.onPush();
+  void onPush({final double? fadeLength}) {
+    super.onPush(fadeLength: fadeLength);
     wasPushed = true;
   }
 

@@ -77,8 +77,8 @@ class DialogueLevel extends Level {
   }
 
   @override
-  void onPush() {
-    super.onPush();
+  void onPush({final double? fadeLength}) {
+    super.onPush(fadeLength: fadeLength);
     progress();
   }
 
