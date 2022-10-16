@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.53.0]
+
+### Added
+
+* Level fades in and out can now be controlled by arguments to the level methods on the `Game` class.
+
+### Changed
+
+* Because of the change to the way levels are pushed and popped, the signature of some of the level-related functions on the `Game` class have also undergone necessary changes.
+
 ## [0.52.1]
 
 ### Removed
