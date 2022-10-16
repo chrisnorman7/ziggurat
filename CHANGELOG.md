@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.52.1]
+
+### Removed
+
+* Stop shipping DLLs with the package.
+
 ## [0.52.0]
 
 ### Added
