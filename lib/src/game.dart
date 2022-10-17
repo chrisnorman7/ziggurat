@@ -502,7 +502,7 @@ class Game {
   }
 
   /// Set the default panner strategy.
-  set setDefaultPannerStrategy(final DefaultPannerStrategy strategy) =>
+  set defaultPannerStrategy(final DefaultPannerStrategy strategy) =>
       soundBackend.defaultPannerStrategy = strategy;
 
   /// Rumble on all [joysticks].

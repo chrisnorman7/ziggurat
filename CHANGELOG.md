@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.54.0]
+
+## Changed
+
+* Renamed `Game.setDefaultPannerStrategy` to `Game.defaultPannerStrategy`.
+
 ## [0.53.0]
 
 ### Added
