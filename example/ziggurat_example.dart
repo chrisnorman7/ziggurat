@@ -107,6 +107,7 @@ class MainMenu extends Menu {
             )
           ],
           onCancel: () => game.outputText('You cannot exit from this menu.'),
+          itemRumbleEffect: const RumbleEffect(duration: 100),
         );
 }
 

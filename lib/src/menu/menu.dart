@@ -5,6 +5,7 @@ import '../../sound.dart';
 import '../controller_axis_dispatcher.dart';
 import '../json/asset_reference.dart';
 import '../json/message.dart';
+import '../json/rumble_effect.dart';
 import '../levels/level.dart';
 import '../tasks/task.dart';
 import 'menu_item.dart';
@@ -80,6 +81,8 @@ class Menu extends Level {
     super.ambiances,
     super.randomSounds,
     super.commands,
+    this.titleRumbleEffect,
+    this.itemRumbleEffect,
   })  : menuItems = items ?? [],
         searchString = '',
         searchTime = 0 {
@@ -102,6 +105,12 @@ class Menu extends Level {
 
   /// The title of this menu.
   final Message title;
+
+  /// The rumble effect to use when showing the title.
+  final RumbleEffect? titleRumbleEffect;
+
+  /// The rumble effect to use when moving through the menu.
+  final RumbleEffect? itemRumbleEffect;
 
   /// The menu items contained by this menu.
   final List<MenuItem> menuItems;
@@ -171,8 +180,9 @@ class Menu extends Level {
         oldSound: oldSound,
         soundChannel: soundChannel,
       );
+      titleRumbleEffect?.dispatch(game);
     } else {
-      menuItems.elementAt(pos).onFocus(this);
+      menuItems[pos].onFocus(this);
     }
   }
 
@@ -234,6 +244,7 @@ class Menu extends Level {
     } else {
       position = pos - 1;
     }
+    itemRumbleEffect?.dispatch(game);
     showCurrentItem();
   }
 
@@ -250,6 +261,7 @@ class Menu extends Level {
       }
       position = pos + 1;
     }
+    itemRumbleEffect?.dispatch(game);
     showCurrentItem();
   }
 
