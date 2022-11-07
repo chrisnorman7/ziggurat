@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.55.0]
+
+### Added
+
+* Added the `RumbleEffect` class.
+* Added rumble effects to menus.
+
 ## [0.54.0]
 
 ## Changed
