@@ -41,6 +41,7 @@ export 'src/json/asset_store.dart';
 export 'src/json/axis_setting.dart';
 export 'src/json/command_trigger.dart';
 export 'src/json/message.dart';
+export 'src/json/rumble_effect.dart';
 export 'src/json/tile.dart';
 export 'src/json/tile_map.dart';
 export 'src/json/trigger_map.dart';
