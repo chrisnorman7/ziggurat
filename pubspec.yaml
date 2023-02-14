@@ -4,7 +4,7 @@ description: >
   A library for making fully-featured audio games using Dart and SDL.
 repository: https://github.com/chrisnorman7/ziggurat
 environment:
-  sdk: ">=2.18.0 <3.0.0"
+  sdk: ">=2.18.0 <4.0.0"
 
 dependencies:
   dart_sdl: ^0.10.0
