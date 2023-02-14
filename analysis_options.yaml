@@ -4,8 +4,6 @@ analyzer:
   exclude:
     - lib/src/json/**.g.dart
   strong-mode:
-    implicit-casts: false
-    implicit-dynamic: false
 
 linter:
   rules:
