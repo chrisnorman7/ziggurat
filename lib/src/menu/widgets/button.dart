@@ -63,7 +63,8 @@ class ListButton<T> extends Widget {
 class Checkbox extends ListButton<bool> {
   /// Create an instance.
   Checkbox(
-    final void Function(bool) onChange, {
+    // ignore: avoid_positional_boolean_parameters
+    final void Function(bool value) onChange, {
     final bool initialValue = true,
     this.checkedSound,
     this.uncheckedSound,
