@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.56.0]
+
+### Added
+
+* Added the `random` parameter to the constructor of the `Game` class.
+
+### Changed
+
+* Bump the max SDK constraint to 4.0.0.
+
 ## [0.55.0]
 
 ### Added
