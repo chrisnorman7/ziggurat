@@ -10,6 +10,10 @@
 
 * Use decryption methods for loading assets.
 
+### Fixed
+
+* Cleaned up code.
+
 ## [0.57.0]
 
 ### Added
