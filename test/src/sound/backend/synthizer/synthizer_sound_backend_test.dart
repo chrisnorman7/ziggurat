@@ -1252,10 +1252,11 @@ void main() {
               );
               expect(cache.size, equals(buffer1.size + buffer2.size));
               cache.destroy();
+              await Future<void>.delayed(const Duration(milliseconds: 100));
               expect(cache.size, isZero);
               final newBuffer1 = cache.getBuffer(assetReference);
               expect(cache.size, newBuffer1.size);
-              expect(newBuffer1.hashCode, isNot(buffer1.hashCode));
+              expect(newBuffer1, isNot(buffer1));
             },
           );
         },
