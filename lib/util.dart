@@ -1,15 +1,20 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:encrypt/encrypt.dart';
+
+/// Generate a secure encryption key.
+String generateEncryptionKey() => SecureRandom(32).base64;
 
 /// Encrypt the given [bytes] to the given [outputFile], and return the
 /// encryption key.
 String encryptBytes({
   required final List<int> bytes,
   required final File outputFile,
+  final String? encryptionKey,
 }) {
-  final encryptionKey = SecureRandom(32).base64;
-  final key = Key.fromBase64(encryptionKey);
+  final actualEncryptionKey = encryptionKey ?? generateEncryptionKey();
+  final key = Key.fromBase64(actualEncryptionKey);
   final iv = IV.fromLength(16);
   final encrypter = Encrypter(AES(key));
   final data = encrypter
@@ -19,7 +24,7 @@ String encryptBytes({
       )
       .bytes;
   outputFile.writeAsBytesSync(data);
-  return encryptionKey;
+  return actualEncryptionKey;
 }
 
 /// Encrypt the given [inputFile] into the given [outputFile], and return the
@@ -27,28 +32,26 @@ String encryptBytes({
 String encryptFile({
   required final File inputFile,
   required final File outputFile,
+  final String? encryptionKey,
 }) =>
-    encryptBytes(bytes: inputFile.readAsBytesSync(), outputFile: outputFile);
+    encryptBytes(
+      bytes: inputFile.readAsBytesSync(),
+      outputFile: outputFile,
+      encryptionKey: encryptionKey,
+    );
 
 /// Encrypt the given [string] to the given [outputFile], and return the
 /// encryption key.
 String encryptString({
   required final String string,
   required final File outputFile,
-}) {
-  final encryptionKey = SecureRandom(32).base64;
-  final key = Key.fromBase64(encryptionKey);
-  final iv = IV.fromLength(16);
-  final encrypter = Encrypter(AES(key));
-  final data = encrypter
-      .encrypt(
-        string,
-        iv: iv,
-      )
-      .bytes;
-  outputFile.writeAsBytesSync(data);
-  return encryptionKey;
-}
+  final String? encryptionKey,
+}) =>
+    encryptBytes(
+      bytes: utf8.encode(string),
+      outputFile: outputFile,
+      encryptionKey: encryptionKey,
+    );
 
 /// Decrypt and return the contents of the given [file], using the given
 /// [encryptionKey] as a string.

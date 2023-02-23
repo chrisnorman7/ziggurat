@@ -18,6 +18,13 @@ void main() {
       });
 
       test(
+        'generateEncryptionKey',
+        () {
+          expect(generateEncryptionKey(), isA<String>());
+        },
+      );
+
+      test(
         'encryptBytes',
         () {
           final bytes = inputFile.readAsBytesSync();
@@ -28,6 +35,15 @@ void main() {
           expect(
             outputFile.readAsBytesSync(),
             isNot(inputFile.readAsBytesSync()),
+          );
+          final encryptionKey = generateEncryptionKey();
+          expect(
+            encryptBytes(
+              bytes: inputFile.readAsBytesSync(),
+              outputFile: outputFile,
+              encryptionKey: encryptionKey,
+            ),
+            encryptionKey,
           );
         },
       );
@@ -42,6 +58,15 @@ void main() {
           expect(encryptionKey, isNotEmpty);
           final contents = outputFile.readAsBytesSync();
           expect(contents, isNot(inputFile.readAsBytesSync()));
+          final generatedEncryptionKey = generateEncryptionKey();
+          expect(
+            encryptFile(
+              inputFile: inputFile,
+              outputFile: outputFile,
+              encryptionKey: generatedEncryptionKey,
+            ),
+            generatedEncryptionKey,
+          );
         },
       );
 
@@ -56,6 +81,15 @@ void main() {
           expect(
             decryptFileString(file: outputFile, encryptionKey: encryptionKey),
             string,
+          );
+          final generatedEncryptionKey = generateEncryptionKey();
+          expect(
+            encryptString(
+              string: inputFile.readAsStringSync(),
+              outputFile: outputFile,
+              encryptionKey: generatedEncryptionKey,
+            ),
+            generatedEncryptionKey,
           );
         },
       );
