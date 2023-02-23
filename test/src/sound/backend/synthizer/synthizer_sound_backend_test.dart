@@ -1255,7 +1255,7 @@ void main() {
               expect(cache.size, isZero);
               final newBuffer1 = cache.getBuffer(assetReference);
               expect(cache.size, newBuffer1.size);
-              expect(newBuffer1, isNot(buffer1));
+              expect(newBuffer1.hashCode, isNot(buffer1.hashCode));
             },
           );
         },
