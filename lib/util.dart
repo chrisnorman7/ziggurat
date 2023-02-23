@@ -23,8 +23,8 @@ String encryptFile({
 }
 
 /// Decrypt and return the contents of the given [file], using the given
-/// [encryptionKey].
-String decryptFile({
+/// [encryptionKey] as a string.
+String decryptFileString({
   required final File file,
   required final String encryptionKey,
 }) {
@@ -32,4 +32,16 @@ String decryptFile({
   final iv = IV.fromLength(16);
   final encrypted = Encrypted(file.readAsBytesSync());
   return encrypter.decrypt(encrypted, iv: iv);
+}
+
+/// Decrypt and return the contents of the given [file], using the given
+/// [encryptionKey] as a list of bytes.
+List<int> decryptFileBytes({
+  required final File file,
+  required final String encryptionKey,
+}) {
+  final encrypter = Encrypter(AES(Key.fromBase64(encryptionKey)));
+  final iv = IV.fromLength(16);
+  final encrypted = Encrypted(file.readAsBytesSync());
+  return encrypter.decryptBytes(encrypted, iv: iv);
 }

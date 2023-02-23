@@ -11,16 +11,48 @@ void main() {
       final inputFile = File(path.join('lib', 'ziggurat.dart'));
       final outputFile = File('ziggurat.encrypted');
 
+      tearDown(() {
+        if (outputFile.existsSync()) {
+          outputFile.deleteSync(recursive: true);
+        }
+      });
+
       test(
         'encryptFile',
         () {
-          final encryptionKey =
-              encryptFile(inputFile: inputFile, outputFile: outputFile);
+          final encryptionKey = encryptFile(
+            inputFile: inputFile,
+            outputFile: outputFile,
+          );
           expect(encryptionKey, isNotEmpty);
-          final contents =
-              decryptFile(file: outputFile, encryptionKey: encryptionKey);
-          expect(contents, inputFile.readAsStringSync());
-          outputFile.deleteSync(recursive: true);
+          final contents = outputFile.readAsBytesSync();
+          expect(contents, isNot(inputFile.readAsBytesSync()));
+        },
+      );
+
+      test(
+        'decryptFileString',
+        () {
+          final encryptionKey = encryptFile(
+            inputFile: inputFile,
+            outputFile: outputFile,
+          );
+          final string =
+              decryptFileString(file: outputFile, encryptionKey: encryptionKey);
+          expect(string, inputFile.readAsStringSync());
+        },
+      );
+
+      test(
+        'decryptFileBytes',
+        () {
+          final encryptionKey = encryptFile(
+            inputFile: inputFile,
+            outputFile: outputFile,
+          );
+          final bytes =
+              decryptFileBytes(file: outputFile, encryptionKey: encryptionKey);
+          expect(bytes, inputFile.readAsBytesSync());
         },
       );
     },
