@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.58.0]
+
+### Added
+
+* Added more encryption functions.
+
+### Changed
+
+* Use decryption methods for loading assets.
+
 ## [0.57.0]
 
 ### Added
