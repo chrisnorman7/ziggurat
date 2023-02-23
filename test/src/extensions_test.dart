@@ -29,10 +29,7 @@ void main() {
     test('.randomFile', () {
       final directory = Directory('test');
       expect(
-        [
-          for (final entity in directory.listSync())
-            if (entity is File) entity.path
-        ],
+        directory.listSync().whereType<File>().map<String>((final e) => e.path),
         contains(directory.randomFile(random).path),
       );
     });
