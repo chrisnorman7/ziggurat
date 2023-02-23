@@ -2,8 +2,8 @@
 import 'dart:math';
 
 import 'package:dart_synthizer/dart_synthizer.dart';
-import 'package:encrypt/encrypt.dart';
 
+import '../../../../util.dart';
 import '../../../error.dart';
 import '../../../json/asset_reference.dart';
 
@@ -57,10 +57,7 @@ class BufferCache {
       if (encryptionKey == null) {
         buffer = Buffer.fromFile(synthizer, file);
       } else {
-        final encrypter = Encrypter(AES(Key.fromBase64(encryptionKey)));
-        final iv = IV.fromLength(16);
-        final encrypted = Encrypted(file.readAsBytesSync());
-        final data = encrypter.decryptBytes(encrypted, iv: iv);
+        final data = decryptFileBytes(file: file, encryptionKey: encryptionKey);
         buffer = Buffer.fromBytes(synthizer, data);
       }
       _size += buffer.size;
