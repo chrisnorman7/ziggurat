@@ -58,10 +58,7 @@ extension DirectoryMethods on Directory {
   ///
   /// If this entity is already a file, it will be returned.
   File randomFile(final Random random) {
-    final files = <File>[
-      for (final file in listSync())
-        if (file is File) file
-    ];
+    final files = listSync().whereType<File>().toList();
     if (files.isEmpty) {
       throw NoFilesError(this);
     }
