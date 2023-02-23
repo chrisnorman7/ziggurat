@@ -37,6 +37,7 @@ export 'src/error.dart';
 export 'src/extensions.dart';
 export 'src/game.dart';
 export 'src/json/asset_reference.dart';
+export 'src/json/asset_reference_reference.dart';
 export 'src/json/asset_store.dart';
 export 'src/json/axis_setting.dart';
 export 'src/json/command_trigger.dart';
