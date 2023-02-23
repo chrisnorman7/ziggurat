@@ -11,7 +11,7 @@ dependencies:
   dart_synthizer: ^0.11.1
   encrypt: ^5.0.1
   file: ^6.1.4
-  json_annotation: ^4.7.0
+  json_annotation: ^4.8.0
   meta: ^1.8.0
   path: ^1.8.2
 
