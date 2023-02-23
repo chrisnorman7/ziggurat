@@ -6,6 +6,7 @@ import 'package:encrypt/encrypt.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:path/path.dart' as path;
 
+import '../../util.dart';
 import 'asset_reference.dart';
 import 'asset_reference_reference.dart';
 import 'common.dart';
@@ -104,16 +105,14 @@ class AssetStore with DumpLoadMixin {
       d.createSync();
     }
     final fname = getNextFilename(suffix: '.encrypted', relativeTo: relativeTo);
-    final encryptionKey = SecureRandom(32).base64;
-    final key = Key.fromBase64(encryptionKey);
-    final iv = IV.fromLength(16);
-    final encrypter = Encrypter(AES(key));
-    final data = encrypter.encryptBytes(source.readAsBytesSync(), iv: iv).bytes;
     var filename = fname;
     if (relativeTo != null) {
       filename = path.join(relativeTo.path, filename);
     }
-    File(filename).writeAsBytesSync(data);
+    final encryptionKey = encryptFile(
+      inputFile: source,
+      outputFile: File(filename),
+    );
     final reference = AssetReference.file(fname, encryptionKey: encryptionKey);
     final assetReferenceReference = AssetReferenceReference(
       variableName: variableName,

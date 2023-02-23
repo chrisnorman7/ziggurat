@@ -2,10 +2,10 @@ import 'dart:io';
 
 import 'package:encrypt/encrypt.dart';
 
-/// Encrypt the given [inputFile] into the given [outputFile], and return the
+/// Encrypt the given [bytes] to the given [outputFile], and return the
 /// encryption key.
-String encryptFile({
-  required final File inputFile,
+String encryptBytes({
+  required final List<int> bytes,
   required final File outputFile,
 }) {
   final encryptionKey = SecureRandom(32).base64;
@@ -14,7 +14,35 @@ String encryptFile({
   final encrypter = Encrypter(AES(key));
   final data = encrypter
       .encryptBytes(
-        inputFile.readAsBytesSync(),
+        bytes,
+        iv: iv,
+      )
+      .bytes;
+  outputFile.writeAsBytesSync(data);
+  return encryptionKey;
+}
+
+/// Encrypt the given [inputFile] into the given [outputFile], and return the
+/// encryption key.
+String encryptFile({
+  required final File inputFile,
+  required final File outputFile,
+}) =>
+    encryptBytes(bytes: inputFile.readAsBytesSync(), outputFile: outputFile);
+
+/// Encrypt the given [string] to the given [outputFile], and return the
+/// encryption key.
+String encryptString({
+  required final String string,
+  required final File outputFile,
+}) {
+  final encryptionKey = SecureRandom(32).base64;
+  final key = Key.fromBase64(encryptionKey);
+  final iv = IV.fromLength(16);
+  final encrypter = Encrypter(AES(key));
+  final data = encrypter
+      .encrypt(
+        string,
         iv: iv,
       )
       .bytes;

@@ -18,6 +18,21 @@ void main() {
       });
 
       test(
+        'encryptBytes',
+        () {
+          final bytes = inputFile.readAsBytesSync();
+          encryptBytes(
+            bytes: bytes,
+            outputFile: outputFile,
+          );
+          expect(
+            outputFile.readAsBytesSync(),
+            isNot(inputFile.readAsBytesSync()),
+          );
+        },
+      );
+
+      test(
         'encryptFile',
         () {
           final encryptionKey = encryptFile(
@@ -27,6 +42,21 @@ void main() {
           expect(encryptionKey, isNotEmpty);
           final contents = outputFile.readAsBytesSync();
           expect(contents, isNot(inputFile.readAsBytesSync()));
+        },
+      );
+
+      test(
+        'encryptString',
+        () {
+          final string = inputFile.readAsStringSync();
+          final encryptionKey = encryptString(
+            string: string,
+            outputFile: outputFile,
+          );
+          expect(
+            decryptFileString(file: outputFile, encryptionKey: encryptionKey),
+            string,
+          );
         },
       );
 
