@@ -1,11 +1,14 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:path/path.dart' as path;
 import 'package:test/test.dart';
+import 'package:ziggurat/util.dart';
 import 'package:ziggurat/ziggurat.dart';
 
 void main() {
+  final random = Random();
   group(
     'AssetStore',
     () {
@@ -129,8 +132,62 @@ void main() {
           final assetReferenceReference = realAssetStore.importFile(
             source: sdlFile,
             variableName: 'sdl',
+            comment: 'SDL file.',
           );
+          expect(assetReferenceReference.comment, 'SDL file.');
+          expect(assetReferenceReference.reference.encryptionKey, isNotNull);
+          expect(assetReferenceReference.reference.gain, 0.7);
+          expect(
+            assetReferenceReference.reference.name,
+            '${realAssetStore.destination}/0.encrypted',
+          );
+          expect(assetReferenceReference.reference.type, AssetType.file);
           expect(realAssetStore.assets, contains(assetReferenceReference));
+          expect(
+            assetReferenceReference.reference.load(random),
+            sdlFile.readAsBytesSync(),
+          );
+        },
+      );
+
+      test(
+        '.importDirectory',
+        () {
+          realAssetStore.assets.clear();
+          final directory = Directory('test');
+          final assetReferenceReference = realAssetStore.importDirectory(
+            source: directory,
+            variableName: 'test',
+            comment: 'Test directory.',
+          );
+          expect(assetReferenceReference.comment, 'Test directory.');
+          expect(assetReferenceReference.reference.encryptionKey, isNotNull);
+          expect(assetReferenceReference.reference.gain, 0.7);
+          expect(
+            assetReferenceReference.reference.name,
+            '${realAssetStore.destination}/0',
+          );
+          expect(assetReferenceReference.reference.type, AssetType.collection);
+          expect(realAssetStore.assets, contains(assetReferenceReference));
+          final files = directory.listSync().whereType<File>().toList();
+          final importedDirectory = Directory(
+            assetReferenceReference.reference.name,
+          );
+          final importedEntities = importedDirectory.listSync();
+          expect(importedEntities.length, files.length);
+          final importedFiles = importedEntities.whereType<File>().toList();
+          expect(importedFiles.length, files.length);
+          for (var i = 0; i < files.length; i++) {
+            final originalFile = files[i];
+            final importedFile = importedFiles[i];
+            expect(
+              decryptFileBytes(
+                file: importedFile,
+                encryptionKey: assetReferenceReference.reference.encryptionKey!,
+              ),
+              originalFile.readAsBytesSync(),
+            );
+          }
         },
       );
     },
