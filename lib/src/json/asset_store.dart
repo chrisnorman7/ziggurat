@@ -2,7 +2,6 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:encrypt/encrypt.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:path/path.dart' as path;
 
@@ -151,15 +150,14 @@ class AssetStore with DumpLoadMixin {
       absoluteDirectoryName = path.join(relativeTo.path, absoluteDirectoryName);
     }
     Directory(absoluteDirectoryName).createSync();
-    final encryptionKey = SecureRandom(32).base64;
-    final key = Key.fromBase64(encryptionKey);
-    final iv = IV.fromLength(16);
-    final encrypter = Encrypter(AES(key));
+    final encryptionKey = generateEncryptionKey();
     for (final entity in source.listSync().whereType<File>()) {
       final filename = '${path.basename(entity.path)}.encrypted';
-      final data =
-          encrypter.encryptBytes(entity.readAsBytesSync(), iv: iv).bytes;
-      File(path.join(absoluteDirectoryName, filename)).writeAsBytesSync(data);
+      encryptFile(
+        inputFile: entity,
+        outputFile: File(path.join(absoluteDirectoryName, filename)),
+        encryptionKey: encryptionKey,
+      );
     }
     final reference = AssetReference.collection(
       directoryName,

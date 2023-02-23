@@ -2,9 +2,9 @@
 import 'dart:io';
 import 'dart:math';
 
-import 'package:encrypt/encrypt.dart';
 import 'package:json_annotation/json_annotation.dart';
 
+import '../../util.dart';
 import '../extensions.dart';
 
 part 'asset_reference.g.dart';
@@ -87,10 +87,7 @@ class AssetReference {
     if (key == null) {
       return file.readAsBytesSync();
     } else {
-      final encrypter = Encrypter(AES(Key.fromBase64(key)));
-      final iv = IV.fromLength(16);
-      final encrypted = Encrypted(file.readAsBytesSync());
-      return encrypter.decryptBytes(encrypted, iv: iv);
+      return decryptFileBytes(file: file, encryptionKey: key);
     }
   }
 
