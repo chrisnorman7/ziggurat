@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.57.0]
+
+### Added
+
+* Added encryption utility functions.
+
 ## [0.56.0]
 
 ### Added
