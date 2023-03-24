@@ -409,7 +409,7 @@ class Game {
   /// will be set to [interfaceSounds], and [Sound.keepAlive] will be `false`.
   Sound playSimpleSound({
     required final AssetReference sound,
-    final double gain = 0.7,
+    final double? gain,
     final SoundPosition position = unpanned,
     final bool looping = false,
     final double pitchBend = 1.0,
@@ -422,7 +422,7 @@ class Game {
     }
     return channel.playSound(
       assetReference: sound,
-      gain: gain,
+      gain: gain ?? sound.gain,
       keepAlive: position != unpanned,
       looping: looping,
       pitchBend: pitchBend,
@@ -436,7 +436,7 @@ class Game {
     required final AssetReference? sound,
     final SoundChannel? soundChannel,
     final Sound? oldSound,
-    final double gain = 0.7,
+    final double? gain,
     final bool keepAlive = false,
     final bool looping = false,
     final double pitchBend = 1.0,

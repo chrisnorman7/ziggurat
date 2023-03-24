@@ -78,13 +78,13 @@ class SilentSoundChannel implements SoundChannel {
   SilentSound playSound({
     required final AssetReference assetReference,
     final bool keepAlive = false,
-    final double gain = 0.7,
+    final double? gain,
     final bool looping = false,
     final double pitchBend = 1.0,
   }) =>
       SilentSound(
         channel: this,
-        gain: gain,
+        gain: gain ?? assetReference.gain,
         keepAlive: keepAlive,
         looping: looping,
         pitchBend: pitchBend,

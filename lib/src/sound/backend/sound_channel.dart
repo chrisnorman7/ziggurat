@@ -73,7 +73,7 @@ abstract class SoundChannel {
   Sound playSound({
     required final AssetReference assetReference,
     final bool keepAlive = false,
-    final double gain = 0.7,
+    final double? gain,
     final bool looping = false,
     final double pitchBend = 1.0,
   });

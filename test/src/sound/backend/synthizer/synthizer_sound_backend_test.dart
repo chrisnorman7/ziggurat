@@ -10,7 +10,7 @@ import 'package:ziggurat/wave_types.dart';
 import 'package:ziggurat/ziggurat.dart';
 
 /// The asset to use for testing.
-const assetReference = AssetReference.file('sound.wav');
+const assetReference = AssetReference.file('sound.wav', gain: 0.5);
 
 /// A silent asset reference.
 const silence = AssetReference.file('silence.wav');
@@ -673,7 +673,6 @@ void main() {
               expect(sound.destroy, throwsStateError);
               sound = channel.playSound(
                 assetReference: assetReference,
-                gain: 0.5,
                 keepAlive: true,
                 looping: true,
                 pitchBend: 2.0,
@@ -686,6 +685,22 @@ void main() {
               expect(sound.keepAlive, isTrue);
               expect(sound.looping, isTrue);
               expect(sound.pitchBend, 2.0);
+              expect(sound.position, isNonZero);
+              sound.destroy();
+              sound = channel.playSound(
+                assetReference: assetReference,
+                gain: 0.8,
+                keepAlive: true,
+                pitchBend: 1.5,
+              );
+              await Future<void>.delayed(const Duration(milliseconds: 100));
+              expect(sound.backend, backend);
+              expect(sound.channel, channel);
+              expect(sound.gain, 0.8);
+              expect(sound.generator, isA<BufferGenerator>());
+              expect(sound.keepAlive, isTrue);
+              expect(sound.looping, isFalse);
+              expect(sound.pitchBend, 1.5);
               expect(sound.position, isNonZero);
               sound.destroy();
             },
@@ -1081,7 +1096,7 @@ void main() {
                 keepAlive: true,
               );
               await Future<void>.delayed(const Duration(milliseconds: 100));
-              expect(sound.gain, 0.7);
+              expect(sound.gain, assetReference.gain);
               sound.gain = 1.0;
               await Future<void>.delayed(const Duration(milliseconds: 100));
               expect(sound.gain, 1.0);

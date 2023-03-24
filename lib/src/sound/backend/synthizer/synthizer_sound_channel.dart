@@ -312,13 +312,13 @@ class SynthizerSoundChannel implements SoundChannel {
   SynthizerSound playSound({
     required final AssetReference assetReference,
     final bool keepAlive = false,
-    final double gain = 0.7,
+    final double? gain,
     final bool looping = false,
     final double pitchBend = 1.0,
   }) {
     final buffer = backend.bufferCache.getBuffer(assetReference);
     final generator = context.createBufferGenerator()
-      ..gain.value = gain
+      ..gain.value = gain ?? assetReference.gain
       ..looping.value = looping
       ..pitchBend.value = pitchBend
       ..buffer.value = buffer;
