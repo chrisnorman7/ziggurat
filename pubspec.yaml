@@ -1,5 +1,5 @@
 name: ziggurat
-version: 0.58.0
+version: 0.59.0
 description: >
   A library for making fully-featured audio games using Dart and SDL.
 repository: https://github.com/chrisnorman7/ziggurat
@@ -7,17 +7,15 @@ environment:
   sdk: ">=2.18.0 <4.0.0"
 
 dependencies:
-  dart_sdl: ^0.10.0
-  dart_synthizer: ^0.11.1
+  dart_sdl: ^0.10.1
+  dart_synthizer: ^0.11.2
   encrypt: ^5.0.1
-  file: ^6.1.4
   json_annotation: ^4.8.0
-  meta: ^1.8.0
-  path: ^1.8.2
+  meta: ^1.9.1
+  path: ^1.8.3
 
 dev_dependencies:
-  build_runner: ^2.3.2
-  build_test: ^2.1.5
-  json_serializable: ^6.5.4
+  build_runner: ^2.3.3
+  json_serializable: ^6.6.1
   lints: ^2.0.1
-  test: ^1.22.0
+  test: ^1.24.0
