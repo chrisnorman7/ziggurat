@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.59.0]
+
+### Changed
+
+* Use asset reference gains.
+* Update dependencies.
+
 ## [0.58.0]
 
 ### Added
