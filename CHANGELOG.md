@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.59.1]
+
+### Changed
+
+* Downgraded `meta`.
+
 ## [0.59.0]
 
 ### Changed
