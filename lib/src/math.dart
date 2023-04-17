@@ -1,7 +1,5 @@
 import 'dart:math';
 
-/// Provides various maths functions.
-
 /// Return an angle between 0 and 359 degrees.
 double normaliseAngle(final double angle) {
   if (angle < 0) {
