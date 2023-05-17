@@ -3,7 +3,11 @@
 /// Defaults for a setting..
 class SettingDefaults<T extends num> {
   /// Create an instance.
-  const SettingDefaults(this.defaultValue, this.min, this.max);
+  const SettingDefaults({
+    required this.defaultValue,
+    required this.min,
+    required this.max,
+  });
 
   /// The default value.
   final T defaultValue;
