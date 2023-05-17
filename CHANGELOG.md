@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.60.0]
+
+### Changed
+
+* Simplified sounds and menus.
+
 ## [0.59.1]
 
 ### Changed
