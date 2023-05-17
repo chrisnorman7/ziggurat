@@ -1,8 +1,6 @@
 /// Provides the [Task] class.
+import '../../constants.dart';
 import '../../levels.dart';
-
-/// The signature for task functions.
-typedef TaskFunction = void Function();
 
 /// A task which runs once on or after [runAfter].
 class Task {

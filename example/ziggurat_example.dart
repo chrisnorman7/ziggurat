@@ -99,11 +99,13 @@ class MainMenu extends Menu {
           items: [
             MenuItem(
               const Message(text: 'Play'),
-              Button(() => game.replaceLevel(ExcitingLevel(game))),
+              activator: MenuItemActivator(
+                onActivate: () => game.replaceLevel(ExcitingLevel(game)),
+              ),
             ),
             MenuItem(
               const Message(text: 'Quit'),
-              Button(game.stop),
+              activator: MenuItemActivator(onActivate: game.stop),
             )
           ],
           onCancel: () => game.outputText('You cannot exit from this menu.'),

@@ -1,16 +1,13 @@
 /// Provides the [Menu] class.
 import 'package:dart_sdl/dart_sdl.dart';
 
+import '../../constants.dart';
 import '../../sound.dart';
 import '../controller_axis_dispatcher.dart';
-import '../json/asset_reference.dart';
 import '../json/message.dart';
 import '../json/rumble_effect.dart';
 import '../levels/level.dart';
-import '../tasks/task.dart';
 import 'menu_item.dart';
-import 'widgets/button.dart';
-import 'widgets/label.dart';
 
 /// A menu.
 ///
@@ -29,8 +26,8 @@ class Menu extends Level {
   /// the menu item at the given position (starting at 0) in the [menuItems]
   /// list will be selected.
   ///
-  /// You can either specify a list of menu items as the [items] argument, or
-  /// use the provided [addButton], and [addLabel] methods afterwards.
+  /// You can either specify a list of [MenuItems as the [items] argument, or
+  /// override the [menuItems] property.
   ///
   /// Please note: Whether or not you provide an [items] list, you can still
   /// pass a [position] value, as this only affects the [currentMenuItem]
@@ -208,22 +205,22 @@ class Menu extends Level {
 
   /// Activate the currently-focused menu item.
   void activate() {
-    final item = currentMenuItem;
-    final widget = item?.widget;
-    if (item == null || widget == null) {
-      return;
-    } else {
-      widget.activate(this);
+    final activator = currentMenuItem?.activator;
+    if (activator != null) {
+      activator.onActivate();
+      final sound = activator.sound;
+      if (sound != null) {
+        oldSound = game.outputSound(
+          sound: sound,
+          keepAlive: true,
+          soundChannel: soundChannel,
+        );
+      }
     }
   }
 
   /// What happens when this menu is cancelled.
-  void cancel() {
-    final f = onCancel;
-    if (f != null) {
-      f();
-    }
-  }
+  void cancel() => onCancel?.call();
 
   /// Get the currently focussed menu item.
   MenuItem? get currentMenuItem {
@@ -263,29 +260,6 @@ class Menu extends Level {
     }
     itemRumbleEffect?.dispatch(game);
     showCurrentItem();
-  }
-
-  /// Add a button to this menu.
-  MenuItem addButton(
-    final TaskFunction onActivate, {
-    final String? label,
-    final AssetReference? selectSound,
-    final AssetReference? activateSound,
-  }) {
-    final item = MenuItem(
-      Message(sound: selectSound, text: label),
-      Button(onActivate, activateSound: activateSound),
-    );
-    menuItems.add(item);
-    return item;
-  }
-
-  /// Add a label.
-  MenuItem addLabel({final String? text, final AssetReference? selectSound}) {
-    final item =
-        MenuItem(Message(sound: selectSound, text: text), menuItemLabel);
-    menuItems.add(item);
-    return item;
   }
 
   /// Handle SDL events.
