@@ -102,4 +102,15 @@ class AssetReference {
     }
     return Directory(name).randomFile(random);
   }
+
+  /// Return a copy of this object with a new [gain] value.
+  AssetReference copy(final double gain) => AssetReference(
+        name,
+        type,
+        encryptionKey: encryptionKey,
+        gain: gain,
+      );
+
+  /// Return a version of this [AssetReference] with [gain] set to `0.0`.
+  AssetReference silent() => copy(0.0);
 }

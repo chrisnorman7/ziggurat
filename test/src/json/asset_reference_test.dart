@@ -78,10 +78,66 @@ void main() {
       expect(sound.name, equals('test.wav'));
       expect(sound.type, equals(AssetType.file));
     });
-    test('.collection', () {
-      const sound = AssetReference.collection('testing');
-      expect(sound.name, equals('testing'));
-      expect(sound.type, equals(AssetType.collection));
-    });
+    test(
+      '.collection',
+      () {
+        const sound = AssetReference.collection('testing');
+        expect(sound.name, equals('testing'));
+        expect(sound.type, equals(AssetType.collection));
+      },
+    );
+    test(
+      '.copy',
+      () {
+        const file = AssetReference(
+          'test',
+          AssetType.file,
+          encryptionKey: 'asdf123',
+        );
+        expect(file.gain, 0.7);
+        final copyFile = file.copy(1.0);
+        expect(copyFile.encryptionKey, file.encryptionKey);
+        expect(copyFile.gain, 1.0);
+        expect(copyFile.name, file.name);
+        expect(copyFile.type, file.type);
+        const directory = AssetReference(
+          'directory',
+          AssetType.collection,
+          encryptionKey: 'proper secure',
+          gain: 2.0,
+        );
+        expect(directory.gain, 2.0);
+        final copyDirectory = directory.copy(0.5);
+        expect(copyDirectory.encryptionKey, directory.encryptionKey);
+        expect(copyDirectory.gain, 0.5);
+        expect(copyDirectory.name, directory.name);
+        expect(copyDirectory.type, directory.type);
+      },
+    );
+    test(
+      '.silent',
+      () {
+        const file = AssetReference.file(
+          'sound.mp3',
+          encryptionKey: 'asdf123',
+          gain: 1.0,
+        );
+        final silentFile = file.silent();
+        expect(silentFile.encryptionKey, file.encryptionKey);
+        expect(silentFile.gain, 0.0);
+        expect(silentFile.name, file.name);
+        expect(silentFile.type, file.type);
+        const directory = AssetReference.collection(
+          'footsteps',
+          encryptionKey: 'lovely thing',
+          gain: 0.25,
+        );
+        final silentDirectory = directory.silent();
+        expect(silentDirectory.encryptionKey, directory.encryptionKey);
+        expect(silentDirectory.gain, 0.0);
+        expect(silentDirectory.name, directory.name);
+        expect(silentDirectory.type, directory.type);
+      },
+    );
   });
 }

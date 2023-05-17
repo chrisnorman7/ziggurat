@@ -12,7 +12,6 @@ class Message {
   const Message({
     this.text,
     this.sound,
-    this.gain = 0.7,
     this.keepAlive = false,
   });
 
@@ -25,9 +24,6 @@ class Message {
 
   /// The sound which should be played.
   final AssetReference? sound;
-
-  /// The gain to play [sound] at.
-  final double gain;
 
   /// Whether or not [sound] should be kept alive after playing.
   final bool keepAlive;

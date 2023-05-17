@@ -1,11 +1,11 @@
+import 'dart:math';
+
 import 'package:dart_sdl/dart_sdl.dart';
 import 'package:meta/meta.dart';
 
 import '../../sound.dart';
-import '../command.dart';
-import '../game.dart';
+import '../../ziggurat.dart';
 import '../json/level_stub.dart';
-import '../next_run.dart';
 
 /// The top-level level class.
 ///
@@ -46,6 +46,9 @@ class Level {
   /// The game this level is part of.
   final Game game;
 
+  /// The [game]'s random sound generator.
+  Random get random => game.random;
+
   /// The commands this level recognises.
   final Map<String, Command> commands;
 
@@ -59,7 +62,7 @@ class Level {
   final List<NextRun<Command>> stoppedCommands;
 
   /// The music for this level.
-  final Music? music;
+  final AssetReference? music;
 
   /// The playing [music].
   Sound? musicSound;
@@ -93,8 +96,7 @@ class Level {
     final sound = music;
     if (sound != null) {
       musicSound = game.musicSounds.playSound(
-        assetReference: sound.sound,
-        gain: fadeLength == null ? sound.gain : 0.0,
+        assetReference: fadeLength == null ? sound : sound.silent(),
         keepAlive: true,
         looping: true,
       );
@@ -116,17 +118,18 @@ class Level {
           position: SoundPosition3d(x: position.x, y: position.y),
         );
       }
+      final assetReference = ambiance.sound;
       final sound = channel.playSound(
-        assetReference: ambiance.sound,
-        gain: fadeLength == null ? ambiance.gain : 0.0,
+        assetReference:
+            fadeLength == null ? assetReference : assetReference.silent(),
         keepAlive: true,
         looping: true,
       );
       if (fadeLength != null) {
         sound.fade(
           length: fadeLength,
-          endGain: ambiance.gain,
           startGain: 0.0,
+          endGain: assetReference.gain,
         );
       }
       ambiancePlaybacks[ambiance] = SoundPlayback(channel, sound);
@@ -222,7 +225,7 @@ class Level {
     if (sound.minInterval == sound.maxInterval) {
       offset = 0;
     } else {
-      offset = game.random.nextInt(sound.maxInterval - sound.minInterval);
+      offset = random.nextInt(sound.maxInterval - sound.minInterval);
     }
     getRandomSoundNextPlay(sound).runAfter = sound.minInterval + offset;
   }
@@ -352,8 +355,8 @@ class Level {
         final maxY = sound.maxCoordinates.y;
         final xDifference = maxX - minX;
         final yDifference = maxY - minY;
-        final x = minX + (xDifference * game.random.nextDouble());
-        final y = minY + (yDifference * game.random.nextDouble());
+        final x = minX + (xDifference * random.nextDouble());
+        final y = minY + (yDifference * random.nextDouble());
         final position = SoundPosition3d(x: x, y: y);
         if (c == null) {
           c = game.createSoundChannel(position: position);
@@ -363,13 +366,13 @@ class Level {
         randomSoundPlaybacks[sound] = SoundPlayback(
           c,
           c.playSound(
-            assetReference: sound.sound,
+            assetReference: sound.sound.copy(
+              sound.minGain == sound.maxGain
+                  ? sound.minGain
+                  : sound.minGain +
+                      ((sound.maxGain - sound.minGain) * random.nextDouble()),
+            ),
             keepAlive: true,
-            gain: sound.minGain == sound.maxGain
-                ? sound.minGain
-                : (sound.minGain +
-                    ((sound.maxGain - sound.minGain) *
-                        game.random.nextDouble())),
           ),
         );
         scheduleRandomSound(sound);

@@ -212,12 +212,13 @@ void main() {
         soundBackend: SilentSoundBackend(),
       );
       const ambiance1 = Ambiance(
-        sound: AssetReference.file('sound1'),
-        gain: 0.1,
+        sound: AssetReference.file('sound1', gain: 0.1),
       );
       const ambiance2 = Ambiance(
-        sound: AssetReference.collection('sound2'),
-        gain: 0.2,
+        sound: AssetReference.collection(
+          'sound2',
+          gain: 0.2,
+        ),
         position: Point(5.0, 6.0),
       );
       final level = Level(game: game, ambiances: [ambiance1, ambiance2]);
@@ -232,7 +233,7 @@ void main() {
           (final value) =>
               value is Sound &&
               value.channel == game.ambianceSounds &&
-              value.gain == ambiance1.gain &&
+              value.gain == ambiance1.sound.gain &&
               value.keepAlive == true,
         ),
       );
@@ -253,7 +254,7 @@ void main() {
           (final value) =>
               value is Sound &&
               value.channel == ambiance2Channel &&
-              value.gain == ambiance2.gain &&
+              value.gain == ambiance2.sound.gain &&
               value.keepAlive == true,
         ),
       );
@@ -264,8 +265,8 @@ void main() {
         sdl: sdl,
         soundBackend: SilentSoundBackend(),
       );
-      const music = Music(
-        sound: AssetReference.file('music.mp3'),
+      const music = AssetReference.file(
+        'music.mp3',
         gain: 1.0,
       );
       final level = Level(

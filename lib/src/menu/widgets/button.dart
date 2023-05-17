@@ -50,7 +50,6 @@ class ListButton<T> extends Widget {
     final label = menuItem.label;
     return Message(
       text: '${label.text} ($value)',
-      gain: label.gain,
       keepAlive: label.keepAlive,
       sound: label.sound,
     );
@@ -98,7 +97,6 @@ class Checkbox extends ListButton<bool> {
     sound ??= label.sound;
     return Message(
       text: '${label.text} (${value == true ? "checked" : "unchecked"})',
-      gain: label.gain,
       keepAlive: label.keepAlive,
       sound: sound,
     );

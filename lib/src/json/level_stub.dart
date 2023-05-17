@@ -1,8 +1,8 @@
 /// Provides the [LevelStub] class.
 import 'package:json_annotation/json_annotation.dart';
 
+import '../../ziggurat.dart';
 import 'ambiance.dart';
-import 'music.dart';
 import 'random_sound.dart';
 
 part 'level_stub.g.dart';
@@ -26,7 +26,7 @@ class LevelStub {
       _$LevelStubFromJson(json);
 
   /// The music for this stub.
-  final Music? music;
+  final AssetReference? music;
 
   /// The ambiances for this stub.
   final List<Ambiance> ambiances;

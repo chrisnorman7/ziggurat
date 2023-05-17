@@ -1301,8 +1301,7 @@ void main() {
               expect(() => sound.position, throwsStateError);
               expect(sound.destroy, throwsStateError);
               sound = game.playSimpleSound(
-                sound: assetReference,
-                gain: 0.5,
+                sound: assetReference.copy(0.8),
                 looping: true,
                 pitchBend: 0.7,
                 position: const SoundPosition3d(
@@ -1321,7 +1320,7 @@ void main() {
                       value.x == 1.0 && value.y == 2.0 && value.z == 3.0,
                 ),
               );
-              expect(sound.gain, 0.5);
+              expect(sound.gain, 0.8);
               expect(sound.keepAlive, isTrue);
               expect(sound.looping, isTrue);
               expect(sound.pitchBend, 0.7);

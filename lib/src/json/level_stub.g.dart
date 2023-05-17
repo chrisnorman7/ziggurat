@@ -9,7 +9,7 @@ part of 'level_stub.dart';
 LevelStub _$LevelStubFromJson(Map<String, dynamic> json) => LevelStub(
       music: json['music'] == null
           ? null
-          : Music.fromJson(json['music'] as Map<String, dynamic>),
+          : AssetReference.fromJson(json['music'] as Map<String, dynamic>),
       ambiances: (json['ambiances'] as List<dynamic>?)
               ?.map((e) => Ambiance.fromJson(e as Map<String, dynamic>))
               .toList() ??

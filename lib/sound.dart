@@ -17,7 +17,6 @@ import 'src/sound/backend/sound_backend.dart';
 import 'src/sound/backend/synthizer/synthizer_sound_backend.dart';
 
 export 'src/json/ambiance.dart';
-export 'src/json/music.dart';
 export 'src/json/random_sound.dart';
 export 'src/json/reverb_preset.dart';
 export 'src/sound/_sound.dart';
