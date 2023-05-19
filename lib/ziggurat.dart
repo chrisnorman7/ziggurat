@@ -14,7 +14,7 @@
 /// Writing [AssetReference]s, [Menu]s, and generally fleshing out [Level]s with
 /// [Ambiance]s and [RandomSound]s - not to mention tying [CommandTrigger]s to
 /// functions can be tedious. To this end, the
-/// [skeleton_crew](https://github.com/chrisnorman7/skeleton_crew) application
+/// [Crossbow](https://github.com/chrisnorman7/crossbow) application
 /// can be used to automate many common Ziggurat tasks, then generate the code
 /// for you.
 ///

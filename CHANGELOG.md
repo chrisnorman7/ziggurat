@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.61.0]
+
+### Added
+
+* Added the `radsToDegrees` function.
+* Added information about [Crossbow](https://github.com/chrisnorman7/crossbow).
+* Updated some docs.
+
 ## [0.60.0]
 
 ### Changed

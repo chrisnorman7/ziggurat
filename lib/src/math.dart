@@ -10,11 +10,16 @@ double normaliseAngle(final double angle) {
   return angle;
 }
 
-/// Convert an angle to radians.
+/// Convert an [angle] to radians.
 ///
 /// Formula taken from
 /// [this link](https://synthizer.github.io/tutorials/python.html).
 double angleToRad(final double angle) => angle * pi / 180.0;
+
+/// Convert [radians] to degrees.
+///
+/// Function provided by Chat GPT.
+double radsToDegrees(final double radians) => radians * (180 / pi);
 
 /// Return coordinates in a given direction.
 Point<double> coordinatesInDirection(
